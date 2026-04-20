@@ -4,13 +4,13 @@ Cal3DS2*
 CustomFactor*
 GaussianFactor*
 JacobianVector*
+KeyTimestampMap*
 KeyVector*
 LevenbergMarquardtOptimizer*
 LevenbergMarquardtParams*
 Marginals*
 Matrix*
 Matrix3*
-SharedNoiseModel*
 NonlinearFactor*
 NonlinearFactorGraph*
 PinholeCamera*
@@ -21,8 +21,10 @@ Pose2*
 Pose3*
 PoseRotationPrior*
 PriorFactor*
+Result*
 Rot2*
 Rot3*
+SharedNoiseModel*
 shared_ptr*
 symbol_shorthand*
 TangentVector*
