@@ -1,9 +1,12 @@
 import org.gradle.internal.os.OperatingSystem
 
 nativeUtils.addWpiNativeUtils()
-nativeUtils.withCrossRoboRIO()
-nativeUtils.withCrossLinuxArm32()
+// nativeUtils.withCrossRoboRIO()
+nativeUtils.withCrossSystemCore()
+// nativeUtils.withCrossLinuxArm32()
 nativeUtils.withCrossLinuxArm64()
+
+nativeUtils.crossCompilers.getByName("linuxsystemcore").optional = false
 
 nativeUtils {
     wpi {
@@ -26,6 +29,7 @@ nativeUtils {
                 "linuxarm32",
                 "linuxarm64",
                 "linuxathena",
+                "linuxsystemcore",
                 "linuxx86-64",
                 "osxuniversal",
                 "windowsarm64",
