@@ -21,12 +21,7 @@ Point2*
 ...
 ```
 
-The third-party GTSAM build uses TBB, so be sure to install libtbb-dev before building.
-
-```
-sudo apt update
-sudo apt install libtbb-dev
-```
+## Warnings
 
 The GTSAM build produces a lot of warnings,
 so I commented out the relevant lines in config.gradle:
@@ -35,10 +30,25 @@ so I commented out the relevant lines in config.gradle:
 // nativeUtils.wpi.addWarningsAsErrors()
 ```
 
+## Building
+
+If you ran the thirdparty gtsam build on the same machine, the artifacts
+should be published in $HOME/releases/maven, where the gtsam vendordep build
+should find them.
+
+Make sure you're using JDK 22+ for FFM.
+
+Gradle keeps daemons around that can get confused if you change the java version;
+kill them with `./gradlew --stop`
+
 To run the build:
 
 ```
 ./gradlew build
+```
+or
+```
+./gradlew build -PreleaseMode=true
 ```
 
 To publish the output to build/repos
@@ -46,6 +56,16 @@ To publish the output to build/repos
 ```
 ./gradlew publish
 ```
+
+or
+
+```
+./gradlew publish -PreleaseMode=true
+```
+
+
+
+## Symbols
 
 Look in the library to see what's visible:
 
