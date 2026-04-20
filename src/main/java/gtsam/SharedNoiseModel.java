@@ -13,19 +13,19 @@ import org.team100.foreign.Lib;
 /** Actually a shared_ptr */
 public class SharedNoiseModel {
     private static final MethodHandle Sigmas1 = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("Sigmas1"),
+            Lib.lib.findOrThrow("SharedNoiseModel_Sigmas1"),
             FunctionDescriptor.of(ADDRESS, ADDRESS));
     private static final MethodHandle Sigmas2 = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("Sigmas2"),
+            Lib.lib.findOrThrow("SharedNoiseModel_Sigmas2"),
             FunctionDescriptor.of(ADDRESS, ADDRESS));
     private static final MethodHandle Sigmas3 = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("Sigmas3"),
+            Lib.lib.findOrThrow("SharedNoiseModel_Sigmas3"),
             FunctionDescriptor.of(ADDRESS, ADDRESS));
     private static final MethodHandle Unit = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("Unit"),
+            Lib.lib.findOrThrow("SharedNoiseModel_Unit"),
             FunctionDescriptor.of(ADDRESS, JAVA_INT));
     private static final MethodHandle use_count = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("use_count"),
+            Lib.lib.findOrThrow("SharedNoiseModel_use_count"),
             FunctionDescriptor.of(JAVA_LONG, ADDRESS));
 
     /** Pointer to the shared pointer. */
