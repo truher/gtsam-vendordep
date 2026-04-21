@@ -18,7 +18,18 @@ public class Lib {
     // it is mentioned in build.gradle model.components
     // and build.gradle nativeUtils.privateExportsConfigs
     // and publish.gradle model.publishing.driverTaskList.
-    public static final SymbolLookup lib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+    public static final SymbolLookup lib;
+    static {
+        SymbolLookup slib;
+        try {
+            // Systemcore location.
+            slib = SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
+        } catch (IllegalArgumentException e) {
+            // Desktop location.
+            slib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+        }
+        lib = slib;
+    }
     public static final Linker linker = Linker.nativeLinker();
 
     public static MethodHandle down(
