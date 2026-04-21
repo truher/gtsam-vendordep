@@ -101,3 +101,15 @@ $ nm -g libgtsamwrapper.so | grep ' T '
 To build with the systemcore in native utils,
 we need a custom version, since the 2027
 branch appears not to be published anywhere.
+
+To build just the systemcore assets, use
+
+```
+./gradlew build -Ponlylinuxsystemcore
+```
+
+and
+
+```
+./gradlew build -Ponlylinuxsystemcore -PreleaseMode=true
+```

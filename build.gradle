@@ -1,22 +1,21 @@
-import edu.wpi.first.toolchain.*
-import org.wpilib.toolchain.NativePlatforms
+import org.wpilib.toolchain.*
 
 plugins {
   id 'cpp'
   id 'java'
-  id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2025.0'
-//  id 'edu.wpi.first.NativeUtils' version '2026.0.1'
-  id 'org.wpilib.NativeUtils' version '2027.5.1'
-  id 'edu.wpi.first.GradleJni' version '1.1.0'
-  // id 'edu.wpi.first.GradleVsCode' version '2.1.0'
+  id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
+  id 'org.wpilib.NativeUtils' version '2027.1.1'
+  id 'org.wpilib.GradleJni' version '2027.0.0'
+  id 'org.wpilib.GradleVsCode' version '2027.0.0'
 }
 
 // WPILib Version
-ext.wpilibVersion = "2026.2.2"
+ext.wpilibVersion = "2027.+"
 
 repositories {
   mavenCentral()
 }
+wpilibRepositories.use2027Repos()
 if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllReleaseRepositories(project)
 } else {
@@ -34,14 +33,15 @@ apply from: 'config.gradle'
 
 // Apply Java configuration
 dependencies {
-    implementation "edu.wpi.first.cscore:cscore-java:$wpilibVersion"
-    implementation "edu.wpi.first.cameraserver:cameraserver-java:$wpilibVersion"
-    implementation "edu.wpi.first.ntcore:ntcore-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpilibj:wpilibj-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpiutil:wpiutil-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpimath:wpimath-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpiunits:wpiunits-java:$wpilibVersion"
-    implementation "edu.wpi.first.hal:hal-java:$wpilibVersion"
+    implementation "org.wpilib.cscore:cscore-java:$wpilibVersion"
+    implementation "org.wpilib.cameraserver:cameraserver-java:$wpilibVersion"
+    implementation "org.wpilib.ntcore:ntcore-java:$wpilibVersion"
+    implementation "org.wpilib.wpilibj:wpilibj-java:$wpilibVersion"
+    implementation "org.wpilib.wpiutil:wpiutil-java:$wpilibVersion"
+    implementation "org.wpilib.wpimath:wpimath-java:$wpilibVersion"
+    implementation "org.wpilib.wpiunits:wpiunits-java:$wpilibVersion"
+    implementation "org.wpilib.datalog:datalog-java:$wpilibVersion"
+    implementation "org.wpilib.hal:hal-java:$wpilibVersion"
     implementation "org.ejml:ejml-simple:0.44.0"
     implementation "com.fasterxml.jackson.core:jackson-annotations:2.19.2"
     implementation "com.fasterxml.jackson.core:jackson-core:2.19.2"
@@ -63,7 +63,7 @@ test {
     }
 }
 
-if (project.hasProperty('onlylinuxathena') || project.hasProperty('onlylinuxarm32') || project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
+if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
     test.enabled = false
 }
 
@@ -102,12 +102,9 @@ model {
     gtsamwrapper (JniNativeLibrarySpec) {
       enableCheckTask true
       javaCompileTasks << compileJava
-      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.roborio)
-      // Leave these for future proofing
-      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm32)
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
-      // Use this for 2027 builds
       jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
+      // Leave these for future proofing
+      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
       sources {
         cpp {
           source {
