@@ -12,6 +12,7 @@ extern "C" {
  * "move" semantics, but I couldn't find a way to do that.
  *
  * TODO: add deleter
+ * TODO: add more kinds of noise
  */
 gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas1(gtsam::Vector1* v) {
     // so, a scalar

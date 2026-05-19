@@ -13,4 +13,7 @@ gtsam::Rot3* Rot3(                       //
 void Rot3_delete(gtsam::Rot3* p) {
     delete p;
 }
+gtsam::Rot3* Rot3_Ypr(double y, double p, double r) {
+    return new gtsam::Rot3(gtsam::Rot3::Ypr(y, p, r));
+}
 }

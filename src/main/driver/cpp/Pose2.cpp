@@ -11,6 +11,10 @@ void Pose2_delete(gtsam::Pose2* p) {
 gtsam::Pose2* Pose2Rot2Point2(gtsam::Rot2* r, gtsam::Point2* t) {
     return new gtsam::Pose2(*r, *t);
 }
+// TODO: make this Vector3 somehow
+gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector* v) {
+    return new gtsam::Pose2(p->retract(*v));
+}
 double Pose2_x(const gtsam::Pose2* p) {
     return p->x();
 }

@@ -10,7 +10,11 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
-/** Actually a shared_ptr */
+/**
+ * Actually a shared_ptr
+ * TODO: maybe actually use the shared_ptr thing in java, instead of doing it
+ * differently here.
+ */
 public class SharedNoiseModel {
     private static final MethodHandle Sigmas1 = Lib.linker.downcallHandle(
             Lib.lib.findOrThrow("SharedNoiseModel_Sigmas1"),
@@ -35,9 +39,10 @@ public class SharedNoiseModel {
         ptr = p;
     }
 
-      public static SharedNoiseModel Sigmas(Vector1 v) throws Throwable {
+    public static SharedNoiseModel Sigmas(Vector1 v) throws Throwable {
         return new SharedNoiseModel((MemorySegment) Sigmas1.invokeExact(v.ptr));
     }
+
     public static SharedNoiseModel Sigmas(Vector2 v) throws Throwable {
         return new SharedNoiseModel((MemorySegment) Sigmas2.invokeExact(v.ptr));
     }

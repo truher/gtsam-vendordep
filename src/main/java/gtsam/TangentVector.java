@@ -11,8 +11,10 @@ import org.team100.foreign.Lib;
 /**
  * See gtsam/base/Lie.h
  * 
+ * <pre>
  * typedef Eigen::Matrix<double, N, 1> TangentVector;
  * for Pose2 this means Matrix<double, 3, 1>
+ * </pre>
  */
 public class TangentVector extends ForeignObject {
     private static final MethodHandle TangentVector_delete = Lib.downVoid(

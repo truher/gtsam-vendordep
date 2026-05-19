@@ -10,11 +10,13 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Vector2 extends ForeignObject {
+public class Vector2 extends ForeignObject implements VectorSpace<Vector2> {
     private static final MethodHandle Vector2 = Lib.down(
             "Vector2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Vector2_delete = Lib.downVoid(
             "Vector2_delete", ADDRESS);
+    private static final MethodHandle Vector2_minus = Lib.down(
+            "Vector2_minus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector2_at = Lib.down(
             "Vector2_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
     private static final MethodHandle Vector2_print = Lib.downVoid(
@@ -34,6 +36,16 @@ public class Vector2 extends ForeignObject {
 
     public void print() throws Throwable {
         Vector2_print.invokeExact(ptr);
+    }
+
+    @Override
+    public int getDimension() {
+        return 2;
+    }
+
+    @Override
+    public Vector local(Vector2 other) throws Throwable {
+        return new Vector(new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr)));
     }
 
 }

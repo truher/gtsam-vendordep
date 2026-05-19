@@ -7,7 +7,10 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
-/** in gtsam a key is a typedef for uint64. */
+/**
+ * in gtsam a key is a typedef for uint64.
+ * TODO: add the rest of the shortcuts.
+ */
 public class Key {
 
     private static final MethodHandle symbol_shorthand_X = Lib.linker.downcallHandle(

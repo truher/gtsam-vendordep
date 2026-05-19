@@ -13,18 +13,26 @@ import org.team100.foreign.Lib;
 /**
  * See gtsam/base/Vector.h
  * 
+ * <pre>
  * typedef Eigen::VectorXd Vector;
  * which is Matrix<double, Dynamic, 1>
+ * </pre>
  */
-public class Vector extends ForeignObject {
+public class Vector extends ForeignObject implements VectorSpace<Vector> {
     private static final MethodHandle Vector = Lib.down(
             "Vector", ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_delete = Lib.downVoid(
             "Vector_delete", ADDRESS);
     private static final MethodHandle Vector_set = Lib.downVoid(
             "Vector_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
+    private static final MethodHandle Vector_minus = Lib.down(
+            "Vector_minus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector_times = Lib.down(
+            "Vector_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Vector_fromTangentVector = Lib.down(
             "Vector_fromTangentVector", ADDRESS, ADDRESS);
+    private static final MethodHandle Vector_fromVector2 = Lib.down(
+            "Vector_fromVector2", ADDRESS, ADDRESS);
     private static final MethodHandle Vector_rows = Lib.down(
             "Vector_rows", JAVA_INT, ADDRESS);
     private static final MethodHandle Vector_at = Lib.down(
@@ -42,6 +50,10 @@ public class Vector extends ForeignObject {
         this((MemorySegment) Vector_fromTangentVector.invokeExact(v.ptr));
     }
 
+    public Vector(Vector2 v) throws Throwable {
+        this((MemorySegment) Vector_fromVector2.invokeExact(v.ptr));
+    }
+
     public Vector(double[] vals) throws Throwable {
         this(vals.length);
         for (int i = 0; i < vals.length; ++i) {
@@ -51,6 +63,14 @@ public class Vector extends ForeignObject {
 
     public void set(int i, double val) throws Throwable {
         Vector_set.invokeExact(ptr, i, val);
+    }
+
+    public Vector minus(Vector other) throws Throwable {
+        return new Vector((MemorySegment) Vector_minus.invokeExact(ptr, other.ptr));
+    }
+
+    public Vector times(double a) throws Throwable {
+        return new Vector((MemorySegment) Vector_times.invokeExact(ptr, a));
     }
 
     public int rows() throws Throwable {
@@ -76,6 +96,15 @@ public class Vector extends ForeignObject {
             e.printStackTrace();
             return "";
         }
+    }
 
+    @Override
+    public Vector local(Vector other) throws Throwable {
+        return new Vector((MemorySegment) Vector_minus.invokeExact(other.ptr, ptr));
+    }
+
+    @Override
+    public int getDimension() throws Throwable {
+        return rows();
     }
 }

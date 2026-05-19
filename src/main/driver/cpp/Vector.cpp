@@ -14,8 +14,20 @@ void Vector_delete(gtsam::Vector* p) {
 gtsam::Vector* Vector_fromTangentVector(gtsam::Pose2::TangentVector* v) {
     return new gtsam::Vector(*v);
 }
+gtsam::Vector* Vector_fromVector2(gtsam::Vector2* v) {
+    return new gtsam::Vector(*v);
+}
 void Vector_set(gtsam::Vector* v, int i, double val) {
     (*v)(i) = val;
+}
+gtsam::Vector* Vector_minus(gtsam::Vector* v, gtsam::Vector* other) {
+    return new gtsam::Vector((*v) - (*other));
+}
+gtsam::Vector2* Vector2_minus(gtsam::Vector2* v, gtsam::Vector2* other) {
+    return new gtsam::Vector2((*v) - (*other));
+}
+gtsam::Vector* Vector_times(gtsam::Vector* v, double a) {
+    return new gtsam::Vector((*v) * a);
 }
 double Vector_at(const gtsam::Vector* v, int i) {
     return (*v)(i);

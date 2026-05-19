@@ -13,10 +13,14 @@ import org.team100.foreign.Lib;
 public class Matrix extends ForeignObject {
     private static final MethodHandle Matrix = Lib.down(
             "Matrix", ADDRESS);
+    private static final MethodHandle Matrix_withRowsCols = Lib.down(
+            "Matrix_withRowsCols", ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_delete = Lib.downVoid(
             "Matrix_delete", ADDRESS);
     private static final MethodHandle Matrix_Matrix3 = Lib.down(
             "Matrix_Matrix3", ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_setCol = Lib.downVoid(
+            "Matrix_setCol", ADDRESS, JAVA_DOUBLE, ADDRESS);
     private static final MethodHandle Matrix_at = Lib.down(
             "Matrix_at", JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_diagonal_cwiseSqrt = Lib.down(
@@ -34,8 +38,16 @@ public class Matrix extends ForeignObject {
         this((MemorySegment) Matrix.invokeExact());
     }
 
+    public Matrix(int rows, int cols) throws Throwable {
+        this((MemorySegment) Matrix_withRowsCols.invokeExact(rows, cols));
+    }
+
     public Matrix(Matrix3 m) throws Throwable {
         this((MemorySegment) Matrix_Matrix3.invokeExact(m.ptr));
+    }
+
+    public void setCol(double col, Vector v) throws Throwable {
+        Matrix_setCol.invokeExact(ptr, col, v.ptr);
     }
 
     public double at(int r, int c) throws Throwable {
@@ -74,6 +86,30 @@ public class Matrix extends ForeignObject {
         } catch (Throwable e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            if (obj == this)
+                return true;
+            if (!(obj instanceof Matrix))
+                return false;
+            Matrix other = (Matrix) obj;
+            if (rows() != other.rows())
+                return false;
+            if (cols() != other.cols())
+                return false;
+            for (int row = 0; row < rows(); ++row) {
+                for (int col = 0; col < cols(); ++col) {
+                    if (Math.abs(at(row, col) - other.at(row, col)) > 5e-6)
+                        return false;
+                }
+            }
+            return true;
+        } catch (Throwable e) {
+            return false;
         }
 
     }

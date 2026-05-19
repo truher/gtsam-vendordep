@@ -17,6 +17,8 @@ public class Rot3 extends ForeignObject {
             JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Rot3_delete = Lib.downVoid(
             "Rot3_delete", ADDRESS);
+    private static final MethodHandle Rot3_Ypr = Lib.down(
+            "Rot3_Ypr", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
 
     public Rot3(MemorySegment p) {
         super(p, Rot3_delete);
@@ -30,6 +32,10 @@ public class Rot3 extends ForeignObject {
                 R11, R12, R13, //
                 R21, R22, R23, //
                 R31, R32, R33));
+    }
+
+    public static Rot3 Ypr(double y, double p, double r) throws Throwable {
+        return new Rot3((MemorySegment) Rot3_Ypr.invokeExact(y, p, r));
     }
 
 }

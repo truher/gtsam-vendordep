@@ -77,3 +77,9 @@ $ nm -g libgtsamwrapper.so | grep ' T '
 0000000000002460 T Point2_x
 0000000000002470 T Point2_y
 ```
+
+## Java tests
+
+Once you publish (see above) then the java tests should work,
+including through the vscode test extension.
+

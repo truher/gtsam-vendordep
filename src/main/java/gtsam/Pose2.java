@@ -9,13 +9,15 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose2 extends ForeignObject {
+public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
     private static final MethodHandle Pose2 = Lib.down(
             "Pose2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Pose2_delete = Lib.downVoid(
             "Pose2_delete", ADDRESS);
     private static final MethodHandle Pose2Rot2Point2 = Lib.down(
             "Pose2Rot2Point2", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_retract = Lib.down(
+            "Pose2_retract", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_x = Lib.down(
             "Pose2_x", JAVA_DOUBLE, ADDRESS);
     private static final MethodHandle Pose2_y = Lib.down(
@@ -54,6 +56,11 @@ public class Pose2 extends ForeignObject {
     /** Copies the arguments. */
     public Pose2(Rot2 r, Point2 t) throws Throwable {
         this((MemorySegment) Pose2Rot2Point2.invokeExact(r.ptr, t.ptr));
+    }
+
+    @Override
+    public Pose2 retract(VectorSpace<?> v) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_retract.invokeExact(ptr, v.ptr()));
     }
 
     public double x() throws Throwable {
@@ -110,6 +117,11 @@ public class Pose2 extends ForeignObject {
             e.printStackTrace();
             return "";
         }
+    }
+
+    @Override
+    public int dimension() {
+        return 3;
     }
 
 }

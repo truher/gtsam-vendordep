@@ -7,8 +7,14 @@ gtsam::Matrix* Matrix() {
 void Matrix_delete(gtsam::Matrix* m) {
     delete m;
 }
+gtsam::Matrix* Matrix_withRowsCols(int rows, int cols) {
+    return new Eigen::MatrixXd(rows, cols);
+}
 gtsam::Matrix* Matrix_Matrix3(gtsam::Matrix3* m) {
     return new gtsam::Matrix(*m);
+}
+void Matrix_setCol(gtsam::Matrix* m, double col, gtsam::Vector* v) {
+    (*m).col(col) = (*v);
 }
 double Matrix_at(const gtsam::Matrix* m, int r, int c) {
     return (*m)(r, c);

@@ -9,6 +9,9 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
+/**
+ * TODO: Point3 is a typedef of Vector3, so this seems wrong.
+ */
 public class Point3 extends ForeignObject {
     private static final MethodHandle Point3 = Lib.down(
             "Point3", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);

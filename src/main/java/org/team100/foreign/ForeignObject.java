@@ -30,6 +30,10 @@ public abstract class ForeignObject {
     /** The address of the referent. */
     public final MemorySegment ptr;
 
+    public MemorySegment ptr() {
+        return ptr;
+    }
+
     /**
      * @param pointer Points to the referent, usually returned by "new".
      * @param deleter Calls "delete" on the pointer. Pass null for "observer"

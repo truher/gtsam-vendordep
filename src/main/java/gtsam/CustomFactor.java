@@ -26,8 +26,9 @@ public class CustomFactor extends NonlinearFactor {
             SharedNoiseModel noiseModel,
             KeyVector keys,
             CustomErrorFunction errorFunction) throws Throwable {
+        MethodHandle bindHandle = CustomErrorFunction.f.bindTo(errorFunction);
         MemorySegment errorFunctionPtr = Lib.linker.upcallStub(
-                CustomErrorFunction.f.bindTo(errorFunction),
+                bindHandle,
                 FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
                 Lib.arena);
         MemorySegment sharedPtrPtr = (MemorySegment) CustomFactor.invokeExact(
