@@ -1,3 +1,4 @@
+#include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Cal3DS2.h>
 
 extern "C" {
@@ -10,5 +11,15 @@ gtsam::Cal3DS2* Cal3DS2(double fx, double fy,            //
 }
 void Cal3DS2_delete(gtsam::Cal3DS2* p) {
     delete p;
+}
+gtsam::Cal3DS2* Cal3DS2_retract(const gtsam::Cal3DS2* p,
+                                const gtsam::Vector* v) {
+    return new gtsam::Cal3DS2(p->retract(*v));
+}
+void Cal3DS2_print(const gtsam::Cal3DS2* p) {
+    p->print();
+}
+bool Cal3DS2_equals(const gtsam::Cal3DS2* a, const gtsam::Cal3DS2* b, double tol) {
+    return a->equals(*b, tol);
 }
 }

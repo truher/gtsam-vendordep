@@ -16,6 +16,9 @@ import org.team100.foreign.Lib;
  * differently here.
  */
 public class SharedNoiseModel {
+    private static final MethodHandle Sigmas = Lib.linker.downcallHandle(
+            Lib.lib.findOrThrow("SharedNoiseModel_Sigmas"),
+            FunctionDescriptor.of(ADDRESS, ADDRESS));
     private static final MethodHandle Sigmas1 = Lib.linker.downcallHandle(
             Lib.lib.findOrThrow("SharedNoiseModel_Sigmas1"),
             FunctionDescriptor.of(ADDRESS, ADDRESS));
@@ -37,6 +40,10 @@ public class SharedNoiseModel {
 
     private SharedNoiseModel(MemorySegment p) {
         ptr = p;
+    }
+
+    public static SharedNoiseModel Sigmas(Vector v) throws Throwable {
+        return new SharedNoiseModel((MemorySegment) Sigmas.invokeExact(v.ptr));
     }
 
     public static SharedNoiseModel Sigmas(Vector1 v) throws Throwable {

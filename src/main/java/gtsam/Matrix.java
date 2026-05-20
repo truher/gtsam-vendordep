@@ -29,6 +29,12 @@ public class Matrix extends ForeignObject {
             "Matrix_rows", JAVA_INT, ADDRESS);
     private static final MethodHandle Matrix_cols = Lib.down(
             "Matrix_cols", JAVA_INT, ADDRESS);
+    private static final MethodHandle Matrix_inverse = Lib.down(
+            "Matrix_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_compose = Lib.down(
+            "Matrix_compose", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_transpose = Lib.down(
+            "Matrix_transpose", ADDRESS, ADDRESS);
 
     public Matrix(MemorySegment p) {
         super(p, Matrix_delete);
@@ -128,6 +134,18 @@ public class Matrix extends ForeignObject {
             }
         }
         return true;
+    }
+
+    public Matrix inverse() throws Throwable {
+        return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
+    }
+
+    public Matrix compose(Matrix other) throws Throwable {
+        return new Matrix((MemorySegment) Matrix_compose.invokeExact(ptr, other.ptr));
+    }
+
+    public Matrix transpose() throws Throwable {
+        return new Matrix((MemorySegment) Matrix_transpose.invokeExact(ptr));
     }
 
 }

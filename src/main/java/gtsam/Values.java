@@ -21,8 +21,16 @@ public class Values extends ForeignObject {
             "Values_delete", ADDRESS);
     private static final MethodHandle Values_insertPose2 = Lib.downVoid(
             "Values_insertPose2", ADDRESS, JAVA_LONG, ADDRESS);
-    private static final MethodHandle Values_at = Lib.down(
+    private static final MethodHandle Values_insertPose3 = Lib.downVoid(
+            "Values_insertPose3", ADDRESS, JAVA_LONG, ADDRESS);
+    private static final MethodHandle Values_insertCal3DS2 = Lib.downVoid(
+            "Values_insertCal3DS2", ADDRESS, JAVA_LONG, ADDRESS);
+    private static final MethodHandle Values_atPose2 = Lib.down(
             "Values_atPose2", ADDRESS, ADDRESS, JAVA_LONG);
+    private static final MethodHandle Values_atPose3 = Lib.down(
+            "Values_atPose3", ADDRESS, ADDRESS, JAVA_LONG);
+    private static final MethodHandle Values_atCal3DS2 = Lib.down(
+            "Values_atCal3DS2", ADDRESS, ADDRESS, JAVA_LONG);
     private static final MethodHandle Values_exists = Lib.down(
             "Values_exists", JAVA_BOOLEAN, ADDRESS, JAVA_LONG);
     private static final MethodHandle Values_clear = Lib.downVoid(
@@ -72,8 +80,24 @@ public class Values extends ForeignObject {
         Values_insertPose2.invokeExact(ptr, j.j, p.ptr);
     }
 
+    public void insert(Key j, Pose3 p) throws Throwable {
+        Values_insertPose3.invokeExact(ptr, j.j, p.ptr);
+    }
+
+    public void insert(Key j, Cal3DS2 p) throws Throwable {
+        Values_insertCal3DS2.invokeExact(ptr, j.j, p.ptr);
+    }
+
     public Pose2 atPose2(Key j) throws Throwable {
-        return new Pose2((MemorySegment) Values_at.invokeExact(ptr, j.j));
+        return new Pose2((MemorySegment) Values_atPose2.invokeExact(ptr, j.j));
+    }
+
+    public Pose3 atPose3(Key j) throws Throwable {
+        return new Pose3((MemorySegment) Values_atPose3.invokeExact(ptr, j.j));
+    }
+
+    public Cal3DS2 atCal3DS2(Key j) throws Throwable {
+        return new Cal3DS2((MemorySegment) Values_atCal3DS2.invokeExact(ptr, j.j));
     }
 
     public boolean exists(Key j) throws Throwable {

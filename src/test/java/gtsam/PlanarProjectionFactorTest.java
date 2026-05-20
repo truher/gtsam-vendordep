@@ -136,7 +136,6 @@ public class PlanarProjectionFactorTest {
      */
     @Test
     void Solve() throws Throwable {
-
         SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
         // pose model is wide, so the solver finds the right answer.
         SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(10, 10, 10));
@@ -271,190 +270,199 @@ public class PlanarProjectionFactorTest {
         }, 1e-6));
     }
 
-    /*
-     * *************************************************************************
-     * 
-     * @Test
-     * void Error3_3() {
-     * Point3 landmark = new Point3(1, 1, 1);
-     * Point2 measured = new Point2(0, 0);
-     * SharedNoiseModel model = SharedNoiseModel.Sigmas(Vector2(1, 1));
-     * PlanarProjectionFactor3 factor(X(0), C(0), K(0), landmark, measured, model);
-     * Pose2 pose(0, 0, 0);
-     * Pose3 offset(
-     * Rot3(0, 0, 1,//
-     * -1, 0, 0, //
-     * 0, -1, 0),
-     * Vector3(0, 0, 0)
-     * );
-     * Cal3DS2 calib(200, 200, 0, 200, 200, -0.2, 0.1);
-     * Matrix H1;
-     * Matrix H2;
-     * Matrix H3;
-     * CHECK(assert_equal(Vector2(0, 0), factor.evaluateError(pose, offset, calib,
-     * H1, H2, H3), 1e-6));
-     * CHECK(assert_equal((Matrix23() <<//
-     * -360, 280, 640,//
-     * -360, 80, 440).finished(), H1, 1e-6));
-     * CHECK(assert_equal((Matrix26() <<//
-     * 440, -640, -200, -280, -80, -360,//
-     * 640, -440, 200, -80, -280, -360).finished(), H2, 1e-6));
-     * CHECK(assert_equal((Matrix29() <<//
-     * -1, 0, -1, 1, 0, -400, -800, 400, 800,//
-     * 0, -1, 0, 0, 1, -400, -800, 800, 400).finished(), H3, 1e-6));
-     * }
-     * 
-     * @Test
-     * void Jacobian3() {
-     * // Verify Jacobians with numeric derivative
-     * 
-     * std::default_random_engine rng(42);
-     * std::uniform_real_distribution<double> dist(-0.3, 0.3);
-     * SharedNoiseModel model = noiseModel::Diagonal::Sigmas(Vector2(1, 1));
-     * // center of the random camera poses
-     * Pose3 centerOffset(
-     * Rot3(0, 0, 1,//
-     * -1, 0, 0, //
-     * 0, -1, 0),
-     * Vector3(0, 0, 0)
-     * );
-     * 
-     * for (int i = 0; i < 1000; ++i) {
-     * Point3 landmark(2 + dist(rng), dist(rng), dist(rng));
-     * Point2 measured(200 + 100 * dist(rng), 200 + 100 * dist(rng));
-     * Pose3 offset = centerOffset.compose(
-     * Pose3(
-     * Rot3::Ypr(dist(rng), dist(rng), dist(rng)),
-     * Point3(dist(rng), dist(rng), dist(rng))));
-     * Cal3DS2 calib(200, 200, 0, 200, 200, -0.2, 0.1);
-     * 
-     * PlanarProjectionFactor3 factor(X(0), C(0), K(0), landmark, measured, model);
-     * 
-     * Pose2 pose(dist(rng), dist(rng), dist(rng));
-     * 
-     * // actual H
-     * Matrix H1, H2, H3;
-     * factor.evaluateError(pose, offset, calib, H1, H2, H3);
-     * 
-     * Matrix expectedH1 = numericalDerivative31<Vector, Pose2, Pose3, Cal3DS2>(
-     * [&factor](const Pose2& p, const Pose3& o, const Cal3DS2& c) {
-     * return factor.evaluateError(p, o, c, {}, {}, {});},
-     * pose, offset, calib);
-     * Matrix expectedH2 = numericalDerivative32<Vector, Pose2, Pose3, Cal3DS2>(
-     * [&factor](const Pose2& p, const Pose3& o, const Cal3DS2& c) {
-     * return factor.evaluateError(p, o, c, {}, {}, {});},
-     * pose, offset, calib);
-     * Matrix expectedH3 = numericalDerivative33<Vector, Pose2, Pose3, Cal3DS2>(
-     * [&factor](const Pose2& p, const Pose3& o, const Cal3DS2& c) {
-     * return factor.evaluateError(p, o, c, {}, {}, {});},
-     * pose, offset, calib);
-     * CHECK(assert_equal(expectedH1, H1, 5e-6));
-     * CHECK(assert_equal(expectedH2, H2, 5e-6));
-     * CHECK(assert_equal(expectedH3, H3, 5e-6));
-     * }
-     * }
-     * 
-     * @Test
-     * void SolveOffset() {
-     * // Example localization
-     * SharedNoiseModel pxModel = noiseModel::Diagonal::Sigmas(Vector2(1, 1));
-     * SharedNoiseModel xNoise = noiseModel::Diagonal::Sigmas(Vector3(0.01, 0.01,
-     * 0.01));
-     * // offset model is wide, so the solver finds the right answer.
-     * SharedNoiseModel cNoise = noiseModel::Diagonal::Sigmas(Vector6(10, 10, 10,
-     * 10, 10, 10));
-     * SharedNoiseModel kNoise = noiseModel::Diagonal::Sigmas(Vector9(0.001, 0.001,
-     * 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001));
-     * 
-     * // landmarks
-     * Point3 l0 = new Point3(1, 0, 1);
-     * Point3 l1 = new Point3(1, 0, 0);
-     * Point3 l2 = new Point3(1, -1, 1);
-     * Point3 l3 = new Point3(2, 2, 1);
-     * 
-     * // camera pixels
-     * Point2 p0 = new Point2(200, 200);
-     * Point2 p1 = new Point2(200, 400);
-     * Point2 p2 = new Point2(400, 200);
-     * Point2 p3 = new Point2(0, 200);
-     * 
-     * // body
-     * Pose2 x0(0, 0, 0);
-     * 
-     * // camera z looking at +x with (xy) antiparallel to (yz)
-     * Pose3 c0(
-     * Rot3(0, 0, 1, //
-     * -1, 0, 0, //
-     * 0, -1, 0), //
-     * Vector3(0, 0, 1)); // note z offset
-     * Cal3DS2 calib(200, 200, 0, 200, 200, 0, 0);
-     * 
-     * NonlinearFactorGraph graph;
-     * graph.add(PlanarProjectionFactor3(X(0), C(0), K(0), l0, p0, pxModel));
-     * graph.add(PlanarProjectionFactor3(X(0), C(0), K(0), l1, p1, pxModel));
-     * graph.add(PlanarProjectionFactor3(X(0), C(0), K(0), l2, p2, pxModel));
-     * graph.add(PlanarProjectionFactor3(X(0), C(0), K(0), l3, p3, pxModel));
-     * graph.add(PriorFactor<Pose2>(X(0), x0, xNoise));
-     * graph.add(PriorFactor<Pose3>(C(0), c0, cNoise));
-     * graph.add(PriorFactor<Cal3DS2>(K(0), calib, kNoise));
-     * 
-     * Values initialEstimate;
-     * initialEstimate.insert(X(0), x0);
-     * initialEstimate.insert(C(0), c0);
-     * initialEstimate.insert(K(0), calib);
-     * 
-     * // run the optimizer
-     * LevenbergMarquardtOptimizer optimizer(graph, initialEstimate);
-     * Values result = optimizer.optimize();
-     * 
-     * // verify that the optimizer found the right pose.
-     * CHECK(assert_equal(x0, result.at<Pose2>(X(0)), 2e-3));
-     * 
-     * // verify the camera is pointing at +x
-     * Pose3 cc0 = result.at<Pose3>(C(0));
-     * CHECK(assert_equal(c0, cc0, 5e-3));
-     * 
-     * // verify the calibration
-     * CHECK(assert_equal(calib, result.at<Cal3DS2>(K(0)), 2e-3));
-     * 
-     * Marginals marginals(graph, result);
-     * Matrix x0cov = marginals.marginalCovariance(X(0));
-     * 
-     * // narrow prior => ~zero cov
-     * CHECK(assert_equal(Matrix33::Zero(), x0cov, 1e-4));
-     * 
-     * Matrix c0cov = marginals.marginalCovariance(C(0));
-     * 
-     * // invert the camera offset to get covariance in body coordinates
-     * Matrix66 HcTb = cc0.inverse().AdjointMap().inverse();
-     * Matrix c0cov2 = HcTb * c0cov * HcTb.transpose();
-     * 
-     * // camera-frame stddev
-     * Vector6 c0sigma = c0cov.diagonal().cwiseSqrt();
-     * CHECK(assert_equal((Vector6() << //
-     * 0.009,
-     * 0.011,
-     * 0.004,
-     * 0.012,
-     * 0.012,
-     * 0.011
-     * ).finished(), c0sigma, 1e-3));
-     * 
-     * // body frame stddev
-     * Vector6 bTcSigma = c0cov2.diagonal().cwiseSqrt();
-     * CHECK(assert_equal((Vector6() << //
-     * 0.004,
-     * 0.009,
-     * 0.011,
-     * 0.012,
-     * 0.012,
-     * 0.012
-     * ).finished(), bTcSigma, 1e-3));
-     * 
-     * // narrow prior => ~zero cov
-     * CHECK(assert_equal(Matrix99::Zero(), marginals.marginalCovariance(K(0)),
-     * 3e-3));
-     * }
+    @Test
+    void Error3_3() throws Throwable {
+        Point3 landmark = new Point3(1, 1, 1);
+        Point2 measured = new Point2(0, 0);
+        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
+                Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
+        Pose2 pose = new Pose2(0, 0, 0);
+        Pose3 offset = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0),
+                new Point3(0, 0, 0));
+        Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, -0.2, 0.1);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
+        Matrix H3 = new Matrix();
+        Vector err = factor.get().evaluateError(pose, offset, calib,
+                H1, H2, H3);
+        assertTrue(err.equals(new double[] { 0, 0 }, 1e-6));
+        assertTrue(H1.equals(new double[][] {
+                { -360, 280, 640 },
+                { -360, 80, 440 } }, 1e-6));
+        assertTrue(H2.equals(new double[][] {
+                { 440, -640, -200, -280, -80, -360 },
+                { 640, -440, 200, -80, -280, -360 } }, 1e-6));
+        assertTrue(H3.equals(new double[][] {
+                { -1, 0, -1, 1, 0, -400, -800, 400, 800 },
+                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } }, 1e-6));
+    }
+
+    /**
+     * Verify Jacobians with numeric derivative
      */
+    @Test
+    void Jacobian3() throws Throwable {
+        Random rng = new Random(42);
+        DoubleSupplier dist = () -> rng.nextDouble(-0.3, 0.3);
+        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        // center of the random camera poses
+        Pose3 centerOffset = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0),
+                new Point3(0, 0, 0));
+
+        for (int i = 0; i < 1000; ++i) {
+            Point3 landmark = new Point3(2 + dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble());
+            Point2 measured = new Point2(200 + 100 * dist.getAsDouble(), 200 + 100 * dist.getAsDouble());
+            Pose3 offset = centerOffset.compose(
+                    new Pose3(
+                            Rot3.Ypr(dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble()),
+                            new Point3(dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble())));
+            Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, -0.2, 0.1);
+
+            shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
+                    Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
+
+            Pose2 pose = new Pose2(dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble());
+
+            // actual H
+            Matrix H1 = new Matrix();
+            Matrix H2 = new Matrix();
+            Matrix H3 = new Matrix();
+            factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
+
+            Matrix expectedH1 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative31(
+                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
+                            new Matrix()),
+                    pose, offset, calib);
+
+            Matrix expectedH2 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative32(
+                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
+                            new Matrix()),
+                    pose, offset, calib);
+
+            Matrix expectedH3 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative33(
+                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
+                            new Matrix()),
+                    pose, offset, calib);
+
+            assertEquals(expectedH1, H1);
+            assertEquals(expectedH2, H2);
+            assertEquals(expectedH3, H3);
+        }
+    }
+
+    /**
+     * Example localization.
+     */
+    @Test
+    void SolveOffset() throws Throwable {
+        SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(0.01, 0.01,
+                0.01));
+        // offset model is wide, so the solver finds the right answer.
+        SharedNoiseModel cNoise = SharedNoiseModel.Sigmas(
+                new Vector(new double[] { 10, 10, 10, 10, 10, 10 }));
+        SharedNoiseModel kNoise = SharedNoiseModel.Sigmas(
+                new Vector(new double[] { 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001 }));
+
+        // landmarks
+        Point3 l0 = new Point3(1, 0, 1);
+        Point3 l1 = new Point3(1, 0, 0);
+        Point3 l2 = new Point3(1, -1, 1);
+        Point3 l3 = new Point3(2, 2, 1);
+
+        // camera pixels
+        Point2 p0 = new Point2(200, 200);
+        Point2 p1 = new Point2(200, 400);
+        Point2 p2 = new Point2(400, 200);
+        Point2 p3 = new Point2(0, 200);
+
+        // body
+        Pose2 x0 = new Pose2(0, 0, 0);
+
+        // camera z looking at +x with (xy) antiparallel to (yz)
+        Pose3 c0 = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0), //
+                new Point3(0, 0, 1)); // note z offset
+        Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
+
+        NonlinearFactorGraph graph = new NonlinearFactorGraph();
+        graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l0, p0, pxModel));
+        graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l1, p1, pxModel));
+        graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l2, p2, pxModel));
+        graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l3, p3, pxModel));
+        graph.add(PriorFactor.PriorFactorPose2(Key.X(0), x0, xNoise));
+        graph.add(PriorFactor.PriorFactorPose3(Key.C(0), c0, cNoise));
+        graph.add(PriorFactor.PriorFactorCal3DS2(Key.K(0), calib, kNoise));
+
+        Values initialEstimate = new Values();
+        initialEstimate.insert(Key.X(0), x0);
+        initialEstimate.insert(Key.C(0), c0);
+        initialEstimate.insert(Key.K(0), calib);
+
+        // run the optimizer
+        LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer(graph, initialEstimate);
+        Values result = optimizer.optimize();
+
+        // verify that the optimizer found the right pose.
+        assertTrue(x0.equals(result.atPose2(Key.X(0)), 2e-3));
+
+        // verify the camera is pointing at +x
+        Pose3 cc0 = result.atPose3(Key.C(0));
+        assertTrue(c0.equals(cc0, 5e-3));
+
+        // verify the calibration
+        assertTrue(calib.equals(result.atCal3DS2(Key.K(0)), 2e-3));
+
+        Marginals marginals = new Marginals(graph, result);
+        Matrix x0cov = marginals.marginalCovariance(Key.X(0));
+
+        // narrow prior => ~zero cov
+        assertTrue(x0cov.equals(new double[][] {
+                { 0, 0, 0 }, //
+                { 0, 0, 0 }, //
+                { 0, 0, 0 }//
+        }, 1e-4));
+
+        Matrix c0cov = marginals.marginalCovariance(Key.C(0));
+
+        // invert the camera offset to get covariance in body coordinates
+        Matrix HcTb = cc0.inverse().AdjointMap().inverse();
+        Matrix c0cov2 = HcTb.compose(c0cov).compose(HcTb.transpose());
+
+        // camera-frame stddev
+        Vector c0sigma = c0cov.diagonal_cwiseSqrt();
+        assertTrue(c0sigma.equals(new double[] {
+                0.009, 0.011, 0.004, 0.012, 0.012, 0.011
+        }, 1e-3));
+
+        // body frame stddev
+        Vector bTcSigma = c0cov2.diagonal_cwiseSqrt();
+        assertTrue(bTcSigma.equals(new double[] {
+                0.004, 0.009, 0.011, 0.012, 0.012, 0.012
+        }, 1e-3));
+
+        // narrow prior => ~zero cov
+        Matrix k0cov = marginals.marginalCovariance(Key.K(0));
+        assertTrue(k0cov.equals(new double[][] {
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        }, 3e-3));
+    }
 
 }

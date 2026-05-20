@@ -1,4 +1,5 @@
 #include <gtsam/base/Lie.h>
+#include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose2.h>
 
 extern "C" {
@@ -49,5 +50,11 @@ gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi) {
 }
 gtsam::Vector3* Pose2_log(const gtsam::Pose2* p0, const gtsam::Pose2* p1) {
     return new gtsam::Vector3(p0->logmap(*p1));
+}
+void Pose2_print(const gtsam::Pose2* p) {
+    p->print();
+}
+bool Pose2_equals(const gtsam::Pose2* a, const gtsam::Pose2* b, double tol) {
+    return a->equals(*b, tol);
 }
 }

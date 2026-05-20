@@ -10,4 +10,6 @@ public interface LieGroup<X extends LieGroup<X>> {
     int dimension();
 
     X retract(VectorSpace<?> v) throws Throwable;
+
+    void print() throws Throwable;
 }

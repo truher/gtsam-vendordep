@@ -6,7 +6,10 @@ extern "C" {
 ////////////////////////////
 // Vector
 gtsam::Vector* Vector(int size) {
-    return new gtsam::Vector(size);
+    // Java users certainly expect zero initialization!
+    gtsam::Vector* v = new gtsam::Vector(size);
+    v->setZero();
+    return v;
 }
 void Vector_delete(gtsam::Vector* p) {
     delete p;
@@ -20,13 +23,13 @@ gtsam::Vector* Vector_fromVector2(gtsam::Vector2* v) {
 void Vector_set(gtsam::Vector* v, int i, double val) {
     (*v)(i) = val;
 }
-gtsam::Vector* Vector_minus(gtsam::Vector* v, gtsam::Vector* other) {
+gtsam::Vector* Vector_minus(const gtsam::Vector* v, const gtsam::Vector* other) {
     return new gtsam::Vector((*v) - (*other));
 }
-gtsam::Vector2* Vector2_minus(gtsam::Vector2* v, gtsam::Vector2* other) {
+gtsam::Vector2* Vector2_minus(const gtsam::Vector2* v, const gtsam::Vector2* other) {
     return new gtsam::Vector2((*v) - (*other));
 }
-gtsam::Vector* Vector_times(gtsam::Vector* v, double a) {
+gtsam::Vector* Vector_times(const gtsam::Vector* v, double a) {
     return new gtsam::Vector((*v) * a);
 }
 double Vector_at(const gtsam::Vector* v, int i) {

@@ -1,4 +1,5 @@
 #include <gtsam/geometry/Pose3.h>
+#include <gtsam/base/Matrix.h>
 
 extern "C" {
 /**
@@ -16,5 +17,20 @@ gtsam::Pose3* Pose3_Pose2(const gtsam::Pose2* p) {
 }
 gtsam::Pose3* Pose3_compose(const gtsam::Pose3* p, const gtsam::Pose3* p2) {
     return new gtsam::Pose3(p->compose(*p2));
+}
+gtsam::Pose3* Pose3_retract(const gtsam::Pose3* p, const gtsam::Vector* v) {
+    return new gtsam::Pose3(p->retract(*v));
+}
+void Pose3_print(const gtsam::Pose3* p) {
+    p->print();
+}
+bool Pose3_equals(const gtsam::Pose3* a, const gtsam::Pose3* b, double tol) {
+    return a->equals(*b, tol);
+}
+gtsam::Pose3* Pose3_inverse(const gtsam::Pose3* p) {
+    return new gtsam::Pose3(p->inverse());
+}
+gtsam::Matrix* Pose3_AdjointMap(const gtsam::Pose3* p) {
+    return new gtsam::Matrix(p->AdjointMap());
 }
 }

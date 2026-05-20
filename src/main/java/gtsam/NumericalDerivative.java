@@ -11,6 +11,16 @@ public class NumericalDerivative {
         Y apply(X t) throws Throwable;
     }
 
+    @FunctionalInterface
+    interface ThrowingFunction2<X1, X2, Y> {
+        Y apply(X1 x1, X2 x2) throws Throwable;
+    }
+
+    @FunctionalInterface
+    interface ThrowingFunction3<X1, X2, X3, Y> {
+        Y apply(X1 x1, X2 x2, X3 x3) throws Throwable;
+    }
+
     public static <Y extends VectorSpace<Y>, X extends LieGroup<X>> Matrix numericalDerivative11(
             ThrowingFunction<X, Y> h, X x) throws Throwable {
         double delta = 1e-5;
@@ -27,9 +37,40 @@ public class NumericalDerivative {
             dx.set(j, -delta);
             Vector dy2 = hx.local(h.apply(x.retract(dx)));
             dx.set(j, 0);
-            System.out.flush();
             H.setCol(j, dy1.minus(dy2).times(factor));
         }
         return H;
     }
+
+    public static <Y extends VectorSpace<Y>, X1 extends LieGroup<X1>, X2 extends LieGroup<X2>> Matrix numericalDerivative21(
+            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2)
+            throws Throwable {
+        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2), x1);
+    }
+
+    public static <Y extends VectorSpace<Y>, X1 extends LieGroup<X1>, X2 extends LieGroup<X2>> Matrix numericalDerivative22(
+            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2)
+            throws Throwable {
+        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x), x2);
+    }
+
+    public static <Y extends VectorSpace<Y>, X1 extends LieGroup<X1>, X2 extends LieGroup<X2>, X3 extends LieGroup<X3>> Matrix numericalDerivative31(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+            throws Throwable {
+        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2, x3), x1);
+    }
+
+    public static <Y extends VectorSpace<Y>, X1 extends LieGroup<X1>, X2 extends LieGroup<X2>, X3 extends LieGroup<X3>> Matrix numericalDerivative32(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+            throws Throwable {
+        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x, x3), x2);
+    }
+
+    public static <Y extends VectorSpace<Y>, X1 extends LieGroup<X1>, X2 extends LieGroup<X2>, X3 extends LieGroup<X3>> Matrix numericalDerivative33(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+            throws Throwable {
+        return NumericalDerivative.<Y, X3>numericalDerivative11((X3 x) -> h.apply(x1, x2, x), x3);
+
+    }
+
 }

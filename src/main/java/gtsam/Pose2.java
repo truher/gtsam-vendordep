@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -40,6 +41,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
             "Pose2_Expmap", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_log = Lib.down(
             "Pose2_log", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_print = Lib.downVoid(
+            "Pose2_print", ADDRESS);
+    private static final MethodHandle Pose2_equals = Lib.down(
+            "Pose2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
@@ -122,6 +127,15 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
     @Override
     public int dimension() {
         return 3;
+    }
+
+    @Override
+    public void print() throws Throwable {
+        Pose2_print.invokeExact(ptr);
+    }
+
+    public boolean equals(Pose2 other, double tol) throws Throwable {
+        return (boolean) Pose2_equals.invokeExact(ptr, other.ptr, tol);
     }
 
 }

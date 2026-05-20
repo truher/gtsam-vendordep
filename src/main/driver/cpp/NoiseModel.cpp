@@ -14,20 +14,22 @@ extern "C" {
  * TODO: add deleter
  * TODO: add more kinds of noise
  */
-gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas1(gtsam::Vector1* v) {
-    // so, a scalar
+gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas(const gtsam::Vector* v) {
     return new gtsam::SharedNoiseModel(gtsam::noiseModel::Diagonal::Sigmas(*v));
 }
-gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas2(gtsam::Vector2* v) {
+gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas1(const gtsam::Vector1* v) {
     return new gtsam::SharedNoiseModel(gtsam::noiseModel::Diagonal::Sigmas(*v));
 }
-gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas3(gtsam::Vector3* v) {
+gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas2(const gtsam::Vector2* v) {
+    return new gtsam::SharedNoiseModel(gtsam::noiseModel::Diagonal::Sigmas(*v));
+}
+gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas3(const gtsam::Vector3* v) {
     return new gtsam::SharedNoiseModel(gtsam::noiseModel::Diagonal::Sigmas(*v));
 }
 gtsam::SharedNoiseModel* SharedNoiseModel_Unit(int dim) {
     return new gtsam::SharedNoiseModel(gtsam::noiseModel::Unit::Create(dim));
 }
-long SharedNoiseModel_use_count(gtsam::SharedNoiseModel* p) {
+long SharedNoiseModel_use_count(const gtsam::SharedNoiseModel* p) {
     return p->use_count();
 }
 }

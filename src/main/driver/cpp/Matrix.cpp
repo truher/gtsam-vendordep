@@ -2,7 +2,9 @@
 
 extern "C" {
 gtsam::Matrix* Matrix() {
-    return new gtsam::Matrix();
+    gtsam::Matrix* m = new gtsam::Matrix();
+    m->setZero();
+    return m;
 }
 void Matrix_delete(gtsam::Matrix* m) {
     delete m;
@@ -27,5 +29,14 @@ int Matrix_rows(const gtsam::Matrix* m) {
 }
 int Matrix_cols(const gtsam::Matrix* m) {
     return m->cols();
+}
+gtsam::Matrix* Matrix_inverse(const gtsam::Matrix* m) {
+    return new gtsam::Matrix(m->inverse());
+}
+gtsam::Matrix* Matrix_compose(const gtsam::Matrix* a, const gtsam::Matrix* b) {
+    return new gtsam::Matrix((*a) * (*b));
+}
+gtsam::Matrix* Matrix_transpose(const gtsam::Matrix* m) {
+    return new gtsam::Matrix(m->transpose());
 }
 }

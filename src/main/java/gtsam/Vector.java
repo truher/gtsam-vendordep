@@ -88,7 +88,7 @@ public class Vector extends ForeignObject implements VectorSpace<Vector> {
             int rows = rows();
             b.append("[");
             for (int r = 0; r < rows; ++r) {
-                b.append(String.format("%6.3f", at(r)));
+                b.append(String.format(" %8.5f ", at(r)));
             }
             b.append("]\n");
             return b.toString();
