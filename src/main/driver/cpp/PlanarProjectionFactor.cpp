@@ -33,8 +33,32 @@ std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(
  */
 gtsam::Vector2* PlanarProjectionFactor1_evaluateError(
     gtsam::PlanarProjectionFactor1* p,  //
-    const gtsam::Pose2* wTb,                             //
+    const gtsam::Pose2* wTb,            //
     gtsam::Matrix* HwTb) {
     return new gtsam::Vector2(p->evaluateError(*wTb, *HwTb));
+}
+
+std::shared_ptr<gtsam::PlanarProjectionFactor3>* PlanarProjectionFactor3(
+    const gtsam::Key poseKey,    //
+    const gtsam::Key offsetKey,  //
+    const gtsam::Key calibKey,   //
+    const gtsam::Point3* landmark,      //
+    const gtsam::Point2* measured,      //
+    const gtsam::SharedNoiseModel* model) {
+    return new std::shared_ptr<gtsam::PlanarProjectionFactor3>(  //
+        new gtsam::PlanarProjectionFactor3(                      //
+            poseKey, offsetKey, calibKey, *landmark, *measured, *model));
+}
+
+gtsam::Vector* PlanarProjectionFactor3_evaluateError(
+    gtsam::PlanarProjectionFactor3* p,  //
+    const gtsam::Pose2* wTb,                   //
+    const gtsam::Pose3* bTc,                   //
+    const gtsam::Cal3DS2* calib,               //
+    gtsam::Matrix* HwTb,                //
+    gtsam::Matrix* HbTc,                //
+    gtsam::Matrix* Hcalib) {
+    return new gtsam::Vector(
+        p->evaluateError(*wTb, *bTc, *calib, *HwTb, *HbTc, *Hcalib));
 }
 }

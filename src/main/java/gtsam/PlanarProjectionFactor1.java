@@ -18,10 +18,10 @@ import org.team100.foreign.Lib;
  * default, throws an exception if that happens, but we don't want that. So the
  * GTSAM library MUST be built with the correct flags.
  * 
- * <pre>
+ * {@snippet :
  * cmake -S . -B build -DGTSAM_THROW_CHEIRALITY_EXCEPTION=OFF -DGTSAM_BUILD_UNSTABLE=OFF
  * cmake --build build --target check
- * </pre>
+ * }
  * 
  * The flag about "unstable" is necessary because the unstable part doesn't work
  * without the cheirality exception (!?)

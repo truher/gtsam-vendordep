@@ -13,10 +13,10 @@ import org.team100.foreign.Lib;
 /**
  * See gtsam/base/Vector.h
  * 
- * <pre>
+ * {@snippet :
  * typedef Eigen::VectorXd Vector;
  * which is Matrix<double, Dynamic, 1>
- * </pre>
+ * }
  */
 public class Vector extends ForeignObject implements VectorSpace<Vector> {
     private static final MethodHandle Vector = Lib.down(
@@ -106,5 +106,16 @@ public class Vector extends ForeignObject implements VectorSpace<Vector> {
     @Override
     public int getDimension() throws Throwable {
         return rows();
+    }
+
+    public boolean equals(double[] x, double tol) throws Throwable {
+        int rows = x.length;
+        if (rows != rows())
+            return false;
+        for (int i = 0; i < rows; ++i) {
+            if (Math.abs(x[i] - at(i)) > tol)
+                return false;
+        }
+        return true;
     }
 }

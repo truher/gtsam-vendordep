@@ -48,4 +48,15 @@ public class Vector2 extends ForeignObject implements VectorSpace<Vector2> {
         return new Vector(new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr)));
     }
 
+    public boolean equals(double[] x, double tol) throws Throwable {
+        int rows = x.length;
+        if (rows != 2)
+            return false;
+        for (int i = 0; i < rows; ++i) {
+            if (Math.abs(x[i] - at(i)) > tol)
+                return false;
+        }
+        return true;
+    }
+
 }

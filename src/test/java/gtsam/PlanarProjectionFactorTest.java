@@ -1,6 +1,7 @@
 package gtsam;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 import java.util.function.DoubleSupplier;
@@ -30,14 +31,13 @@ public class PlanarProjectionFactorTest {
         Pose2 pose = new Pose2(0, 0, 0);
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
-        assertEquals(0, err.at(0), 1e-6);
-        assertEquals(0, err.at(1), 1e-6);
-        assertEquals(0, H.at(0, 0), 1e-6);
-        assertEquals(200, H.at(0, 1), 1e-6);
-        assertEquals(200, H.at(0, 2), 1e-6);
-        assertEquals(0, H.at(1, 0), 1e-6);
-        assertEquals(0, H.at(1, 1), 1e-6);
-        assertEquals(0, H.at(1, 2), 1e-6);
+
+        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+
+        assertTrue(H.equals(new double[][] { //
+                { 0, 200, 200 }, //
+                { 0, 0, 0 } //
+        }, 1e-6));
     }
 
     /**
@@ -59,14 +59,13 @@ public class PlanarProjectionFactorTest {
         Pose2 pose = new Pose2(0, 0, 0);
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
-        assertEquals(0, err.at(0), 1e-6);
-        assertEquals(0, err.at(1), 1e-6);
-        assertEquals(-200, H.at(0, 0), 1e-6);
-        assertEquals(200, H.at(0, 1), 1e-6);
-        assertEquals(400, H.at(0, 2), 1e-6);
-        assertEquals(-200, H.at(1, 0), 1e-6);
-        assertEquals(0, H.at(1, 1), 1e-6);
-        assertEquals(200, H.at(1, 2), 1e-6);
+
+        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+
+        assertTrue(H.equals(new double[][] { //
+                { -200, 200, 400 }, //
+                { -200, 0, 200 } //
+        }, 1e-6));
     }
 
     /**
@@ -88,14 +87,13 @@ public class PlanarProjectionFactorTest {
         Pose2 pose = new Pose2(0, 0, 0);
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
-        assertEquals(0, err.at(0), 1e-6);
-        assertEquals(0, err.at(1), 1e-6);
-        assertEquals(-360, H.at(0, 0), 1e-6);
-        assertEquals(280, H.at(0, 1), 1e-6);
-        assertEquals(640, H.at(0, 2), 1e-6);
-        assertEquals(-360, H.at(1, 0), 1e-6);
-        assertEquals(80, H.at(1, 1), 1e-6);
-        assertEquals(440, H.at(1, 2), 1e-6);
+
+        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+
+        assertTrue(H.equals(new double[][] { //
+                { -360, 280, 640 }, //
+                { -360, 80, 440 } //
+        }, 1e-6));
     }
 
     /**
@@ -133,134 +131,148 @@ public class PlanarProjectionFactorTest {
         }
     }
 
+    /**
+     * Example localization.
+     */
+    @Test
+    void Solve() throws Throwable {
+
+        SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        // pose model is wide, so the solver finds the right answer.
+        SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(10, 10, 10));
+
+        // landmarks
+        Point3 l0 = new Point3(1, 0.1, 1);
+        Point3 l1 = new Point3(1, -0.1, 1);
+
+        // camera pixels
+        Point2 p0 = new Point2(180, 0);
+        Point2 p1 = new Point2(220, 0);
+
+        // body
+        Pose2 x0 = new Pose2(0, 0, 0);
+
+        // camera z looking at +x with (xy) antiparallel to (yz)
+        Pose3 c0 = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0), //
+                new Point3(0, 0, 0));
+        Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
+
+        NonlinearFactorGraph graph = new NonlinearFactorGraph();
+        graph.add(PlanarProjectionFactor1.newPlanarProjectionFactor1(Key.X(0), l0, p0, c0, calib, pxModel));
+        graph.add(PlanarProjectionFactor1.newPlanarProjectionFactor1(Key.X(0), l1, p1, c0, calib, pxModel));
+        graph.add(PriorFactor.PriorFactorPose2(Key.X(0), x0, xNoise));
+
+        Values initialEstimate = new Values();
+        initialEstimate.insert(Key.X(0), x0);
+
+        // run the optimizer
+        LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer(graph, initialEstimate);
+        Values result = optimizer.optimize();
+
+        // verify that the optimizer found the right pose.
+        Pose2 xhat = result.atPose2(Key.X(0));
+        assertEquals(0, xhat.x(), 2e-3);
+        assertEquals(0, xhat.y(), 2e-3);
+        assertEquals(0, xhat.theta(), 2e-3);
+
+        // covariance
+        Marginals marginals = new Marginals(graph, result);
+        Matrix cov = marginals.marginalCovariance(Key.X(0));
+
+        assertTrue(cov.equals(new double[][] { //
+                { 0.000012, 0.000000, 0.000000 }, //
+                { 0.000000, 0.001287, -0.001262 }, //
+                { 0.000000, -0.001262, 0.001250 } //
+        }, 1e-6));
+
+        // pose stddev
+        Vector sigma = cov.diagonal_cwiseSqrt();
+
+        assertTrue(sigma.equals(new double[] { 0.0035, 0.0359, 0.0354 }, 1e-4));
+
+    }
+
+    /**
+     * Example: center projection and Jacobian
+     */
+    @Test
+    void Error3_1() throws Throwable {
+        Point3 landmark = new Point3(1, 0, 0);
+        Point2 measured = new Point2(200, 200);
+        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
+                Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
+        Pose2 pose = new Pose2(0, 0, 0);
+        Pose3 offset = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0),
+                new Point3(0, 0, 0));
+        Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
+        Matrix H3 = new Matrix();
+        Vector err = factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
+
+        assertTrue(err.equals(new double[] { 0, 0 }, 1e-6));
+        assertTrue(H1.equals(new double[][] { //
+                { 0, 200, 200 }, //
+                { 0, 0, 0 } //
+        }, 1e-6));
+
+        assertTrue(H2.equals(new double[][] { //
+                { 0, -200, 0, -200, 0, 0 }, //
+                { 200, 0, 0, 0, -200, 0 } //
+        }, 1e-6));
+
+        assertTrue(H3.equals(new double[][] { //
+                { 0, 0, 0, 1, 0, 0, 0, 0, 0 }, //
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 } //
+        }, 1e-6));
+    }
+
+    @Test
+    void Error3_2() throws Throwable {
+        Point3 landmark = new Point3(1, 1, 1);
+        Point2 measured = new Point2(0, 0);
+        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
+                Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
+        Pose2 pose = new Pose2(0, 0, 0);
+        Pose3 offset = new Pose3(
+                new Rot3(0, 0, 1, //
+                        -1, 0, 0, //
+                        0, -1, 0),
+                new Point3(0, 0, 0));
+        Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
+        Matrix H3 = new Matrix();
+        Vector actual = factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
+
+        assertTrue(actual.equals(new double[] { 0.0, 0.0 }, 1e-6));
+
+        assertTrue(H1.equals(new double[][] { //
+                { -200, 200, 400 }, //
+                { -200, 0, 200 } //
+        }, 1e-6));
+
+        assertTrue(H2.equals(new double[][] { //
+                { 200, -400, -200, -200, 0, -200 }, //
+                { 400, -200, 200, 0, -200, -200 } //
+        }, 1e-6));
+
+        assertTrue(H3.equals(new double[][] { //
+                { -1, 0, -1, 1, 0, -400, -800, 400, 800 }, //
+                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } //
+        }, 1e-6));
+    }
+
     /*
      * *************************************************************************
-     *
-     *
-     *
-     *
-     * @Test
-     * void Solve() {
-     * // Example localization
-     * 
-     * SharedNoiseModel pxModel = noiseModel::Diagonal::Sigmas(Vector2(1, 1));
-     * // pose model is wide, so the solver finds the right answer.
-     * SharedNoiseModel xNoise = noiseModel::Diagonal::Sigmas(Vector3(10, 10, 10));
-     * 
-     * // landmarks
-     * Point3 l0 = new Point3(1, 0.1, 1);
-     * Point3 l1 = new Point3(1, -0.1, 1);
-     * 
-     * // camera pixels
-     * Point2 p0 = new Point2(180, 0);
-     * Point2 p1 = new Point2(220, 0);
-     * 
-     * // body
-     * Pose2 x0 = new Pose2(0, 0, 0);
-     * 
-     * // camera z looking at +x with (xy) antiparallel to (yz)
-     * Pose3 c0 = new Pose3(
-     * new Rot3(0, 0, 1, //
-     * -1, 0, 0, //
-     * 0, -1, 0), //
-     * Vector3(0, 0, 0));
-     * Cal3DS2 calib(200, 200, 0, 200, 200, 0, 0);
-     * 
-     * NonlinearFactorGraph graph;
-     * graph.add(PlanarProjectionFactor1(X(0), l0, p0, c0, calib, pxModel));
-     * graph.add(PlanarProjectionFactor1(X(0), l1, p1, c0, calib, pxModel));
-     * graph.add(PriorFactor<Pose2>(X(0), x0, xNoise));
-     * 
-     * Values initialEstimate;
-     * initialEstimate.insert(X(0), x0);
-     * 
-     * // run the optimizer
-     * LevenbergMarquardtOptimizer optimizer(graph, initialEstimate);
-     * Values result = optimizer.optimize();
-     * 
-     * // verify that the optimizer found the right pose.
-     * CHECK(assert_equal(x0, result.at<Pose2>(X(0)), 2e-3));
-     * 
-     * // covariance
-     * Marginals marginals(graph, result);
-     * Matrix cov = marginals.marginalCovariance(X(0));
-     * CHECK(assert_equal((Matrix33() << //
-     * 0.000012, 0.000000, 0.000000, //
-     * 0.000000, 0.001287, -.001262, //
-     * 0.000000, -.001262, 0.001250).finished(), cov, 3e-6));
-     * 
-     * // pose stddev
-     * Vector3 sigma = cov.diagonal().cwiseSqrt();
-     * CHECK(assert_equal((Vector3() << //
-     * 0.0035,
-     * 0.0359,
-     * 0.0354
-     * ).finished(), sigma, 1e-4));
-     * 
-     * }
-     * 
-     * @Test
-     * void Error3_1() {
-     * // Example: center projection and Jacobian
-     * Point3 landmark = new Point3(1, 0, 0);
-     * Point2 measured = new Point2(200, 200);
-     * SharedNoiseModel model = SharedNoiseModel.Sigmas(Vector2(1, 1));
-     * PlanarProjectionFactor3 factor =
-     * PlanarProjectionFactor3.newPlanarProjectionFactor3(X(0), C(0), K(0),
-     * landmark, measured, model);
-     * Pose2 pose = new Pose2(0, 0, 0);
-     * Pose3 offset = new Pose3(
-     * Rot3(0, 0, 1,//
-     * -1, 0, 0, //
-     * 0, -1, 0),
-     * Vector3(0, 0, 0)
-     * );
-     * Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
-     * Matrix H1;
-     * Matrix H2;
-     * Matrix H3;
-     * CHECK(assert_equal(Vector2(0, 0), factor.evaluateError(pose, offset, calib,
-     * H1, H2, H3), 1e-6));
-     * CHECK(assert_equal((Matrix23() <<//
-     * 0, 200, 200,//
-     * 0, 0, 0).finished(), H1, 1e-6));
-     * CHECK(assert_equal((Matrix26() <<//
-     * 0, -200, 0, -200, 0, 0,//
-     * 200, -0, 0, 0, -200, 0).finished(), H2, 1e-6));
-     * CHECK(assert_equal((Matrix29() <<//
-     * 0, 0, 0, 1, 0, 0, 0, 0, 0,//
-     * 0, 0, 0, 0, 1, 0, 0, 0, 0).finished(), H3, 1e-6));
-     * }
-     * 
-     * @Test
-     * void Error3_2() {
-     * Point3 landmark = new Point3(1, 1, 1);
-     * Point2 measured = new Point2(0, 0);
-     * SharedNoiseModel model = SharedNoiseModel.Sigmas(Vector2(1, 1));
-     * PlanarProjectionFactor3 factor(X(0), C(0), K(0), landmark, measured, model);
-     * Pose2 pose(0, 0, 0);
-     * Pose3 offset(
-     * Rot3(0, 0, 1,//
-     * -1, 0, 0, //
-     * 0, -1, 0),
-     * Vector3(0, 0, 0)
-     * );
-     * Cal3DS2 calib(200, 200, 0, 200, 200, 0, 0);
-     * Matrix H1;
-     * Matrix H2;
-     * Matrix H3;
-     * gtsam::Vector actual = factor.evaluateError(pose, offset, calib, H1, H2, H3);
-     * CHECK(assert_equal(Vector2(0, 0), actual));
-     * CHECK(assert_equal((Matrix23() <<//
-     * -200, 200, 400,//
-     * -200, 0, 200).finished(), H1, 1e-6));
-     * CHECK(assert_equal((Matrix26() <<//
-     * 200, -400, -200, -200, 0, -200,//
-     * 400, -200, 200, 0, -200, -200).finished(), H2, 1e-6));
-     * CHECK(assert_equal((Matrix29() <<//
-     * -1, 0, -1, 1, 0, -400, -800, 400, 800,//
-     * 0, -1, 0, 0, 1, -400, -800, 800, 400).finished(), H3, 1e-6));
-     * }
      * 
      * @Test
      * void Error3_3() {

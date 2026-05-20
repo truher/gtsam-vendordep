@@ -111,7 +111,23 @@ public class Matrix extends ForeignObject {
         } catch (Throwable e) {
             return false;
         }
+    }
 
+    /** Row-major */
+    public boolean equals(double[][] x, double tol) throws Throwable {
+        int rows = x.length;
+        if (rows != rows())
+            return false;
+        for (int i = 0; i < rows; ++i) {
+            int cols = x[i].length;
+            if (cols != cols())
+                return false;
+            for (int j = 0; j < cols; ++j) {
+                if (Math.abs(x[i][j] - at(i, j)) > tol)
+                    return false;
+            }
+        }
+        return true;
     }
 
 }

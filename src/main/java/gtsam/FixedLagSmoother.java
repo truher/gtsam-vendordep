@@ -12,14 +12,15 @@ import org.team100.foreign.Lib;
 
 public class FixedLagSmoother {
     /**
-     * <pre>
+     * {@snippet :
      * struct Result {
      *   size_t iterations; ///< The number of optimizer iterations performed
      *   size_t intermediateSteps; ///< The number of intermediate steps performed within the optimization. For L-M, this is the number of lambdas tried.
      *   size_t nonlinearVariables; ///< The number of variables that can be relinearized
      *   size_t linearVariables; ///< The number of variables that must keep a constant linearization point
      *   double error;
-     * </pre>
+     * }
+     * }
      */
     public static class Result extends ForeignObject {
         private static final MethodHandle Result_delete = Lib.downVoid(
@@ -31,8 +32,10 @@ public class FixedLagSmoother {
     }
 
     /**
+     * {@snippet :
      * in gtsam/nonlinear/FixedLagSmoother.h:
      * typedef std::map<Key, double> KeyTimestampMap;
+     * }
      */
     public static class KeyTimestampMap extends ForeignObject {
         private static final MethodHandle KeyTimestampMap = Lib.down(
