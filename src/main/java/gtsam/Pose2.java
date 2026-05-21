@@ -15,8 +15,12 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
             "Pose2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Pose2_delete = Lib.downVoid(
             "Pose2_delete", ADDRESS);
+    private static final MethodHandle Pose2DoublePoint2 = Lib.down(
+            "Pose2DoublePoint2", ADDRESS, JAVA_DOUBLE, ADDRESS);
     private static final MethodHandle Pose2Rot2Point2 = Lib.down(
             "Pose2Rot2Point2", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2Matrix3 = Lib.down(
+            "Pose2Matrix3", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_retract = Lib.down(
             "Pose2_retract", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_x = Lib.down(
@@ -45,6 +49,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
             "Pose2_print", ADDRESS);
     private static final MethodHandle Pose2_equals = Lib.down(
             "Pose2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+    private static final MethodHandle Pose2_compose = Lib.down(
+            "Pose2_compose", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_matrix = Lib.down(
+            "Pose2_matrix", ADDRESS, ADDRESS);
 
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
@@ -58,9 +66,17 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
         this((MemorySegment) Pose2.invokeExact(x, y, theta));
     }
 
+    public Pose2(double theta, Point2 t) throws Throwable {
+        this((MemorySegment) Pose2DoublePoint2.invokeExact(theta, t.ptr));
+    }
+
     /** Copies the arguments. */
     public Pose2(Rot2 r, Point2 t) throws Throwable {
         this((MemorySegment) Pose2Rot2Point2.invokeExact(r.ptr, t.ptr));
+    }
+
+    public Pose2(Matrix3 T) throws Throwable {
+        this((MemorySegment) Pose2Matrix3.invokeExact(T.ptr));
     }
 
     @Override
@@ -88,8 +104,9 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
         return new Rot2((MemorySegment) Pose2_r.invokeExact(ptr));
     }
 
-    public TangentVector localCoordinates(Pose2 g) throws Throwable {
-        return new TangentVector(
+    // maybe this should be Vector3
+    public Vector localCoordinates(Pose2 g) throws Throwable {
+        return new Vector(
                 (MemorySegment) Pose2_localCoordinates.invokeExact(ptr, g.ptr));
     }
 
@@ -136,6 +153,14 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
 
     public boolean equals(Pose2 other, double tol) throws Throwable {
         return (boolean) Pose2_equals.invokeExact(ptr, other.ptr, tol);
+    }
+
+    public Pose2 compose(Pose2 other) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_compose.invokeExact(ptr, other.ptr));
+    }
+
+    public Matrix3 matrix() throws Throwable {
+        return new Matrix3((MemorySegment) Pose2_matrix.invokeExact(ptr));
     }
 
 }

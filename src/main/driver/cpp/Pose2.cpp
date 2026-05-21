@@ -1,4 +1,5 @@
 #include <gtsam/base/Lie.h>
+#include <gtsam/base/Matrix.h>
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose2.h>
 
@@ -9,8 +10,14 @@ gtsam::Pose2* Pose2(double x, double y, double theta) {
 void Pose2_delete(gtsam::Pose2* p) {
     delete p;
 }
-gtsam::Pose2* Pose2Rot2Point2(gtsam::Rot2* r, gtsam::Point2* t) {
+gtsam::Pose2* Pose2DoublePoint2(double theta, const gtsam::Point2* t) {
+    return new gtsam::Pose2(theta, *t);
+}
+gtsam::Pose2* Pose2Rot2Point2(const gtsam::Rot2* r, const gtsam::Point2* t) {
     return new gtsam::Pose2(*r, *t);
+}
+gtsam::Pose2* Pose2Matrix3(const gtsam::Matrix3* T) {
+    return new gtsam::Pose2((gtsam::Matrix)(*T));
 }
 // TODO: make this Vector3 somehow
 gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector* v) {
@@ -31,9 +38,10 @@ gtsam::Point2* Pose2_t(const gtsam::Pose2* p) {
 gtsam::Rot2* Pose2_r(const gtsam::Pose2* p) {
     return new gtsam::Rot2(p->r());
 }
-gtsam::Pose2::TangentVector* Pose2_localCoordinates(const gtsam::Pose2* p,
-                                                    const gtsam::Pose2* g) {
-    return new gtsam::Pose2::TangentVector(p->localCoordinates(*g));
+// maybe this should be Vector3
+gtsam::Vector* Pose2_localCoordinates(const gtsam::Pose2* p,
+                                      const gtsam::Pose2* g) {
+    return new gtsam::Vector(p->localCoordinates(*g));
 }
 gtsam::Pose2* Pose2_between(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2(a->between(*b));
@@ -56,5 +64,11 @@ void Pose2_print(const gtsam::Pose2* p) {
 }
 bool Pose2_equals(const gtsam::Pose2* a, const gtsam::Pose2* b, double tol) {
     return a->equals(*b, tol);
+}
+gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
+    return new gtsam::Pose2((*a) * (*b));
+}
+gtsam::Matrix3* Pose2_matrix(const gtsam::Pose2* p) {
+    return new gtsam::Matrix3(p->matrix());
 }
 }
