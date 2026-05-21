@@ -10,4 +10,10 @@ public interface Manifold<T extends Manifold<T>> {
      */
     Vector local(T other) throws Throwable;
 
+    /**
+     * Manifold point that is v away from this.
+     * For Lie group, this is Expmap.
+     * For vector space, this is just (this + v)
+     */
+    <V extends Vector> T retract(V v) throws Throwable;
 }

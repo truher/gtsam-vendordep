@@ -21,9 +21,8 @@ public class NumericalDerivative {
         Y apply(X1 x1, X2 x2, X3 x3) throws Throwable;
     }
 
-    public static <Y extends Manifold<Y>, X extends Manifold<X> & LieGroup<X>> Matrix numericalDerivative11(
-            ThrowingFunction<X, Y> h, X x) throws Throwable {
-        double delta = 1e-5;
+    public static <Y extends Manifold<Y>, X extends Manifold<X>> Matrix numericalDerivative11(
+            ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
         Y hx = h.apply(x);
         int m = hx.dimension();
         // using Eigen here would be a pain
@@ -42,34 +41,34 @@ public class NumericalDerivative {
         return H;
     }
 
-    public static <Y extends Manifold<Y>, X1 extends Manifold<X1> & LieGroup<X1>, X2 extends Manifold<X2> & LieGroup<X2>> Matrix numericalDerivative21(
-            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2)
+    public static <Y extends Manifold<Y>, X1 extends Manifold<X1>, X2 extends Manifold<X2>> Matrix numericalDerivative21(
+            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2, double delta)
             throws Throwable {
-        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2), x1);
+        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2), x1, delta);
     }
 
-    public static <Y extends Manifold<Y>, X1 extends Manifold<X1> & LieGroup<X1>, X2 extends Manifold<X2> & LieGroup<X2>> Matrix numericalDerivative22(
-            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2)
+    public static <Y extends Manifold<Y>, X1 extends Manifold<X1>, X2 extends Manifold<X2>> Matrix numericalDerivative22(
+            ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2, double delta)
             throws Throwable {
-        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x), x2);
+        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x), x2, delta);
     }
 
-    public static <Y extends Manifold<Y>, X1 extends Manifold<X1> & LieGroup<X1>, X2 extends Manifold<X2> & LieGroup<X2>, X3 extends Manifold<X3> & LieGroup<X3>> Matrix numericalDerivative31(
-            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+    public static <Y extends Manifold<Y>, X1 extends Manifold<X1>, X2 extends Manifold<X2>, X3 extends Manifold<X3>> Matrix numericalDerivative31(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
             throws Throwable {
-        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2, x3), x1);
+        return NumericalDerivative.<Y, X1>numericalDerivative11((X1 x) -> h.apply(x, x2, x3), x1, delta);
     }
 
-    public static <Y extends Manifold<Y>, X1 extends Manifold<X1> & LieGroup<X1>, X2 extends Manifold<X2> & LieGroup<X2>, X3 extends Manifold<X3> & LieGroup<X3>> Matrix numericalDerivative32(
-            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+    public static <Y extends Manifold<Y>, X1 extends Manifold<X1>, X2 extends Manifold<X2>, X3 extends Manifold<X3>> Matrix numericalDerivative32(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
             throws Throwable {
-        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x, x3), x2);
+        return NumericalDerivative.<Y, X2>numericalDerivative11((X2 x) -> h.apply(x1, x, x3), x2, delta);
     }
 
-    public static <Y extends Manifold<Y>, X1 extends Manifold<X1> & LieGroup<X1>, X2 extends Manifold<X2> & LieGroup<X2>, X3 extends Manifold<X3> & LieGroup<X3>> Matrix numericalDerivative33(
-            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3)
+    public static <Y extends Manifold<Y>, X1 extends Manifold<X1>, X2 extends Manifold<X2>, X3 extends Manifold<X3>> Matrix numericalDerivative33(
+            ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
             throws Throwable {
-        return NumericalDerivative.<Y, X3>numericalDerivative11((X3 x) -> h.apply(x1, x2, x), x3);
+        return NumericalDerivative.<Y, X3>numericalDerivative11((X3 x) -> h.apply(x1, x2, x), x3, delta);
 
     }
 

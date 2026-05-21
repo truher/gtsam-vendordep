@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Cal3DS2 extends ForeignObject implements LieGroup<Cal3DS2>, Manifold<Cal3DS2> {
+public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2> {
     private static final MethodHandle Cal3DS2 = Lib.down(
             "Cal3DS2", ADDRESS,
             JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
@@ -61,7 +61,7 @@ public class Cal3DS2 extends ForeignObject implements LieGroup<Cal3DS2>, Manifol
     }
 
     @Override
-    public <T extends ForeignObject> Cal3DS2 retract(T v) throws Throwable {
+    public <T extends Vector> Cal3DS2 retract(T v) throws Throwable {
         return new Cal3DS2((MemorySegment) Cal3DS2_retract.invokeExact(ptr, v.ptr()));
     }
 

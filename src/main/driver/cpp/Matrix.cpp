@@ -39,4 +39,7 @@ gtsam::Matrix* Matrix_compose(const gtsam::Matrix* a, const gtsam::Matrix* b) {
 gtsam::Matrix* Matrix_transpose(const gtsam::Matrix* m) {
     return new gtsam::Matrix(m->transpose());
 }
+bool Matrix_equals(const gtsam::Matrix* a, const gtsam::Matrix* b, double tol) {
+    return gtsam::equal_with_abs_tol(*a, *b, tol);
+}
 }

@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -27,6 +28,8 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
             "Vector_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
     private static final MethodHandle Vector_minus = Lib.down(
             "Vector_minus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector_plus = Lib.down(
+            "Vector_plus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector_times = Lib.down(
             "Vector_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Vector_fromTangentVector = Lib.down(
@@ -39,6 +42,8 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
             "Vector_rows", JAVA_INT, ADDRESS);
     private static final MethodHandle Vector_at = Lib.down(
             "Vector_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
+    private static final MethodHandle Vector_equals = Lib.down(
+            "Vector_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public Vector(MemorySegment p) {
         super(p, Vector_delete);
@@ -75,6 +80,10 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
 
     public Vector minus(Vector other) throws Throwable {
         return new Vector((MemorySegment) Vector_minus.invokeExact(ptr, other.ptr));
+    }
+
+    public Vector plus(Vector other) throws Throwable {
+        return new Vector((MemorySegment) Vector_plus.invokeExact(ptr, other.ptr));
     }
 
     public Vector times(double a) throws Throwable {
@@ -120,5 +129,14 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
                 return false;
         }
         return true;
+    }
+
+    public boolean equals(Vector other, double tol) throws Throwable {
+        return (boolean) Vector_equals.invokeExact(ptr, other.ptr, tol);
+    }
+
+    @Override
+    public <V extends Vector> Vector retract(V v) throws Throwable {
+        return plus(v);
     }
 }

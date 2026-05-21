@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose2 extends ForeignObject implements LieGroup<Pose2>, Manifold<Pose2> {
+public class Pose2 extends ForeignObject implements Manifold<Pose2> {
     private static final MethodHandle Pose2 = Lib.down(
             "Pose2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Pose2_delete = Lib.downVoid(
@@ -82,11 +82,11 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2>, Manifold<Po
     }
 
     @Override
-    public <T extends ForeignObject> Pose2 retract(T v) throws Throwable {
+    public <T extends Vector> Pose2 retract(T v) throws Throwable {
         return new Pose2((MemorySegment) Pose2_retract.invokeExact(ptr, v.ptr()));
     }
 
-    public static Pose2 Retract(Pose2 origin, Vector3 v, Matrix Horigin, Matrix Hv) throws Throwable {
+    public static Pose2 Retract(Pose2 origin, Vector v, Matrix Horigin, Matrix Hv) throws Throwable {
         return new Pose2((MemorySegment) Pose2_Retract.invokeExact(origin.ptr, v.ptr, Horigin.ptr, Hv.ptr));
     }
 

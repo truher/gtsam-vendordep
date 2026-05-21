@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose3 extends ForeignObject implements LieGroup<Pose3>, Manifold<Pose3> {
+public class Pose3 extends ForeignObject implements Manifold<Pose3> {
     private static final MethodHandle Pose3 = Lib.down(
             "Pose3", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_delete = Lib.downVoid(
@@ -65,7 +65,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3>, Manifold<Po
     }
 
     @Override
-    public <T extends ForeignObject> Pose3 retract(T v) throws Throwable {
+    public <T extends Vector> Pose3 retract(T v) throws Throwable {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
     }
 

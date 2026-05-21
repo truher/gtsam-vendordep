@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -35,6 +36,8 @@ public class Matrix extends ForeignObject {
             "Matrix_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Matrix_transpose = Lib.down(
             "Matrix_transpose", ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_equals = Lib.down(
+            "Matrix_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public Matrix(MemorySegment p) {
         super(p, Matrix_delete);
@@ -134,6 +137,10 @@ public class Matrix extends ForeignObject {
             }
         }
         return true;
+    }
+
+        public boolean equals(Matrix other, double tol) throws Throwable {
+        return (boolean) Matrix_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     public Matrix inverse() throws Throwable {

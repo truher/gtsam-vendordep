@@ -17,6 +17,8 @@ public class Vector2 extends ForeignObject implements Manifold<Vector2> {
             "Vector2_delete", ADDRESS);
     private static final MethodHandle Vector2_minus = Lib.down(
             "Vector2_minus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector2_plus = Lib.down(
+            "Vector2_plus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector2_at = Lib.down(
             "Vector2_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
     private static final MethodHandle Vector2_print = Lib.downVoid(
@@ -49,6 +51,10 @@ public class Vector2 extends ForeignObject implements Manifold<Vector2> {
         return new Vector(new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr)));
     }
 
+    public Vector2 plus(Vector2 other) throws Throwable {
+        return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, other.ptr));
+    }
+
     public boolean equals(double[] x, double tol) throws Throwable {
         int rows = x.length;
         if (rows != 2)
@@ -58,6 +64,13 @@ public class Vector2 extends ForeignObject implements Manifold<Vector2> {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public <V extends Vector> Vector2 retract(V v) throws Throwable {
+        // TODO: better conversion?
+        Vector2 v2 = new Vector2(v.at(0), v.at(1));
+        return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, v2.ptr));
     }
 
 }

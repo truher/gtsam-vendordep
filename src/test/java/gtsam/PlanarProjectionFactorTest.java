@@ -126,7 +126,7 @@ public class PlanarProjectionFactorTest {
             factor.get().evaluateError(pose, H1);
             var expectedH1 = NumericalDerivative.<Vector2, Pose2>numericalDerivative11(
                     (p) -> factor.get().evaluateError(p, new Matrix()),
-                    pose);
+                    pose, 1e-5);
             assertEquals(expectedH1, H1);
         }
     }
@@ -339,17 +339,17 @@ public class PlanarProjectionFactorTest {
             Matrix expectedH1 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative31(
                     (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
                             new Matrix()),
-                    pose, offset, calib);
+                    pose, offset, calib, 1e-5);
 
             Matrix expectedH2 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative32(
                     (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
                             new Matrix()),
-                    pose, offset, calib);
+                    pose, offset, calib, 1e-5);
 
             Matrix expectedH3 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative33(
                     (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
                             new Matrix()),
-                    pose, offset, calib);
+                    pose, offset, calib, 1e-5);
 
             assertEquals(expectedH1, H1);
             assertEquals(expectedH2, H2);
