@@ -23,6 +23,13 @@ gtsam::Pose2* Pose2Matrix3(const gtsam::Matrix3* T) {
 gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector* v) {
     return new gtsam::Pose2(p->retract(*v));
 }
+/** This is from the LieGroup trait, see gtsam/base/Lie.h */
+gtsam::Pose2* Pose2_Retract(const gtsam::Pose2* origin,  //
+                            const gtsam::Vector3* v,      //
+                            gtsam::Matrix* Horigin,      //
+                            gtsam::Matrix* Hv) {
+    return new gtsam::Pose2(gtsam::Pose2::Retract(*origin, *v, *Horigin, *Hv));
+}
 double Pose2_x(const gtsam::Pose2* p) {
     return p->x();
 }

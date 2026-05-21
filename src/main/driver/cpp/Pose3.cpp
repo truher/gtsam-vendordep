@@ -21,6 +21,10 @@ gtsam::Pose3* Pose3_compose(const gtsam::Pose3* p, const gtsam::Pose3* p2) {
 gtsam::Pose3* Pose3_retract(const gtsam::Pose3* p, const gtsam::Vector* v) {
     return new gtsam::Pose3(p->retract(*v));
 }
+gtsam::Vector* Pose3_localCoordinates(const gtsam::Pose3* a,
+                                      const gtsam::Pose3* b) {
+    return new gtsam::Vector(a->localCoordinates(*b));
+}
 void Pose3_print(const gtsam::Pose3* p) {
     p->print();
 }

@@ -20,6 +20,10 @@ gtsam::Vector* Vector_fromTangentVector(gtsam::Pose2::TangentVector* v) {
 gtsam::Vector* Vector_fromVector2(gtsam::Vector2* v) {
     return new gtsam::Vector(*v);
 }
+// TODO: there must be some vectorspace trait i can use here?
+gtsam::Vector* Vector_Local(gtsam::Vector* a, gtsam::Vector* b) {
+    return new gtsam::Vector((*b) - (*a))
+}
 void Vector_set(gtsam::Vector* v, int i, double val) {
     (*v)(i) = val;
 }

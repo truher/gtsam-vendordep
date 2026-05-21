@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Vector2 extends ForeignObject implements VectorSpace<Vector2> {
+public class Vector2 extends ForeignObject implements Manifold<Vector2> {
     private static final MethodHandle Vector2 = Lib.down(
             "Vector2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Vector2_delete = Lib.downVoid(
@@ -39,10 +39,11 @@ public class Vector2 extends ForeignObject implements VectorSpace<Vector2> {
     }
 
     @Override
-    public int getDimension() {
+    public int dimension() {
         return 2;
     }
 
+    // TODO: maybe make a real "local" ?
     @Override
     public Vector local(Vector2 other) throws Throwable {
         return new Vector(new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr)));

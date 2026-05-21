@@ -18,7 +18,7 @@ import org.team100.foreign.Lib;
  * which is Matrix<double, Dynamic, 1>
  * }
  */
-public class Vector extends ForeignObject implements VectorSpace<Vector> {
+public class Vector extends ForeignObject implements Manifold<Vector> {
     private static final MethodHandle Vector = Lib.down(
             "Vector", ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_delete = Lib.downVoid(
@@ -33,6 +33,8 @@ public class Vector extends ForeignObject implements VectorSpace<Vector> {
             "Vector_fromTangentVector", ADDRESS, ADDRESS);
     private static final MethodHandle Vector_fromVector2 = Lib.down(
             "Vector_fromVector2", ADDRESS, ADDRESS);
+    private static final MethodHandle Vector_Local = Lib.down(
+            "Vector_Local", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector_rows = Lib.down(
             "Vector_rows", JAVA_INT, ADDRESS);
     private static final MethodHandle Vector_at = Lib.down(
@@ -59,6 +61,12 @@ public class Vector extends ForeignObject implements VectorSpace<Vector> {
         for (int i = 0; i < vals.length; ++i) {
             set(i, vals[i]);
         }
+    }
+
+    // TODO: maybe use "minus" insteaad?
+    @Override
+    public Vector local(Vector other) throws Throwable {
+        return new Vector((MemorySegment) Vector_Local.invokeExact(ptr, other.ptr));
     }
 
     public void set(int i, double val) throws Throwable {
@@ -99,12 +107,7 @@ public class Vector extends ForeignObject implements VectorSpace<Vector> {
     }
 
     @Override
-    public Vector local(Vector other) throws Throwable {
-        return new Vector((MemorySegment) Vector_minus.invokeExact(other.ptr, ptr));
-    }
-
-    @Override
-    public int getDimension() throws Throwable {
+    public int dimension() throws Throwable {
         return rows();
     }
 

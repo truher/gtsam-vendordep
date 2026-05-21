@@ -54,17 +54,17 @@ public class Pose2Test {
     }
 
     @Test
-    void testRetractJacobian() {
-        // Pose2 pose(M_PI / 2.0, Point2(1, 2));
-        // Vector3 v(0.01, -0.015, 0.99);
+    void testRetractJacobian() throws Throwable {
+        Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
+        Vector3 v = new Vector3(0.01, -0.015, 0.99);
 
-        // Matrix3 actualH;
-        // traits<Pose2>::Retract(pose, v, {}, &actualH);
+        Matrix actualH = new Matrix();
+        Pose2.Retract(pose, v, new Matrix(), actualH);
 
         // auto retract_from_pose = [&](const Vector3& delta) { return
         // pose.retract(delta); };
-        // Matrix3 expectedH = numericalDerivative11<Pose2, Vector3,
-        // 3>(retract_from_pose, v, 1e-6);
+        Matrix3 expectedH = NumericalDerivative.<Pose2, Vector>numericalDerivative11(
+            (Vector delta) -> pose.retract(delta), v, 1e-6);
 
         // EXPECT(assert_equal(expectedH, actualH, 1e-5));
     }

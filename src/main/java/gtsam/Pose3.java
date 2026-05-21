@@ -10,13 +10,15 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose3 extends ForeignObject implements LieGroup<Pose3> {
+public class Pose3 extends ForeignObject implements LieGroup<Pose3>, Manifold<Pose3> {
     private static final MethodHandle Pose3 = Lib.down(
             "Pose3", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_delete = Lib.downVoid(
             "Pose2_delete", ADDRESS);
     private static final MethodHandle Pose3_Pose2 = Lib.down(
             "Pose3_Pose2", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose3_localCoordinates = Lib.down(
+            "Pose3_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_compose = Lib.down(
             "Pose3_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_retract = Lib.down(
@@ -43,6 +45,16 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3> {
         this((MemorySegment) Pose3_Pose2.invokeExact(p.ptr));
     }
 
+    public Vector localCoordinates(Pose3 g) throws Throwable {
+        return new Vector(
+                (MemorySegment) Pose3_localCoordinates.invokeExact(ptr, g.ptr));
+    }
+
+    @Override
+    public Vector local(Pose3 other) throws Throwable {
+        return localCoordinates(other);
+    }
+
     public Pose3 compose(Pose3 p2) throws Throwable {
         return new Pose3((MemorySegment) Pose3_compose.invokeExact(ptr, p2.ptr));
     }
@@ -53,11 +65,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3> {
     }
 
     @Override
-    public Pose3 retract(VectorSpace<?> v) throws Throwable {
+    public <T extends ForeignObject> Pose3 retract(T v) throws Throwable {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
     }
 
-    @Override
     public void print() throws Throwable {
         Pose3_print.invokeExact(ptr);
     }
