@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose2 extends ForeignObject implements Manifold<Pose2> {
+public class Pose2 extends ForeignObject implements LieGroup<Pose2> {
     private static final MethodHandle Pose2 = Lib.down(
             "Pose2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Pose2_delete = Lib.downVoid(
@@ -65,8 +65,38 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
             "Pose2_expmap_default", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_transformTo = Lib.down(
             "Pose2_transformTo", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_transformFrom = Lib.down(
+            "Pose2_transformFrom", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_ExpmapDerivative = Lib.down(
             "Pose2_ExpmapDerivative", ADDRESS, ADDRESS);
+
+    public static class Pose2Traits implements LieGroup.Traits<Pose2> {
+
+        @Override
+        public Pose2 Identity() throws Throwable {
+            return new Pose2();
+        }
+
+        @Override
+        public Pose2 Expmap(Vector xi) throws Throwable {
+            // TODO: fix Jacobian.
+            return new Pose2((MemorySegment) Pose2_Expmap.invokeExact(xi.ptr, new Matrix().ptr));
+        }
+
+        @Override
+        public Vector Logmap(Pose2 g) throws Throwable {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'Logmap'");
+        }
+
+    }
+
+    public static final Pose2Traits traits = new Pose2Traits();
+
+    @Override
+    public Pose2Traits traits() {
+        return traits;
+    }
 
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
@@ -98,7 +128,7 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
     }
 
     @Override
-    public <T extends Vector> Pose2 retract(T v) throws Throwable {
+    public Pose2 retract(Vector v) throws Throwable {
         return new Pose2((MemorySegment) Pose2_retract.invokeExact(ptr, v.ptr()));
     }
 
@@ -137,10 +167,12 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
         return localCoordinates(other);
     }
 
+    @Override
     public Pose2 between(Pose2 other) throws Throwable {
         return new Pose2((MemorySegment) Pose2_between.invokeExact(ptr, other.ptr));
     }
 
+    @Override
     public Pose2 inverse() throws Throwable {
         return new Pose2((MemorySegment) Pose2_inverse.invokeExact(ptr));
     }
@@ -204,6 +236,11 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
 
     public Point2 transformTo(Point2 point, Matrix Dpose, Matrix Dpoint) throws Throwable {
         return new Point2((MemorySegment) Pose2_transformTo.invokeExact(
+                ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
+    }
+
+    public Point2 transformFrom(Point2 point, Matrix Dpose, Matrix Dpoint) throws Throwable {
+        return new Point2((MemorySegment) Pose2_transformFrom.invokeExact(
                 ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
     }
 

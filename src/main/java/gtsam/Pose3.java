@@ -32,6 +32,17 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3> {
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
             "Pose3_AdjointMap", ADDRESS, ADDRESS);
 
+    public static class Traits implements Manifold.Traits<Pose3> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
     public Pose3(MemorySegment p) {
         super(p, Pose3_delete);
     }
@@ -65,7 +76,7 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3> {
     }
 
     @Override
-    public <T extends Vector> Pose3 retract(T v) throws Throwable {
+    public Pose3 retract(Vector v) throws Throwable {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
     }
 

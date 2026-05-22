@@ -24,6 +24,17 @@ public class Point2 extends ForeignObject implements Manifold<Point2> {
     private static final MethodHandle Point2_equals = Lib.down(
             "Point2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
+    public static class Traits implements Manifold.Traits<Point2> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
     public Point2(MemorySegment p) {
         super(p, Point2_delete);
     }
@@ -61,7 +72,7 @@ public class Point2 extends ForeignObject implements Manifold<Point2> {
 
     // TODO: use C++ here
     @Override
-    public <V extends Vector> Point2 retract(V v) throws Throwable {
+    public Point2 retract(Vector v) throws Throwable {
         return new Point2(x() + v.at(0), y() + v.at(1));
     }
 

@@ -27,6 +27,17 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2> {
     private static final MethodHandle Cal3DS2_equals = Lib.down(
             "Cal3DS2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
+    public static class Traits implements Manifold.Traits<Cal3DS2> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
     public Cal3DS2(MemorySegment p) {
         super(p, Cal3DS2_delete);
     }
@@ -61,7 +72,7 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2> {
     }
 
     @Override
-    public <T extends Vector> Cal3DS2 retract(T v) throws Throwable {
+    public Cal3DS2 retract(Vector v) throws Throwable {
         return new Cal3DS2((MemorySegment) Cal3DS2_retract.invokeExact(ptr, v.ptr()));
     }
 

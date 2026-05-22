@@ -65,9 +65,9 @@ gtsam::Matrix3* Pose2_AdjointMap(const gtsam::Pose2* p) {
 }
 // picks primitives out of xi, creates new Pose2
 gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi, gtsam::Matrix3* Hv) {
-    std::cout << "v " << *xi << std::endl;
+    // std::cout << "v " << *xi << std::endl;
     gtsam::Pose2 p = gtsam::Pose2::Expmap(*xi, *Hv);
-    std::cout << "pose " << p << std::endl;
+    // std::cout << "pose " << p << std::endl;
     return new gtsam::Pose2(p);
 }
 gtsam::Vector3* Pose2_Logmap(const gtsam::Pose2* p, gtsam::Matrix3* H) {
@@ -100,6 +100,11 @@ gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,
                                  const gtsam::Point2* point,
                                  gtsam::Matrix* Dpose, gtsam::Matrix* Dpoint) {
     return new gtsam::Point2(p->transformTo(*point, *Dpose, *Dpoint));
+}
+gtsam::Point2* Pose2_transformFrom(const gtsam::Pose2* p,
+                                 const gtsam::Point2* point,
+                                 gtsam::Matrix* Dpose, gtsam::Matrix* Dpoint) {
+    return new gtsam::Point2(p->transformFrom(*point, *Dpose, *Dpoint));
 }
 gtsam::Matrix3* Pose2_ExpmapDerivative(const gtsam::Vector3* v) {
     return new gtsam::Matrix3(gtsam::Pose2::ExpmapDerivative(*v));

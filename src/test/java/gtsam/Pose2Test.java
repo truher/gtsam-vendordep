@@ -24,8 +24,6 @@ public class Pose2Test {
         Point2 p = new Point2(0, 0);
         Pose2 pose = new Pose2(0, p);
         Pose2 origin = new Pose2();
-        pose.print();
-        origin.print();
         assertTrue(pose.equals(origin, 1e-6));
         Pose2 t = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
         assertTrue(t.equals(new Pose2(t.matrix()), 1e-6));
@@ -105,8 +103,8 @@ public class Pose2Test {
         Pose2 pose2 = new Pose2(v);
         assertTrue(pose.equals(pose2, 1e-6));
         Matrix3 actual = pose.matrix();
-        System.out.printf("expected %s\n", expected);
-        System.out.printf("actual %s\n", actual);
+        // System.out.printf("expected %s\n", expected);
+        // System.out.printf("actual %s\n", actual);
         // TODO: check that this inexactness is expected (without the "slow expmap")
         assertTrue(expected.equals(actual, 1e-2));
     }
@@ -266,7 +264,7 @@ public class Pose2Test {
         Matrix3 actualH = Matrix3.identity();
         Vector3 w0 = new Vector3(0.1, 0.27, 0.0); // alpha = 0
         Pose2.Expmap(w0, actualH);
-        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(w0, Matrix3.identity());
+        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, Matrix3.identity());
         Matrix expectedH = NumericalDerivative.<Pose2, Vector3>numericalDerivative11(h, w0, 1e-3);
         assertTrue(expectedH.equals(new Matrix(actualH), 1e-5),
                 String.format("expected %s actual %s", expectedH, actualH));
@@ -295,10 +293,6 @@ public class Pose2Test {
         assertTrue(expectedH.equals(new Matrix(actualH), 1e-5));
     }
 
-    // static Point2 transformTo_(const Pose2& pose, const Point2& point) {
-    // return pose.transformTo(point);
-    // }
-
     @Test
     void testtransformTo() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
@@ -322,16 +316,17 @@ public class Pose2Test {
         assertTrue(expected.equals(actual, 1e-6));
 
         assertTrue(expectedH1.equals(actualH1, 1e-6));
-        ThrowingFunction2<Pose2, Point2, Point2> h = (p, p0) -> p.transformTo(p0, new Matrix(), new Matrix());
+        ThrowingFunction2<Pose2, Point2, Point2> transformTo_ = (p, p0) -> p.transformTo(p0, new Matrix(),
+                new Matrix());
         Matrix numericalH1 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative21(
-                h, pose, point, 1e-3);
+                transformTo_, pose, point, 1e-3);
         assertTrue(numericalH1.equals(actualH1, 1e-6),
                 String.format("expected %s actual %s", numericalH1, actualH1));
 
         assertTrue(expectedH2.equals(actualH2, 1e-6),
                 String.format("expected %s actual %s", expectedH2, actualH2));
         Matrix numericalH2 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative22(
-                h, pose, point, 1e-3);
+                transformTo_, pose, point, 1e-3);
         assertTrue(numericalH2.equals(actualH2, 1e-6),
                 String.format("expected %s actual %s", numericalH2, actualH2));
     }
@@ -344,33 +339,46 @@ public class Pose2Test {
 
     @Test
     void testtransformFrom() throws Throwable {
-        // Pose2 pose(1., 0., M_PI / 2.0);
-        // Point2 pt(2., 1.);
-        // Matrix H1, H2;
-        // Point2 actual = pose.transformFrom(pt, H1, H2);
+        Pose2 pose = new Pose2(1., 0., Math.PI / 2.0);
+        Point2 pt = new Point2(2., 1.);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
+        Point2 actual = pose.transformFrom(pt, H1, H2);
 
-        // Point2 expected(0., 2.);
-        // EXPECT(assert_equal(expected, actual));
+        Point2 expected = new Point2(0., 2.);
+        assertTrue(expected.equals(actual, 1e-6),
+                String.format("expected %s actual %s", expected, actual));
 
-        // Matrix H1_expected = (Matrix(2, 3) << 0., -1., -2., 1., 0., -1.).finished();
-        // Matrix H2_expected = (Matrix(2, 2) << 0., -1., 1., 0.).finished();
+        Matrix H1_expected = new Matrix(new double[][] {
+                { 0., -1., -2. }, //
+                { 1., 0., -1. } });
+        Matrix H2_expected = new Matrix(new double[][] {
+                { 0., -1. }, //
+                { 1., 0. } });
 
-        // Matrix numericalH1 = numericalDerivative21(transformFrom_, pose, pt);
-        // EXPECT(assert_equal(H1_expected, H1));
-        // EXPECT(assert_equal(H1_expected, numericalH1));
-
-        // Matrix numericalH2 = numericalDerivative22(transformFrom_, pose, pt);
-        // EXPECT(assert_equal(H2_expected, H2));
-        // EXPECT(assert_equal(H2_expected, numericalH2));
+        ThrowingFunction2<Pose2, Point2, Point2> transformFrom_ = (p, p0) -> p.transformFrom(
+                p0, new Matrix(), new Matrix());
+        Matrix numericalH1 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative21(
+                transformFrom_, pose, pt, 1e-3);
+        assertTrue(H1_expected.equals(H1, 1e-6),
+                String.format("expected %s actual %s", H1_expected, H1));
+        assertTrue(H1_expected.equals(numericalH1, 1e-6),
+                String.format("expected %s actual %s", H1_expected, numericalH1));
+        Matrix numericalH2 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative22(
+                transformFrom_, pose, pt, 1e-3);
+        assertTrue(H2_expected.equals(H2, 1e-6),
+                String.format("expected %s actual %s", H2_expected, H2));
+        assertTrue(H2_expected.equals(numericalH2, 1e-6),
+                String.format("expected %s actual %s", H2_expected, numericalH2));
     }
 
     @Test
     void testcompose_a() throws Throwable {
-        // Pose2 pose1(M_PI/4.0, Point2(sqrt(0.5), sqrt(0.5)));
-        // Pose2 pose2(M_PI/2.0, Point2(0.0, 2.0));
+        Pose2 pose1 = new Pose2(Math.PI / 4.0, new Point2(Math.sqrt(0.5), Math.sqrt(0.5)));
+        Pose2 pose2 = new Pose2(Math.PI / 2.0, new Point2(0.0, 2.0));
 
-        // Matrix actualDcompose1;
-        // Matrix actualDcompose2;
+        // Matrix actualDcompose1 = new Matrix();
+        // Matrix actualDcompose2 = new Matrix();
         // Pose2 actual = pose1.compose(pose2, actualDcompose1, actualDcompose2);
 
         // Pose2 expected(3.0*M_PI/4.0, Point2(-sqrt(0.5), 3.0*sqrt(0.5)));

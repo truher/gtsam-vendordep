@@ -27,6 +27,17 @@ public class Vector3 extends ForeignObject implements Manifold<Vector3> {
     private static final MethodHandle Vector3_equals = Lib.down(
             "Vector3_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
+    public static class Traits implements Manifold.Traits<Vector3> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+        @Override
+    public Traits traits() {
+        return traits;
+    }
+
     public Vector3(MemorySegment p) {
         super(p, Vector3_delete);
     }
@@ -79,7 +90,7 @@ public class Vector3 extends ForeignObject implements Manifold<Vector3> {
     }
 
     @Override
-    public <V extends Vector> Vector3 retract(V v) throws Throwable {
+    public Vector3 retract(Vector v) throws Throwable {
         // TODO: better conversion.
         Vector3 v3 = new Vector3(v.at(0), v.at(1), v.at(2));
         return plus(v3);

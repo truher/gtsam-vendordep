@@ -51,8 +51,8 @@ gtsam::Vector2* Vector2_plus(const gtsam::Vector2* v,
 }
 gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,
                              const gtsam::Vector3* other) {
-    std::cout << "v " << *v << std::endl;
-    std::cout << "other " << *other << std::endl;
+    // std::cout << "v " << *v << std::endl;
+    // std::cout << "other " << *other << std::endl;
     return new gtsam::Vector3((*v) + (*other));
 }
 gtsam::Vector* Vector_times(const gtsam::Vector* v, double a) {

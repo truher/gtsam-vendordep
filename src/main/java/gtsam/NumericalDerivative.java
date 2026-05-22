@@ -23,7 +23,9 @@ public class NumericalDerivative {
 
     public static <Y extends Manifold<Y>, X extends Manifold<X>> Matrix numericalDerivative11(
             ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
+        Manifold.Traits<X> TraitsX = x.traits();
         Y hx = h.apply(x);
+        Manifold.Traits<Y> TraitsY = hx.traits();
         int m = hx.dimension();
         // using Eigen here would be a pain
         int N = x.dimension();
@@ -32,23 +34,24 @@ public class NumericalDerivative {
         final double factor = 1.0 / (2.0 * delta);
         for (int j = 0; j < N; ++j) {
             dx.set(j, delta);
-            System.out.printf("dx %s\n", dx);
-            System.out.printf("hx %s\n", hx);
-            System.out.printf("x %s\n", x);
-            X x1 = x.retract(dx);
-            System.out.printf("x1 %s\n", x1);
+            // System.out.printf("dx (right) %s\n", dx);
+            // System.out.printf("hx %s\n", hx);
+            X x1 = TraitsX.Retract(x, dx);
+            // System.out.printf("x (center) %s\n", x);
+            // System.out.printf("x1 (right) %s\n", x1);
             Y hx1 = h.apply(x1);
-            System.out.printf("hx1 %s\n", hx1);
-            Vector dy1 = hx.local(hx1);
-            System.out.printf("dy1 %s\n", dy1);
+            // System.out.printf("hx1 (right, corresponding to x1) %s\n", hx1);
+            Vector dy1 = TraitsY.Local(hx, hx1);
+            // System.out.printf("dy1 %s\n", dy1);
             dx.set(j, -delta);
-            System.out.printf("dx %s\n", dx);
-            X x2 = x.retract(dx);
-            System.out.printf("x2 %s\n", x2);
+            // System.out.printf("dx (left) %s\n", dx);
+            X x2 = TraitsX.Retract(x, dx);
+            // System.out.printf("x (center) %s\n", x);
+            // System.out.printf("x2 (left) %s\n", x2);
             Y hx2 = h.apply(x2);
-            System.out.printf("hx2 %s\n", hx2);
-            Vector dy2 = hx.local(hx2);
-            System.out.printf("dy2 %s\n", dy2);
+            // System.out.printf("hx2 (left, corresponding to x2) %s\n", hx2);
+            Vector dy2 = TraitsY.Local(hx, hx2);
+            // System.out.printf("dy2 (y distance, left) %s\n", dy2);
             dx.set(j, 0);
             H.setCol(j, dy1.minus(dy2).times(factor));
         }

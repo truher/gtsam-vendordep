@@ -24,6 +24,17 @@ public class Vector2 extends ForeignObject implements Manifold<Vector2> {
     private static final MethodHandle Vector2_print = Lib.downVoid(
             "Vector2_print", ADDRESS);
 
+    public static class Traits implements Manifold.Traits<Vector2> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
     public Vector2(MemorySegment p) {
         super(p, Vector2_delete);
     }
@@ -67,7 +78,7 @@ public class Vector2 extends ForeignObject implements Manifold<Vector2> {
     }
 
     @Override
-    public <V extends Vector> Vector2 retract(V v) throws Throwable {
+    public Vector2 retract(Vector v) throws Throwable {
         // TODO: better conversion?
         Vector2 v2 = new Vector2(v.at(0), v.at(1));
         return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, v2.ptr));
