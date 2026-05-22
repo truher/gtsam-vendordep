@@ -14,10 +14,26 @@ gtsam::Matrix3* Matrix3(                 //
 void Matrix3_delete(gtsam::Matrix3* p) {
     delete p;
 }
+double Matrix3_at(const gtsam::Matrix3* m, int r, int c) {
+    return (*m)(r, c);
+}
 gtsam::Matrix3* Matrix3_unaryMinus(gtsam::Matrix3* m) {
     return new gtsam::Matrix3(-(*m));
 }
 gtsam::Matrix3* Matrix3_identity() {
     return new gtsam::Matrix3(gtsam::Matrix3::Identity());
+}
+bool Matrix3_equals(const gtsam::Matrix3* a, const gtsam::Matrix3* b, double tol) {
+    return gtsam::equal_with_abs_tol(*a, *b, tol);
+}
+
+gtsam::Matrix3* Matrix3_compose(const gtsam::Matrix3* a, const gtsam::Matrix3* b) {
+    return new gtsam::Matrix3((*a) * (*b));
+}
+gtsam::Matrix3* Matrix3_plus(const gtsam::Matrix3* v, const gtsam::Matrix3* other) {
+    return new gtsam::Matrix3((*v) + (*other));
+}
+gtsam::Matrix3* Matrix3_times(const gtsam::Matrix3* v, double a) {
+    return new gtsam::Matrix3((*v) * a);
 }
 }

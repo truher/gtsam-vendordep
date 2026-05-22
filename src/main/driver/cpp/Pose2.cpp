@@ -19,6 +19,9 @@ gtsam::Pose2* Pose2Rot2Point2(const gtsam::Rot2* r, const gtsam::Point2* t) {
 gtsam::Pose2* Pose2Matrix3(const gtsam::Matrix3* T) {
     return new gtsam::Pose2((gtsam::Matrix)(*T));
 }
+gtsam::Pose2* Pose2Vector3(const gtsam::Vector3* v) {
+    return new gtsam::Pose2(gtsam::Vector(*v));
+}
 // TODO: make this Vector3 somehow
 gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector* v) {
     return new gtsam::Pose2(p->retract(*v));
@@ -78,5 +81,8 @@ gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
 }
 gtsam::Matrix3* Pose2_matrix(const gtsam::Pose2* p) {
     return new gtsam::Matrix3(p->matrix());
+}
+gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p, const gtsam::Vector* d) {
+    return new gtsam::Pose2(gtsam::expmap_default(*p, *d));
 }
 }

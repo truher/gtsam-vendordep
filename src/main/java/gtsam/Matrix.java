@@ -20,8 +20,10 @@ public class Matrix extends ForeignObject {
             "Matrix_delete", ADDRESS);
     private static final MethodHandle Matrix_Matrix3 = Lib.down(
             "Matrix_Matrix3", ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_set = Lib.downVoid(
+            "Matrix_set", ADDRESS, JAVA_INT, JAVA_INT, JAVA_DOUBLE);
     private static final MethodHandle Matrix_setCol = Lib.downVoid(
-            "Matrix_setCol", ADDRESS, JAVA_DOUBLE, ADDRESS);
+            "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
     private static final MethodHandle Matrix_at = Lib.down(
             "Matrix_at", JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_diagonal_cwiseSqrt = Lib.down(
@@ -55,7 +57,22 @@ public class Matrix extends ForeignObject {
         this((MemorySegment) Matrix_Matrix3.invokeExact(m.ptr));
     }
 
-    public void setCol(double col, Vector v) throws Throwable {
+    public Matrix(double[][] x) throws Throwable {
+        int rows = x.length;
+        int cols = x[0].length;
+        this(rows, cols);
+        for (int row = 0; row < rows(); ++row) {
+            for (int col = 0; col < cols(); ++col) {
+                set(row, col, x[row][col]);
+            }
+        }
+    }
+
+    public void set(int row, int col, double v) throws Throwable {
+        Matrix_set.invokeExact(ptr, row, col, v);
+    }
+
+    public void setCol(int col, Vector v) throws Throwable {
         Matrix_setCol.invokeExact(ptr, col, v.ptr);
     }
 
@@ -139,7 +156,7 @@ public class Matrix extends ForeignObject {
         return true;
     }
 
-        public boolean equals(Matrix other, double tol) throws Throwable {
+    public boolean equals(Matrix other, double tol) throws Throwable {
         return (boolean) Matrix_equals.invokeExact(ptr, other.ptr, tol);
     }
 

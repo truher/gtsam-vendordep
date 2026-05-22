@@ -21,6 +21,8 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
             "Pose2Rot2Point2", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2Matrix3 = Lib.down(
             "Pose2Matrix3", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2Vector3 = Lib.down(
+            "Pose2Vector3", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_retract = Lib.down(
             "Pose2_retract", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_Retract = Lib.down(
@@ -55,6 +57,8 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
             "Pose2_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_matrix = Lib.down(
             "Pose2_matrix", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_expmap_default = Lib.down(
+            "Pose2_expmap_default", ADDRESS, ADDRESS, ADDRESS);
 
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
@@ -79,6 +83,10 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
 
     public Pose2(Matrix3 T) throws Throwable {
         this((MemorySegment) Pose2Matrix3.invokeExact(T.ptr));
+    }
+
+    public Pose2(Vector3 v) throws Throwable {
+        this((MemorySegment) Pose2Vector3.invokeExact(v.ptr));
     }
 
     @Override
@@ -173,4 +181,7 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
         return new Matrix3((MemorySegment) Pose2_matrix.invokeExact(ptr));
     }
 
+    public Pose2 expmap_default(Vector d) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_expmap_default.invokeExact(ptr, d.ptr));
+    }
 }
