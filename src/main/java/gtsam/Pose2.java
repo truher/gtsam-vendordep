@@ -46,9 +46,11 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
     private static final MethodHandle Pose2_AdjointMap = Lib.down(
             "Pose2_AdjointMap", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_Expmap = Lib.down(
-            "Pose2_Expmap", ADDRESS, ADDRESS);
-    private static final MethodHandle Pose2_log = Lib.down(
-            "Pose2_log", ADDRESS, ADDRESS, ADDRESS);
+            "Pose2_Expmap", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_Logmap = Lib.down(
+            "Pose2_Logmap", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_logmap = Lib.down(
+            "Pose2_logmap", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_print = Lib.downVoid(
             "Pose2_print", ADDRESS);
     private static final MethodHandle Pose2_equals = Lib.down(
@@ -57,8 +59,14 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
             "Pose2_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_matrix = Lib.down(
             "Pose2_matrix", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_logmap_default = Lib.down(
+            "Pose2_logmap_default", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_expmap_default = Lib.down(
             "Pose2_expmap_default", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_transformTo = Lib.down(
+            "Pose2_transformTo", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_ExpmapDerivative = Lib.down(
+            "Pose2_ExpmapDerivative", ADDRESS, ADDRESS);
 
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
@@ -141,13 +149,16 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
         return new Matrix3((MemorySegment) Pose2_AdjointMap.invokeExact(ptr));
     }
 
-    /** Picks primitives out of xi, creates new Pose2 */
-    public static Pose2 Expmap(Vector3 xi) throws Throwable {
-        return new Pose2((MemorySegment) Pose2_Expmap.invokeExact(xi.ptr));
+    public static Pose2 Expmap(Vector3 xi, Matrix3 Hv) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_Expmap.invokeExact(xi.ptr, Hv.ptr));
     }
 
-    public Vector3 log(Pose2 p) throws Throwable {
-        return new Vector3((MemorySegment) Pose2_log.invokeExact(ptr, p.ptr));
+    public static Vector3 Logmap(Pose2 p, Matrix3 H) throws Throwable {
+        return new Vector3((MemorySegment) Pose2_Logmap.invokeExact(p.ptr, H.ptr));
+    }
+
+    public Vector3 logmap(Pose2 p) throws Throwable {
+        return new Vector3((MemorySegment) Pose2_logmap.invokeExact(ptr, p.ptr));
     }
 
     @Override
@@ -181,7 +192,22 @@ public class Pose2 extends ForeignObject implements Manifold<Pose2> {
         return new Matrix3((MemorySegment) Pose2_matrix.invokeExact(ptr));
     }
 
+    // TODO: maybe make this static?
+    public Vector logmap_default(Pose2 p) throws Throwable {
+        return new Vector((MemorySegment) Pose2_logmap_default.invokeExact(ptr, p.ptr));
+    }
+
+    // TODO: maybe make this static?
     public Pose2 expmap_default(Vector d) throws Throwable {
         return new Pose2((MemorySegment) Pose2_expmap_default.invokeExact(ptr, d.ptr));
+    }
+
+    public Point2 transformTo(Point2 point, Matrix Dpose, Matrix Dpoint) throws Throwable {
+        return new Point2((MemorySegment) Pose2_transformTo.invokeExact(
+                ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
+    }
+
+    public static Matrix3 ExpmapDerivative(Vector3 v) throws Throwable {
+        return new Matrix3((MemorySegment) Pose2_ExpmapDerivative.invokeExact(v.ptr));
     }
 }

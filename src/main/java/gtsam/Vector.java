@@ -36,6 +36,8 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
             "Vector_fromTangentVector", ADDRESS, ADDRESS);
     private static final MethodHandle Vector_fromVector2 = Lib.down(
             "Vector_fromVector2", ADDRESS, ADDRESS);
+    private static final MethodHandle Vector_fromVector3 = Lib.down(
+            "Vector_fromVector3", ADDRESS, ADDRESS);
     private static final MethodHandle Vector_Local = Lib.down(
             "Vector_Local", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector_rows = Lib.down(
@@ -59,6 +61,10 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
 
     public Vector(Vector2 v) throws Throwable {
         this((MemorySegment) Vector_fromVector2.invokeExact(v.ptr));
+    }
+
+    public Vector(Vector3 v) throws Throwable {
+        this((MemorySegment) Vector_fromVector3.invokeExact(v.ptr));
     }
 
     public Vector(double[] vals) throws Throwable {

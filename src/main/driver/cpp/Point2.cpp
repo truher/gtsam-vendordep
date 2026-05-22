@@ -16,4 +16,7 @@ double Point2_y(const gtsam::Point2* p) {
 void Point2_print(gtsam::Point2* p) {
     std::cout << *p << std::endl;
 }
+bool Point2_equals(const gtsam::Point2* a, const gtsam::Point2* b, double tol) {
+    return gtsam::equal_with_abs_tol(*a, *b, tol);
+}
 }

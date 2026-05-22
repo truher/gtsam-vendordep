@@ -88,7 +88,7 @@ public class Matrix3 extends ForeignObject {
             for (int r = 0; r < rows; ++r) {
                 b.append("  [");
                 for (int c = 0; c < cols; ++c) {
-                    b.append(String.format(" %6.3f ", at(r, c)));
+                    b.append(String.format(" %9.6f ", at(r, c)));
                 }
                 b.append("]\n");
             }
@@ -99,5 +99,4 @@ public class Matrix3 extends ForeignObject {
             return "";
         }
     }
-
 }

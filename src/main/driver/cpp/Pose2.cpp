@@ -64,10 +64,16 @@ gtsam::Matrix3* Pose2_AdjointMap(const gtsam::Pose2* p) {
     return new gtsam::Matrix3(p->AdjointMap());
 }
 // picks primitives out of xi, creates new Pose2
-gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi) {
-    return new gtsam::Pose2(gtsam::Pose2::Expmap(*xi));
+gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi, gtsam::Matrix3* Hv) {
+    std::cout << "v " << *xi << std::endl;
+    gtsam::Pose2 p = gtsam::Pose2::Expmap(*xi, *Hv);
+    std::cout << "pose " << p << std::endl;
+    return new gtsam::Pose2(p);
 }
-gtsam::Vector3* Pose2_log(const gtsam::Pose2* p0, const gtsam::Pose2* p1) {
+gtsam::Vector3* Pose2_Logmap(const gtsam::Pose2* p, gtsam::Matrix3* H) {
+    return new gtsam::Vector3(gtsam::Pose2::Logmap(*p, *H));
+}
+gtsam::Vector3* Pose2_logmap(const gtsam::Pose2* p0, const gtsam::Pose2* p1) {
     return new gtsam::Vector3(p0->logmap(*p1));
 }
 void Pose2_print(const gtsam::Pose2* p) {
@@ -82,7 +88,20 @@ gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
 gtsam::Matrix3* Pose2_matrix(const gtsam::Pose2* p) {
     return new gtsam::Matrix3(p->matrix());
 }
-gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p, const gtsam::Vector* d) {
+gtsam::Vector* Pose2_logmap_default(const gtsam::Pose2* a,
+                                    const gtsam::Pose2* b) {
+    return new gtsam::Vector(gtsam::logmap_default(*a, *b));
+}
+gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,
+                                   const gtsam::Vector* d) {
     return new gtsam::Pose2(gtsam::expmap_default(*p, *d));
+}
+gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,
+                                 const gtsam::Point2* point,
+                                 gtsam::Matrix* Dpose, gtsam::Matrix* Dpoint) {
+    return new gtsam::Point2(p->transformTo(*point, *Dpose, *Dpoint));
+}
+gtsam::Matrix3* Pose2_ExpmapDerivative(const gtsam::Vector3* v) {
+    return new gtsam::Matrix3(gtsam::Pose2::ExpmapDerivative(*v));
 }
 }

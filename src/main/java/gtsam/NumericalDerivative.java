@@ -32,9 +32,23 @@ public class NumericalDerivative {
         final double factor = 1.0 / (2.0 * delta);
         for (int j = 0; j < N; ++j) {
             dx.set(j, delta);
-            Vector dy1 = hx.local(h.apply(x.retract(dx)));
+            System.out.printf("dx %s\n", dx);
+            System.out.printf("hx %s\n", hx);
+            System.out.printf("x %s\n", x);
+            X x1 = x.retract(dx);
+            System.out.printf("x1 %s\n", x1);
+            Y hx1 = h.apply(x1);
+            System.out.printf("hx1 %s\n", hx1);
+            Vector dy1 = hx.local(hx1);
+            System.out.printf("dy1 %s\n", dy1);
             dx.set(j, -delta);
-            Vector dy2 = hx.local(h.apply(x.retract(dx)));
+            System.out.printf("dx %s\n", dx);
+            X x2 = x.retract(dx);
+            System.out.printf("x2 %s\n", x2);
+            Y hx2 = h.apply(x2);
+            System.out.printf("hx2 %s\n", hx2);
+            Vector dy2 = hx.local(hx2);
+            System.out.printf("dy2 %s\n", dy2);
             dx.set(j, 0);
             H.setCol(j, dy1.minus(dy2).times(factor));
         }

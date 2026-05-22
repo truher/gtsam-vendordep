@@ -20,6 +20,9 @@ gtsam::Vector* Vector_fromTangentVector(gtsam::Pose2::TangentVector* v) {
 gtsam::Vector* Vector_fromVector2(gtsam::Vector2* v) {
     return new gtsam::Vector(*v);
 }
+gtsam::Vector* Vector_fromVector3(gtsam::Vector3* v) {
+    return new gtsam::Vector(*v);
+}
 // TODO: there must be some vectorspace trait i can use here?
 gtsam::Vector* Vector_Local(gtsam::Vector* a, gtsam::Vector* b) {
     return new gtsam::Vector((*b) - (*a));
@@ -35,12 +38,22 @@ gtsam::Vector2* Vector2_minus(const gtsam::Vector2* v,
                               const gtsam::Vector2* other) {
     return new gtsam::Vector2((*v) - (*other));
 }
+gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
+                              const gtsam::Vector3* other) {
+    return new gtsam::Vector3((*v) - (*other));
+}
 gtsam::Vector* Vector_plus(const gtsam::Vector* v, const gtsam::Vector* other) {
     return new gtsam::Vector((*v) + (*other));
 }
 gtsam::Vector2* Vector2_plus(const gtsam::Vector2* v,
                              const gtsam::Vector2* other) {
     return new gtsam::Vector2((*v) + (*other));
+}
+gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,
+                             const gtsam::Vector3* other) {
+    std::cout << "v " << *v << std::endl;
+    std::cout << "other " << *other << std::endl;
+    return new gtsam::Vector3((*v) + (*other));
 }
 gtsam::Vector* Vector_times(const gtsam::Vector* v, double a) {
     return new gtsam::Vector((*v) * a);
@@ -52,6 +65,10 @@ int Vector_rows(const gtsam::Vector* v) {
     return v->rows();
 }
 bool Vector_equals(const gtsam::Vector* a, const gtsam::Vector* b, double tol) {
+    return gtsam::equal_with_abs_tol(*a, *b, tol);
+}
+bool Vector3_equals(const gtsam::Vector3* a, const gtsam::Vector3* b,
+                    double tol) {
     return gtsam::equal_with_abs_tol(*a, *b, tol);
 }
 //////////////////////////
