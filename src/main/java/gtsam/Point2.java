@@ -35,6 +35,11 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
         return traits;
     }
 
+    @Override
+    public Vector2 dxZero() throws Throwable {
+        return new Vector2(0, 0);
+    }
+
     public Point2(MemorySegment p) {
         super(p, Point2_delete);
     }

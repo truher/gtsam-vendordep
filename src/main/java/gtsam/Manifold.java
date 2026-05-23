@@ -31,6 +31,9 @@ public interface Manifold<T extends Manifold<T, TangentVectorType>, TangentVecto
 
     Traits<T, TangentVectorType> traits();
 
+    /** New tangent vector filled with zeros. */
+    TangentVectorType dxZero() throws Throwable;
+
     int dimension() throws Throwable;
 
     TangentVectorType local(T other) throws Throwable;

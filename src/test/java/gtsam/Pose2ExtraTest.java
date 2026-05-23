@@ -14,7 +14,7 @@ public class Pose2ExtraTest {
         Matrix3 actualH = Pose2.ExpmapDerivative(w0);
         // System.out.printf("actualH %s\n", actualH);
         ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, Matrix3.identity());
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector3>numericalDerivative11(h, w0, 1e-3);
+        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
                 // System.out.printf("expectedH %s\n", expectedH);
         assertTrue(expectedH.equals(new Matrix(actualH), 1e-6),
                 String.format("expected %s actual %s", expectedH, actualH));

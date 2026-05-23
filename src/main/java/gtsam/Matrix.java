@@ -22,8 +22,8 @@ public class Matrix extends ForeignObject {
             "Matrix_Matrix3", ADDRESS, ADDRESS);
     private static final MethodHandle Matrix_set = Lib.downVoid(
             "Matrix_set", ADDRESS, JAVA_INT, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Matrix_setCol = Lib.downVoid(
-            "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
+    // private static final MethodHandle Matrix_setCol = Lib.downVoid(
+    //         "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
     private static final MethodHandle Matrix_at = Lib.down(
             "Matrix_at", JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_diagonal_cwiseSqrt = Lib.down(
@@ -72,8 +72,10 @@ public class Matrix extends ForeignObject {
         Matrix_set.invokeExact(ptr, row, col, v);
     }
 
-    public void setCol(int col, Vector v) throws Throwable {
-        Matrix_setCol.invokeExact(ptr, col, v.ptr);
+    public <V extends VectorType<V>> void setCol(int col, V v) throws Throwable {
+        for (int row = 0; row < v.dimension(); ++row) {
+            set(row, col, v.at(row));
+        }
     }
 
     public double at(int r, int c) throws Throwable {

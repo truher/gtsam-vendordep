@@ -43,6 +43,11 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
         return traits;
     }
 
+    @Override
+    public Vector6 dxZero() throws Throwable {
+        return new Vector6(0, 0, 0, 0, 0, 0);
+    }
+
     public Pose3(MemorySegment p) {
         super(p, Pose3_delete);
     }

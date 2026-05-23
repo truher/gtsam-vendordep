@@ -19,7 +19,8 @@ import org.team100.foreign.Lib;
  * which is Matrix<double, Dynamic, 1>
  * }
  */
-public class Vector extends ForeignObject {
+public class Vector extends ForeignObject
+        implements VectorType<Vector>, Manifold<Vector, Vector> {
     private static final MethodHandle Vector = Lib.down(
             "Vector", ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_delete = Lib.downVoid(
@@ -46,6 +47,22 @@ public class Vector extends ForeignObject {
             "Vector_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_equals = Lib.down(
             "Vector_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+    public static class Traits implements Manifold.Traits<Vector, Vector> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
+    @Override
+    public Vector dxZero() throws Throwable {
+        return new Vector(dimension());
+    }
 
     public Vector(MemorySegment p) {
         super(p, Vector_delete);
@@ -79,18 +96,22 @@ public class Vector extends ForeignObject {
         return new Vector((MemorySegment) Vector_Local.invokeExact(ptr, other.ptr));
     }
 
+    @Override
     public void set(int i, double val) throws Throwable {
         Vector_set.invokeExact(ptr, i, val);
     }
 
+    @Override
     public Vector minus(Vector other) throws Throwable {
         return new Vector((MemorySegment) Vector_minus.invokeExact(ptr, other.ptr));
     }
 
+    @Override
     public Vector plus(Vector other) throws Throwable {
         return new Vector((MemorySegment) Vector_plus.invokeExact(ptr, other.ptr));
     }
 
+    @Override
     public Vector times(double a) throws Throwable {
         return new Vector((MemorySegment) Vector_times.invokeExact(ptr, a));
     }
@@ -99,6 +120,7 @@ public class Vector extends ForeignObject {
         return (int) Vector_rows.invokeExact(ptr);
     }
 
+    @Override
     public double at(int i) throws Throwable {
         return (double) Vector_at.invokeExact(ptr, i);
     }
@@ -120,6 +142,7 @@ public class Vector extends ForeignObject {
         }
     }
 
+    @Override
     public int dimension() throws Throwable {
         return rows();
     }

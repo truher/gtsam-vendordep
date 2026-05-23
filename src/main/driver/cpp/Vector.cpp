@@ -90,6 +90,9 @@ void Vector2_delete(gtsam::Vector2* p) {
 double Vector2_at(const gtsam::Vector2* v, int i) {
     return (*v)(i);
 }
+void Vector3_set(gtsam::Vector3* v, int i, double val) {
+    (*v)(i) = val;
+}
 void Vector2_print(const gtsam::Vector2* v) {
     std::cout << *v << std::endl;
 }

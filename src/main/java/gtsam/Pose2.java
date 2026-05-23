@@ -116,6 +116,11 @@ public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2, Vector
         return traits;
     }
 
+    @Override
+    public Vector3 dxZero() throws Throwable {
+        return new Vector3(0,0,0);
+    }
+
     public Pose2(MemorySegment p) {
         super(p, Pose2_delete);
     }

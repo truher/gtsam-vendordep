@@ -8,6 +8,9 @@ import java.util.function.DoubleSupplier;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.NumericalDerivative.ThrowingFunction;
+import gtsam.NumericalDerivative.ThrowingFunction3;
+
 /**
  * See gtsam/slam/tests/testPlanarProjectionFactor.cpp.
  */
@@ -124,9 +127,9 @@ public class PlanarProjectionFactorTest {
             Pose2 pose = new Pose2(dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble());
             Matrix H1 = new Matrix();
             factor.get().evaluateError(pose, H1);
-            var expectedH1 = NumericalDerivative.<Vector2, Pose2>numericalDerivative11(
-                    (p) -> factor.get().evaluateError(p, new Matrix()),
-                    pose, 1e-5);
+            ThrowingFunction<Pose2, Vector2> h = (p) -> factor.get().evaluateError(p, new Matrix());
+            var expectedH1 = NumericalDerivative.<Vector2, Vector2, Pose2, Vector3>numericalDerivative11(
+                    h, pose, 1e-5);
             assertEquals(expectedH1, H1);
         }
     }
@@ -336,20 +339,33 @@ public class PlanarProjectionFactorTest {
             Matrix H3 = new Matrix();
             factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
 
-            Matrix expectedH1 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative31(
-                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
-                            new Matrix()),
-                    pose, offset, calib, 1e-5);
+            // Ugh. NoiseModelFactorN (the superclass of most of the factors we use) is a
+            // template with the "error" type filed in as a dynamic-dimension "Vector" type,
+            // not a specific length.
+            ThrowingFunction3<Pose2, Pose3, Cal3DS2, Vector> h = (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get()
+                    .evaluateError(
+                            p, o, c, new Matrix(), new Matrix(), new Matrix());
 
-            Matrix expectedH2 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative32(
-                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
-                            new Matrix()),
-                    pose, offset, calib, 1e-5);
+            Matrix expectedH1 = NumericalDerivative
+                    .<Vector, Vector, //
+                            Pose2, Vector3, //
+                            Pose3, Vector6, //
+                            Cal3DS2, Vector9>numericalDerivative31(
+                                    h, pose, offset, calib, 1e-5);
 
-            Matrix expectedH3 = NumericalDerivative.<Vector, Pose2, Pose3, Cal3DS2>numericalDerivative33(
-                    (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get().evaluateError(p, o, c, new Matrix(), new Matrix(),
-                            new Matrix()),
-                    pose, offset, calib, 1e-5);
+            Matrix expectedH2 = NumericalDerivative
+                    .<Vector, Vector, //
+                            Pose2, Vector3, //
+                            Pose3, Vector6, //
+                            Cal3DS2, Vector9>numericalDerivative32(
+                                    h, pose, offset, calib, 1e-5);
+
+            Matrix expectedH3 = NumericalDerivative
+                    .<Vector, Vector, //
+                            Pose2, Vector3, //
+                            Pose3, Vector6, //
+                            Cal3DS2, Vector9>numericalDerivative33(
+                                    h, pose, offset, calib, 1e-5);
 
             assertEquals(expectedH1, H1);
             assertEquals(expectedH2, H2);
