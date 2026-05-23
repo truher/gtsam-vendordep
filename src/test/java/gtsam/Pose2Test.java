@@ -13,13 +13,6 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
 public class Pose2Test {
 
     @Test
-    void testConcept() {
-        // GTSAM_CONCEPT_ASSERT(IsGroup<Pose2>);
-        // GTSAM_CONCEPT_ASSERT(IsManifold<Pose2>);
-        // GTSAM_CONCEPT_ASSERT(IsMatrixLieGroup<Pose2>);
-    }
-
-    @Test
     void testConstructors() throws Throwable {
         Point2 p = new Point2(0, 0);
         Pose2 pose = new Pose2(0, p);
@@ -98,14 +91,16 @@ public class Pose2Test {
         Matrix3 A4 = A3.compose(A).times(1.0 / 4.0);
         Matrix3 expected = Matrix3.identity().plus(A).plus(A2).plus(A3).plus(A4);
 
-        Vector3 v = new Vector3(0.01, -0.015, 0.99);
+        Vector v = new Vector(new double[] { 0.01, -0.015, 0.99 });
+        // Vector3 v = new Vector3( 0.01, -0.015, 0.99 );
         Pose2 pose = Pose2.Expmap(v, Matrix3.identity());
         Pose2 pose2 = new Pose2(v);
-        assertTrue(pose.equals(pose2, 1e-6));
+        assertTrue(pose.equals(pose2, 1e-6),
+                String.format("expected %s actual %s\n", pose, pose2));
         Matrix3 actual = pose.matrix();
         // System.out.printf("expected %s\n", expected);
         // System.out.printf("actual %s\n", actual);
-        // TODO: check that this inexactness is expected (without the "slow expmap")
+        // TODO: check that this inexactness is expected
         assertTrue(expected.equals(actual, 1e-2));
     }
 
@@ -142,61 +137,77 @@ public class Pose2Test {
 
     @Test
     void testHatAndVee() throws Throwable {
-        // // Create a few test vectors
-        // Vector3 v1(1, 2, 3);
-        // Vector3 v2(0.1, -0.5, 1.0);
-        // Vector3 v3(0.0, 0.0, 0.0);
+        // Create a few test vectors
+        Vector v1 = new Vector(new double[] { 1, 2, 3 });
+        Vector v2 = new Vector(new double[] { 0.1, -0.5, 1.0 });
+        Vector v3 = new Vector(new double[] { 0.0, 0.0, 0.0 });
 
-        // // Test that Vee(Hat(v)) == v for various inputs
-        // EXPECT(assert_equal(v1, Pose2::Vee(Pose2::Hat(v1))));
-        // EXPECT(assert_equal(v2, Pose2::Vee(Pose2::Hat(v2))));
-        // EXPECT(assert_equal(v3, Pose2::Vee(Pose2::Hat(v3))));
+        // Test that Vee(Hat(v)) == v for various inputs
+        assertTrue(v1.equals(Pose2.traits.Vee(Pose2.traits.Hat(v1)), 1e-6));
+        assertTrue(v2.equals(Pose2.traits.Vee(Pose2.traits.Hat(v2)), 1e-6));
+        assertTrue(v3.equals(Pose2.traits.Vee(Pose2.traits.Hat(v3)), 1e-6));
 
-        // // Check the structure of the Lie Algebra element
-        // Matrix3 expected;
-        // expected << 0, -3, 1,
-        // 3, 0, 2,
-        // 0, 0, 0;
+        // Check the structure of the Lie Algebra element
+        Matrix expected = new Matrix(new double[][] {
+                { 0., -3., 1. },
+                { 3., 0., 2. },
+                { 0., 0., 0. } });
 
-        // EXPECT(assert_equal(expected, Pose2::Hat(v1)));
+        assertTrue(expected.equals(Pose2.traits.Hat(v1), 1e-6));
     }
 
-    // /* *************************************************************************
-    // */
-    // // test case for screw motion in the plane
-    // namespace screwPose2 {
-    // double w=0.3;
-    // Vector xi = (Vector(3) << 0.0, w, w).finished();
-    // Rot2 expectedR = Rot2::fromAngle(w);
-    // Point2 expectedT(-0.0446635, 0.29552);
-    // Pose2 expected(expectedR, expectedT);
-    // }
+    // test case for screw motion in the plane
+    class screwPose2 {
+        static double w;
+        static Vector xi;
+        static Rot2 expectedR;
+        static Point2 expectedT;
+        static Pose2 expected;
+        static {
+            try {
+                w = 0.3;
+                xi = new Vector(new double[] { 0.0, w, w });
+                expectedR = Rot2.fromAngle(w);
+                expectedT = new Point2(-0.0446635, 0.29552);
+                expected = new Pose2(expectedR, expectedT);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        }
+    }
+
     @Test
     void testexpmap_c() throws Throwable {
-
-        // EXPECT(assert_equal(screwPose2::expected, expm<Pose2>(screwPose2::xi),1e-6));
-        // EXPECT(assert_equal(screwPose2::expected,
-        // Pose2::Expmap(screwPose2::xi),1e-6));
-        // EXPECT(assert_equal(screwPose2::xi,
-        // Pose2::Logmap(screwPose2::expected),1e-6));
+        Pose2 actual1 = Pose2.expm(screwPose2.xi);
+        assertTrue(screwPose2.expected.equals(actual1, 1e-6),
+                String.format("expected %s actual %s", screwPose2.expected, actual1));
+        Pose2 actual2 = Pose2.traits.Expmap(screwPose2.xi);
+        assertTrue(screwPose2.expected.equals(actual2, 1e-6),
+                String.format("expected %s actual %s", screwPose2.expected, actual2));
+        Vector actual3 = Pose2.traits.Logmap(screwPose2.expected);
+        assertTrue(screwPose2.xi.equals(actual3, 1e-6));
+        // String.format("expected %s actual %s", screwPose2.xi, actual3));
     }
 
-    // /* *************************************************************************
-    // */
     @Test
     void testexpmap_c_full() throws Throwable {
-
-        // double w=0.3;
-        // Vector xi = (Vector(3) << 0.0, w, w).finished();
-        // Rot2 expectedR = Rot2::fromAngle(w);
-        // Point2 expectedT(-0.0446635, 0.29552);
-        // Pose2 expected(expectedR, expectedT);
-        // EXPECT(assert_equal(expected, expm<Pose2>(xi),1e-6));
-        // EXPECT(assert_equal(expected, Pose2::Expmap(xi),1e-6));
-        // EXPECT(assert_equal(xi, Pose2::Logmap(expected),1e-6));
+        double w = 0.3;
+        Vector xi = new Vector(new double[] { 0.0, w, w });
+        Rot2 expectedR = Rot2.fromAngle(w);
+        Point2 expectedT = new Point2(-0.0446635, 0.29552);
+        Pose2 expected = new Pose2(expectedR, expectedT);
+        Pose2 actual1 = Pose2.expm(xi);
+        assertTrue(expected.equals(actual1, 1e-6),
+                String.format("expected %s actual %s", expected, actual1));
+        Pose2 actual2 = Pose2.traits.Expmap(xi);
+        assertTrue(expected.equals(actual2, 1e-6),
+                String.format("expected %s actual %s", expected, actual2));
+        Vector actual3 = Pose2.traits.Logmap(expected);
+        assertTrue(xi.equals(actual3, 1e-6),
+                String.format("expected %s actual %s", xi, actual3));
     }
 
-    // // assert that T*exp(xi)*T^-1 is equal to exp(Ad_T(xi))
+    // assert that T*exp(xi)*T^-1 is equal to exp(Ad_T(xi))
     @Test
     void testAdjoint_full() throws Throwable {
         // Pose2 T(1, 2, 3);
@@ -273,9 +284,14 @@ public class Pose2Test {
     @Test
     void testLogmapDerivative1() throws Throwable {
         Matrix3 actualH = Matrix3.identity();
-        Vector3 w = new Vector3(0.1, 0.27, -0.3);
+        // Vector3 w = new Vector3(0.1, 0.27, -0.3);
+        Vector w = new Vector(new double[] { 0.1, 0.27, -0.3 });
         Pose2 p = Pose2.Expmap(w, Matrix3.identity());
-        assertTrue(w.equals(Pose2.Logmap(p, actualH), 1e-5));
+        Vector other = Pose2.Logmap(p, actualH);
+        // Vector other = new Vector(Pose2.Logmap(p, actualH));
+        assertTrue(w.equals(other, 1e-5),
+                String.format("expected %s actual %s", w, other));
+
         ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, Matrix3.identity());
         Matrix expectedH = NumericalDerivative.<Vector3, Pose2>numericalDerivative11(h, p, 1e-2);
         assertTrue(expectedH.equals(new Matrix(actualH), 1e-5),
@@ -330,12 +346,6 @@ public class Pose2Test {
         assertTrue(numericalH2.equals(actualH2, 1e-6),
                 String.format("expected %s actual %s", numericalH2, actualH2));
     }
-
-    // /* *************************************************************************
-    // */
-    // static Point2 transformFrom_(const Pose2& pose, const Point2& point) {
-    // return pose.transformFrom(point);
-    // }
 
     @Test
     void testtransformFrom() throws Throwable {
@@ -433,8 +443,8 @@ public class Pose2Test {
 
     @Test
     void testcompose_c() throws Throwable {
-        // Pose2 pose1(Rot2::fromAngle(M_PI/4.0), Point2(1.0, 1.0));
-        // Pose2 pose2(Rot2::fromAngle(M_PI/4.0), Point2(sqrt(.5), sqrt(.5)));
+        Pose2 pose1 = new Pose2(Rot2.fromAngle(Math.PI / 4.0), new Point2(1.0, 1.0));
+        Pose2 pose2 = new Pose2(Rot2.fromAngle(Math.PI / 4.0), new Point2(Math.sqrt(.5), Math.sqrt(.5)));
 
         // Pose2 pose_expected(Rot2::fromAngle(M_PI/2.0), Point2(1.0, 2.0));
 
@@ -456,8 +466,9 @@ public class Pose2Test {
 
     @Test
     void testinverse() throws Throwable {
-        // Point2 origin(0,0), t(1,2);
-        // Pose2 gTl(M_PI/2.0, t); // robot at (1,2) looking towards y
+        Point2 origin = new Point2(0, 0);
+        Point2 t = new Point2(1, 2);
+        Pose2 gTl = new Pose2(Math.PI / 2.0, t); // robot at (1,2) looking towards y
 
         // Pose2 identity, lTg = gTl.inverse();
         // EXPECT(assert_equal(identity,lTg.compose(gTl)));
@@ -498,7 +509,8 @@ public class Pose2Test {
     // */
     @Test
     void testmatrix() throws Throwable {
-        // Point2 origin(0,0), t(1,2);
+        Point2 origin = new Point2(0, 0);
+        Point2 t = new Point2(1, 2);
         // Pose2 gTl(M_PI/2.0, t); // robot at (1,2) looking towards y
         // Matrix gMl = matrix(gTl);
         // EXPECT(assert_equal((Matrix(3,3) <<
@@ -529,7 +541,7 @@ public class Pose2Test {
 
     @Test
     void testcompose_matrix() throws Throwable {
-        // Pose2 gT1(M_PI/2.0, Point2(1,2)); // robot at (1,2) looking towards y
+        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
         // Pose2 _1T2(M_PI, Point2(-1,4)); // local robot at (-1,4) looking at negative
         // x
         // Matrix gM1(matrix(gT1)),_1M2(matrix(_1T2));
@@ -538,7 +550,7 @@ public class Pose2Test {
 
     @Test
     void testtranslation() throws Throwable {
-        // Pose2 pose(3.5, -8.2, 4.2);
+        Pose2 pose = new Pose2(3.5, -8.2, 4.2);
 
         // Matrix actualH;
         // EXPECT(assert_equal((Vector2() << 3.5, -8.2).finished(),
@@ -551,8 +563,7 @@ public class Pose2Test {
 
     @Test
     void testrotation() throws Throwable {
-        // TEST( Pose2, rotation ) {
-        // Pose2 pose(3.5, -8.2, 4.2);
+        Pose2 pose = new Pose2(3.5, -8.2, 4.2);
 
         // Matrix actualH(4, 3);
         // EXPECT(assert_equal(Rot2(4.2), pose.rotation(actualH), 1e-8));
@@ -562,15 +573,20 @@ public class Pose2Test {
         // EXPECT(assert_equal(numericalH, actualH, 1e-6));
     }
 
+    /**
+     * <pre>
+     * <
+     *
+     *       ^
+     *
+     * *--0--*--*
+     * </pre>
+     */
     @Test
     void testbetween() throws Throwable {
-        // // <
-        // //
-        // // ^
-        // //
-        // // *--0--*--*
-        // Pose2 gT1(M_PI/2.0, Point2(1,2)); // robot at (1,2) looking towards y
-        // Pose2 gT2(M_PI, Point2(-1,4)); // robot at (-1,4) looking at negative x
+
+        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
+        Pose2 gT2 = new Pose2(Math.PI, new Point2(-1, 4)); // robot at (-1,4) looking at negative x
 
         // Matrix actualH1,actualH2;
         // Pose2 expected(M_PI/2.0, Point2(2,2));
@@ -603,13 +619,11 @@ public class Pose2Test {
 
     }
 
-    // /* *************************************************************************
-    // */
     @Test
     void testbetween2() throws Throwable {
-        // // reverse situation for extra test
-        // Pose2 p2(M_PI/2.0, Point2(1,2)); // robot at (1,2) looking towards y
-        // Pose2 p1(M_PI, Point2(-1,4)); // robot at (-1,4) loooking at negative x
+        // reverse situation for extra test
+        Pose2 p2 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
+        Pose2 p1 = new Pose2(Math.PI, new Point2(-1, 4)); // robot at (-1,4) loooking at negative x
 
         // Matrix actualH1,actualH2;
         // p1.between(p2,actualH1,actualH2);
@@ -621,11 +635,11 @@ public class Pose2Test {
         // EXPECT(assert_equal(numericalH2,actualH2));
     }
 
-    // // arbitrary, non perpendicular angles to be extra safe
+    // arbitrary, non perpendicular angles to be extra safe
     @Test
     void testbetween3() throws Throwable {
-        // Pose2 p2(M_PI/3.0, Point2(1,2));
-        // Pose2 p1(M_PI/6.0, Point2(-1,4));
+        Pose2 p2 = new Pose2(Math.PI / 3.0, new Point2(1, 2));
+        Pose2 p1 = new Pose2(Math.PI / 6.0, new Point2(-1, 4));
 
         // Matrix actualH1,actualH2;
         // p1.between(p2,actualH1,actualH2);
@@ -639,10 +653,10 @@ public class Pose2Test {
 
     @Test
     void testround_trip() throws Throwable {
-        // Pose2 p1(1.23, 2.30, 0.2);
-        // Pose2 odo(0.53, 0.39, 0.15);
-        // Pose2 p2 = p1.compose(odo);
-        // EXPECT(assert_equal(odo, p1.between(p2)));
+        Pose2 p1 = new Pose2(1.23, 2.30, 0.2);
+        Pose2 odo = new Pose2(0.53, 0.39, 0.15);
+        Pose2 p2 = p1.compose(odo);
+        assertTrue(odo.equals(p1.between(p2), 1e-6));
     }
 
     // namespace {
@@ -701,8 +715,10 @@ public class Pose2Test {
 
     @Test
     void testbearing_pose() throws Throwable {
-        // Pose2 xl1(1, 0, M_PI/2.0), xl2(1, 1, M_PI), xl3(2.0, 2.0,-M_PI/2.0), xl4(1,
-        // 3, 0);
+        Pose2 xl1 = new Pose2(1, 0, Math.PI / 2.0);
+        Pose2 xl2 = new Pose2(1, 1, Math.PI);
+        Pose2 xl3 = new Pose2(2.0, 2.0, -Math.PI / 2.0);
+        Pose2 xl4 = new Pose2(1, 3, 0);
 
         // Matrix expectedH1, actualH1, expectedH2, actualH2;
 
@@ -814,7 +830,7 @@ public class Pose2Test {
 
     @Test
     void testalign_1() throws Throwable {
-        // Pose2 expected(Rot2::fromAngle(0), Point2(10, 10));
+        Pose2 expected = new Pose2(Rot2.fromAngle(0), new Point2(10, 10));
         // Point2Pairs ab_pairs {{Point2(10, 10), Point2(0, 0)},
         // {Point2(30, 20), Point2(20, 10)}};
         // std::optional<Pose2> aTb = Pose2::Align(ab_pairs);
@@ -823,7 +839,7 @@ public class Pose2Test {
 
     @Test
     void testalign_2() throws Throwable {
-        // Point2 t(20, 10);
+        Point2 t = new Point2(20, 10);
         // Rot2 R = Rot2::fromAngle(M_PI/2.0);
         // Pose2 expected(R, t);
 
@@ -846,7 +862,6 @@ public class Pose2Test {
 
     @Test
     void testalign_3() throws Throwable {
-        // TEST(Pose2, align_3) {
         // using namespace align_3;
 
         // Point2Pair ab1(make_pair(a1, b1));
@@ -878,7 +893,6 @@ public class Pose2Test {
 
     @Test
     void testalign_4() throws Throwable {
-        // TEST(Pose2, align_4) {
         // using namespace align_3;
 
         // Point2Vector as{a1, a2, a3}, bs{b3, b1, b2}; // note in 3,1,2 order !
@@ -1003,10 +1017,10 @@ public class Pose2Test {
 
     @Test
     void testVec() throws Throwable {
-        // // Test a simple pose
-        // Pose2 pose(Rot2::fromAngle(M_PI / 4), Point2(1, 2));
+        // Test a simple pose
+        Pose2 pose = new Pose2(Rot2.fromAngle(Math.PI / 4), new Point2(1, 2));
 
-        // // Test the 'vec' method
+        // Test the 'vec' method
         // Vector9 expected_vec = Eigen::Map<Vector9>(pose.matrix().data());
         // Matrix93 actualH;
         // Vector9 actual_vec = pose.vec(actualH);
@@ -1020,8 +1034,8 @@ public class Pose2Test {
 
     @Test
     void testAdjointMap() throws Throwable {
-        // // Create a non-trivial Pose2 object
-        // const Pose2 pose(Rot2::fromAngle(0.5), Point2(1.0, 2.0));
+        // Create a non-trivial Pose2 object
+        final Pose2 pose = new Pose2(Rot2.fromAngle(0.5), new Point2(1.0, 2.0));
 
         // // Call the specialized AdjointMap
         // Matrix3 specialized_Adj = pose.AdjointMap();
@@ -1036,7 +1050,7 @@ public class Pose2Test {
 
     @Test
     void testAdjointTranspose() throws Throwable {
-        // const Pose2 pose(Rot2::fromAngle(0.5), Point2(1.0, 2.0));
+        final Pose2 pose = new Pose2(Rot2.fromAngle(0.5), new Point2(1.0, 2.0));
         // const Vector3 xi(0.2, -0.4, 0.7);
 
         // EXPECT(assert_equal(Vector(pose.AdjointMap().transpose() * xi),
@@ -1053,8 +1067,8 @@ public class Pose2Test {
 
     @Test
     void testadjointTranspose() throws Throwable {
-        // const Vector3 xi(0.2, -0.4, 0.7);
-        // const Vector3 y(-0.3, 0.5, 0.9);
+        final Vector3 xi = new Vector3(0.2, -0.4, 0.7);
+        final Vector3 y = new Vector3(-0.3, 0.5, 0.9);
 
         // Matrix33 Hxi, Hy;
         // const Vector3 actual = Pose2::adjointTranspose(xi, y, Hxi, Hy);

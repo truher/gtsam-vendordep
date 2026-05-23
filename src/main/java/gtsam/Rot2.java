@@ -29,6 +29,10 @@ public class Rot2 extends ForeignObject {
         this((MemorySegment) Rot2.invokeExact(theta));
     }
 
+    public static Rot2 fromAngle(double theta) throws Throwable {
+        return new Rot2(theta);
+    }
+
     public double theta() throws Throwable {
         return (double) Rot2_theta.invokeExact(ptr);
     }
