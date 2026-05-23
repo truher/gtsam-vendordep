@@ -23,7 +23,7 @@ public class Matrix extends ForeignObject {
     private static final MethodHandle Matrix_set = Lib.downVoid(
             "Matrix_set", ADDRESS, JAVA_INT, JAVA_INT, JAVA_DOUBLE);
     // private static final MethodHandle Matrix_setCol = Lib.downVoid(
-    //         "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
+    // "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
     private static final MethodHandle Matrix_at = Lib.down(
             "Matrix_at", JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_diagonal_cwiseSqrt = Lib.down(
@@ -163,6 +163,7 @@ public class Matrix extends ForeignObject {
     }
 
     public Matrix inverse() throws Throwable {
+        System.out.println("Matrix.inverse()");
         return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
     }
 

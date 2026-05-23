@@ -1,4 +1,5 @@
 #include <gtsam/base/Matrix.h>
+#include <iostream>
 
 extern "C" {
 gtsam::Matrix* Matrix() {
@@ -34,6 +35,7 @@ int Matrix_cols(const gtsam::Matrix* m) {
     return m->cols();
 }
 gtsam::Matrix* Matrix_inverse(const gtsam::Matrix* m) {
+    std::cout << "Matrix inverse " << *m << std::endl;
     return new gtsam::Matrix(m->inverse());
 }
 gtsam::Matrix* Matrix_compose(const gtsam::Matrix* a, const gtsam::Matrix* b) {

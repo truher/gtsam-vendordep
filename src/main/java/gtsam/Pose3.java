@@ -94,10 +94,11 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
     }
 
     public Pose3 inverse() throws Throwable {
+        System.out.println("Pose3.inverse()");
         return new Pose3((MemorySegment) Pose3_inverse.invokeExact(ptr));
     }
 
-    public Matrix AdjointMap() throws Throwable {
-        return new Matrix((MemorySegment) Pose3_AdjointMap.invokeExact(ptr));
+    public Matrix6 AdjointMap() throws Throwable {
+        return new Matrix6((MemorySegment) Pose3_AdjointMap.invokeExact(ptr));
     }
 }

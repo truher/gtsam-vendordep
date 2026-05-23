@@ -24,8 +24,8 @@ public class Lib {
         SymbolLookup slib;
         // Where are we?
         String cwd = Paths.get("").toAbsolutePath().toString();
-        System.out.println("CWD: " + cwd);
-        System.out.flush();
+        // System.out.println("CWD: " + cwd);
+        // System.out.flush();
         // Where is the library?
         try {
             // Systemcore location.

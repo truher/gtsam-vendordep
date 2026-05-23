@@ -12,12 +12,12 @@ gtsam::Cal3DS2* Cal3DS2(double fx, double fy,            //
 void Cal3DS2_delete(gtsam::Cal3DS2* p) {
     delete p;
 }
-gtsam::Vector* Cal3DS2_localCoordinates(const gtsam::Cal3DS2* a,
+gtsam::Vector9* Cal3DS2_localCoordinates(const gtsam::Cal3DS2* a,
                                         const gtsam::Cal3DS2* b) {
-    return new gtsam::Vector(a->localCoordinates(*b));
+    return new gtsam::Vector9(a->localCoordinates(*b));
 }
 gtsam::Cal3DS2* Cal3DS2_retract(const gtsam::Cal3DS2* p,
-                                const gtsam::Vector* v) {
+                                const gtsam::Vector9* v) {
     return new gtsam::Cal3DS2(p->retract(*v));
 }
 void Cal3DS2_print(const gtsam::Cal3DS2* p) {

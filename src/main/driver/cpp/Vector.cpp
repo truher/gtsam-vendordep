@@ -34,27 +34,11 @@ gtsam::Vector* Vector_minus(const gtsam::Vector* v,
                             const gtsam::Vector* other) {
     return new gtsam::Vector((*v) - (*other));
 }
-gtsam::Vector2* Vector2_minus(const gtsam::Vector2* v,
-                              const gtsam::Vector2* other) {
-    return new gtsam::Vector2((*v) - (*other));
-}
-gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
-                              const gtsam::Vector3* other) {
-    return new gtsam::Vector3((*v) - (*other));
-}
+
 gtsam::Vector* Vector_plus(const gtsam::Vector* v, const gtsam::Vector* other) {
     return new gtsam::Vector((*v) + (*other));
 }
-gtsam::Vector2* Vector2_plus(const gtsam::Vector2* v,
-                             const gtsam::Vector2* other) {
-    return new gtsam::Vector2((*v) + (*other));
-}
-gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,
-                             const gtsam::Vector3* other) {
-    // std::cout << "v " << *v << std::endl;
-    // std::cout << "other " << *other << std::endl;
-    return new gtsam::Vector3((*v) + (*other));
-}
+
 gtsam::Vector* Vector_times(const gtsam::Vector* v, double a) {
     return new gtsam::Vector((*v) * a);
 }
@@ -79,10 +63,14 @@ gtsam::Vector1* Vector1(double v0) {
 void Vector1_delete(gtsam::Vector1* p) {
     delete p;
 }
+
 ////////////////////////////
 // Vector2
-gtsam::Vector2* Vector2(double v0, double v1) {
-    return new gtsam::Vector2(v0, v1);
+gtsam::Vector2* Vector2() {
+    // Java users certainly expect zero initialization!
+    gtsam::Vector2* v = new gtsam::Vector2();
+    v->setZero();
+    return v;
 }
 void Vector2_delete(gtsam::Vector2* p) {
     delete p;
@@ -90,16 +78,32 @@ void Vector2_delete(gtsam::Vector2* p) {
 double Vector2_at(const gtsam::Vector2* v, int i) {
     return (*v)(i);
 }
-void Vector3_set(gtsam::Vector3* v, int i, double val) {
+void Vector2_set(gtsam::Vector2* v, int i, double val) {
     (*v)(i) = val;
 }
+gtsam::Vector2* Vector2_plus(const gtsam::Vector2* v,
+                             const gtsam::Vector2* other) {
+    return new gtsam::Vector2((*v) + (*other));
+}
+gtsam::Vector2* Vector2_minus(const gtsam::Vector2* v,
+                              const gtsam::Vector2* other) {
+    return new gtsam::Vector2((*v) - (*other));
+}
+gtsam::Vector2* Vector2_times(const gtsam::Vector2* v, double a) {
+    return new gtsam::Vector2((*v) * a);
+}
+
 void Vector2_print(const gtsam::Vector2* v) {
     std::cout << *v << std::endl;
 }
+
 /////////////////////////
 // Vector3
-gtsam::Vector3* Vector3(double v0, double v1, double v2) {
-    return new gtsam::Vector3(v0, v1, v2);
+gtsam::Vector3* Vector3() {
+    // Java users certainly expect zero initialization!
+    gtsam::Vector3* v = new gtsam::Vector3();
+    v->setZero();
+    return v;
 }
 void Vector3_delete(gtsam::Vector3* p) {
     delete p;
@@ -107,7 +111,79 @@ void Vector3_delete(gtsam::Vector3* p) {
 double Vector3_at(const gtsam::Vector3* v, int i) {
     return (*v)(i);
 }
+void Vector3_set(gtsam::Vector3* v, int i, double val) {
+    (*v)(i) = val;
+}
+gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,
+                             const gtsam::Vector3* other) {
+    return new gtsam::Vector3((*v) + (*other));
+}
+gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
+                              const gtsam::Vector3* other) {
+    return new gtsam::Vector3((*v) - (*other));
+}
+gtsam::Vector3* Vector3_times(const gtsam::Vector3* v, double a) {
+    return new gtsam::Vector3((*v) * a);
+}
 void Vector3_print(const gtsam::Vector3* v) {
     std::cout << *v << std::endl;
+}
+
+//////////////////////////
+// Vector6
+gtsam::Vector6* Vector6() {
+    // Java users certainly expect zero initialization!
+    gtsam::Vector6* v = new gtsam::Vector6();
+    v->setZero();
+    return v;
+}
+void Vector6_delete(gtsam::Vector6* p) {
+    delete p;
+}
+double Vector6_at(const gtsam::Vector6* v, int i) {
+    return (*v)(i);
+}
+void Vector6_set(gtsam::Vector6* v, int i, double val) {
+    (*v)(i) = val;
+}
+gtsam::Vector6* Vector6_plus(const gtsam::Vector6* v,
+                             const gtsam::Vector6* other) {
+    return new gtsam::Vector6((*v) + (*other));
+}
+gtsam::Vector6* Vector6_minus(const gtsam::Vector6* v,
+                              const gtsam::Vector6* other) {
+    return new gtsam::Vector6((*v) - (*other));
+}
+gtsam::Vector6* Vector6_times(const gtsam::Vector6* v, double a) {
+    return new gtsam::Vector6((*v) * a);
+}
+
+//////////////////////////
+// Vector9
+gtsam::Vector9* Vector9() {
+    // Java users certainly expect zero initialization!
+    gtsam::Vector9* v = new gtsam::Vector9();
+    v->setZero();
+    return v;
+}
+void Vector9_delete(gtsam::Vector9* p) {
+    delete p;
+}
+double Vector9_at(const gtsam::Vector9* v, int i) {
+    return (*v)(i);
+}
+void Vector9_set(gtsam::Vector9* v, int i, double val) {
+    (*v)(i) = val;
+}
+gtsam::Vector9* Vector9_plus(const gtsam::Vector9* v,
+                             const gtsam::Vector9* other) {
+    return new gtsam::Vector9((*v) + (*other));
+}
+gtsam::Vector9* Vector9_minus(const gtsam::Vector9* v,
+                              const gtsam::Vector9* other) {
+    return new gtsam::Vector9((*v) - (*other));
+}
+gtsam::Vector9* Vector9_times(const gtsam::Vector9* v, double a) {
+    return new gtsam::Vector9((*v) * a);
 }
 }

@@ -4,17 +4,24 @@ package gtsam;
  * See gtsam/base/Lie.h.
  * 
  * TODO: add Jacobians.
+ * 
+ * @param T the liegroup type, e.g. Pose2.
+ * @param V the type of its tangent vector, e.g. Vector3.
  */
-public interface LieGroup<T extends LieGroup<T, TangentVectorType>, TangentVectorType>
-        extends Group<T>, Manifold<T, TangentVectorType> {
-    public interface Traits<T extends LieGroup<T, TangentVectorType>, TangentVectorType>
-            extends Group.Traits<T>, Manifold.Traits<T, TangentVectorType> {
-        T Expmap(TangentVectorType v) throws Throwable;
+public interface LieGroup<//
+        T extends LieGroup<T, V>, //
+        V extends VectorType<V>>
+        extends Group<T>, Manifold<T, V> {
+    public interface Traits<//
+            T extends LieGroup<T, V>, //
+            V extends VectorType<V>>
+            extends Group.Traits<T>, Manifold.Traits<T, V> {
+        T Expmap(V v) throws Throwable;
 
-        TangentVectorType Logmap(T g) throws Throwable;
+        V Logmap(T g) throws Throwable;
 
         // *Hg = traits<T>::AdjointMap(g);
     }
 
-    Traits<T, TangentVectorType> traits();
+    Traits<T, V> traits();
 }

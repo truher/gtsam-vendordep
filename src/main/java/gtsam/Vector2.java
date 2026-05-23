@@ -13,19 +13,20 @@ import org.team100.foreign.Lib;
 public class Vector2 extends ForeignObject
         implements VectorType<Vector2>, Manifold<Vector2, Vector2> {
     private static final MethodHandle Vector2 = Lib.down(
-            "Vector2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
+            "Vector2", ADDRESS);
     private static final MethodHandle Vector2_delete = Lib.downVoid(
             "Vector2_delete", ADDRESS);
-    private static final MethodHandle Vector2_set = Lib.downVoid(
-            "Vector2_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Vector2_minus = Lib.down(
-            "Vector2_minus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector2_plus = Lib.down(
-            "Vector2_plus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector2_times = Lib.down(
-            "Vector2_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Vector2_at = Lib.down(
             "Vector2_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
+    private static final MethodHandle Vector2_set = Lib.downVoid(
+            "Vector2_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
+    private static final MethodHandle Vector2_plus = Lib.down(
+            "Vector2_plus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector2_minus = Lib.down(
+            "Vector2_minus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector2_times = Lib.down(
+            "Vector2_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
+
     private static final MethodHandle Vector2_print = Lib.downVoid(
             "Vector2_print", ADDRESS);
 
@@ -49,8 +50,19 @@ public class Vector2 extends ForeignObject
         super(p, Vector2_delete);
     }
 
+    public Vector2() throws Throwable {
+        this((MemorySegment) Vector2.invokeExact());
+    }
+
     public Vector2(double v0, double v1) throws Throwable {
-        this((MemorySegment) Vector2.invokeExact(v0, v1));
+        this();
+        set(0, v0);
+        set(1, v1);
+    }
+
+    @Override
+    public int dimension() {
+        return 2;
     }
 
     public double at(int i) throws Throwable {
@@ -60,21 +72,6 @@ public class Vector2 extends ForeignObject
     @Override
     public void set(int i, double val) throws Throwable {
         Vector2_set.invokeExact(ptr, i, val);
-    }
-
-    public void print() throws Throwable {
-        Vector2_print.invokeExact(ptr);
-    }
-
-    @Override
-    public int dimension() {
-        return 2;
-    }
-
-    // TODO: maybe make a real "local" ?
-    @Override
-    public Vector2 local(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr));
     }
 
     @Override
@@ -90,6 +87,16 @@ public class Vector2 extends ForeignObject
     @Override
     public Vector2 times(double a) throws Throwable {
         return new Vector2((MemorySegment) Vector2_times.invokeExact(ptr, a));
+    }
+
+    public void print() throws Throwable {
+        Vector2_print.invokeExact(ptr);
+    }
+
+    // TODO: maybe make a real "local" ?
+    @Override
+    public Vector2 local(Vector2 other) throws Throwable {
+        return new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr));
     }
 
     public boolean equals(double[] x, double tol) throws Throwable {

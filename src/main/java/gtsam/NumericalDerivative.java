@@ -28,6 +28,7 @@ public class NumericalDerivative {
             Xvec extends VectorType<Xvec>//
     > Matrix numericalDerivative11(
             ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
+        // System.out.println("numericalDerivative11");
         Manifold.Traits<X, Xvec> TraitsX = x.traits();
         Y hx = h.apply(x);
         Manifold.Traits<Y, Yvec> TraitsY = hx.traits();
@@ -38,6 +39,7 @@ public class NumericalDerivative {
         Matrix H = new Matrix(m, N);
         final double factor = 1.0 / (2.0 * delta);
         for (int j = 0; j < N; ++j) {
+            // System.out.printf("j %d\n", j);
             dx.set(j, delta);
             // System.out.printf("dx (right) %s\n", dx);
             // System.out.printf("hx %s\n", hx);

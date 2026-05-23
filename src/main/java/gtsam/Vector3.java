@@ -14,21 +14,23 @@ import org.team100.foreign.Lib;
 public class Vector3 extends ForeignObject
         implements VectorType<Vector3>, Manifold<Vector3, Vector3> {
     private static final MethodHandle Vector3 = Lib.down(
-            "Vector3", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
+            "Vector3", ADDRESS);
     private static final MethodHandle Vector3_delete = Lib.downVoid(
             "Vector3_delete", ADDRESS);
     private static final MethodHandle Vector3_at = Lib.down(
             "Vector3_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
     private static final MethodHandle Vector3_set = Lib.downVoid(
             "Vector3_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Vector3_print = Lib.downVoid(
-            "Vector3_print", ADDRESS);
-    private static final MethodHandle Vector3_minus = Lib.down(
-            "Vector3_minus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector3_plus = Lib.down(
             "Vector3_plus", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Vector3_minus = Lib.down(
+            "Vector3_minus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector3_times = Lib.down(
             "Vector3_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+    private static final MethodHandle Vector3_print = Lib.downVoid(
+            "Vector3_print", ADDRESS);
+
     private static final MethodHandle Vector3_equals = Lib.down(
             "Vector3_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
@@ -52,8 +54,20 @@ public class Vector3 extends ForeignObject
         super(p, Vector3_delete);
     }
 
+    public Vector3() throws Throwable {
+        this((MemorySegment) Vector3.invokeExact());
+    }
+
     public Vector3(double v0, double v1, double v2) throws Throwable {
-        this((MemorySegment) Vector3.invokeExact(v0, v1, v2));
+        this();
+        set(0, v0);
+        set(1, v1);
+        set(2, v2);
+    }
+
+    @Override
+    public int dimension() throws Throwable {
+        return 3;
     }
 
     @Override
@@ -64,6 +78,21 @@ public class Vector3 extends ForeignObject
     @Override
     public void set(int i, double val) throws Throwable {
         Vector3_set.invokeExact(ptr, i, val);
+    }
+
+    @Override
+    public Vector3 plus(Vector3 other) throws Throwable {
+        return new Vector3((MemorySegment) Vector3_plus.invokeExact(ptr, other.ptr));
+    }
+
+    @Override
+    public Vector3 minus(Vector3 other) throws Throwable {
+        return new Vector3((MemorySegment) Vector3_minus.invokeExact(ptr, other.ptr));
+    }
+
+    @Override
+    public Vector3 times(double a) throws Throwable {
+        return new Vector3((MemorySegment) Vector3_times.invokeExact(ptr, a));
     }
 
     public void print() throws Throwable {
@@ -85,23 +114,6 @@ public class Vector3 extends ForeignObject
             e.printStackTrace();
             return "";
         }
-    }
-
-    @Override
-    public int dimension() throws Throwable {
-        return 3;
-    }
-
-    public Vector3 minus(Vector3 other) throws Throwable {
-        return new Vector3((MemorySegment) Vector3_minus.invokeExact(ptr, other.ptr));
-    }
-
-    public Vector3 plus(Vector3 other) throws Throwable {
-        return new Vector3((MemorySegment) Vector3_plus.invokeExact(ptr, other.ptr));
-    }
-
-    public Vector3 times(double a) throws Throwable {
-        return new Vector3((MemorySegment) Vector3_times.invokeExact(ptr, a));
     }
 
     @Override

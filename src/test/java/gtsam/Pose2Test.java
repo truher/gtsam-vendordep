@@ -27,10 +27,10 @@ public class Pose2Test {
         Pose2 t1 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 t2 = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
         Pose2 origin = new Pose2();
-        Vector d12 = t1.localCoordinates(t2);
+        Vector3 d12 = t1.localCoordinates(t2);
         assertTrue(t2.equals(t1.retract(d12), 1e-6));
         assertTrue(t2.equals(t1.compose(origin.retract(d12)), 1e-6));
-        Vector d21 = t2.localCoordinates(t1);
+        Vector3 d21 = t2.localCoordinates(t1);
         assertTrue(t1.equals(t2.retract(d21), 1e-6));
         assertTrue(t1.equals(t2.compose(origin.retract(d21)), 1e-6));
     }
@@ -43,20 +43,20 @@ public class Pose2Test {
         // #else // this is what we actually do, apparently.
         Pose2 expected = new Pose2(Math.PI / 2.0 + 0.99, new Point2(1.015, 2.01));
         // #endif
-        Pose2 actual = pose.retract(new Vector(new double[] { 0.01, -0.015, 0.99 }));
+        Pose2 actual = pose.retract(new Vector3(0.01, -0.015, 0.99));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
     @Test
     void testRetractJacobian() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
-        Vector v = new Vector(new double[] { 0.01, -0.015, 0.99 });
+        Vector3 v = new Vector3(0.01, -0.015, 0.99);
 
         Matrix actualH = new Matrix();
         Pose2.Retract(pose, v, new Matrix(), actualH);
 
-        ThrowingFunction<Vector, Pose2> retract_from_pose = (Vector delta) -> pose.retract(delta);
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector>numericalDerivative11(
+        ThrowingFunction<Vector3, Pose2> retract_from_pose = (Vector3 delta) -> pose.retract(delta);
+        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(
                 retract_from_pose, v, 1e-6);
 
         assertTrue(expectedH.equals(actualH, 1e-5));
@@ -66,7 +66,7 @@ public class Pose2Test {
     void testExpmap() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        Pose2 actual = pose.expmap_default(new Vector(new double[] { 0.01, -0.015, 0.99 }));
+        Pose2 actual = pose.expmap_default(new Vector3(0.01, -0.015, 0.99));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -74,7 +74,7 @@ public class Pose2Test {
     void testExpmap2() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        Pose2 actual = pose.expmap_default(new Vector(new double[] { 0.01, -0.015, 0.99 }));
+        Pose2 actual = pose.expmap_default(new Vector3(0.01, -0.015, 0.99));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -91,9 +91,9 @@ public class Pose2Test {
         Matrix3 A4 = A3.compose(A).times(1.0 / 4.0);
         Matrix3 expected = Matrix3.identity().plus(A).plus(A2).plus(A3).plus(A4);
 
-        Vector v = new Vector(new double[] { 0.01, -0.015, 0.99 });
+        Vector3 v = new Vector3(0.01, -0.015, 0.99);
         // Vector3 v = new Vector3( 0.01, -0.015, 0.99 );
-        Pose2 pose = Pose2.Expmap(v, Matrix3.identity());
+        Pose2 pose = Pose2.Expmap(v, new Matrix(3, 3));
         Pose2 pose2 = new Pose2(v);
         assertTrue(pose.equals(pose2, 1e-6),
                 String.format("expected %s actual %s\n", pose, pose2));
@@ -107,7 +107,7 @@ public class Pose2Test {
     @Test
     void testExpmap0a() throws Throwable {
         Pose2 expected = new Pose2(0.0101345, -0.0149092, 0.018);
-        Pose2 actual = Pose2.Expmap(new Vector3(0.01, -0.015, 0.018), Matrix3.identity());
+        Pose2 actual = Pose2.Expmap(new Vector3(0.01, -0.015, 0.018), new Matrix(3, 3));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -115,7 +115,7 @@ public class Pose2Test {
     void testExpmap0b() throws Throwable {
         // a quarter turn
         Pose2 expected = new Pose2(1.0, 1.0, Math.PI / 2);
-        Pose2 actual = Pose2.Expmap(new Vector3(Math.PI / 2, 0.0, Math.PI / 2), Matrix3.identity());
+        Pose2 actual = Pose2.Expmap(new Vector3(Math.PI / 2, 0.0, Math.PI / 2), new Matrix(3, 3));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -123,7 +123,7 @@ public class Pose2Test {
     void testExpmap0c() throws Throwable {
         // a half turn
         Pose2 expected = new Pose2(0.0, 2.0, Math.PI);
-        Pose2 actual = Pose2.Expmap(new Vector3(Math.PI, 0.0, Math.PI), Matrix3.identity());
+        Pose2 actual = Pose2.Expmap(new Vector3(Math.PI, 0.0, Math.PI), new Matrix(3, 3));
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -131,42 +131,21 @@ public class Pose2Test {
     void testExpmap0d() throws Throwable {
         // a full turn
         Pose2 expected = new Pose2(0, 0, 0);
-        Pose2 actual = Pose2.Expmap(new Vector3(2 * Math.PI, 0.0, 2 * Math.PI), Matrix3.identity());
+        Pose2 actual = Pose2.Expmap(new Vector3(2 * Math.PI, 0.0, 2 * Math.PI), new Matrix(3, 3));
         assertTrue(expected.equals(actual, 1e-5));
-    }
-
-    @Test
-    void testHatAndVee() throws Throwable {
-        // Create a few test vectors
-        Vector v1 = new Vector(new double[] { 1, 2, 3 });
-        Vector v2 = new Vector(new double[] { 0.1, -0.5, 1.0 });
-        Vector v3 = new Vector(new double[] { 0.0, 0.0, 0.0 });
-
-        // Test that Vee(Hat(v)) == v for various inputs
-        assertTrue(v1.equals(Pose2.traits.Vee(Pose2.traits.Hat(v1)), 1e-6));
-        assertTrue(v2.equals(Pose2.traits.Vee(Pose2.traits.Hat(v2)), 1e-6));
-        assertTrue(v3.equals(Pose2.traits.Vee(Pose2.traits.Hat(v3)), 1e-6));
-
-        // Check the structure of the Lie Algebra element
-        Matrix expected = new Matrix(new double[][] {
-                { 0., -3., 1. },
-                { 3., 0., 2. },
-                { 0., 0., 0. } });
-
-        assertTrue(expected.equals(Pose2.traits.Hat(v1), 1e-6));
     }
 
     // test case for screw motion in the plane
     class screwPose2 {
         static double w;
-        static Vector xi;
+        static Vector3 xi;
         static Rot2 expectedR;
         static Point2 expectedT;
         static Pose2 expected;
         static {
             try {
                 w = 0.3;
-                xi = new Vector(new double[] { 0.0, w, w });
+                xi = new Vector3(0.0, w, w);
                 expectedR = Rot2.fromAngle(w);
                 expectedT = new Point2(-0.0446635, 0.29552);
                 expected = new Pose2(expectedR, expectedT);
@@ -178,13 +157,10 @@ public class Pose2Test {
 
     @Test
     void testexpmap_c() throws Throwable {
-        Pose2 actual1 = Pose2.expm(screwPose2.xi);
-        assertTrue(screwPose2.expected.equals(actual1, 1e-6),
-                String.format("expected %s actual %s", screwPose2.expected, actual1));
         Pose2 actual2 = Pose2.traits.Expmap(screwPose2.xi);
         assertTrue(screwPose2.expected.equals(actual2, 1e-6),
                 String.format("expected %s actual %s", screwPose2.expected, actual2));
-        Vector actual3 = Pose2.traits.Logmap(screwPose2.expected);
+        Vector3 actual3 = Pose2.traits.Logmap(screwPose2.expected);
         assertTrue(screwPose2.xi.equals(actual3, 1e-6));
         // String.format("expected %s actual %s", screwPose2.xi, actual3));
     }
@@ -192,17 +168,14 @@ public class Pose2Test {
     @Test
     void testexpmap_c_full() throws Throwable {
         double w = 0.3;
-        Vector xi = new Vector(new double[] { 0.0, w, w });
+        Vector3 xi = new Vector3(0.0, w, w);
         Rot2 expectedR = Rot2.fromAngle(w);
         Point2 expectedT = new Point2(-0.0446635, 0.29552);
         Pose2 expected = new Pose2(expectedR, expectedT);
-        Pose2 actual1 = Pose2.expm(xi);
-        assertTrue(expected.equals(actual1, 1e-6),
-                String.format("expected %s actual %s", expected, actual1));
         Pose2 actual2 = Pose2.traits.Expmap(xi);
         assertTrue(expected.equals(actual2, 1e-6),
                 String.format("expected %s actual %s", expected, actual2));
-        Vector actual3 = Pose2.traits.Logmap(expected);
+        Vector3 actual3 = Pose2.traits.Logmap(expected);
         assertTrue(xi.equals(actual3, 1e-6),
                 String.format("expected %s actual %s", xi, actual3));
     }
@@ -212,28 +185,13 @@ public class Pose2Test {
     void testAdjoint_full() throws Throwable {
         // Pose2 T(1, 2, 3);
         // Pose2 expected = T * Pose2::Expmap(screwPose2::xi) * T.inverse();
-        // Vector xiprime = T.Adjoint(screwPose2::xi);
+        // Vector3 xiprime = T.Adjoint(screwPose2::xi);
         // EXPECT(assert_equal(expected, Pose2::Expmap(xiprime), 1e-6));
 
         // Vector3 xi2(4, 5, 6);
         // Pose2 expected2 = T * Pose2::Expmap(xi2) * T.inverse();
-        // Vector xiprime2 = T.Adjoint(xi2);
+        // Vector3 xiprime2 = T.Adjoint(xi2);
         // EXPECT(assert_equal(expected2, Pose2::Expmap(xiprime2), 1e-6));
-    }
-
-    // // assert that T*Hat(xi)*T^-1 is equal to Hat(Ad_T(xi))
-    @Test
-    void testAdjoint_hat() throws Throwable {
-        // Pose2 T(1, 2, 3);
-        // Matrix3 expected = T.matrix() * Pose2::Hat(screwPose2::xi) *
-        // T.matrix().inverse();
-        // Matrix3 xiprime = Pose2::Hat(T.Adjoint(screwPose2::xi));
-        // EXPECT(assert_equal(expected, xiprime, 1e-6));
-
-        // Vector3 xi2(4, 5, 6);
-        // Matrix3 expected2 = T.matrix() * Pose2::Hat(xi2) * T.matrix().inverse();
-        // Matrix3 xiprime2 = Pose2::Hat(T.Adjoint(xi2));
-        // EXPECT(assert_equal(expected2, xiprime2, 1e-6));
     }
 
     @Test
@@ -243,9 +201,9 @@ public class Pose2Test {
         // #ifdef GTSAM_SLOW_BUT_CORRECT_EXPMAP
         // Vector3 expected(0.00986473, -0.0150896, 0.018);
         // #else
-        Vector expected = new Vector(new double[] { 0.01, -0.015, 0.018 });
+        Vector3 expected = new Vector3(0.01, -0.015, 0.018);
         // #endif
-        Vector actual = pose0.localCoordinates(pose);
+        Vector3 actual = pose0.localCoordinates(pose);
         assertTrue(expected.equals(actual, 1e-5));
     }
 
@@ -253,60 +211,58 @@ public class Pose2Test {
     void testlogmap_full() throws Throwable {
         Pose2 pose0 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 pose = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
-        Vector expected = new Vector(new double[] { 0.00986473, -0.0150896, 0.018 });
-        Vector actual = pose0.logmap_default(pose);
+        Vector3 expected = new Vector3(0.00986473, -0.0150896, 0.018);
+        Vector3 actual = pose0.logmap_default(pose);
         assertTrue(expected.equals(actual, 1e-5));
     }
 
     @Test
     void testExpmapDerivative1() throws Throwable {
-        Matrix3 actualH = Matrix3.identity();
+        Matrix actualH = new Matrix(3, 3);
         Vector3 w = new Vector3(0.1, 0.27, -0.3);
         Pose2.Expmap(w, actualH);
-        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, Matrix3.identity());
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector3>numericalDerivative11(
+        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
+        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(
                 h, w, 1e-2);
-        assertTrue(expectedH.equals(new Matrix(actualH), 1e-5),
+        assertTrue(expectedH.equals(actualH, 1e-5),
                 String.format("expected %s actual %s", expectedH, actualH));
     }
 
     @Test
     void testExpmapDerivative2() throws Throwable {
-        Matrix3 actualH = Matrix3.identity();
+        Matrix actualH = new Matrix(3, 3);
         Vector3 w0 = new Vector3(0.1, 0.27, 0.0); // alpha = 0
         Pose2.Expmap(w0, actualH);
-        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, Matrix3.identity());
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector3>numericalDerivative11(h, w0, 1e-3);
-        assertTrue(expectedH.equals(new Matrix(actualH), 1e-5),
+        ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
+        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
+        assertTrue(expectedH.equals(actualH, 1e-5),
                 String.format("expected %s actual %s", expectedH, actualH));
     }
 
     @Test
     void testLogmapDerivative1() throws Throwable {
-        Matrix3 actualH = Matrix3.identity();
-        // Vector3 w = new Vector3(0.1, 0.27, -0.3);
-        Vector w = new Vector(new double[] { 0.1, 0.27, -0.3 });
-        Pose2 p = Pose2.Expmap(w, Matrix3.identity());
-        Vector other = Pose2.Logmap(p, actualH);
-        // Vector other = new Vector(Pose2.Logmap(p, actualH));
+        Matrix actualH = new Matrix(3, 3);
+        Vector3 w = new Vector3(0.1, 0.27, -0.3);
+        Pose2 p = Pose2.Expmap(w, new Matrix(3, 3));
+        Vector3 other = Pose2.Logmap(p, actualH);
         assertTrue(w.equals(other, 1e-5),
                 String.format("expected %s actual %s", w, other));
 
-        ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, Matrix3.identity());
-        Matrix expectedH = NumericalDerivative.<Vector3, Pose2>numericalDerivative11(h, p, 1e-2);
-        assertTrue(expectedH.equals(new Matrix(actualH), 1e-5),
+        ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, new Matrix(3, 3));
+        Matrix expectedH = NumericalDerivative.<Vector3, Vector3, Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
+        assertTrue(expectedH.equals(actualH, 1e-5),
                 String.format("expected %s actual %s", expectedH, actualH));
     }
 
     @Test
     void testLogmapDerivative2() throws Throwable {
-        Matrix3 actualH = Matrix3.identity();
+        Matrix actualH = new Matrix(3, 3);
         Vector3 w0 = new Vector3(0.1, 0.27, 0.0); // alpha = 0
-        Pose2 p = Pose2.Expmap(w0, Matrix3.identity());
+        Pose2 p = Pose2.Expmap(w0, new Matrix(3, 3));
         assertTrue(w0.equals(Pose2.Logmap(p, actualH), 1e-5));
-        ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, Matrix3.identity());
-        Matrix expectedH = NumericalDerivative.<Vector3, Pose2>numericalDerivative11(h, p, 1e-2);
-        assertTrue(expectedH.equals(new Matrix(actualH), 1e-5));
+        ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, new Matrix(3, 3));
+        Matrix expectedH = NumericalDerivative.<Vector3, Vector3, Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
+        assertTrue(expectedH.equals(actualH, 1e-5));
     }
 
     @Test
@@ -334,15 +290,17 @@ public class Pose2Test {
         assertTrue(expectedH1.equals(actualH1, 1e-6));
         ThrowingFunction2<Pose2, Point2, Point2> transformTo_ = (p, p0) -> p.transformTo(p0, new Matrix(),
                 new Matrix());
-        Matrix numericalH1 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative21(
-                transformTo_, pose, point, 1e-3);
+        Matrix numericalH1 = NumericalDerivative
+                .<Point2, Vector2, Pose2, Vector3, Point2, Vector2>numericalDerivative21(
+                        transformTo_, pose, point, 1e-3);
         assertTrue(numericalH1.equals(actualH1, 1e-6),
                 String.format("expected %s actual %s", numericalH1, actualH1));
 
         assertTrue(expectedH2.equals(actualH2, 1e-6),
                 String.format("expected %s actual %s", expectedH2, actualH2));
-        Matrix numericalH2 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative22(
-                transformTo_, pose, point, 1e-3);
+        Matrix numericalH2 = NumericalDerivative
+                .<Point2, Vector2, Pose2, Vector3, Point2, Vector2>numericalDerivative22(
+                        transformTo_, pose, point, 1e-3);
         assertTrue(numericalH2.equals(actualH2, 1e-6),
                 String.format("expected %s actual %s", numericalH2, actualH2));
     }
@@ -368,14 +326,16 @@ public class Pose2Test {
 
         ThrowingFunction2<Pose2, Point2, Point2> transformFrom_ = (p, p0) -> p.transformFrom(
                 p0, new Matrix(), new Matrix());
-        Matrix numericalH1 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative21(
-                transformFrom_, pose, pt, 1e-3);
+        Matrix numericalH1 = NumericalDerivative
+                .<Point2, Vector2, Pose2, Vector3, Point2, Vector2>numericalDerivative21(
+                        transformFrom_, pose, pt, 1e-3);
         assertTrue(H1_expected.equals(H1, 1e-6),
                 String.format("expected %s actual %s", H1_expected, H1));
         assertTrue(H1_expected.equals(numericalH1, 1e-6),
                 String.format("expected %s actual %s", H1_expected, numericalH1));
-        Matrix numericalH2 = NumericalDerivative.<Point2, Pose2, Point2>numericalDerivative22(
-                transformFrom_, pose, pt, 1e-3);
+        Matrix numericalH2 = NumericalDerivative
+                .<Point2, Vector2, Pose2, Vector3, Point2, Vector2>numericalDerivative22(
+                        transformFrom_, pose, pt, 1e-3);
         assertTrue(H2_expected.equals(H2, 1e-6),
                 String.format("expected %s actual %s", H2_expected, H2));
         assertTrue(H2_expected.equals(numericalH2, 1e-6),
@@ -489,8 +449,8 @@ public class Pose2Test {
     // namespace {
     // /* *************************************************************************
     // */
-    // Vector homogeneous(const Point2& p) {
-    // return (Vector(3) << p.x(), p.y(), 1.0).finished();
+    // Vector3 homogeneous(const Point2& p) {
+    // return (Vector3(3) << p.x(), p.y(), 1.0).finished();
     // }
 
     // /* *************************************************************************
@@ -895,7 +855,7 @@ public class Pose2Test {
     void testalign_4() throws Throwable {
         // using namespace align_3;
 
-        // Point2Vector as{a1, a2, a3}, bs{b3, b1, b2}; // note in 3,1,2 order !
+        // Point2Vector3 as{a1, a2, a3}, bs{b3, b1, b2}; // note in 3,1,2 order !
 
         // Triangle t1; t1.i_=0; t1.j_=1; t1.k_=2;
         // Triangle t2; t2.i_=1; t2.j_=2; t2.k_=0;
@@ -1053,8 +1013,8 @@ public class Pose2Test {
         final Pose2 pose = new Pose2(Rot2.fromAngle(0.5), new Point2(1.0, 2.0));
         // const Vector3 xi(0.2, -0.4, 0.7);
 
-        // EXPECT(assert_equal(Vector(pose.AdjointMap().transpose() * xi),
-        // Vector(pose.AdjointTranspose(xi))));
+        // EXPECT(assert_equal(Vector3(pose.AdjointMap().transpose() * xi),
+        // Vector3(pose.AdjointTranspose(xi))));
 
         // Matrix33 actualH1, actualH2;
         // auto proxy = [](const Pose2& g, const Vector3& x) {

@@ -320,6 +320,7 @@ public class PlanarProjectionFactorTest {
                 new Point3(0, 0, 0));
 
         for (int i = 0; i < 1000; ++i) {
+            // System.out.printf("i %d\n", i);
             Point3 landmark = new Point3(2 + dist.getAsDouble(), dist.getAsDouble(), dist.getAsDouble());
             Point2 measured = new Point2(200 + 100 * dist.getAsDouble(), 200 + 100 * dist.getAsDouble());
             Pose3 offset = centerOffset.compose(
@@ -346,6 +347,7 @@ public class PlanarProjectionFactorTest {
                     .evaluateError(
                             p, o, c, new Matrix(), new Matrix(), new Matrix());
 
+            // System.out.println("numerical derivative 1");
             Matrix expectedH1 = NumericalDerivative
                     .<Vector, Vector, //
                             Pose2, Vector3, //
@@ -353,6 +355,7 @@ public class PlanarProjectionFactorTest {
                             Cal3DS2, Vector9>numericalDerivative31(
                                     h, pose, offset, calib, 1e-5);
 
+            // System.out.println("numerical derivative 2");
             Matrix expectedH2 = NumericalDerivative
                     .<Vector, Vector, //
                             Pose2, Vector3, //
@@ -360,6 +363,7 @@ public class PlanarProjectionFactorTest {
                             Cal3DS2, Vector9>numericalDerivative32(
                                     h, pose, offset, calib, 1e-5);
 
+            // System.out.println("numerical derivative 3");
             Matrix expectedH3 = NumericalDerivative
                     .<Vector, Vector, //
                             Pose2, Vector3, //
@@ -378,6 +382,8 @@ public class PlanarProjectionFactorTest {
      */
     @Test
     void SolveOffset() throws Throwable {
+        System.out.println("D");
+
         SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
         SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(0.01, 0.01,
                 0.01));
@@ -410,6 +416,8 @@ public class PlanarProjectionFactorTest {
                 new Point3(0, 0, 1)); // note z offset
         Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
 
+        System.out.println("A");
+
         NonlinearFactorGraph graph = new NonlinearFactorGraph();
         graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l0, p0, pxModel));
         graph.add(PlanarProjectionFactor3.newPlanarProjectionFactor3(Key.X(0), Key.C(0), Key.K(0), l1, p1, pxModel));
@@ -424,6 +432,7 @@ public class PlanarProjectionFactorTest {
         initialEstimate.insert(Key.C(0), c0);
         initialEstimate.insert(Key.K(0), calib);
 
+        System.out.println("B");
         // run the optimizer
         LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer(graph, initialEstimate);
         Values result = optimizer.optimize();
@@ -448,17 +457,27 @@ public class PlanarProjectionFactorTest {
                 { 0, 0, 0 }//
         }, 1e-4));
 
+        System.out.println("C");
+
+        // This is dynamic, MatrixXd
         Matrix c0cov = marginals.marginalCovariance(Key.C(0));
+        System.out.println("I");
 
         // invert the camera offset to get covariance in body coordinates
-        Matrix HcTb = cc0.inverse().AdjointMap().inverse();
+        // This is fixed, Matrix6
+        Matrix6 HcTb = cc0.inverse().AdjointMap().inverse();
+        System.out.println("H");
+
+        // TODO: add compose, and constructor
         Matrix c0cov2 = HcTb.compose(c0cov).compose(HcTb.transpose());
+        System.out.println("G");
 
         // camera-frame stddev
         Vector c0sigma = c0cov.diagonal_cwiseSqrt();
         assertTrue(c0sigma.equals(new double[] {
                 0.009, 0.011, 0.004, 0.012, 0.012, 0.011
         }, 1e-3));
+        System.out.println("E");
 
         // body frame stddev
         Vector bTcSigma = c0cov2.diagonal_cwiseSqrt();
@@ -479,6 +498,8 @@ public class PlanarProjectionFactorTest {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         }, 3e-3));
+        System.out.println("F");
+
     }
 
 }
