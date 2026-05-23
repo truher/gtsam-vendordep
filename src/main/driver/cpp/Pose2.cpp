@@ -29,7 +29,7 @@ gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector3* v) {
 /** This is from the LieGroup trait, see gtsam/base/Lie.h */
 gtsam::Pose2* Pose2_Retract(const gtsam::Pose2* origin,  //
                             const gtsam::Vector3* v,     //
-                            gtsam::Matrix* Horigin,     //
+                            gtsam::Matrix* Horigin,      //
                             gtsam::Matrix* Hv) {
     return new gtsam::Pose2(origin->retract(gtsam::Vector3(*v), *Horigin, *Hv));
 }
@@ -55,12 +55,19 @@ gtsam::Vector3* Pose2_localCoordinates(const gtsam::Pose2* p,
 gtsam::Pose2* Pose2_between(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2(a->between(*b));
 }
+gtsam::Pose2* Pose2_betweenH(const gtsam::Pose2* a, const gtsam::Pose2* b,
+                             gtsam::Matrix* H1, gtsam::Matrix* H2) {
+    return new gtsam::Pose2(a->between(*b, *H1, *H2));
+}
 gtsam::Pose2* Pose2_inverse(const gtsam::Pose2* p) {
     return new gtsam::Pose2(p->inverse());
 }
 /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
 gtsam::Matrix* Pose2_AdjointMap(const gtsam::Pose2* p) {
     return new gtsam::Matrix(p->AdjointMap());
+}
+gtsam::Vector3* Pose2_Adjoint(const gtsam::Pose2* p, const gtsam::Vector3* v) {
+    return new gtsam::Vector3(p->Adjoint(*v));
 }
 gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi) {
     gtsam::Vector3 xi3(*xi);
@@ -88,6 +95,12 @@ bool Pose2_equals(const gtsam::Pose2* a, const gtsam::Pose2* b, double tol) {
 gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2((*a) * (*b));
 }
+gtsam::Pose2* Pose2_composeH(const gtsam::Pose2* a,  //
+                             const gtsam::Pose2* b,  //
+                             gtsam::Matrix* H1,      //
+                             gtsam::Matrix* H2) {
+    return new gtsam::Pose2(a->compose(*b, *H1, *H2));
+}
 gtsam::Matrix3* Pose2_matrix(const gtsam::Pose2* p) {
     return new gtsam::Matrix3(p->matrix());
 }
@@ -110,7 +123,7 @@ gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,
 // types, which seems like a lot of work for almost no reason?
 gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,       //
                                  const gtsam::Point2* point,  //
-                                 gtsam::Matrix* Dpose,       //
+                                 gtsam::Matrix* Dpose,        //
                                  gtsam::Matrix* Dpoint) {
     return new gtsam::Point2(p->transformTo(*point, *Dpose, *Dpoint));
 }

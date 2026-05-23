@@ -41,10 +41,14 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
             "Pose2_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_between = Lib.down(
             "Pose2_between", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_betweenH = Lib.down(
+            "Pose2_betweenH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_inverse = Lib.down(
             "Pose2_inverse", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_AdjointMap = Lib.down(
             "Pose2_AdjointMap", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_Adjoint = Lib.down(
+            "Pose2_Adjoint", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_Expmap = Lib.down(
             "Pose2_Expmap", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_ExpmapH = Lib.down(
@@ -61,6 +65,8 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
             "Pose2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Pose2_compose = Lib.down(
             "Pose2_compose", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_composeH = Lib.down(
+            "Pose2_composeH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_matrix = Lib.down(
             "Pose2_matrix", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_logmap_default = Lib.down(
@@ -178,6 +184,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) Pose2_between.invokeExact(ptr, other.ptr));
     }
 
+    public Pose2 between(Pose2 other, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_betweenH.invokeExact(ptr, other.ptr, H1.ptr, H2.ptr));
+    }
+
     @Override
     public Pose2 inverse() throws Throwable {
         return new Pose2((MemorySegment) Pose2_inverse.invokeExact(ptr));
@@ -186,6 +196,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
     public Matrix AdjointMap() throws Throwable {
         return new Matrix((MemorySegment) Pose2_AdjointMap.invokeExact(ptr));
+    }
+
+    public Vector3 Adjoint(Vector3 v) throws Throwable {
+        return new Vector3((MemorySegment) Pose2_Adjoint.invokeExact(ptr, v.ptr));
     }
 
     public static Pose2 Expmap(Vector3 xi, Matrix Hv) throws Throwable {
@@ -225,6 +239,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
     public Pose2 compose(Pose2 other) throws Throwable {
         return new Pose2((MemorySegment) Pose2_compose.invokeExact(ptr, other.ptr));
+    }
+
+    public Pose2 compose(Pose2 other, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_composeH.invokeExact(ptr, other.ptr, H1.ptr, H2.ptr));
     }
 
     public Matrix3 matrix() throws Throwable {

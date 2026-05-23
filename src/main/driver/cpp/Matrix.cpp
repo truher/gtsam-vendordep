@@ -7,6 +7,9 @@ gtsam::Matrix* Matrix() {
     m->setZero();
     return m;
 }
+gtsam::Matrix* Matrix_identity3() {
+    return new gtsam::Matrix(gtsam::I_3x3);
+}
 void Matrix_delete(gtsam::Matrix* m) {
     delete m;
 }

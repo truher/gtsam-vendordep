@@ -11,9 +11,14 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
+/**
+ * Dynamically-dimensioned Matrix, corresponds to Eigen::MatrixXd.
+ */
 public class Matrix extends ForeignObject {
     private static final MethodHandle Matrix = Lib.down(
             "Matrix", ADDRESS);
+    private static final MethodHandle Matrix_identity3 = Lib.down(
+            "Matrix_identity3", ADDRESS);
     private static final MethodHandle Matrix_withRowsCols = Lib.down(
             "Matrix_withRowsCols", ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle Matrix_delete = Lib.downVoid(
@@ -47,6 +52,10 @@ public class Matrix extends ForeignObject {
 
     public Matrix() throws Throwable {
         this((MemorySegment) Matrix.invokeExact());
+    }
+
+    public static Matrix identity3() throws Throwable {
+        return new Matrix((MemorySegment) Matrix_identity3.invokeExact());
     }
 
     public Matrix(int rows, int cols) throws Throwable {
@@ -162,7 +171,7 @@ public class Matrix extends ForeignObject {
         return (boolean) Matrix_equals.invokeExact(ptr, other.ptr, tol);
     }
 
-    /** TODO: what if not square?  Pseudo-inverse? */
+    /** TODO: what if not square? Pseudo-inverse? */
     public Matrix inverse() throws Throwable {
         return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
     }
