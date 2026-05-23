@@ -5,16 +5,16 @@ package gtsam;
  * 
  * TODO: add Jacobians.
  */
-public interface LieGroup<T extends LieGroup<T>>
-        extends Group<T>, Manifold<T> {
-    public interface Traits<T extends LieGroup<T>>
-            extends Group.Traits<T>, Manifold.Traits<T> {
-        T Expmap(Vector v) throws Throwable;
+public interface LieGroup<T extends LieGroup<T, TangentVectorType>, TangentVectorType>
+        extends Group<T>, Manifold<T, TangentVectorType> {
+    public interface Traits<T extends LieGroup<T, TangentVectorType>, TangentVectorType>
+            extends Group.Traits<T>, Manifold.Traits<T, TangentVectorType> {
+        T Expmap(TangentVectorType v) throws Throwable;
 
-        Vector Logmap(T g) throws Throwable;
+        TangentVectorType Logmap(T g) throws Throwable;
 
         // *Hg = traits<T>::AdjointMap(g);
     }
 
-    Traits<T> traits();
+    Traits<T, TangentVectorType> traits();
 }

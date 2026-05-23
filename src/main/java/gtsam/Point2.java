@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Point2 extends ForeignObject implements Manifold<Point2> {
+public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     private static final MethodHandle Point2 = Lib.down(
             "Point2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Point2_delete = Lib.downVoid(
@@ -24,7 +24,7 @@ public class Point2 extends ForeignObject implements Manifold<Point2> {
     private static final MethodHandle Point2_equals = Lib.down(
             "Point2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-    public static class Traits implements Manifold.Traits<Point2> {
+    public static class Traits implements Manifold.Traits<Point2, Vector2> {
 
     }
 
@@ -66,13 +66,13 @@ public class Point2 extends ForeignObject implements Manifold<Point2> {
 
     // TODO: use C++ here
     @Override
-    public Vector local(Point2 other) throws Throwable {
-        return new Vector(new double[] { other.x() - x(), other.y() - y() });
+    public Vector2 local(Point2 other) throws Throwable {
+        return new Vector2(other.x() - x(), other.y() - y());
     }
 
     // TODO: use C++ here
     @Override
-    public Point2 retract(Vector v) throws Throwable {
+    public Point2 retract(Vector2 v) throws Throwable {
         return new Point2(x() + v.at(0), y() + v.at(1));
     }
 

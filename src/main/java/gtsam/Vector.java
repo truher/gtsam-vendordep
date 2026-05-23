@@ -19,7 +19,7 @@ import org.team100.foreign.Lib;
  * which is Matrix<double, Dynamic, 1>
  * }
  */
-public class Vector extends ForeignObject implements Manifold<Vector> {
+public class Vector extends ForeignObject {
     private static final MethodHandle Vector = Lib.down(
             "Vector", ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_delete = Lib.downVoid(
@@ -46,17 +46,6 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
             "Vector_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
     private static final MethodHandle Vector_equals = Lib.down(
             "Vector_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
-
-    public static class Traits implements Manifold.Traits<Vector> {
-
-    }
-
-    public static final Traits traits = new Traits();
-
-    @Override
-    public Traits traits() {
-        return traits;
-    }
 
     public Vector(MemorySegment p) {
         super(p, Vector_delete);
@@ -86,7 +75,6 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
     }
 
     // TODO: maybe use "minus" insteaad?
-    @Override
     public Vector local(Vector other) throws Throwable {
         return new Vector((MemorySegment) Vector_Local.invokeExact(ptr, other.ptr));
     }
@@ -132,7 +120,6 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
         }
     }
 
-    @Override
     public int dimension() throws Throwable {
         return rows();
     }
@@ -152,7 +139,6 @@ public class Vector extends ForeignObject implements Manifold<Vector> {
         return (boolean) Vector_equals.invokeExact(ptr, other.ptr, tol);
     }
 
-    @Override
     public Vector retract(Vector v) throws Throwable {
         return plus(v);
     }

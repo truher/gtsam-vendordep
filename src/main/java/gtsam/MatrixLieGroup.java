@@ -1,16 +1,16 @@
 package gtsam;
 
-public interface MatrixLieGroup<T extends MatrixLieGroup<T>>
-        extends LieGroup<T> {
-    public interface Traits<T extends LieGroup<T>>
-            extends LieGroup.Traits<T> {
-        Matrix Hat(Vector xi) throws Throwable;
+public interface MatrixLieGroup<T extends MatrixLieGroup<T, TangentVectorType>, TangentVectorType>
+        extends LieGroup<T, TangentVectorType> {
+    public interface Traits<T extends LieGroup<T, TangentVectorType>, TangentVectorType>
+            extends LieGroup.Traits<T, TangentVectorType> {
+        Matrix Hat(TangentVectorType xi) throws Throwable;
 
-        Vector Vee(Matrix X) throws Throwable;
+        TangentVectorType Vee(Matrix X) throws Throwable;
 
         // (void)traits<T>::Vec(g);
     }
 
-    Traits<T> traits();
+    Traits<T, TangentVectorType> traits();
 
 }

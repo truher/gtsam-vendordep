@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2> {
+public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2, Vector3> {
     private static final MethodHandle Pose2 = Lib.down(
             "Pose2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Pose2_delete = Lib.downVoid(
@@ -80,7 +80,7 @@ public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2> {
     private static final MethodHandle Pose2_expm = Lib.down(
             "Pose2_expm", ADDRESS, ADDRESS);
 
-    public static class Pose2Traits implements MatrixLieGroup.Traits<Pose2> {
+    public static class Pose2Traits implements MatrixLieGroup.Traits<Pose2, Vector3> {
 
         @Override
         public Pose2 Identity() throws Throwable {
@@ -88,23 +88,23 @@ public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2> {
         }
 
         @Override
-        public Pose2 Expmap(Vector xi) throws Throwable {
+        public Pose2 Expmap(Vector3 xi) throws Throwable {
             return new Pose2((MemorySegment) Pose2_Expmap.invokeExact(xi.ptr));
         }
 
         @Override
-        public Vector Logmap(Pose2 g) throws Throwable {
-            return new Vector((MemorySegment) Pose2_Logmap.invokeExact(g.ptr));
+        public Vector3 Logmap(Pose2 g) throws Throwable {
+            return new Vector3((MemorySegment) Pose2_Logmap.invokeExact(g.ptr));
         }
 
         @Override
-        public Matrix Hat(Vector xi) throws Throwable {
+        public Matrix Hat(Vector3 xi) throws Throwable {
             return new Matrix((MemorySegment) Pose2_Hat.invokeExact(xi.ptr));
         }
 
         @Override
-        public Vector Vee(Matrix X) throws Throwable {
-            return new Vector((MemorySegment) Pose2_Vee.invokeExact(X.ptr));
+        public Vector3 Vee(Matrix X) throws Throwable {
+            return new Vector3((MemorySegment) Pose2_Vee.invokeExact(X.ptr));
         }
 
     }
@@ -151,7 +151,7 @@ public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2> {
     }
 
     @Override
-    public Pose2 retract(Vector v) throws Throwable {
+    public Pose2 retract(Vector3 v) throws Throwable {
         return new Pose2((MemorySegment) Pose2_retract.invokeExact(ptr, v.ptr()));
     }
 
@@ -180,13 +180,13 @@ public class Pose2 extends ForeignObject implements MatrixLieGroup<Pose2> {
     }
 
     // maybe this should be Vector3
-    public Vector localCoordinates(Pose2 g) throws Throwable {
-        return new Vector(
+    public Vector3 localCoordinates(Pose2 g) throws Throwable {
+        return new Vector3(
                 (MemorySegment) Pose2_localCoordinates.invokeExact(ptr, g.ptr));
     }
 
     @Override
-    public Vector local(Pose2 other) throws Throwable {
+    public Vector3 local(Pose2 other) throws Throwable {
         return localCoordinates(other);
     }
 

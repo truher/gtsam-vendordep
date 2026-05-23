@@ -11,7 +11,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Vector3 extends ForeignObject implements Manifold<Vector3> {
+public class Vector3 extends ForeignObject implements Manifold<Vector3, Vector3> {
     private static final MethodHandle Vector3 = Lib.down(
             "Vector3", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Vector3_delete = Lib.downVoid(
@@ -27,7 +27,7 @@ public class Vector3 extends ForeignObject implements Manifold<Vector3> {
     private static final MethodHandle Vector3_equals = Lib.down(
             "Vector3_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-    public static class Traits implements Manifold.Traits<Vector3> {
+    public static class Traits implements Manifold.Traits<Vector3, Vector3> {
 
     }
 
@@ -85,15 +85,13 @@ public class Vector3 extends ForeignObject implements Manifold<Vector3> {
     }
 
     @Override
-    public Vector local(Vector3 other) throws Throwable {
-        return new Vector(other.minus(this));
+    public Vector3 local(Vector3 other) throws Throwable {
+        return other.minus(this);
     }
 
     @Override
-    public Vector3 retract(Vector v) throws Throwable {
-        // TODO: better conversion.
-        Vector3 v3 = new Vector3(v.at(0), v.at(1), v.at(2));
-        return plus(v3);
+    public Vector3 retract(Vector3 v) throws Throwable {
+        return plus(v);
     }
 
     public boolean equals(Vector3 other, double tol) throws Throwable {

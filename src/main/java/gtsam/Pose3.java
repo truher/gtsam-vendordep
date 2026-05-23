@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose3 extends ForeignObject implements Manifold<Pose3> {
+public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
     private static final MethodHandle Pose3 = Lib.down(
             "Pose3", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_delete = Lib.downVoid(
@@ -32,7 +32,7 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3> {
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
             "Pose3_AdjointMap", ADDRESS, ADDRESS);
 
-    public static class Traits implements Manifold.Traits<Pose3> {
+    public static class Traits implements Manifold.Traits<Pose3, Vector6> {
 
     }
 
@@ -56,13 +56,13 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3> {
         this((MemorySegment) Pose3_Pose2.invokeExact(p.ptr));
     }
 
-    public Vector localCoordinates(Pose3 g) throws Throwable {
-        return new Vector(
+    public Vector6 localCoordinates(Pose3 g) throws Throwable {
+        return new Vector6(
                 (MemorySegment) Pose3_localCoordinates.invokeExact(ptr, g.ptr));
     }
 
     @Override
-    public Vector local(Pose3 other) throws Throwable {
+    public Vector6 local(Pose3 other) throws Throwable {
         return localCoordinates(other);
     }
 
@@ -76,7 +76,7 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3> {
     }
 
     @Override
-    public Pose3 retract(Vector v) throws Throwable {
+    public Pose3 retract(Vector6 v) throws Throwable {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
     }
 
