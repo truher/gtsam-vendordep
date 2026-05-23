@@ -162,15 +162,17 @@ public class Matrix extends ForeignObject {
         return (boolean) Matrix_equals.invokeExact(ptr, other.ptr, tol);
     }
 
+    /** TODO: what if not square?  Pseudo-inverse? */
     public Matrix inverse() throws Throwable {
-        System.out.println("Matrix.inverse()");
         return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
     }
 
+    /** Note this type, compose arg, and return type might all be different. */
     public Matrix compose(Matrix other) throws Throwable {
         return new Matrix((MemorySegment) Matrix_compose.invokeExact(ptr, other.ptr));
     }
 
+    /** Note return type may be different than this type. */
     public Matrix transpose() throws Throwable {
         return new Matrix((MemorySegment) Matrix_transpose.invokeExact(ptr));
     }

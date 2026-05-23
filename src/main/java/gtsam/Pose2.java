@@ -183,8 +183,9 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) Pose2_inverse.invokeExact(ptr));
     }
 
-    public Matrix3 AdjointMap() throws Throwable {
-        return new Matrix3((MemorySegment) Pose2_AdjointMap.invokeExact(ptr));
+    /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
+    public Matrix AdjointMap() throws Throwable {
+        return new Matrix((MemorySegment) Pose2_AdjointMap.invokeExact(ptr));
     }
 
     public static Pose2 Expmap(Vector3 xi, Matrix Hv) throws Throwable {

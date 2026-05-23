@@ -20,6 +20,7 @@ public interface LieGroup<//
 
         V Logmap(T g) throws Throwable;
 
+        // TODO: add AdjointMap
         // *Hg = traits<T>::AdjointMap(g);
     }
 

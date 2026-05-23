@@ -23,7 +23,7 @@ public class Lib {
     static {
         SymbolLookup slib;
         // Where are we?
-        String cwd = Paths.get("").toAbsolutePath().toString();
+        // String cwd = Paths.get("").toAbsolutePath().toString();
         // System.out.println("CWD: " + cwd);
         // System.out.flush();
         // Where is the library?

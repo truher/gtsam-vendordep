@@ -32,10 +32,10 @@ bool Pose3_equals(const gtsam::Pose3* a, const gtsam::Pose3* b, double tol) {
     return a->equals(*b, tol);
 }
 gtsam::Pose3* Pose3_inverse(const gtsam::Pose3* p) {
-    std::cout << "Pose3 inverse " << *p << std::endl;
     return new gtsam::Pose3(p->inverse());
 }
-gtsam::Matrix6* Pose3_AdjointMap(const gtsam::Pose3* p) {
-    return new gtsam::Matrix6(p->AdjointMap());
+/** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
+gtsam::Matrix* Pose3_AdjointMap(const gtsam::Pose3* p) {
+    return new gtsam::Matrix(p->AdjointMap());
 }
 }
