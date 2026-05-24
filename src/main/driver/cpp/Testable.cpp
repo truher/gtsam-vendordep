@@ -32,6 +32,14 @@ bool Testable_assert_equal_Matrix(  //
     const gtsam::Matrix* expected, const gtsam::Matrix* actual, double tol) {
     return gtsam::assert_equal<gtsam::Matrix>(*expected, *actual, tol);
 }
+bool Testable_assert_equal_Matrix2(  //
+    const gtsam::Matrix2* expected, const gtsam::Matrix2* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Matrix2>(*expected, *actual, tol);
+}
+bool Testable_assert_equal_Matrix3(  //
+    const gtsam::Matrix3* expected, const gtsam::Matrix3* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Matrix3>(*expected, *actual, tol);
+}
 bool Testable_assert_equal_Vector(  //
     const gtsam::Vector* expected, const gtsam::Vector* actual, double tol) {
     return gtsam::assert_equal<gtsam::Vector>(*expected, *actual, tol);

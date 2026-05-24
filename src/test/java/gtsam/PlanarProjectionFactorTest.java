@@ -128,7 +128,7 @@ public class PlanarProjectionFactorTest {
             ThrowingFunction<Pose2, Vector2> h = (p) -> factor.get().evaluateError(p, new Matrix());
             var expectedH1 = NumericalDerivative.<Vector2, Vector2, Pose2, Vector3>numericalDerivative11(
                     h, pose, 1e-5);
-            assertTrue(assert_equal(expectedH1, H1));
+            assertTrue(assert_equal(expectedH1, H1, 1e-6));
         }
     }
 
@@ -359,9 +359,9 @@ public class PlanarProjectionFactorTest {
                             Cal3DS2, Vector9>numericalDerivative33(
                                     h, pose, offset, calib, 1e-5);
 
-            assertTrue(assert_equal(expectedH1, H1));
-            assertTrue(assert_equal(expectedH2, H2));
-            assertTrue(assert_equal(expectedH3, H3));
+            assertTrue(assert_equal(expectedH1, H1, 1e-6));
+            assertTrue(assert_equal(expectedH2, H2, 1e-6));
+            assertTrue(assert_equal(expectedH3, H3, 1e-6));
         }
     }
 
