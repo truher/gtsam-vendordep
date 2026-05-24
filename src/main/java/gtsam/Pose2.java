@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -61,10 +60,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
             "Pose2_LogmapH", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_logmap = Lib.down(
             "Pose2_logmap", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Pose2_print = Lib.downVoid(
-            "Pose2_print", ADDRESS);
-    private static final MethodHandle Pose2_equals = Lib.down(
-            "Pose2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Pose2_compose = Lib.down(
             "Pose2_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_composeH = Lib.down(
@@ -249,14 +244,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return 3;
     }
 
-    public void print() throws Throwable {
-        Pose2_print.invokeExact(ptr);
-    }
-
-    public boolean equals(Pose2 other, double tol) throws Throwable {
-        return (boolean) Pose2_equals.invokeExact(ptr, other.ptr, tol);
-    }
-
     public Pose2 compose(Pose2 other) throws Throwable {
         return new Pose2((MemorySegment) Pose2_compose.invokeExact(ptr, other.ptr));
     }
@@ -310,7 +297,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     }
 
     public Point2 translation(Matrix H) throws Throwable {
-        return new Point2((MemorySegment)Pose2_translation.invokeExact(ptr, H.ptr));
+        return new Point2((MemorySegment) Pose2_translation.invokeExact(ptr, H.ptr));
     }
 
     public Rot2 bearing(Point2 p) throws Throwable {

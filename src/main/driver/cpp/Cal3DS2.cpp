@@ -20,11 +20,4 @@ gtsam::Cal3DS2* Cal3DS2_retract(const gtsam::Cal3DS2* p,
                                 const gtsam::Vector9* v) {
     return new gtsam::Cal3DS2(p->retract(*v));
 }
-void Cal3DS2_print(const gtsam::Cal3DS2* p) {
-    p->print();
-}
-bool Cal3DS2_equals(const gtsam::Cal3DS2* a, const gtsam::Cal3DS2* b,
-                    double tol) {
-    return a->equals(*b, tol);
-}
 }

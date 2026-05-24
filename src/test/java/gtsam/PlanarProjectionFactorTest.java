@@ -1,5 +1,6 @@
 package gtsam;
 
+import static gtsam.Testable.assert_equal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,12 +36,11 @@ public class PlanarProjectionFactorTest {
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
 
-        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+        assertTrue(assert_equal(err, new Vector2(0.0, 0.0), 1e-6));
 
-        assertTrue(H.equals(new double[][] { //
+        assertTrue(assert_equal(H, new Matrix(new double[][] { //
                 { 0, 200, 200 }, //
-                { 0, 0, 0 } //
-        }, 1e-6));
+                { 0, 0, 0 } }), 1e-6));
     }
 
     /**
@@ -63,12 +63,11 @@ public class PlanarProjectionFactorTest {
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
 
-        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+        assertTrue(assert_equal(err, new Vector2(0.0, 0.0), 1e-6));
 
-        assertTrue(H.equals(new double[][] { //
+        assertTrue(assert_equal(H, new Matrix(new double[][] { //
                 { -200, 200, 400 }, //
-                { -200, 0, 200 } //
-        }, 1e-6));
+                { -200, 0, 200 } }), 1e-6));
     }
 
     /**
@@ -91,12 +90,11 @@ public class PlanarProjectionFactorTest {
         Matrix H = new Matrix();
         Vector2 err = factor.get().evaluateError(pose, H);
 
-        assertTrue(err.equals(new double[] { 0.0, 0.0 }, 1e-6));
+        assertTrue(assert_equal(err, new Vector2(0.0, 0.0), 1e-6));
 
-        assertTrue(H.equals(new double[][] { //
+        assertTrue(assert_equal(H, new Matrix(new double[][] { //
                 { -360, 280, 640 }, //
-                { -360, 80, 440 } //
-        }, 1e-6));
+                { -360, 80, 440 } }), 1e-6));
     }
 
     /**
@@ -130,7 +128,7 @@ public class PlanarProjectionFactorTest {
             ThrowingFunction<Pose2, Vector2> h = (p) -> factor.get().evaluateError(p, new Matrix());
             var expectedH1 = NumericalDerivative.<Vector2, Vector2, Pose2, Vector3>numericalDerivative11(
                     h, pose, 1e-5);
-            assertEquals(expectedH1, H1);
+            assertTrue(assert_equal(expectedH1, H1));
         }
     }
 
@@ -184,16 +182,16 @@ public class PlanarProjectionFactorTest {
         Marginals marginals = new Marginals(graph, result);
         Matrix cov = marginals.marginalCovariance(Key.X(0));
 
-        assertTrue(cov.equals(new double[][] { //
+        assertTrue(assert_equal(cov, new Matrix(new double[][] { //
                 { 0.000012, 0.000000, 0.000000 }, //
                 { 0.000000, 0.001287, -0.001262 }, //
-                { 0.000000, -0.001262, 0.001250 } //
-        }, 1e-6));
+                { 0.000000, -0.001262, 0.001250 } }), 1e-6));
 
         // pose stddev
         Vector sigma = cov.diagonal_cwiseSqrt();
 
-        assertTrue(sigma.equals(new double[] { 0.0035, 0.0359, 0.0354 }, 1e-4));
+        assertTrue(assert_equal(sigma, new Vector(new double[] {
+                0.0035, 0.0359, 0.0354 }), 1e-4));
 
     }
 
@@ -219,21 +217,18 @@ public class PlanarProjectionFactorTest {
         Matrix H3 = new Matrix();
         Vector err = factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
 
-        assertTrue(err.equals(new double[] { 0, 0 }, 1e-6));
-        assertTrue(H1.equals(new double[][] { //
+        assertTrue(assert_equal(err, new Vector(new double[] { 0, 0 }), 1e-6));
+        assertTrue(assert_equal(H1, new Matrix(new double[][] { //
                 { 0, 200, 200 }, //
-                { 0, 0, 0 } //
-        }, 1e-6));
+                { 0, 0, 0 } }), 1e-6));
 
-        assertTrue(H2.equals(new double[][] { //
+        assertTrue(assert_equal(H2, new Matrix(new double[][] { //
                 { 0, -200, 0, -200, 0, 0 }, //
-                { 200, 0, 0, 0, -200, 0 } //
-        }, 1e-6));
+                { 200, 0, 0, 0, -200, 0 } }), 1e-6));
 
-        assertTrue(H3.equals(new double[][] { //
+        assertTrue(assert_equal(H3, new Matrix(new double[][] { //
                 { 0, 0, 0, 1, 0, 0, 0, 0, 0 }, //
-                { 0, 0, 0, 0, 1, 0, 0, 0, 0 } //
-        }, 1e-6));
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0 } }), 1e-6));
     }
 
     @Test
@@ -255,22 +250,19 @@ public class PlanarProjectionFactorTest {
         Matrix H3 = new Matrix();
         Vector actual = factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
 
-        assertTrue(actual.equals(new double[] { 0.0, 0.0 }, 1e-6));
+        assertTrue(assert_equal(actual, new Vector(new double[] { 0.0, 0.0 }), 1e-6));
 
-        assertTrue(H1.equals(new double[][] { //
+        assertTrue(assert_equal(H1, new Matrix(new double[][] { //
                 { -200, 200, 400 }, //
-                { -200, 0, 200 } //
-        }, 1e-6));
+                { -200, 0, 200 } }), 1e-6));
 
-        assertTrue(H2.equals(new double[][] { //
+        assertTrue(assert_equal(H2, new Matrix(new double[][] { //
                 { 200, -400, -200, -200, 0, -200 }, //
-                { 400, -200, 200, 0, -200, -200 } //
-        }, 1e-6));
+                { 400, -200, 200, 0, -200, -200 } }), 1e-6));
 
-        assertTrue(H3.equals(new double[][] { //
+        assertTrue(assert_equal(H3, new Matrix(new double[][] { //
                 { -1, 0, -1, 1, 0, -400, -800, 400, 800 }, //
-                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } //
-        }, 1e-6));
+                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } }), 1e-6));
     }
 
     @Test
@@ -292,16 +284,16 @@ public class PlanarProjectionFactorTest {
         Matrix H3 = new Matrix();
         Vector err = factor.get().evaluateError(pose, offset, calib,
                 H1, H2, H3);
-        assertTrue(err.equals(new double[] { 0, 0 }, 1e-6));
-        assertTrue(H1.equals(new double[][] {
+        assertTrue(assert_equal(err, new Vector(new double[] { 0, 0 }), 1e-6));
+        assertTrue(assert_equal(H1, new Matrix(new double[][] {
                 { -360, 280, 640 },
-                { -360, 80, 440 } }, 1e-6));
-        assertTrue(H2.equals(new double[][] {
+                { -360, 80, 440 } }), 1e-6));
+        assertTrue(assert_equal(H2, new Matrix(new double[][] {
                 { 440, -640, -200, -280, -80, -360 },
-                { 640, -440, 200, -80, -280, -360 } }, 1e-6));
-        assertTrue(H3.equals(new double[][] {
+                { 640, -440, 200, -80, -280, -360 } }), 1e-6));
+        assertTrue(assert_equal(H3, new Matrix(new double[][] {
                 { -1, 0, -1, 1, 0, -400, -800, 400, 800 },
-                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } }, 1e-6));
+                { 0, -1, 0, 0, 1, -400, -800, 800, 400 } }), 1e-6));
     }
 
     /**
@@ -367,9 +359,9 @@ public class PlanarProjectionFactorTest {
                             Cal3DS2, Vector9>numericalDerivative33(
                                     h, pose, offset, calib, 1e-5);
 
-            assertEquals(expectedH1, H1);
-            assertEquals(expectedH2, H2);
-            assertEquals(expectedH3, H3);
+            assertTrue(assert_equal(expectedH1, H1));
+            assertTrue(assert_equal(expectedH2, H2));
+            assertTrue(assert_equal(expectedH3, H3));
         }
     }
 
@@ -429,24 +421,23 @@ public class PlanarProjectionFactorTest {
         Values result = optimizer.optimize();
 
         // verify that the optimizer found the right pose.
-        assertTrue(x0.equals(result.atPose2(Key.X(0)), 2e-3));
+        assertTrue(assert_equal(x0, result.atPose2(Key.X(0)), 2e-3));
 
         // verify the camera is pointing at +x
         Pose3 cc0 = result.atPose3(Key.C(0));
-        assertTrue(c0.equals(cc0, 5e-3));
+        assertTrue(assert_equal(c0, cc0, 5e-3));
 
         // verify the calibration
-        assertTrue(calib.equals(result.atCal3DS2(Key.K(0)), 2e-3));
+        assertTrue(assert_equal(calib, result.atCal3DS2(Key.K(0)), 2e-3));
 
         Marginals marginals = new Marginals(graph, result);
         Matrix x0cov = marginals.marginalCovariance(Key.X(0));
 
         // narrow prior => ~zero cov
-        assertTrue(x0cov.equals(new double[][] {
+        assertTrue(assert_equal(x0cov, new Matrix(new double[][] {
                 { 0, 0, 0 }, //
                 { 0, 0, 0 }, //
-                { 0, 0, 0 }//
-        }, 1e-4));
+                { 0, 0, 0 } }), 1e-4));
 
         // This is dynamic, MatrixXd
         Matrix c0cov = marginals.marginalCovariance(Key.C(0));
@@ -459,19 +450,19 @@ public class PlanarProjectionFactorTest {
 
         // camera-frame stddev
         Vector c0sigma = c0cov.diagonal_cwiseSqrt();
-        assertTrue(c0sigma.equals(new double[] {
+        assertTrue(assert_equal(c0sigma, new Vector(new double[] {
                 0.009, 0.011, 0.004, 0.012, 0.012, 0.011
-        }, 1e-3));
+        }), 1e-3));
 
         // body frame stddev
         Vector bTcSigma = c0cov2.diagonal_cwiseSqrt();
-        assertTrue(bTcSigma.equals(new double[] {
+        assertTrue(assert_equal(bTcSigma, new Vector(new double[] {
                 0.004, 0.009, 0.011, 0.012, 0.012, 0.012
-        }, 1e-3));
+        }), 1e-3));
 
         // narrow prior => ~zero cov
         Matrix k0cov = marginals.marginalCovariance(Key.K(0));
-        assertTrue(k0cov.equals(new double[][] {
+        assertTrue(assert_equal(k0cov, new Matrix(new double[][] {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -480,8 +471,7 @@ public class PlanarProjectionFactorTest {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        }, 3e-3));
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 } }), 3e-3));
 
     }
 

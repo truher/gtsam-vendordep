@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -19,10 +18,6 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
             "Point2_x", JAVA_DOUBLE, ADDRESS);
     private static final MethodHandle Point2_y = Lib.down(
             "Point2_y", JAVA_DOUBLE, ADDRESS);
-    private static final MethodHandle Point2_print = Lib.downVoid(
-            "Point2_print", ADDRESS);
-    private static final MethodHandle Point2_equals = Lib.down(
-            "Point2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public static class Traits implements Manifold.Traits<Point2, Vector2> {
 
@@ -54,14 +49,6 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
 
     public double y() throws Throwable {
         return (double) Point2_y.invokeExact(ptr);
-    }
-
-    public void print() throws Throwable {
-        Point2_print.invokeExact(ptr);
-    }
-
-    public boolean equals(Point2 other, double tol) throws Throwable {
-        return (boolean) Point2_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     @Override

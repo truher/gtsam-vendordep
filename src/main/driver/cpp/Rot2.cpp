@@ -25,4 +25,13 @@ gtsam::Rot2* Rot2_compose(const gtsam::Rot2* a, const gtsam::Rot2* b) {
 gtsam::Point2* Rot2_rotate(const gtsam::Rot2* r, const gtsam::Point2* p) {
     return new gtsam::Point2(r->rotate((*p)));
 }
+gtsam::Rot2* Rot2_fromCosSin(double c, double s) {
+    return new gtsam::Rot2(gtsam::Rot2::fromCosSin(c, s));
+}
+gtsam::Rot2* Rot2_atan2(double y, double x) {
+    return new gtsam::Rot2(gtsam::Rot2::atan2(y, x));
+}
+gtsam::Point2* Rot2_unit(const gtsam::Rot2* r) {
+    return new gtsam::Point2(r->unit());
+}
 }

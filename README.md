@@ -21,6 +21,8 @@ Point2*
 ...
 ```
 
+Make sure you update `symbols.txt` when you add new cpp code!
+
 ## Warnings
 
 The GTSAM build produces a lot of warnings,

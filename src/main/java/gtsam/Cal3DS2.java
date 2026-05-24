@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -22,10 +21,6 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
             "Cal3DS2_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Cal3DS2_retract = Lib.down(
             "Cal3DS2_retract", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Cal3DS2_print = Lib.downVoid(
-            "Cal3DS2_print", ADDRESS);
-    private static final MethodHandle Cal3DS2_equals = Lib.down(
-            "Cal3DS2_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public static class Traits implements Manifold.Traits<Cal3DS2, Vector9> {
 
@@ -79,13 +74,5 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
     @Override
     public Cal3DS2 retract(Vector9 v) throws Throwable {
         return new Cal3DS2((MemorySegment) Cal3DS2_retract.invokeExact(ptr, v.ptr()));
-    }
-
-    public void print() throws Throwable {
-        Cal3DS2_print.invokeExact(ptr);
-    }
-
-    public boolean equals(Cal3DS2 other, double tol) throws Throwable {
-        return (boolean) Cal3DS2_equals.invokeExact(ptr, other.ptr, tol);
     }
 }

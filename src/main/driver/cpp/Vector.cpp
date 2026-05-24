@@ -48,13 +48,6 @@ double Vector_at(const gtsam::Vector* v, int i) {
 int Vector_rows(const gtsam::Vector* v) {
     return v->rows();
 }
-bool Vector_equals(const gtsam::Vector* a, const gtsam::Vector* b, double tol) {
-    return gtsam::equal_with_abs_tol(*a, *b, tol);
-}
-bool Vector3_equals(const gtsam::Vector3* a, const gtsam::Vector3* b,
-                    double tol) {
-    return gtsam::equal_with_abs_tol(*a, *b, tol);
-}
 //////////////////////////
 // Vector1
 gtsam::Vector1* Vector1(double v0) {

@@ -1,8 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
-import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
@@ -25,8 +23,6 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
             "Pose3_retract", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_print = Lib.downVoid(
             "Pose3_print", ADDRESS);
-    private static final MethodHandle Pose3_equals = Lib.down(
-            "Pose3_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Pose3_inverse = Lib.down(
             "Pose3_inverse", ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
@@ -87,10 +83,6 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
 
     public void print() throws Throwable {
         Pose3_print.invokeExact(ptr);
-    }
-
-    public boolean equals(Pose3 other, double tol) throws Throwable {
-        return (boolean) Pose3_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     public Pose3 inverse() throws Throwable {

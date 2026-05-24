@@ -1,5 +1,7 @@
 package gtsam;
 
+import static gtsam.Testable.assert_equal;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ public class Pose2ExtraTest {
         ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
         Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
         // System.out.printf("expectedH %s\n", expectedH);
-        assertTrue(expectedH.equals(new Matrix(actualH), 1e-6),
+        assertTrue(assert_equal(expectedH, new Matrix(actualH), 1e-6),
                 String.format("expected %s actual %s", expectedH, actualH));
     }
 

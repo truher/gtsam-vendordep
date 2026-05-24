@@ -89,12 +89,6 @@ gtsam::Vector3* Pose2_LogmapH(const gtsam::Pose2* p, gtsam::Matrix* H) {
 gtsam::Vector3* Pose2_logmap(const gtsam::Pose2* p0, const gtsam::Pose2* p1) {
     return new gtsam::Vector3(p0->logmap(*p1));
 }
-void Pose2_print(const gtsam::Pose2* p) {
-    p->print();
-}
-bool Pose2_equals(const gtsam::Pose2* a, const gtsam::Pose2* b, double tol) {
-    return a->equals(*b, tol);
-}
 gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2((*a) * (*b));
 }

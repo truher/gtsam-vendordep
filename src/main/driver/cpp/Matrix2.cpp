@@ -21,11 +21,6 @@ gtsam::Matrix2* Matrix2_unaryMinus(gtsam::Matrix2* m) {
 gtsam::Matrix2* Matrix2_identity() {
     return new gtsam::Matrix2(gtsam::Matrix2::Identity());
 }
-bool Matrix2_equals(const gtsam::Matrix2* a, const gtsam::Matrix2* b,
-                    double tol) {
-    return gtsam::equal_with_abs_tol(*a, *b, tol);
-}
-
 gtsam::Matrix2* Matrix2_compose(const gtsam::Matrix2* a,
                                 const gtsam::Matrix2* b) {
     return new gtsam::Matrix2((*a) * (*b));

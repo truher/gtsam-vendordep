@@ -1,29 +1,41 @@
 package gtsam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static gtsam.Testable.assert_equal;
+
 import org.junit.jupiter.api.Test;
 
 /**
  * See gtsam/geometry/tests/testRot2.cpp
  */
 public class Rot2Test {
-
-    // Rot2 R(Rot2::fromAngle(0.1));
-    // Point2 P(0.2, 0.7);
-
-    @Test
-    void testconstructors_and_angle() {
-        // double c=cos(0.1), s=sin(0.1);
-        // DOUBLES_EQUAL(0.1,R.theta(),1e-9);
-        // CHECK(assert_equal(R,Rot2(0.1)));
-        // CHECK(assert_equal(R,Rot2::fromAngle(0.1)));
-        // CHECK(assert_equal(R,Rot2::fromCosSin(c,s)));
-        // CHECK(assert_equal(R,Rot2::atan2(s*5,c*5)));
+    static Rot2 R;
+    static Point2 P;
+    static {
+        try {
+            R = Rot2.fromAngle(0.1);
+            P = new Point2(0.2, 0.7);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
     }
 
     @Test
-    void testunit() {
-        // EXPECT(assert_equal(Point2(1.0, 0.0), Rot2::fromAngle(0).unit()));
-        // EXPECT(assert_equal(Point2(0.0, 1.0), Rot2::fromAngle(M_PI/2.0).unit()));
+    void testconstructors_and_angle() throws Throwable {
+        double c = Math.cos(0.1);
+        double s = Math.sin(0.1);
+        assertEquals(0.1, R.theta(), 1e-9);
+        assertTrue(assert_equal(R, new Rot2(0.1)));
+        assertTrue(assert_equal(R, Rot2.fromAngle(0.1)));
+        assertTrue(assert_equal(R, Rot2.fromCosSin(c, s)));
+        assertTrue(assert_equal(R, Rot2.atan2(s * 5, c * 5)));
+    }
+
+    @Test
+    void testunit() throws Throwable {
+        assertTrue(assert_equal(new Point2(1.0, 0.0), Rot2.fromAngle(0).unit()));
+        assertTrue(assert_equal(new Point2(0.0, 1.0), Rot2.fromAngle(Math.PI / 2.0).unit()));
     }
 
     @Test

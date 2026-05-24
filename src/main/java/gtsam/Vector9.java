@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -57,7 +56,7 @@ public class Vector9 extends ForeignObject implements VectorType<Vector9> {
         return 9;
     }
 
-     @Override
+    @Override
     public double at(int i) throws Throwable {
         return (double) Vector9_at.invokeExact(ptr, i);
     }

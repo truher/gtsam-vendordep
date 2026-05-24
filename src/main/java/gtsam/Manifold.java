@@ -6,8 +6,8 @@ package gtsam;
  * TODO: add Jacobians.
  * TODO: fix the vector dimensionality
  * 
- * @param T the manifold type, e.g. Pose2.
- * @param V the type of its tangent vector, e.g. Vector3.
+ * @param <T> the manifold type, e.g. Pose2.
+ * @param <V> the type of its tangent vector, e.g. Vector3.
  */
 public interface Manifold<//
         T extends Manifold<T, V>, //

@@ -99,17 +99,6 @@ public class Vector2 extends ForeignObject
         return new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr));
     }
 
-    public boolean equals(double[] x, double tol) throws Throwable {
-        int rows = x.length;
-        if (rows != 2)
-            return false;
-        for (int i = 0; i < rows; ++i) {
-            if (Math.abs(x[i] - at(i)) > tol)
-                return false;
-        }
-        return true;
-    }
-
     @Override
     public Vector2 retract(Vector2 v) throws Throwable {
         return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, v.ptr));

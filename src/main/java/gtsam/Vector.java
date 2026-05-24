@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -45,8 +44,6 @@ public class Vector extends ForeignObject
             "Vector_rows", JAVA_INT, ADDRESS);
     private static final MethodHandle Vector_at = Lib.down(
             "Vector_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
-    private static final MethodHandle Vector_equals = Lib.down(
-            "Vector_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public static class Traits implements Manifold.Traits<Vector, Vector> {
 
@@ -145,21 +142,6 @@ public class Vector extends ForeignObject
     @Override
     public int dimension() throws Throwable {
         return rows();
-    }
-
-    public boolean equals(double[] x, double tol) throws Throwable {
-        int rows = x.length;
-        if (rows != rows())
-            return false;
-        for (int i = 0; i < rows; ++i) {
-            if (Math.abs(x[i] - at(i)) > tol)
-                return false;
-        }
-        return true;
-    }
-
-    public boolean equals(Vector other, double tol) throws Throwable {
-        return (boolean) Vector_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     public Vector retract(Vector v) throws Throwable {

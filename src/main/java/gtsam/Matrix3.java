@@ -1,10 +1,8 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
-
 
 import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
@@ -26,8 +24,6 @@ public class Matrix3 extends ForeignObject {
             "Matrix3_unaryMinus", ADDRESS, ADDRESS);
     private static final MethodHandle Matrix3_identity = Lib.down(
             "Matrix3_identity", ADDRESS);
-    private static final MethodHandle Matrix3_equals = Lib.down(
-            "Matrix3_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Matrix3_compose = Lib.down(
             "Matrix3_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Matrix3_plus = Lib.down(
@@ -60,10 +56,6 @@ public class Matrix3 extends ForeignObject {
 
     public static Matrix3 identity() throws Throwable {
         return new Matrix3((MemorySegment) Matrix3_identity.invokeExact());
-    }
-
-    public boolean equals(Matrix3 other, double tol) throws Throwable {
-        return (boolean) Matrix3_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     public Matrix3 compose(Matrix3 other) throws Throwable {

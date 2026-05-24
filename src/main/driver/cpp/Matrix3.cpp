@@ -23,10 +23,6 @@ gtsam::Matrix3* Matrix3_unaryMinus(gtsam::Matrix3* m) {
 gtsam::Matrix3* Matrix3_identity() {
     return new gtsam::Matrix3(gtsam::Matrix3::Identity());
 }
-bool Matrix3_equals(const gtsam::Matrix3* a, const gtsam::Matrix3* b, double tol) {
-    return gtsam::equal_with_abs_tol(*a, *b, tol);
-}
-
 gtsam::Matrix3* Matrix3_compose(const gtsam::Matrix3* a, const gtsam::Matrix3* b) {
     return new gtsam::Matrix3((*a) * (*b));
 }

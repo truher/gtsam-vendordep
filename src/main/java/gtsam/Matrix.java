@@ -1,7 +1,6 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -43,8 +42,6 @@ public class Matrix extends ForeignObject {
             "Matrix_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Matrix_transpose = Lib.down(
             "Matrix_transpose", ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_equals = Lib.down(
-            "Matrix_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Matrix_timesVector3 = Lib.down(
             "Matrix_timesVector3", ADDRESS, ADDRESS, ADDRESS);
 
@@ -126,51 +123,6 @@ public class Matrix extends ForeignObject {
             e.printStackTrace();
             return "";
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        try {
-            if (obj == this)
-                return true;
-            if (!(obj instanceof Matrix))
-                return false;
-            Matrix other = (Matrix) obj;
-            if (rows() != other.rows())
-                return false;
-            if (cols() != other.cols())
-                return false;
-            for (int row = 0; row < rows(); ++row) {
-                for (int col = 0; col < cols(); ++col) {
-                    if (Math.abs(at(row, col) - other.at(row, col)) > 5e-6)
-                        return false;
-                }
-            }
-            return true;
-        } catch (Throwable e) {
-            return false;
-        }
-    }
-
-    /** Row-major */
-    public boolean equals(double[][] x, double tol) throws Throwable {
-        int rows = x.length;
-        if (rows != rows())
-            return false;
-        for (int i = 0; i < rows; ++i) {
-            int cols = x[i].length;
-            if (cols != cols())
-                return false;
-            for (int j = 0; j < cols; ++j) {
-                if (Math.abs(x[i][j] - at(i, j)) > tol)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean equals(Matrix other, double tol) throws Throwable {
-        return (boolean) Matrix_equals.invokeExact(ptr, other.ptr, tol);
     }
 
     /** TODO: what if not square? Pseudo-inverse? */

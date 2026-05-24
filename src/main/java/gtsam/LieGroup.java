@@ -5,8 +5,8 @@ package gtsam;
  * 
  * TODO: add Jacobians.
  * 
- * @param T the liegroup type, e.g. Pose2.
- * @param V the type of its tangent vector, e.g. Vector3.
+ * @param <T> the liegroup type, e.g. Pose2.
+ * @param <V> the type of its tangent vector, e.g. Vector3.
  */
 public interface LieGroup<//
         T extends LieGroup<T, V>, //

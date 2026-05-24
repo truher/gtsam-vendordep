@@ -26,6 +26,12 @@ public class Rot2 extends ForeignObject {
             "Rot2_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_rotate = Lib.down(
             "Rot2_rotate", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_fromCosSin = Lib.down(
+            "Rot2_fromCosSin", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
+    private static final MethodHandle Rot2_atan2 = Lib.down(
+            "Rot2_atan2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
+    private static final MethodHandle Rot2_unit = Lib.down(
+            "Rot2_unit", ADDRESS, ADDRESS);
 
     public Rot2(MemorySegment p) {
         super(p, Rot2_delete);
@@ -63,4 +69,16 @@ public class Rot2 extends ForeignObject {
         return new Point2((MemorySegment) Rot2_rotate.invokeExact(ptr, p.ptr));
     }
 
+    public static Rot2 fromCosSin(double c, double s) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_fromCosSin.invokeExact(c, s));
+    }
+
+    /** Note order of arguments, y first, x second. */
+    public static Rot2 atan2(double y, double x) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_atan2.invokeExact(y, x));
+    }
+
+    public Point2 unit() throws Throwable {
+        return new Point2((MemorySegment) Rot2_unit.invokeExact(ptr));
+    }
 }

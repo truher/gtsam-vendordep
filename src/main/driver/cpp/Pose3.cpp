@@ -28,9 +28,6 @@ gtsam::Vector6* Pose3_localCoordinates(const gtsam::Pose3* a,
 void Pose3_print(const gtsam::Pose3* p) {
     p->print();
 }
-bool Pose3_equals(const gtsam::Pose3* a, const gtsam::Pose3* b, double tol) {
-    return a->equals(*b, tol);
-}
 gtsam::Pose3* Pose3_inverse(const gtsam::Pose3* p) {
     return new gtsam::Pose3(p->inverse());
 }
