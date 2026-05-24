@@ -44,6 +44,10 @@ bool Testable_assert_equal_Vector(  //
     const gtsam::Vector* expected, const gtsam::Vector* actual, double tol) {
     return gtsam::assert_equal<gtsam::Vector>(*expected, *actual, tol);
 }
+bool Testable_assert_equal_Vector1(  //
+    const gtsam::Vector1* expected, const gtsam::Vector1* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Vector1>(*expected, *actual, tol);
+}
 bool Testable_assert_equal_Vector2(  //
     const gtsam::Vector2* expected, const gtsam::Vector2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Vector2>(*expected, *actual, tol);

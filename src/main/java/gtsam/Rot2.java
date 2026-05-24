@@ -9,7 +9,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Rot2 extends ForeignObject {
+public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     private static final MethodHandle Rot2 = Lib.down(
             "Rot2", ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Rot2_delete = Lib.downVoid(
@@ -24,17 +24,61 @@ public class Rot2 extends ForeignObject {
             "Rot2_matrix", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_compose = Lib.down(
             "Rot2_compose", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_composeH = Lib.down(
+            "Rot2_composeH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_rotate = Lib.down(
             "Rot2_rotate", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_rotateH = Lib.down(
+            "Rot2_rotateH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_fromCosSin = Lib.down(
             "Rot2_fromCosSin", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Rot2_atan2 = Lib.down(
             "Rot2_atan2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Rot2_unit = Lib.down(
             "Rot2_unit", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_inverse = Lib.down(
+            "Rot2_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_transpose = Lib.down(
+            "Rot2_transpose", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_between = Lib.down(
+            "Rot2_between", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_betweenH = Lib.down(
+            "Rot2_betweenH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_retract = Lib.down(
+            "Rot2_retract", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_localCoordinates = Lib.down(
+            "Rot2_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_Expmap = Lib.down(
+            "Rot2_Expmap", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_Logmap = Lib.down(
+            "Rot2_Logmap", ADDRESS, ADDRESS);
+
+    public static class Rot2Traits implements LieGroup.Traits<Rot2, Vector1> {
+
+        @Override
+        public Rot2 Identity() throws Throwable {
+            return new Rot2();
+        }
+
+        @Override
+        public Rot2 Expmap(Vector1 v) throws Throwable {
+            return new Rot2((MemorySegment) Rot2_Expmap.invokeExact(v.ptr));
+        }
+
+        @Override
+        public Vector1 Logmap(Rot2 g) throws Throwable {
+            return new Vector1((MemorySegment) Rot2_Logmap.invokeExact(g.ptr));
+        }
+    }
+
+    public static final Rot2Traits traits = new Rot2Traits();
 
     public Rot2(MemorySegment p) {
         super(p, Rot2_delete);
+    }
+
+    public Rot2() throws Throwable {
+        this(0);
     }
 
     public Rot2(double theta) throws Throwable {
@@ -65,8 +109,16 @@ public class Rot2 extends ForeignObject {
         return new Rot2((MemorySegment) Rot2_compose.invokeExact(ptr, other.ptr));
     }
 
+    public Rot2 compose(Rot2 other, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_composeH.invokeExact(ptr, other.ptr, H1.ptr, H2.ptr));
+    }
+
     public Point2 rotate(Point2 p) throws Throwable {
         return new Point2((MemorySegment) Rot2_rotate.invokeExact(ptr, p.ptr));
+    }
+
+    public Point2 rotate(Point2 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) Rot2_rotateH.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
     public static Rot2 fromCosSin(double c, double s) throws Throwable {
@@ -80,5 +132,49 @@ public class Rot2 extends ForeignObject {
 
     public Point2 unit() throws Throwable {
         return new Point2((MemorySegment) Rot2_unit.invokeExact(ptr));
+    }
+
+    public Rot2 inverse() throws Throwable {
+        return new Rot2((MemorySegment) Rot2_inverse.invokeExact(ptr));
+    }
+
+    public Matrix2 transpose() throws Throwable {
+        return new Matrix2((MemorySegment) Rot2_transpose.invokeExact(ptr));
+    }
+
+    public Rot2 between(Rot2 g) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_between.invokeExact(ptr, g.ptr));
+    }
+
+    public Rot2 between(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_betweenH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Rot2 retract(Vector1 v) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_retract.invokeExact(ptr, v.ptr));
+    }
+
+    public Vector1 localCoordinates(Rot2 g) throws Throwable {
+        return new Vector1((MemorySegment) Rot2_localCoordinates.invokeExact(ptr, g.ptr));
+    }
+
+    @Override
+    public Vector1 dxZero() throws Throwable {
+        return new Vector1(0);
+    }
+
+    @Override
+    public int dimension() throws Throwable {
+        return 1;
+    }
+
+    @Override
+    public Vector1 local(Rot2 other) throws Throwable {
+        return localCoordinates(other);
+    }
+
+    @Override
+    public Traits<Rot2, Vector1> traits() {
+        return traits;
     }
 }

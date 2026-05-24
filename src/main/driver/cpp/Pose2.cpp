@@ -73,9 +73,7 @@ gtsam::Vector3* Pose2_Adjoint(const gtsam::Pose2* p, const gtsam::Vector3* v) {
     return new gtsam::Vector3(p->Adjoint(*v));
 }
 gtsam::Pose2* Pose2_Expmap(const gtsam::Vector3* xi) {
-    gtsam::Vector3 xi3(*xi);
-    gtsam::Pose2 p = gtsam::Pose2::Expmap(xi3);
-    return new gtsam::Pose2(p);
+    return new gtsam::Pose2(gtsam::Pose2::Expmap(*xi));
 }
 gtsam::Pose2* Pose2_ExpmapH(const gtsam::Vector3* xi, gtsam::Matrix* Hv) {
     return new gtsam::Pose2(gtsam::Pose2::Expmap(gtsam::Vector3(*xi), *Hv));

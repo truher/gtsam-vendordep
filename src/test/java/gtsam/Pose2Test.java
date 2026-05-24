@@ -340,7 +340,7 @@ public class Pose2Test {
                 { -1.0, 0.0, 2.0 },
                 { 0.0, 0.0, 1.0 } });
 
-        Matrix expectedH2 = Matrix.identity3();
+        Matrix expectedH2 = Matrix.I_3x3();
         Matrix numericalH1 = NumericalDerivative.<//
                 Pose2, Vector3, //
                 Pose2, Vector3, //

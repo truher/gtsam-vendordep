@@ -57,6 +57,24 @@ void Vector1_delete(gtsam::Vector1* p) {
     delete p;
 }
 
+double Vector1_at(const gtsam::Vector1* v, int i) {
+    return (*v)(i);
+}
+void Vector1_set(gtsam::Vector1* v, int i, double val) {
+    (*v)(i) = val;
+}
+gtsam::Vector1* Vector1_plus(const gtsam::Vector1* v,
+                             const gtsam::Vector1* other) {
+    return new gtsam::Vector1((*v) + (*other));
+}
+gtsam::Vector1* Vector1_minus(const gtsam::Vector1* v,
+                              const gtsam::Vector1* other) {
+    return new gtsam::Vector1((*v) - (*other));
+}
+gtsam::Vector1* Vector1_times(const gtsam::Vector1* v, double a) {
+    return new gtsam::Vector1((*v) * a);
+}
+
 ////////////////////////////
 // Vector2
 gtsam::Vector2* Vector2() {

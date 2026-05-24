@@ -1,4 +1,5 @@
 #include <gtsam/base/Matrix.h>
+
 #include <iostream>
 
 extern "C" {
@@ -6,6 +7,9 @@ gtsam::Matrix* Matrix() {
     gtsam::Matrix* m = new gtsam::Matrix();
     m->setZero();
     return m;
+}
+gtsam::Matrix* Matrix_identity1() {
+    return new gtsam::Matrix(gtsam::I_1x1);
 }
 gtsam::Matrix* Matrix_identity3() {
     return new gtsam::Matrix(gtsam::I_3x3);
@@ -46,7 +50,11 @@ gtsam::Matrix* Matrix_compose(const gtsam::Matrix* a, const gtsam::Matrix* b) {
 gtsam::Matrix* Matrix_transpose(const gtsam::Matrix* m) {
     return new gtsam::Matrix(m->transpose());
 }
-gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m, const gtsam::Vector3* v) {
+gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m,
+                                    const gtsam::Vector3* v) {
     return new gtsam::Vector3(gtsam::Matrix3(*m) * (*v));
+}
+gtsam::Matrix* Matrix_timesDouble(const gtsam::Matrix* m, double a) {
+    return new gtsam::Matrix((*m) * a);
 }
 }

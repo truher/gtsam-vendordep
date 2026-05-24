@@ -23,6 +23,14 @@ Point2*
 
 Make sure you update `symbols.txt` when you add new cpp code!
 
+## Types
+
+The GTSAM types, and C++ type system in general, can only be approximated
+with the (simpler) Java type system.  Here are some of the highlights:
+
+* Tangent vector types (`TangentVector` in Lie.h) are fixed-size, e.g. `Vector3`.
+* Jacobian types are dynamic size (`Matrix`).
+
 ## Warnings
 
 The GTSAM build produces a lot of warnings,

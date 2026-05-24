@@ -27,6 +27,8 @@ public class Testable {
             "Testable_assert_equal_Matrix3", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Testable_assert_equal_Vector = Lib.down(
             "Testable_assert_equal_Vector", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+    private static final MethodHandle Testable_assert_equal_Vector1 = Lib.down(
+            "Testable_assert_equal_Vector1", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Testable_assert_equal_Vector2 = Lib.down(
             "Testable_assert_equal_Vector2", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Testable_assert_equal_Vector3 = Lib.down(
@@ -102,6 +104,14 @@ public class Testable {
 
     public static boolean assert_equal(Vector expected, Vector actual) throws Throwable {
         return (boolean) Testable_assert_equal_Vector.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    }
+
+    public static boolean assert_equal(Vector1 expected, Vector1 actual, double tol) throws Throwable {
+        return (boolean) Testable_assert_equal_Vector1.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Vector1 expected, Vector1 actual) throws Throwable {
+        return (boolean) Testable_assert_equal_Vector1.invokeExact(expected.ptr, actual.ptr, 1e-9);
     }
 
     public static boolean assert_equal(Vector2 expected, Vector2 actual, double tol) throws Throwable {

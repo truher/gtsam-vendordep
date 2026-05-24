@@ -16,6 +16,8 @@ import org.team100.foreign.Lib;
 public class Matrix extends ForeignObject {
     private static final MethodHandle Matrix = Lib.down(
             "Matrix", ADDRESS);
+    private static final MethodHandle Matrix_identity1 = Lib.down(
+            "Matrix_identity1", ADDRESS);
     private static final MethodHandle Matrix_identity3 = Lib.down(
             "Matrix_identity3", ADDRESS);
     private static final MethodHandle Matrix_withRowsCols = Lib.down(
@@ -44,6 +46,8 @@ public class Matrix extends ForeignObject {
             "Matrix_transpose", ADDRESS, ADDRESS);
     private static final MethodHandle Matrix_timesVector3 = Lib.down(
             "Matrix_timesVector3", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Matrix_timesDouble = Lib.down(
+            "Matrix_timesDouble", ADDRESS, ADDRESS, JAVA_DOUBLE);
 
     public Matrix(MemorySegment p) {
         super(p, Matrix_delete);
@@ -53,7 +57,11 @@ public class Matrix extends ForeignObject {
         this((MemorySegment) Matrix.invokeExact());
     }
 
-    public static Matrix identity3() throws Throwable {
+    public static Matrix I_1x1() throws Throwable {
+        return new Matrix((MemorySegment) Matrix_identity1.invokeExact());
+    }
+
+    public static Matrix I_3x3() throws Throwable {
         return new Matrix((MemorySegment) Matrix_identity3.invokeExact());
     }
 
@@ -145,6 +153,10 @@ public class Matrix extends ForeignObject {
 
     public Vector3 times(Vector3 v) throws Throwable {
         return new Vector3((MemorySegment) Matrix_timesVector3.invokeExact(ptr, v.ptr));
+    }
+
+    public Matrix times(double a) throws Throwable {
+        return new Matrix((MemorySegment) Matrix_timesDouble.invokeExact(ptr, a));
     }
 
 }
