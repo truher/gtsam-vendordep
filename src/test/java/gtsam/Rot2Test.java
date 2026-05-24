@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.NumericalDerivative.ThrowingFunction;
 import gtsam.NumericalDerivative.ThrowingFunction2;
 
 /**
@@ -97,7 +98,9 @@ public class Rot2Test {
         assertTrue(assert_equal(expected, actual));
     }
 
-    // rotate and derivatives
+    /**
+     * rotate and derivatives
+     */
     @Test
     void testrotate() throws Throwable {
         Matrix H1 = new Matrix();
@@ -120,91 +123,87 @@ public class Rot2Test {
         assertTrue(assert_equal(numerical2, H2, 1e-6));
     }
 
-    // // unrotate and derivatives
-    // inline Point2 unrotate_(const Rot2& R, const Point2& p) {return
-    // R.unrotate(p);}
+    /**
+     * unrotate and derivatives
+     */
     @Test
-    void testunrotate() {
-        // Matrix H1, H2;
-        // Point2 w = R * P, actual = R.unrotate(w, H1, H2);
-        // assertTrue(assert_equal(actual,P));
-        // Matrix numerical1 = numericalDerivative21(unrotate_, R, w);
-        // assertTrue(assert_equal(numerical1,H1));
-        // Matrix numerical2 = numericalDerivative22(unrotate_, R, w);
-        // assertTrue(assert_equal(numerical2,H2));
-    }
-
-    // inline Rot2 relativeBearing_(const Point2& pt) {return
-    // Rot2::relativeBearing(pt); }
-    @Test
-    void testrelativeBearing() {
-        // Point2 l1(1, 0), l2(1, 1);
-        // Matrix expectedH, actualH;
-
-        // // establish relativeBearing is indeed zero
-        // Rot2 actual1 = Rot2::relativeBearing(l1, actualH);
-        // assertTrue(assert_equal(Rot2(),actual1));
-
-        // // Check numerical derivative
-        // expectedH = numericalDerivative11(relativeBearing_, l1);
-        // assertTrue(assert_equal(expectedH,actualH));
-
-        // // establish relativeBearing is indeed 45 degrees
-        // Rot2 actual2 = Rot2::relativeBearing(l2, actualH);
-        // assertTrue(assert_equal(Rot2::fromAngle(M_PI/4.0),actual2));
-
-        // // Check numerical derivative
-        // expectedH = numericalDerivative11(relativeBearing_, l2);
-        // assertTrue(assert_equal(expectedH,actualH));
+    void testunrotate() throws Throwable {
+        ThrowingFunction2<Rot2, Point2, Point2> unrotate_ = //
+                (Rot2 R, Point2 p) -> R.unrotate(p);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
+        Point2 w = R.rotate(P);
+        Point2 actual = R.unrotate(w, H1, H2);
+        assertTrue(assert_equal(actual, P));
+        Matrix numerical1 = NumericalDerivative.<//
+                Point2, Vector2, //
+                Rot2, Vector1, //
+                Point2, Vector2//
+        >numericalDerivative21(unrotate_, R, w, 1e-3);
+        assertTrue(assert_equal(numerical1, H1, 1e-6));
+        Matrix numerical2 = NumericalDerivative.<//
+                Point2, Vector2, //
+                Rot2, Vector1, //
+                Point2, Vector2//
+        >numericalDerivative22(unrotate_, R, w, 1e-3);
+        assertTrue(assert_equal(numerical2, H2, 1e-6));
     }
 
     @Test
-    void testvec() {
-        // // Test the 'vec' method
-        // Vector4 expected_vec = Eigen::Map<Vector4>(R.matrix().data());
-        // Matrix41 actualH;
-        // Vector4 actual_vec = R.vec(actualH);
-        // assertTrue(assert_equal(expected_vec, actual_vec));
+    void testrelativeBearing() throws Throwable {
+        Point2 l1 = new Point2(1, 0);
+        Point2 l2 = new Point2(1, 1);
+        Matrix expectedH = new Matrix();
+        Matrix actualH = new Matrix();
 
-        // // Verify Jacobian with numerical derivatives
-        // auto f = [](const Rot2& p) { return p.vec(); };
-        // Matrix41 numericalH = numericalDerivative11<Vector4, Rot2>(f, R);
-        // assertTrue(assert_equal(numericalH, actualH, 1e-9));
+        // establish relativeBearing is indeed zero
+        Rot2 actual1 = Rot2.relativeBearing(l1, actualH);
+        assertTrue(assert_equal(new Rot2(), actual1));
+
+        ThrowingFunction<Point2, Rot2> relativeBearing_ = (Point2 pt) -> Rot2.relativeBearing(pt);
+
+        // Check numerical derivative
+        expectedH = NumericalDerivative.<//
+                Rot2, Vector1, Point2, Vector2//
+        >numericalDerivative11(relativeBearing_, l1, 1e-3);
+        assertTrue(assert_equal(expectedH, actualH, 1e-6));
+
+        // establish relativeBearing is indeed 45 degrees
+        Rot2 actual2 = Rot2.relativeBearing(l2, actualH);
+        assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual2));
+
+        // Check numerical derivative
+        expectedH = NumericalDerivative.<//
+                Rot2, Vector1, Point2, Vector2//
+        >numericalDerivative11(relativeBearing_, l2,
+                1e-3);
+        assertTrue(assert_equal(expectedH, actualH, 1e-6));
     }
 
-    // namespace {
-    // Rot2 id;
-    // Rot2 T1(0.1);
-    // Rot2 T2(0.2);
-    // } // namespace
+    static Rot2 id;
+    static Rot2 T1;
+    static Rot2 T2;
+
+    static {
+        try {
+            id = new Rot2();
+            T1 = new Rot2(0.1);
+            T2 = new Rot2(0.2);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
 
     @Test
-    void testInvariants() {
-        // assertTrue(check_group_invariants(id, id));
-        // assertTrue(check_group_invariants(id, T1));
-        // assertTrue(check_group_invariants(T2, id));
-        // assertTrue(check_group_invariants(T2, T1));
+    void testInvariants() throws Throwable {
+        assertTrue(Rot2.check_group_invariants(id, id));
+        assertTrue(Rot2.check_group_invariants(id, T1));
+        assertTrue(Rot2.check_group_invariants(T2, id));
+        assertTrue(Rot2.check_group_invariants(T2, T1));
 
-        // assertTrue(check_manifold_invariants(id, id));
-        // assertTrue(check_manifold_invariants(id, T1));
-        // assertTrue(check_manifold_invariants(T2, id));
-        // assertTrue(check_manifold_invariants(T2, T1));
+        assertTrue(Rot2.check_manifold_invariants(id, id));
+        assertTrue(Rot2.check_manifold_invariants(id, T1));
+        assertTrue(Rot2.check_manifold_invariants(T2, id));
+        assertTrue(Rot2.check_manifold_invariants(T2, T1));
     }
-
-    @Test
-    void testLieGroupDerivatives() {
-        // CHECK_LIE_GROUP_DERIVATIVES(id, id);
-        // CHECK_LIE_GROUP_DERIVATIVES(id, T2);
-        // CHECK_LIE_GROUP_DERIVATIVES(T2, id);
-        // CHECK_LIE_GROUP_DERIVATIVES(T2, T1);
-    }
-
-    @Test
-    void testChartDerivatives() {
-        // CHECK_CHART_DERIVATIVES(id, id);
-        // CHECK_CHART_DERIVATIVES(id, T2);
-        // CHECK_CHART_DERIVATIVES(T2, id);
-        // CHECK_CHART_DERIVATIVES(T2, T1);
-    }
-
 }

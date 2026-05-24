@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -30,10 +31,18 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
             "Rot2_rotate", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_rotateH = Lib.down(
             "Rot2_rotateH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_unrotate = Lib.down(
+            "Rot2_unrotate", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_unrotateH = Lib.down(
+            "Rot2_unrotateH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_fromCosSin = Lib.down(
             "Rot2_fromCosSin", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Rot2_atan2 = Lib.down(
             "Rot2_atan2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
+    private static final MethodHandle Rot2_relativeBearing = Lib.down(
+            "Rot2_relativeBearing", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_relativeBearingH = Lib.down(
+            "Rot2_relativeBearingH", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_unit = Lib.down(
             "Rot2_unit", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_inverse = Lib.down(
@@ -52,6 +61,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
             "Rot2_Expmap", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_Logmap = Lib.down(
             "Rot2_Logmap", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_check_group_invariants = Lib.down(
+            "Rot2_check_group_invariants", JAVA_BOOLEAN, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_check_manifold_invariants = Lib.down(
+            "Rot2_check_group_invariants", JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
     public static class Rot2Traits implements LieGroup.Traits<Rot2, Vector1> {
 
@@ -121,6 +134,14 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Point2((MemorySegment) Rot2_rotateH.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
+    public Point2 unrotate(Point2 p) throws Throwable {
+        return new Point2((MemorySegment) Rot2_unrotate.invokeExact(ptr, p.ptr));
+    }
+
+    public Point2 unrotate(Point2 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) Rot2_unrotateH.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
     public static Rot2 fromCosSin(double c, double s) throws Throwable {
         return new Rot2((MemorySegment) Rot2_fromCosSin.invokeExact(c, s));
     }
@@ -128,6 +149,14 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     /** Note order of arguments, y first, x second. */
     public static Rot2 atan2(double y, double x) throws Throwable {
         return new Rot2((MemorySegment) Rot2_atan2.invokeExact(y, x));
+    }
+
+    public static Rot2 relativeBearing(Point2 d) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_relativeBearing.invokeExact(d.ptr));
+    }
+
+    public static Rot2 relativeBearing(Point2 d, Matrix H) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_relativeBearingH.invokeExact(d.ptr, H.ptr));
     }
 
     public Point2 unit() throws Throwable {
@@ -176,5 +205,13 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     @Override
     public Traits<Rot2, Vector1> traits() {
         return traits;
+    }
+
+    public static boolean check_group_invariants(Rot2 a, Rot2 b) throws Throwable {
+        return (boolean) Rot2_check_group_invariants.invokeExact(a.ptr, b.ptr);
+    }
+
+    public static boolean check_manifold_invariants(Rot2 a, Rot2 b) throws Throwable {
+        return (boolean) Rot2_check_manifold_invariants.invokeExact(a.ptr, b.ptr);
     }
 }

@@ -4,8 +4,6 @@ package gtsam;
  * See gtsam/base/Group.h.
  * 
  * TODO: add Jacobians.
- * 
- * TODO: add invariants for testing
  */
 public interface Group<T extends Group<T>> {
     public interface Traits<T extends Group<T>> {

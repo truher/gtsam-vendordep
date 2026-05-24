@@ -33,11 +33,24 @@ gtsam::Point2* Rot2_rotateH(const gtsam::Rot2* r, const gtsam::Point2* p,
                             gtsam::Matrix* H1, gtsam::Matrix* H2) {
     return new gtsam::Point2(r->rotate(*p, *H1, *H2));
 }
+gtsam::Point2* Rot2_unrotate(const gtsam::Rot2* r, const gtsam::Point2* p) {
+    return new gtsam::Point2(r->unrotate((*p)));
+}
+gtsam::Point2* Rot2_unrotateH(const gtsam::Rot2* r, const gtsam::Point2* p,
+                              gtsam::Matrix* H1, gtsam::Matrix* H2) {
+    return new gtsam::Point2(r->unrotate(*p, *H1, *H2));
+}
 gtsam::Rot2* Rot2_fromCosSin(double c, double s) {
     return new gtsam::Rot2(gtsam::Rot2::fromCosSin(c, s));
 }
 gtsam::Rot2* Rot2_atan2(double y, double x) {
     return new gtsam::Rot2(gtsam::Rot2::atan2(y, x));
+}
+gtsam::Rot2* Rot2_relativeBearing(const gtsam::Point2* d) {
+    return new gtsam::Rot2(gtsam::Rot2::relativeBearing(*d));
+}
+gtsam::Rot2* Rot2_relativeBearingH(const gtsam::Point2* d, gtsam::Matrix* H) {
+    return new gtsam::Rot2(gtsam::Rot2::relativeBearing(*d, *H));
 }
 gtsam::Point2* Rot2_unit(const gtsam::Rot2* r) {
     return new gtsam::Point2(r->unit());
@@ -69,5 +82,11 @@ gtsam::Vector1* Rot2_Logmap(const gtsam::Rot2* p) {
 }
 gtsam::Rot2* Rot2_Expmap(const gtsam::Vector1* xi) {
     return new gtsam::Rot2(gtsam::Rot2::Expmap(*xi));
+}
+bool Rot2_check_group_invariants(const gtsam::Rot2* a, const gtsam::Rot2* b) {
+    return gtsam::check_group_invariants(*a, *b);
+}
+bool Rot2_check_manifold_invariants(const gtsam::Rot2* a, const gtsam::Rot2* b) {
+    return gtsam::check_manifold_invariants(*a, *b);
 }
 }
