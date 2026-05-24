@@ -26,8 +26,6 @@ public class Vector3 extends ForeignObject
             "Vector3_minus", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Vector3_times = Lib.down(
             "Vector3_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
-    private static final MethodHandle Vector3_print = Lib.downVoid(
-            "Vector3_print", ADDRESS);
 
     public static class Traits implements Manifold.Traits<Vector3, Vector3> {
 
@@ -88,10 +86,6 @@ public class Vector3 extends ForeignObject
     @Override
     public Vector3 times(double a) throws Throwable {
         return new Vector3((MemorySegment) Vector3_times.invokeExact(ptr, a));
-    }
-
-    public void print() throws Throwable {
-        Vector3_print.invokeExact(ptr);
     }
 
     @Override

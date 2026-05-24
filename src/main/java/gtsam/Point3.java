@@ -17,8 +17,6 @@ public class Point3 extends ForeignObject {
             "Point3", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Point3_delete = Lib.downVoid(
             "Point3_delete", ADDRESS);
-    private static final MethodHandle Point3_print = Lib.downVoid(
-            "Point3_print", ADDRESS);
 
     public Point3(MemorySegment p) {
         super(p, Point3_delete);
@@ -26,10 +24,6 @@ public class Point3 extends ForeignObject {
 
     public Point3(double x, double y, double z) throws Throwable {
         this((MemorySegment) Point3.invokeExact(x, y, z));
-    }
-
-    public void print() throws Throwable {
-        Point3_print.invokeExact(ptr);
     }
 
 }

@@ -27,9 +27,6 @@ public class Vector2 extends ForeignObject
     private static final MethodHandle Vector2_times = Lib.down(
             "Vector2_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-    private static final MethodHandle Vector2_print = Lib.downVoid(
-            "Vector2_print", ADDRESS);
-
     public static class Traits implements Manifold.Traits<Vector2, Vector2> {
 
     }
@@ -87,10 +84,6 @@ public class Vector2 extends ForeignObject
     @Override
     public Vector2 times(double a) throws Throwable {
         return new Vector2((MemorySegment) Vector2_times.invokeExact(ptr, a));
-    }
-
-    public void print() throws Throwable {
-        Vector2_print.invokeExact(ptr);
     }
 
     // TODO: maybe make a real "local" ?

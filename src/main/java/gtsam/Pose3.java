@@ -21,8 +21,6 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
             "Pose3_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_retract = Lib.down(
             "Pose3_retract", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Pose3_print = Lib.downVoid(
-            "Pose3_print", ADDRESS);
     private static final MethodHandle Pose3_inverse = Lib.down(
             "Pose3_inverse", ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
@@ -79,10 +77,6 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
     @Override
     public Pose3 retract(Vector6 v) throws Throwable {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
-    }
-
-    public void print() throws Throwable {
-        Pose3_print.invokeExact(ptr);
     }
 
     public Pose3 inverse() throws Throwable {

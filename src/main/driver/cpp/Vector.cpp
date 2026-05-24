@@ -86,10 +86,6 @@ gtsam::Vector2* Vector2_times(const gtsam::Vector2* v, double a) {
     return new gtsam::Vector2((*v) * a);
 }
 
-void Vector2_print(const gtsam::Vector2* v) {
-    std::cout << *v << std::endl;
-}
-
 /////////////////////////
 // Vector3
 gtsam::Vector3* Vector3() {
@@ -117,9 +113,6 @@ gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
 }
 gtsam::Vector3* Vector3_times(const gtsam::Vector3* v, double a) {
     return new gtsam::Vector3((*v) * a);
-}
-void Vector3_print(const gtsam::Vector3* v) {
-    std::cout << *v << std::endl;
 }
 
 //////////////////////////
