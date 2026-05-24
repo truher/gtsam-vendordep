@@ -12,6 +12,10 @@ bool Testable_assert_equal_Rot2(  //
     const gtsam::Rot2* expected, const gtsam::Rot2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Rot2>(*expected, *actual, tol);
 }
+bool Testable_assert_equal_Rot3(  //
+    const gtsam::Rot3* expected, const gtsam::Rot3* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Rot3>(*expected, *actual, tol);
+}
 bool Testable_assert_equal_Point2(  //
     const gtsam::Point2* expected, const gtsam::Point2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Point2>(*expected, *actual, tol);

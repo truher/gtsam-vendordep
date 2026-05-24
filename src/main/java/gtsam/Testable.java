@@ -11,6 +11,8 @@ import org.team100.foreign.Lib;
 public class Testable {
     private static final MethodHandle Testable_assert_equal_Rot2 = Lib.down(
             "Testable_assert_equal_Rot2", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+    private static final MethodHandle Testable_assert_equal_Rot3 = Lib.down(
+            "Testable_assert_equal_Rot3", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Testable_assert_equal_Point2 = Lib.down(
             "Testable_assert_equal_Point2", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
     private static final MethodHandle Testable_assert_equal_Pose2 = Lib.down(
@@ -40,6 +42,14 @@ public class Testable {
 
     public static boolean assert_equal(Rot2 expected, Rot2 actual) throws Throwable {
         return (boolean) Testable_assert_equal_Rot2.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    }
+
+    public static boolean assert_equal(Rot3 expected, Rot3 actual, double tol) throws Throwable {
+        return (boolean) Testable_assert_equal_Rot3.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Rot3 expected, Rot3 actual) throws Throwable {
+        return (boolean) Testable_assert_equal_Rot3.invokeExact(expected.ptr, actual.ptr, 1e-9);
     }
 
     public static boolean assert_equal(Point2 expected, Point2 actual, double tol) throws Throwable {

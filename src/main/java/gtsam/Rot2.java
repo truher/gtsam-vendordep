@@ -64,7 +64,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     private static final MethodHandle Rot2_check_group_invariants = Lib.down(
             "Rot2_check_group_invariants", JAVA_BOOLEAN, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_check_manifold_invariants = Lib.down(
-            "Rot2_check_group_invariants", JAVA_BOOLEAN, ADDRESS, ADDRESS);
+            "Rot2_check_manifold_invariants", JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
     public static class Rot2Traits implements LieGroup.Traits<Rot2, Vector1> {
 
