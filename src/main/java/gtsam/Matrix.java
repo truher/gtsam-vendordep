@@ -45,6 +45,8 @@ public class Matrix extends ForeignObject {
             "Matrix_transpose", ADDRESS, ADDRESS);
     private static final MethodHandle Matrix_equals = Lib.down(
             "Matrix_equals", JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+    private static final MethodHandle Matrix_timesVector3 = Lib.down(
+            "Matrix_timesVector3", ADDRESS, ADDRESS, ADDRESS);
 
     public Matrix(MemorySegment p) {
         super(p, Matrix_delete);
@@ -176,7 +178,10 @@ public class Matrix extends ForeignObject {
         return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
     }
 
-    /** Note this type, compose arg, and return type might all be different. */
+    /**
+     * Matrix multiplication. Maybe rename this?
+     * Note this type, compose arg, and return type might all be different.
+     */
     public Matrix compose(Matrix other) throws Throwable {
         return new Matrix((MemorySegment) Matrix_compose.invokeExact(ptr, other.ptr));
     }
@@ -184,6 +189,10 @@ public class Matrix extends ForeignObject {
     /** Note return type may be different than this type. */
     public Matrix transpose() throws Throwable {
         return new Matrix((MemorySegment) Matrix_transpose.invokeExact(ptr));
+    }
+
+    public Vector3 times(Vector3 v) throws Throwable {
+        return new Vector3((MemorySegment) Matrix_timesVector3.invokeExact(ptr, v.ptr));
     }
 
 }

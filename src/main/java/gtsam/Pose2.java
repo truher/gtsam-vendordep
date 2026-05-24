@@ -45,6 +45,8 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
             "Pose2_betweenH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_inverse = Lib.down(
             "Pose2_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_inverseH = Lib.down(
+            "Pose2_inverseH", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_AdjointMap = Lib.down(
             "Pose2_AdjointMap", ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_Adjoint = Lib.down(
@@ -74,11 +76,25 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     private static final MethodHandle Pose2_expmap_default = Lib.down(
             "Pose2_expmap_default", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_transformTo = Lib.down(
-            "Pose2_transformTo", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+            "Pose2_transformTo", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_transformToH = Lib.down(
+            "Pose2_transformToH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_transformFrom = Lib.down(
-            "Pose2_transformFrom", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+            "Pose2_transformFrom", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_transformFromH = Lib.down(
+            "Pose2_transformFromH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose2_ExpmapDerivative = Lib.down(
             "Pose2_ExpmapDerivative", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_translation = Lib.down(
+            "Pose2_translation", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_bearingPoint2 = Lib.down(
+            "Pose2_bearingPoint2", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_bearingPose2 = Lib.down(
+            "Pose2_bearingPose2", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_rangePoint2 = Lib.down(
+            "Pose2_rangePoint2", JAVA_DOUBLE, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose2_rangePose2 = Lib.down(
+            "Pose2_rangePose2", JAVA_DOUBLE, ADDRESS, ADDRESS);
 
     public static class Pose2Traits implements LieGroup.Traits<Pose2, Vector3> {
 
@@ -193,6 +209,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) Pose2_inverse.invokeExact(ptr));
     }
 
+    public Pose2 inverse(Matrix H) throws Throwable {
+        return new Pose2((MemorySegment) Pose2_inverseH.invokeExact(ptr, H.ptr));
+    }
+
     /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
     public Matrix AdjointMap() throws Throwable {
         return new Matrix((MemorySegment) Pose2_AdjointMap.invokeExact(ptr));
@@ -259,23 +279,54 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) Pose2_expmap_default.invokeExact(ptr, d.ptr));
     }
 
+    public Point2 transformTo(Point2 point) throws Throwable {
+        return new Point2((MemorySegment) Pose2_transformTo.invokeExact(
+                ptr, point.ptr));
+    }
+
     public Point2 transformTo(//
             Point2 point, //
             Matrix Dpose, //
             Matrix Dpoint) throws Throwable {
-        return new Point2((MemorySegment) Pose2_transformTo.invokeExact(
+        return new Point2((MemorySegment) Pose2_transformToH.invokeExact(
                 ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
+    }
+
+    public Point2 transformFrom(Point2 point) throws Throwable {
+        return new Point2((MemorySegment) Pose2_transformFrom.invokeExact(
+                ptr, point.ptr));
     }
 
     public Point2 transformFrom(//
             Point2 point, //
             Matrix Dpose, //
             Matrix Dpoint) throws Throwable {
-        return new Point2((MemorySegment) Pose2_transformFrom.invokeExact(
+        return new Point2((MemorySegment) Pose2_transformFromH.invokeExact(
                 ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
     }
 
     public static Matrix3 ExpmapDerivative(Vector3 v) throws Throwable {
         return new Matrix3((MemorySegment) Pose2_ExpmapDerivative.invokeExact(v.ptr));
     }
+
+    public Point2 translation(Matrix H) throws Throwable {
+        return new Point2((MemorySegment)Pose2_translation.invokeExact(ptr, H.ptr));
+    }
+
+    public Rot2 bearing(Point2 p) throws Throwable {
+        return new Rot2((MemorySegment) Pose2_bearingPoint2.invokeExact(ptr, p.ptr));
+    }
+
+    public Rot2 bearing(Pose2 p) throws Throwable {
+        return new Rot2((MemorySegment) Pose2_bearingPose2.invokeExact(ptr, p.ptr));
+    }
+
+    public double range(Point2 p) throws Throwable {
+        return (double) Pose2_rangePoint2.invokeExact(ptr, p.ptr);
+    }
+
+    public double range(Pose2 p) throws Throwable {
+        return (double) Pose2_rangePose2.invokeExact(ptr, p.ptr);
+    }
+
 }

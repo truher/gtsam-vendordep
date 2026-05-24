@@ -20,6 +20,12 @@ public class Rot2 extends ForeignObject {
             "Rot2_c", JAVA_DOUBLE, ADDRESS);
     private static final MethodHandle Rot2_s = Lib.down(
             "Rot2_s", JAVA_DOUBLE, ADDRESS);
+    private static final MethodHandle Rot2_matrix = Lib.down(
+            "Rot2_matrix", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_compose = Lib.down(
+            "Rot2_compose", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_rotate = Lib.down(
+            "Rot2_rotate", ADDRESS, ADDRESS, ADDRESS);
 
     public Rot2(MemorySegment p) {
         super(p, Rot2_delete);
@@ -43,6 +49,18 @@ public class Rot2 extends ForeignObject {
 
     public double s() throws Throwable {
         return (double) Rot2_s.invokeExact(ptr);
+    }
+
+    public Matrix2 matrix() throws Throwable {
+        return new Matrix2((MemorySegment) Rot2_matrix.invokeExact(ptr));
+    }
+
+    public Rot2 compose(Rot2 other) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_compose.invokeExact(ptr, other.ptr));
+    }
+
+    public Point2 rotate(Point2 p) throws Throwable {
+        return new Point2((MemorySegment) Rot2_rotate.invokeExact(ptr, p.ptr));
     }
 
 }

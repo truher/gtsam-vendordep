@@ -62,6 +62,9 @@ gtsam::Pose2* Pose2_betweenH(const gtsam::Pose2* a, const gtsam::Pose2* b,
 gtsam::Pose2* Pose2_inverse(const gtsam::Pose2* p) {
     return new gtsam::Pose2(p->inverse());
 }
+gtsam::Pose2* Pose2_inverseH(const gtsam::Pose2* p, gtsam::Matrix* H) {
+    return new gtsam::Pose2(p->inverse(*H));
+}
 /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
 gtsam::Matrix* Pose2_AdjointMap(const gtsam::Pose2* p) {
     return new gtsam::Matrix(p->AdjointMap());
@@ -112,6 +115,10 @@ gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,
                                    const gtsam::Vector3* d) {
     return new gtsam::Pose2(gtsam::expmap_default(*p, *d));
 }
+gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,  //
+                                 const gtsam::Point2* point) {
+    return new gtsam::Point2(p->transformTo(*point));
+}
 // the actual type here is OptionalJacobian which "ururps"
 // (coercing) the supplied dynamic or fixed matrix .  so I could
 // use the real OptionalJacobian type.  In the unit test,
@@ -121,19 +128,38 @@ gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,
 // but otherwise uses dynamic matrices for everything. so I
 // could do that.  Or I could make a bunch of fixed Matrix
 // types, which seems like a lot of work for almost no reason?
-gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,       //
-                                 const gtsam::Point2* point,  //
-                                 gtsam::Matrix* Dpose,        //
-                                 gtsam::Matrix* Dpoint) {
+gtsam::Point2* Pose2_transformToH(const gtsam::Pose2* p,       //
+                                  const gtsam::Point2* point,  //
+                                  gtsam::Matrix* Dpose,        //
+                                  gtsam::Matrix* Dpoint) {
     return new gtsam::Point2(p->transformTo(*point, *Dpose, *Dpoint));
 }
 gtsam::Point2* Pose2_transformFrom(const gtsam::Pose2* p,
-                                   const gtsam::Point2* point,
-                                   gtsam::Matrix* Dpose,
-                                   gtsam::Matrix* Dpoint) {
+                                   const gtsam::Point2* point) {
+    return new gtsam::Point2(p->transformFrom(*point));
+}
+gtsam::Point2* Pose2_transformFromH(const gtsam::Pose2* p,
+                                    const gtsam::Point2* point,
+                                    gtsam::Matrix* Dpose,
+                                    gtsam::Matrix* Dpoint) {
     return new gtsam::Point2(p->transformFrom(*point, *Dpose, *Dpoint));
 }
 gtsam::Matrix3* Pose2_ExpmapDerivative(const gtsam::Vector3* v) {
     return new gtsam::Matrix3(gtsam::Pose2::ExpmapDerivative(*v));
+}
+gtsam::Point2* Pose2_translation(const gtsam::Pose2* p, gtsam::Matrix* H) {
+    return new gtsam::Point2(p->translation(*H));
+}
+gtsam::Rot2* Pose2_bearingPoint2(const gtsam::Pose2* p, gtsam::Point2* pt) {
+    return new gtsam::Rot2(p->bearing(*pt));
+}
+gtsam::Rot2* Pose2_bearingPose2(const gtsam::Pose2* p, gtsam::Pose2* p2) {
+    return new gtsam::Rot2(p->bearing(*p2));
+}
+double Pose2_rangePoint2(const gtsam::Pose2* p, gtsam::Point2* pt) {
+    return p->range(*pt);
+}
+double Pose2_rangePose2(const gtsam::Pose2* p, gtsam::Pose2* p2) {
+    return p->range(*p2);
 }
 }

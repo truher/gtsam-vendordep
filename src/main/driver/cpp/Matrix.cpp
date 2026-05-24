@@ -49,4 +49,7 @@ gtsam::Matrix* Matrix_transpose(const gtsam::Matrix* m) {
 bool Matrix_equals(const gtsam::Matrix* a, const gtsam::Matrix* b, double tol) {
     return gtsam::equal_with_abs_tol(*a, *b, tol);
 }
+gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m, const gtsam::Vector3* v) {
+    return new gtsam::Vector3(gtsam::Matrix3(*m) * (*v));
+}
 }

@@ -354,21 +354,27 @@ public class Pose2Test {
                 { 0.0, 0.0, 1.0 } });
 
         Matrix expectedH2 = Matrix.identity3();
-        // Matrix numericalH1 = numericalDerivative21<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // Matrix numericalH2 = numericalDerivative22<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // EXPECT(assert_equal(expectedH1,actualDcompose1));
-        // EXPECT(assert_equal(numericalH1,actualDcompose1));
-        // EXPECT(assert_equal(expectedH2,actualDcompose2));
-        // EXPECT(assert_equal(numericalH2,actualDcompose2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        assertTrue(expectedH1.equals(actualDcompose1, 1e-6));
+        assertTrue(numericalH1.equals(actualDcompose1, 1e-6));
+        assertTrue(expectedH2.equals(actualDcompose2, 1e-6));
+        assertTrue(numericalH2.equals(actualDcompose2, 1e-6));
 
-        // Point2 point(sqrt(0.5), 3.0*sqrt(0.5));
-        // Point2 expected_point(-1.0, -1.0);
-        // Point2 actual_point1 = (pose1 * pose2).transformTo(point);
-        // Point2 actual_point2 = pose2.transformTo(pose1.transformTo(point));
-        // EXPECT(assert_equal(expected_point, actual_point1));
-        // EXPECT(assert_equal(expected_point, actual_point2));
+        Point2 point = new Point2(Math.sqrt(0.5), 3.0 * Math.sqrt(0.5));
+        Point2 expected_point = new Point2(-1.0, -1.0);
+        Point2 actual_point1 = (pose1.compose(pose2)).transformTo(point);
+        Point2 actual_point2 = pose2.transformTo(pose1.transformTo(point));
+        assertTrue(expected_point.equals(actual_point1, 1e-6));
+        assertTrue(expected_point.equals(actual_point2, 1e-6));
     }
 
     @Test
@@ -384,15 +390,21 @@ public class Pose2Test {
         Matrix actualDcompose2 = new Matrix();
         Pose2 pose_actual_fcn = pose1.compose(pose2, actualDcompose1, actualDcompose2);
 
-        // Matrix numericalH1 = numericalDerivative21<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // Matrix numericalH2 = numericalDerivative22<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // EXPECT(assert_equal(numericalH1,actualDcompose1,1e-5));
-        // EXPECT(assert_equal(numericalH2,actualDcompose2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        assertTrue(numericalH1.equals(actualDcompose1, 1e-5));
+        assertTrue(numericalH2.equals(actualDcompose2, 1e-6));
 
-        // EXPECT(assert_equal(pose_expected, pose_actual_op));
-        // EXPECT(assert_equal(pose_expected, pose_actual_fcn));
+        assertTrue(pose_expected.equals(pose_actual_op, 1e-6));
+        assertTrue(pose_expected.equals(pose_actual_fcn, 1e-6));
     }
 
     @Test
@@ -408,20 +420,21 @@ public class Pose2Test {
 
         Pose2 pose_actual_fcn = pose1.compose(pose2, actualDcompose1, actualDcompose2);
 
-        // Matrix numericalH1 = numericalDerivative21<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // Matrix numericalH2 = numericalDerivative22<Pose2, Pose2,
-        // Pose2>(testing::compose, pose1, pose2);
-        // EXPECT(assert_equal(numericalH1,actualDcompose1,1e-5));
-        // EXPECT(assert_equal(numericalH2,actualDcompose2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, Pose2, Vector3, Pose2, Vector3>numericalDerivative21(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, Pose2, Vector3, Pose2, Vector3>numericalDerivative22(
+                        (a, b) -> a.compose(b), pose1, pose2, 1e-3);
+        assertTrue(numericalH1.equals(actualDcompose1, 1e-5));
+        assertTrue(numericalH2.equals(actualDcompose2, 1e-6));
 
-        // EXPECT(assert_equal(pose_expected, pose_actual_op));
-        // EXPECT(assert_equal(pose_expected, pose_actual_fcn));
+        assertTrue(pose_expected.equals(pose_actual_op, 1e-6));
+        assertTrue(pose_expected.equals(pose_actual_fcn, 1e-6));
     }
 
     @Test
     void testinverse() throws Throwable {
-        Point2 origin = new Point2(0, 0);
         Point2 t = new Point2(1, 2);
         Pose2 gTl = new Pose2(Math.PI / 2.0, t); // robot at (1,2) looking towards y
 
@@ -432,77 +445,68 @@ public class Pose2Test {
 
         Point2 l = new Point2(4, 5);
         Point2 g = new Point2(-4, 6);
-        // EXPECT(assert_equal(g,gTl*l));
-        // EXPECT(assert_equal(l,lTg*g));
+        assertTrue(g.equals(gTl.transformFrom(l), 1e-6));
+        assertTrue(l.equals(lTg.transformFrom(g), 1e-6));
 
-        // // Check derivative
-        // Matrix numericalH = numericalDerivative11<Pose2,Pose2>(testing::inverse,
-        // lTg);
-        // Matrix actualDinverse;
-        // lTg.inverse(actualDinverse);
-        // EXPECT(assert_equal(numericalH,actualDinverse));
+        // Check derivative
+        Matrix numericalH = NumericalDerivative.<//
+                Pose2, Vector3, Pose2, Vector3>numericalDerivative11(
+                        (a) -> a.inverse(), lTg, 1e-3);
+        Matrix actualDinverse = new Matrix();
+        lTg.inverse(actualDinverse);
+        assertTrue(numericalH.equals(actualDinverse, 1e-6));
     }
 
-    // namespace {
-    // /* *************************************************************************
-    // */
-    // Vector3 homogeneous(const Point2& p) {
-    // return (Vector3(3) << p.x(), p.y(), 1.0).finished();
-    // }
+    Vector3 homogeneous(Point2 p) throws Throwable {
+        return new Vector3(p.x(), p.y(), 1.0);
+    }
 
-    // /* *************************************************************************
-    // */
-    // Matrix matrix(const Pose2& gTl) {
-    // Matrix gRl = gTl.r().matrix();
-    // Point2 gt = gTl.t();
-    // return (Matrix(3, 3) <<
-    // gRl(0, 0), gRl(0, 1), gt.x(),
-    // gRl(1, 0), gRl(1, 1), gt.y(),
-    // 0.0, 0.0, 1.0).finished();
-    // }
-    // }
+    Matrix matrix(Pose2 gTl) throws Throwable {
+        Matrix2 gRl = gTl.r().matrix();
+        Point2 gt = gTl.t();
+        return new Matrix(new double[][] {
+                { gRl.at(0, 0), gRl.at(0, 1), gt.x() },
+                { gRl.at(1, 0), gRl.at(1, 1), gt.y() },
+                { 0.0, 0.0, 1.0 } });
+    }
 
-    // /* *************************************************************************
-    // */
     @Test
     void testmatrix() throws Throwable {
         Point2 origin = new Point2(0, 0);
         Point2 t = new Point2(1, 2);
         Pose2 gTl = new Pose2(Math.PI / 2.0, t); // robot at (1,2) looking towards y
-        // Matrix gMl = matrix(gTl);
-        // EXPECT(assert_equal((Matrix(3,3) <<
-        // 0.0, -1.0, 1.0,
-        // 1.0, 0.0, 2.0,
-        // 0.0, 0.0, 1.0).finished(),
-        // gMl));
-        // Rot2 gR1 = gTl.r();
-        // EXPECT(assert_equal(homogeneous(t),gMl*homogeneous(origin)));
-        // Point2 x_axis(1,0), y_axis(0,1);
-        // EXPECT(assert_equal((Matrix(2,2) <<
-        // 0.0, -1.0,
-        // 1.0, 0.0).finished(),
-        // gR1.matrix()));
-        // EXPECT(assert_equal(Point2(0,1),gR1*x_axis));
-        // EXPECT(assert_equal(Point2(-1,0),gR1*y_axis));
-        // EXPECT(assert_equal(homogeneous(Point2(1+0,2+1)),gMl*homogeneous(x_axis)));
-        // EXPECT(assert_equal(homogeneous(Point2(1-1,2+0)),gMl*homogeneous(y_axis)));
+        Matrix gMl = matrix(gTl);
+        assertTrue(new Matrix(new double[][] {
+                { 0.0, -1.0, 1.0 },
+                { 1.0, 0.0, 2.0 },
+                { 0.0, 0.0, 1.0 } }).equals(gMl, 1e-6));
+        Rot2 gR1 = gTl.r();
+        assertTrue(homogeneous(t).equals(gMl.times(homogeneous(origin)), 1e-6));
+        Point2 x_axis = new Point2(1, 0);
+        Point2 y_axis = new Point2(0, 1);
+        assertTrue(new Matrix2(
+                0.0, -1.0, //
+                1.0, 0.0).equals(gR1.matrix(), 1e-6));
+        assertTrue(new Point2(0, 1).equals(gR1.rotate(x_axis), 1e-6));
+        assertTrue(new Point2(-1, 0).equals(gR1.rotate(y_axis), 1e-6));
+        assertTrue(homogeneous(new Point2(1 + 0, 2 + 1)).equals(gMl.times(homogeneous(x_axis)), 1e-6));
+        assertTrue(homogeneous(new Point2(1 - 1, 2 + 0)).equals(gMl.times(homogeneous(y_axis)), 1e-6));
 
-        // // check inverse pose
-        // Matrix lMg = matrix(gTl.inverse());
-        // EXPECT(assert_equal((Matrix(3,3) <<
-        // 0.0, 1.0,-2.0,
-        // -1.0, 0.0, 1.0,
-        // 0.0, 0.0, 1.0).finished(),
-        // lMg));
+        // check inverse pose
+        Matrix lMg = matrix(gTl.inverse());
+        assertTrue(new Matrix(new double[][] {
+                { 0.0, 1.0, -2.0 },
+                { -1.0, 0.0, 1.0 },
+                { 0.0, 0.0, 1.0 } }).equals(lMg, 1e-6));
     }
 
     @Test
     void testcompose_matrix() throws Throwable {
-        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
-        Pose2 _1T2 = new Pose2(Math.PI, new Point2(-1, 4)); // local robot at (-1,4) looking at negative
-        // x
-        // Matrix gM1(matrix(gT1)),_1M2(matrix(_1T2));
-        // EXPECT(assert_equal(gM1*_1M2,matrix(gT1.compose(_1T2)))); // RIGHT DOES NOT
+        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) facing +y
+        Pose2 _1T2 = new Pose2(Math.PI, new Point2(-1, 4)); // local robot at (-1,4) facing -x
+        Matrix gM1 = matrix(gT1);
+        Matrix _1M2 = matrix(_1T2);
+        assertTrue(gM1.compose(_1M2).equals(matrix(gT1.compose(_1T2)), 1e-6)); // RIGHT DOES NOT
     }
 
     @Test
@@ -510,12 +514,14 @@ public class Pose2Test {
         Pose2 pose = new Pose2(3.5, -8.2, 4.2);
 
         Matrix actualH = new Matrix();
-        // EXPECT(assert_equal((Vector2() << 3.5, -8.2).finished(),
-        // pose.translation(actualH), 1e-8));
+        assertTrue(new Point2(3.5, -8.2).equals(
+                pose.translation(actualH), 1e-8));
 
-        // auto f = [](const Pose2& T) { return T.translation(); };
-        // Matrix numericalH = numericalDerivative11<Point2, Pose2>(f, pose);
-        // EXPECT(assert_equal(numericalH, actualH, 1e-6));
+        ThrowingFunction<Pose2, Point2> f = (T) -> T.t();
+        Matrix numericalH = NumericalDerivative.<//
+                Point2, Vector2, //
+                Pose2, Vector3>numericalDerivative11(f, pose, 1e-3);
+        assertTrue(numericalH.equals(actualH, 1e-6));
     }
 
     @Test
@@ -559,7 +565,7 @@ public class Pose2Test {
         // 0.0, 0.0,-1.0
         // ).finished();
         // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>(testing::between, gT1, gT2);
+        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), gT1, gT2);
         // EXPECT(assert_equal(expectedH1,actualH1));
         // EXPECT(assert_equal(numericalH1,actualH1));
         // // Assert H1 = -AdjointMap(between(p2,p1)) as in doc/math.lyx
@@ -571,7 +577,7 @@ public class Pose2Test {
         // 0.0, 0.0, 1.0
         // ).finished();
         // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>(testing::between, gT1, gT2);
+        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), gT1, gT2);
         // EXPECT(assert_equal(expectedH2,actualH2));
         // EXPECT(assert_equal(numericalH2,actualH2));
 
@@ -587,10 +593,10 @@ public class Pose2Test {
         Matrix actualH2 = new Matrix();
         p1.between(p2, actualH1, actualH2);
         // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>(testing::between, p1, p2);
+        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
         // EXPECT(assert_equal(numericalH1,actualH1));
         // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>(testing::between, p1, p2);
+        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
         // EXPECT(assert_equal(numericalH2,actualH2));
     }
 
@@ -604,10 +610,10 @@ public class Pose2Test {
         Matrix actualH2 = new Matrix();
         p1.between(p2, actualH1, actualH2);
         // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>(testing::between, p1, p2);
+        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
         // EXPECT(assert_equal(numericalH1,actualH1));
         // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>(testing::between, p1, p2);
+        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
         // EXPECT(assert_equal(numericalH2,actualH2));
     }
 
@@ -619,19 +625,31 @@ public class Pose2Test {
         assertTrue(odo.equals(p1.between(p2), 1e-6));
     }
 
-    // namespace {
-    // /* *************************************************************************
-    // */
-    // // some shared test values
-    // Pose2 x1, x2(1, 1, 0), x3(1, 1, M_PI/4.0);
-    // Point2 l1(1, 0), l2(1, 1), l3(2, 2), l4(1, 3);
+    // some shared test values
+    static Pose2 x1;
+    static Pose2 x2;
+    static Pose2 x3;
+    static Point2 l1;
+    static Point2 l2;
+    static Point2 l3;
+    static Point2 l4;
+    static {
+        try {
+            x1 = new Pose2();
+            x2 = new Pose2(1, 1, 0);
+            x3 = new Pose2(1, 1, Math.PI / 4.0);
+            l1 = new Point2(1, 0);
+            l2 = new Point2(1, 1);
+            l3 = new Point2(2, 2);
+            l4 = new Point2(1, 3);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
 
-    // /* *************************************************************************
-    // */
-    // Rot2 bearing_proxy(const Pose2& pose, const Point2& pt) {
-    // return pose.bearing(pt);
-    // }
-    // }
+    Rot2 bearing_proxy(Pose2 pose, Point2 pt) throws Throwable {
+        return pose.bearing(pt);
+    }
 
     @Test
     void testbearing() throws Throwable {
@@ -668,13 +686,9 @@ public class Pose2Test {
         // EXPECT(assert_equal(expectedH2,actualH2));
     }
 
-    // /* *************************************************************************
-    // */
-    // namespace {
-    // Rot2 bearing_pose_proxy(const Pose2& pose, const Pose2& pt) {
-    // return pose.bearing(pt);
-    // }
-    // }
+    Rot2 bearing_pose_proxy(Pose2 pose, Pose2 pt) throws Throwable {
+        return pose.bearing(pt);
+    }
 
     @Test
     void testbearing_pose() throws Throwable {
@@ -715,17 +729,17 @@ public class Pose2Test {
         // EXPECT(assert_equal(expectedH2,actualH2));
     }
 
-    // /* *************************************************************************
-    // */
-    // namespace {
-    // double range_proxy(const Pose2& pose, const Point2& point) {
-    // return pose.range(point);
-    // }
-    // }
+    double range_proxy(Pose2 pose, Point2 point) throws Throwable {
+        return pose.range(point);
+    }
+
     @Test
     void testrange() throws Throwable {
 
-        // Matrix expectedH1, actualH1, expectedH2, actualH2;
+        Matrix expectedH1 = new Matrix();
+        Matrix actualH1 = new Matrix();
+        Matrix expectedH2 = new Matrix();
+        Matrix actualH2 = new Matrix();
 
         // // establish range is indeed zero
         // EXPECT_DOUBLES_EQUAL(1,x1.range(l1),1e-9);
@@ -754,13 +768,10 @@ public class Pose2Test {
         // EXPECT(assert_equal(expectedH2,actualH2));
     }
 
-    // /* *************************************************************************
-    // */
-    // namespace {
-    // double range_pose_proxy(const Pose2& pose, const Pose2& point) {
-    // return pose.range(point);
-    // }
-    // }
+    double range_pose_proxy(Pose2 pose, Pose2 point) throws Throwable {
+        return pose.range(point);
+    }
+
     @Test
     void testrange_pose() throws Throwable {
 
@@ -816,7 +827,8 @@ public class Pose2Test {
         Rot2 R = Rot2.fromAngle(Math.PI / 2.0);
         Pose2 expected = new Pose2(R, t);
 
-        // Point2 b1(0, 0), b2(10, 0);
+        Point2 b1 = new Point2(0, 0);
+        Point2 b2 = new Point2(10, 0);
         // Point2Pairs ab_pairs {{expected.transformFrom(b1), b1},
         // {expected.transformFrom(b2), b2}};
 
