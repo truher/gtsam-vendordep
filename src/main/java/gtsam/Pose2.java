@@ -179,15 +179,10 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Rot2((MemorySegment) Pose2_r.invokeExact(ptr));
     }
 
-    // TODO: replace with Local?
+    @Override
     public Vector3 localCoordinates(Pose2 g) throws Throwable {
         return new Vector3(
                 (MemorySegment) Pose2_localCoordinates.invokeExact(ptr, g.ptr));
-    }
-
-    @Override
-    public Vector3 local(Pose2 other) throws Throwable {
-        return localCoordinates(other);
     }
 
     @Override

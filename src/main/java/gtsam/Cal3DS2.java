@@ -56,14 +56,10 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
         this(fx, fy, s, u0, v0, k1, k2, 0.0, 0.0, 1e-5);
     }
 
+    @Override
     public Vector9 localCoordinates(Cal3DS2 g) throws Throwable {
         return new Vector9(
                 (MemorySegment) Cal3DS2_localCoordinates.invokeExact(ptr, g.ptr));
-    }
-
-    @Override
-    public Vector9 local(Cal3DS2 other) throws Throwable {
-        return localCoordinates(other);
     }
 
     @Override

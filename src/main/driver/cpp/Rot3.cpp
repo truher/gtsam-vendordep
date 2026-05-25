@@ -30,6 +30,9 @@ gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
 gtsam::Rot3* Rot3_AxisAngle(const gtsam::Point3* axis, double angle) {
     return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
 }
+gtsam::Matrix3* Rot2_matrix(const gtsam::Rot3* p) {
+    return new gtsam::Matrix3(p->matrix());
+}
 gtsam::Rot3* Rot3_compose(const gtsam::Rot3* a, const gtsam::Rot3* b) {
     return new gtsam::Rot3((*a) * (*b));
 }
@@ -38,6 +41,12 @@ gtsam::Rot3* Rot3_between(const gtsam::Rot3* r, const gtsam::Rot3* g) {
 }
 gtsam::Rot3* Rot3_inverse(const gtsam::Rot3* r) {
     return new gtsam::Rot3(r->inverse());
+}
+gtsam::Rot3* Rot3_inverseH(const gtsam::Rot3* p, gtsam::Matrix* H) {
+    return new gtsam::Rot3(p->inverse(*H));
+}
+gtsam::Matrix3* Rot3_transpose(const gtsam::Rot3* r) {
+    return new gtsam::Matrix3(r->transpose());
 }
 gtsam::Vector3* Rot3_localCoordinates(const gtsam::Rot3* r,
                                       const gtsam::Rot3* g) {

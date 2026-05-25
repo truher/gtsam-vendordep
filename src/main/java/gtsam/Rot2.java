@@ -47,6 +47,16 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
             "Rot2_unit", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_inverse = Lib.down(
             "Rot2_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_inverseH = Lib.down(
+            "Rot2_inverseH", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_expmap = Lib.down(
+            "Rot2_expmap", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_expmapH = Lib.down(
+            "Rot2_expmapH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_logmap = Lib.down(
+            "Rot2_logmap", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_logmapH = Lib.down(
+            "Rot2_logmapH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_transpose = Lib.down(
             "Rot2_transpose", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_between = Lib.down(
@@ -55,8 +65,12 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
             "Rot2_betweenH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_retract = Lib.down(
             "Rot2_retract", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_retractH = Lib.down(
+            "Rot2_retractH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_localCoordinates = Lib.down(
             "Rot2_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot2_localCoordinatesH = Lib.down(
+            "Rot2_localCoordinatesH", ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_Expmap = Lib.down(
             "Rot2_Expmap", ADDRESS, ADDRESS);
     private static final MethodHandle Rot2_Logmap = Lib.down(
@@ -84,11 +98,24 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         }
     }
 
+    public static class Rot2Statics implements LieGroup.Statics<Rot2, Vector1> {
+        @Override
+        public Rot2 Identity() throws Throwable {
+            return new Rot2();
+        }
+    }
+
     public static final Rot2Traits traits = new Rot2Traits();
+    public static final Rot2ChartAtOrigin chartAtOrigin = new Rot2ChartAtOrigin();
 
     @Override
     public Traits<Rot2, Vector1> traits() {
         return traits;
+    }
+
+    @Override
+    public ChartAtOrigin<Rot2, Vector1> chartAtOrigin() {
+        return chartAtOrigin;
     }
 
     public Rot2(MemorySegment p) {
@@ -174,6 +201,31 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_inverse.invokeExact(ptr));
     }
 
+    @Override
+    public Rot2 inverse(Matrix H) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_inverseH.invokeExact(ptr, H.ptr));
+    }
+
+    @Override
+    public Rot2 expmap(Vector1 v) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_expmap.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
+    public Vector1 logmap(Rot2 g) throws Throwable {
+        return new Vector1((MemorySegment) Rot2_logmap.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
+    public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_expmapH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector1((MemorySegment) Rot2_logmapH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    }
+
     public Matrix2 transpose() throws Throwable {
         return new Matrix2((MemorySegment) Rot2_transpose.invokeExact(ptr));
     }
@@ -183,6 +235,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_between.invokeExact(ptr, g.ptr));
     }
 
+    @Override
     public Rot2 between(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
         return new Rot2((MemorySegment) Rot2_betweenH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
@@ -192,8 +245,19 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_retract.invokeExact(ptr, v.ptr));
     }
 
+    @Override
     public Vector1 localCoordinates(Rot2 g) throws Throwable {
         return new Vector1((MemorySegment) Rot2_localCoordinates.invokeExact(ptr, g.ptr));
+    }
+
+    @Override
+    public Rot2 retract(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) Rot2_retractH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Vector1 localCoordinates(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector1((MemorySegment) Rot2_localCoordinatesH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
@@ -204,11 +268,6 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     @Override
     public int dimension() throws Throwable {
         return 1;
-    }
-
-    @Override
-    public Vector1 local(Rot2 other) throws Throwable {
-        return localCoordinates(other);
     }
 
     public static boolean check_group_invariants(Rot2 a, Rot2 b) throws Throwable {

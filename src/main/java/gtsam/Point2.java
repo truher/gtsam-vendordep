@@ -58,7 +58,7 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
 
     // TODO: use C++ here
     @Override
-    public Vector2 local(Point2 other) throws Throwable {
+    public Vector2 localCoordinates(Point2 other) throws Throwable {
         return new Vector2(other.x() - x(), other.y() - y());
     }
 

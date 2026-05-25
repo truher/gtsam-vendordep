@@ -31,6 +31,9 @@ gtsam::Vector6* Pose3_localCoordinates(const gtsam::Pose3* a,
 gtsam::Pose3* Pose3_inverse(const gtsam::Pose3* p) {
     return new gtsam::Pose3(p->inverse());
 }
+gtsam::Pose3* Pose3_inverseH(const gtsam::Pose3* p, gtsam::Matrix* H) {
+    return new gtsam::Pose3(p->inverse(*H));
+}
 /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
 gtsam::Matrix* Pose3_AdjointMap(const gtsam::Pose3* p) {
     return new gtsam::Matrix(p->AdjointMap());

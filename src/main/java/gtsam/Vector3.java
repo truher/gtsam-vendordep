@@ -106,7 +106,7 @@ public class Vector3 extends ForeignObject
     }
 
     @Override
-    public Vector3 local(Vector3 other) throws Throwable {
+    public Vector3 localCoordinates(Vector3 other) throws Throwable {
         return other.minus(this);
     }
 

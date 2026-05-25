@@ -88,9 +88,8 @@ public class Vector extends ForeignObject
         }
     }
 
-    // TODO: maybe use "minus" insteaad?
-    public Vector local(Vector other) throws Throwable {
-        return new Vector((MemorySegment) Vector_Local.invokeExact(ptr, other.ptr));
+    public Vector localCoordinates(Vector other) throws Throwable {
+        return other.minus(this);
     }
 
     @Override

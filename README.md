@@ -30,6 +30,22 @@ with the (simpler) Java type system.  Here are some of the highlights:
 
 * Tangent vector types (`TangentVector` in Lie.h) are fixed-size, e.g. `Vector3`.
 * Jacobian types are dynamic size (`Matrix`).
+* In C++, geometry requirements (e.g. LieGroup) are expressed with static
+  duck typing; in Java there is an interface describing the duck-type expectations (e.g. `p.retract(v)`), with a nested interface for the static elements (e.g. `Class::Retract(p,v)`)
+* The C++ code uses operator overloading for things like `compose`; in Java
+  there are only methods.
+* Geometry traits specify static methods; these are implemented as methods
+  on a singleton `Traits` object.
+* Some of the geometry requirements (not traits) are also static, and
+  they use a similar singleton.  Some are explicit (implemented in C++ via
+  the ChartAtOrigin struct) and some are implied.
+* There's a lot of duplication between these two sets of static methods
+  (traits seem to be implemented in terms of class statics), so it might
+  be good to remove somehow.
+* The unit tests seem to mostly only use traits where they're required, e.g.
+  for types like Point3 which are typedefs of something else.  Traits are also
+  explicitly used by numeric differentiation.
+
 
 ## Warnings
 

@@ -28,13 +28,18 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
             "Rot3_Rodrigues", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle Rot3_AxisAngle = Lib.down(
             "Rot3_AxisAngle", ADDRESS, ADDRESS, JAVA_DOUBLE);
-
+    private static final MethodHandle Rot3_matrix = Lib.down(
+            "Rot3_matrix", ADDRESS, ADDRESS);
     private static final MethodHandle Rot3_compose = Lib.down(
             "Rot3_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot3_between = Lib.down(
             "Rot3_between", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot3_inverse = Lib.down(
             "Rot3_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Rot3_inverseH = Lib.down(
+            "Rot3_inverseH", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Rot3_transpose = Lib.down(
+            "Rot3_transpose", ADDRESS, ADDRESS);
     private static final MethodHandle Rot3_localCoordinates = Lib.down(
             "Rot3_localCoordinates", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Rot3_retract = Lib.down(
@@ -127,10 +132,6 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     }
 
     @Override
-    public Vector3 local(Rot3 other) throws Throwable {
-        return localCoordinates(other);
-    }
-
     public Vector3 localCoordinates(Rot3 g) throws Throwable {
         return new Vector3((MemorySegment) Rot3_localCoordinates.invokeExact(ptr, g.ptr));
     }
@@ -148,6 +149,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         return new Rot3((MemorySegment) Rot3_expmap.invokeExact(ptr, v.ptr));
     }
 
+    public Matrix3 matrix() throws Throwable {
+        return new Matrix3((MemorySegment) Rot3_matrix.invokeExact(ptr));
+    }
+
     @Override
     public Rot3 compose(Rot3 other) throws Throwable {
         return new Rot3((MemorySegment) Rot3_compose.invokeExact(ptr, other.ptr));
@@ -161,6 +166,14 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     @Override
     public Rot3 inverse() throws Throwable {
         return new Rot3((MemorySegment) Rot3_inverse.invokeExact(ptr));
+    }
+
+    public Rot3 inverse(Matrix H) throws Throwable {
+        return new Rot3((MemorySegment) Rot3_inverseH.invokeExact(ptr, H.ptr));
+    }
+
+    public Matrix3 transpose() throws Throwable {
+        return new Matrix3((MemorySegment) Rot3_transpose.invokeExact(ptr));
     }
 
     public static boolean check_group_invariants(Rot3 a, Rot3 b) throws Throwable {

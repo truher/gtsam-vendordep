@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.NumericalDerivative.ThrowingFunction;
+
 /**
  * See gtsam/geometry/tests/testRot3.cpp
  */
@@ -455,15 +457,19 @@ public class Rot3Test {
     @Test
     void testinverse() throws Throwable {
         Rot3 R = Rot3.Rodrigues(0.1, 0.2, 0.3);
-        // Rot3 I;
-        // Matrix3 actualH;
-        // Rot3 actual = R.inverse(actualH);
-        // assertTrue(assert_equal(I,R*actual));
-        // assertTrue(assert_equal(I,actual*R));
-        // assertTrue(assert_equal(actual.matrix(), R.transpose()));
+        Rot3 I = new Rot3();
+        Matrix actualH = Matrix.I_3x3();
+        Rot3 actual = R.inverse(actualH);
+        assertTrue(assert_equal(I, R.compose(actual)));
+        assertTrue(assert_equal(I, actual.compose(R)));
+        assertTrue(assert_equal(actual.matrix(), R.transpose()));
 
-        // Matrix numericalH = numericalDerivative11(testing::inverse<Rot3>, R);
-        // assertTrue(assert_equal(numericalH,actualH));
+        ThrowingFunction<Rot3, Rot3> h = (r) -> r.inverse();
+        Matrix numericalH = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Rot3, Vector3//
+        >numericalDerivative11(h, R, 1e-3);
+        assertTrue(assert_equal(numericalH, actualH));
     }
 
     @Test

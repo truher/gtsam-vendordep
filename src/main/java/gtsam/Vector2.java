@@ -86,10 +86,9 @@ public class Vector2 extends ForeignObject
         return new Vector2((MemorySegment) Vector2_times.invokeExact(ptr, a));
     }
 
-    // TODO: maybe make a real "local" ?
     @Override
-    public Vector2 local(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_minus.invokeExact(other.ptr, ptr));
+    public Vector2 localCoordinates(Vector2 other) throws Throwable {
+        return other.minus(this);
     }
 
     @Override

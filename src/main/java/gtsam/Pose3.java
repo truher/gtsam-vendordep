@@ -25,6 +25,8 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
             "Pose3_between", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_inverse = Lib.down(
             "Pose3_inverse", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose3_inverseH = Lib.down(
+            "Pose3_inverseH", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
             "Pose3_AdjointMap", ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_Expmap = Lib.down(
@@ -67,7 +69,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
 
     public Pose3() throws Throwable {
         // TODO: avoid these
-        this(new Rot3(), new Point3(0,0,0));
+        this(new Rot3(), new Point3(0, 0, 0));
     }
 
     /** Copies the arguments. */
@@ -79,14 +81,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         this((MemorySegment) Pose3_Pose2.invokeExact(p.ptr));
     }
 
+    @Override
     public Vector6 localCoordinates(Pose3 g) throws Throwable {
         return new Vector6(
                 (MemorySegment) Pose3_localCoordinates.invokeExact(ptr, g.ptr));
-    }
-
-    @Override
-    public Vector6 local(Pose3 other) throws Throwable {
-        return localCoordinates(other);
     }
 
     public Pose3 compose(Pose3 p2) throws Throwable {
@@ -106,6 +104,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     @Override
     public Pose3 inverse() throws Throwable {
         return new Pose3((MemorySegment) Pose3_inverse.invokeExact(ptr));
+    }
+
+    public Pose3 inverse(Matrix H) throws Throwable {
+        return new Pose3((MemorySegment) Pose3_inverseH.invokeExact(ptr, H.ptr));
     }
 
     @Override
