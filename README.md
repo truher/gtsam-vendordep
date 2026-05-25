@@ -23,6 +23,28 @@ Point2*
 
 Make sure you update `symbols.txt` when you add new cpp code!
 
+The Java bindings are sugared a little via the enum pattern, using
+the return type and argument types:
+
+```
+public enum FF {
+    Rot2(ADDRESS, JAVA_DOUBLE),
+    Rot2_delete(null, ADDRESS);
+    ...
+}
+```
+
+Pass null as the return type if you want a void binding.
+
+The name of the enum value must match the name of the C extern exactly.
+
+There are many instances of optional Jacobians; these are supported with
+distinct C extern functions.  I tried making the Jacobian arguments
+optional, in the way Java can do it, e.g. passing MemorySegment.NULL,
+but I couldn't find a way to sort out the null in the C bindings, and
+it would have been a bit opaque anyway.  So the C bindings are a bit more
+verbose, but more straightforward.
+
 ## Types
 
 The GTSAM types, and C++ type system in general, can only be approximated

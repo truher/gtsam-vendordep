@@ -57,4 +57,17 @@ public class Lib {
                 lib.findOrThrow(name),
                 FunctionDescriptor.ofVoid(parameterTypes));
     }
+
+    public static MethodHandle ff(Enum<?> fn, ValueLayout returnType, ValueLayout... parameterTypes) {
+        return linker.downcallHandle(
+                lib.findOrThrow(fn.name()),
+                of(returnType, parameterTypes));
+    }
+
+    public static FunctionDescriptor of(ValueLayout returnType, ValueLayout... parameterTypes) {
+        if (returnType == null)
+            return FunctionDescriptor.ofVoid(parameterTypes);
+        return FunctionDescriptor.of(returnType, parameterTypes);
+
+    }
 }
