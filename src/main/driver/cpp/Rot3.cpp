@@ -30,7 +30,7 @@ gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
 gtsam::Rot3* Rot3_AxisAngle(const gtsam::Point3* axis, double angle) {
     return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
 }
-gtsam::Matrix3* Rot2_matrix(const gtsam::Rot3* p) {
+gtsam::Matrix3* Rot3_matrix(const gtsam::Rot3* p) {
     return new gtsam::Matrix3(p->matrix());
 }
 gtsam::Rot3* Rot3_compose(const gtsam::Rot3* a, const gtsam::Rot3* b) {

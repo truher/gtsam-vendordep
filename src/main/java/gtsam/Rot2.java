@@ -98,24 +98,18 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         }
     }
 
-    public static class Rot2Statics implements LieGroup.Statics<Rot2, Vector1> {
-        @Override
-        public Rot2 Identity() throws Throwable {
-            return new Rot2();
-        }
-    }
+    // public static class Rot2Statics implements LieGroup.Statics<Rot2, Vector1> {
+    //     @Override
+    //     public Rot2 Identity() throws Throwable {
+    //         return new Rot2();
+    //     }
+    // }
 
     public static final Rot2Traits traits = new Rot2Traits();
-    public static final Rot2ChartAtOrigin chartAtOrigin = new Rot2ChartAtOrigin();
 
     @Override
     public Traits<Rot2, Vector1> traits() {
         return traits;
-    }
-
-    @Override
-    public ChartAtOrigin<Rot2, Vector1> chartAtOrigin() {
-        return chartAtOrigin;
     }
 
     public Rot2(MemorySegment p) {
@@ -206,25 +200,25 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_inverseH.invokeExact(ptr, H.ptr));
     }
 
-    @Override
-    public Rot2 expmap(Vector1 v) throws Throwable {
-        return new Rot2((MemorySegment) Rot2_expmap.invokeExact(ptr, v.ptr));
-    }
+    // @Override
+    // public Rot2 expmap(Vector1 v) throws Throwable {
+    //     return new Rot2((MemorySegment) Rot2_expmap.invokeExact(ptr, v.ptr));
+    // }
 
-    @Override
-    public Vector1 logmap(Rot2 g) throws Throwable {
-        return new Vector1((MemorySegment) Rot2_logmap.invokeExact(ptr, v.ptr));
-    }
+    // @Override
+    // public Vector1 logmap(Rot2 g) throws Throwable {
+    //     return new Vector1((MemorySegment) Rot2_logmap.invokeExact(ptr, g.ptr));
+    // }
 
-    @Override
-    public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) Rot2_expmapH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
-    }
+    // @Override
+    // public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
+    //     return new Rot2((MemorySegment) Rot2_expmapH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    // }
 
-    @Override
-    public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector1((MemorySegment) Rot2_logmapH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
-    }
+    // @Override
+    // public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+    //     return new Vector1((MemorySegment) Rot2_logmapH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    // }
 
     public Matrix2 transpose() throws Throwable {
         return new Matrix2((MemorySegment) Rot2_transpose.invokeExact(ptr));
@@ -235,10 +229,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_between.invokeExact(ptr, g.ptr));
     }
 
-    @Override
-    public Rot2 between(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) Rot2_betweenH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
-    }
+    // @Override
+    // public Rot2 between(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+    //     return new Rot2((MemorySegment) Rot2_betweenH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    // }
 
     @Override
     public Rot2 retract(Vector1 v) throws Throwable {
@@ -250,15 +244,15 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Vector1((MemorySegment) Rot2_localCoordinates.invokeExact(ptr, g.ptr));
     }
 
-    @Override
-    public Rot2 retract(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) Rot2_retractH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
-    }
+    // @Override
+    // public Rot2 retract(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
+    //     return new Rot2((MemorySegment) Rot2_retractH.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    // }
 
-    @Override
-    public Vector1 localCoordinates(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector1((MemorySegment) Rot2_localCoordinatesH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
-    }
+    // @Override
+    // public Vector1 localCoordinates(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+    //     return new Vector1((MemorySegment) Rot2_localCoordinatesH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    // }
 
     @Override
     public Vector1 dxZero() throws Throwable {

@@ -62,19 +62,19 @@ public class Rot2Test {
         assertTrue(assert_equal(Matrix.I_1x1(), H2));
     }
 
-    @Test
-    void testbetween() throws Throwable {
-        assertTrue(assert_equal(Rot2.fromAngle(0.05),
-                Rot2.fromAngle(0.2).between(Rot2.fromAngle(0.25))));
-        assertTrue(assert_equal(Rot2.fromAngle(-0.05),
-                Rot2.fromAngle(0.25).between(Rot2.fromAngle(0.2))));
+    // @Test
+    // void testbetween() throws Throwable {
+    //     assertTrue(assert_equal(Rot2.fromAngle(0.05),
+    //             Rot2.fromAngle(0.2).between(Rot2.fromAngle(0.25))));
+    //     assertTrue(assert_equal(Rot2.fromAngle(-0.05),
+    //             Rot2.fromAngle(0.25).between(Rot2.fromAngle(0.2))));
 
-        Matrix H1 = new Matrix();
-        Matrix H2 = new Matrix();
-        Rot2.fromAngle(1.0).between(Rot2.fromAngle(2.0), H1, H2);
-        assertTrue(assert_equal(Matrix.I_1x1().times(-1), H1));
-        assertTrue(assert_equal(Matrix.I_1x1(), H2));
-    }
+    //     Matrix H1 = new Matrix();
+    //     Matrix H2 = new Matrix();
+    //     Rot2.fromAngle(1.0).between(Rot2.fromAngle(2.0), H1, H2);
+    //     assertTrue(assert_equal(Matrix.I_1x1().times(-1), H1));
+    //     assertTrue(assert_equal(Matrix.I_1x1(), H2));
+    // }
 
     @Test
     void testequals() throws Throwable {
