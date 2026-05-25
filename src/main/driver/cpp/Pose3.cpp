@@ -18,6 +18,9 @@ gtsam::Pose3* Pose3_Pose2(const gtsam::Pose2* p) {
 gtsam::Pose3* Pose3_compose(const gtsam::Pose3* p, const gtsam::Pose3* p2) {
     return new gtsam::Pose3(p->compose(*p2));
 }
+gtsam::Pose3* Pose3_between(const gtsam::Pose3* p, const gtsam::Pose3* p2) {
+    return new gtsam::Pose3(p->between(*p2));
+}
 gtsam::Pose3* Pose3_retract(const gtsam::Pose3* p, const gtsam::Vector6* v) {
     return new gtsam::Pose3(p->retract(*v));
 }
@@ -31,5 +34,11 @@ gtsam::Pose3* Pose3_inverse(const gtsam::Pose3* p) {
 /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
 gtsam::Matrix* Pose3_AdjointMap(const gtsam::Pose3* p) {
     return new gtsam::Matrix(p->AdjointMap());
+}
+gtsam::Pose3* Pose3_Expmap(const gtsam::Vector6* xi) {
+    return new gtsam::Pose3(gtsam::Pose3::Expmap(*xi));
+}
+gtsam::Vector6* Pose3_Logmap(const gtsam::Pose3* p) {
+    return new gtsam::Vector6(gtsam::Pose3::Logmap(*p));
 }
 }

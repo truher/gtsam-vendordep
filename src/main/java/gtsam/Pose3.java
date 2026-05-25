@@ -8,7 +8,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
+public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     private static final MethodHandle Pose3 = Lib.down(
             "Pose3", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_delete = Lib.downVoid(
@@ -21,13 +21,32 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
             "Pose3_compose", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_retract = Lib.down(
             "Pose3_retract", ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle Pose3_between = Lib.down(
+            "Pose3_between", ADDRESS, ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_inverse = Lib.down(
             "Pose3_inverse", ADDRESS, ADDRESS);
     private static final MethodHandle Pose3_AdjointMap = Lib.down(
             "Pose3_AdjointMap", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose3_Expmap = Lib.down(
+            "Pose3_Expmap", ADDRESS, ADDRESS);
+    private static final MethodHandle Pose3_Logmap = Lib.down(
+            "Pose3_Logmap", ADDRESS, ADDRESS);
 
-    public static class Traits implements Manifold.Traits<Pose3, Vector6> {
+    public static class Traits implements LieGroup.Traits<Pose3, Vector6> {
+        @Override
+        public Pose3 Identity() throws Throwable {
+            return new Pose3();
+        }
 
+        @Override
+        public Pose3 Expmap(Vector6 xi) throws Throwable {
+            return new Pose3((MemorySegment) Pose3_Expmap.invokeExact(xi.ptr));
+        }
+
+        @Override
+        public Vector6 Logmap(Pose3 g) throws Throwable {
+            return new Vector6((MemorySegment) Pose3_Logmap.invokeExact(g.ptr));
+        }
     }
 
     public static final Traits traits = new Traits();
@@ -44,6 +63,11 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
 
     public Pose3(MemorySegment p) {
         super(p, Pose3_delete);
+    }
+
+    public Pose3() throws Throwable {
+        // TODO: avoid these
+        this(new Rot3(), new Point3(0,0,0));
     }
 
     /** Copies the arguments. */
@@ -79,8 +103,14 @@ public class Pose3 extends ForeignObject implements Manifold<Pose3, Vector6> {
         return new Pose3((MemorySegment) Pose3_retract.invokeExact(ptr, v.ptr()));
     }
 
+    @Override
     public Pose3 inverse() throws Throwable {
         return new Pose3((MemorySegment) Pose3_inverse.invokeExact(ptr));
+    }
+
+    @Override
+    public Pose3 between(Pose3 other) throws Throwable {
+        return new Pose3((MemorySegment) Pose3_between.invokeExact(ptr, other.ptr));
     }
 
     /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
