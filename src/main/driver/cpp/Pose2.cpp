@@ -22,7 +22,6 @@ gtsam::Pose2* Pose2Matrix3(const gtsam::Matrix3* T) {
 gtsam::Pose2* Pose2Vector3(const gtsam::Vector3* v) {
     return new gtsam::Pose2(gtsam::Vector(*v));
 }
-// TODO: make this Vector3 somehow
 gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector3* v) {
     return new gtsam::Pose2(p->retract(*v));
 }

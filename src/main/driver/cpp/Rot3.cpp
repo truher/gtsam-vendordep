@@ -30,17 +30,37 @@ gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
 gtsam::Rot3* Rot3_AxisAngle(const gtsam::Point3* axis, double angle) {
     return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
 }
+gtsam::Rot3* Rot3_compose(const gtsam::Rot3* a, const gtsam::Rot3* b) {
+    return new gtsam::Rot3((*a) * (*b));
+}
+gtsam::Rot3* Rot3_between(const gtsam::Rot3* r, const gtsam::Rot3* g) {
+    return new gtsam::Rot3(r->between(*g));
+}
 gtsam::Rot3* Rot3_inverse(const gtsam::Rot3* r) {
     return new gtsam::Rot3(r->inverse());
 }
+gtsam::Vector3* Rot3_localCoordinates(const gtsam::Rot3* r,
+                                      const gtsam::Rot3* g) {
+    return new gtsam::Vector3(r->localCoordinates(*g));
+}
+gtsam::Rot3* Rot3_retract(const gtsam::Rot3* r, const gtsam::Vector3* v) {
+    return new gtsam::Rot3(r->retract(*v));
+}
+gtsam::Vector3* Rot3_logmap(const gtsam::Rot3* r, const gtsam::Rot3* g) {
+    return new gtsam::Vector3(r->logmap(*g));
+}
+gtsam::Rot3* Rot3_expmap(const gtsam::Rot3* r, const gtsam::Vector3* v) {
+    return new gtsam::Rot3(r->expmap(*v));
+}
+gtsam::Vector3* Rot3_Logmap(const gtsam::Rot3* p) {
+    return new gtsam::Vector3(gtsam::Rot3::Logmap(*p));
+}
+gtsam::Rot3* Rot3_Expmap(const gtsam::Vector3* xi) {
+    return new gtsam::Rot3(gtsam::Rot3::Expmap(*xi));
+}
 bool Rot3_check_group_invariants(const gtsam::Rot3* a,  //
-                                 const gtsam::Rot3* b,  //
-                                 double tol) {
-    std::cout << "A" << std::endl;
-    a->print();
-    std::cout << "B" << std::endl;
-    b->print();
-    return gtsam::check_group_invariants(*a, *b, tol);
+                                 const gtsam::Rot3* b) {
+    return gtsam::check_group_invariants(*a, *b);
 }
 bool Rot3_check_manifold_invariants(const gtsam::Rot3* a,
                                     const gtsam::Rot3* b) {

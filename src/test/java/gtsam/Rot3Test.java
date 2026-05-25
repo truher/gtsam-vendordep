@@ -102,32 +102,35 @@ public class Rot3Test {
     @Test
     void testAxisAngle() throws Throwable {
 
-        Vector3 axis = new Vector3(0., 1., 0.); // rotation around Y
+        Point3 axis = new Point3(0., 1., 0.); // rotation around Y
         double angle = 3.14 / 4.0;
         Rot3 expected = new Rot3(//
                 0.707388, 0, 0.706825, //
                 0, 1, 0, //
                 -0.706825, 0, 0.707388);
-        // Rot3 actual = Rot3::AxisAngle(axis, angle);
-        // assertTrue(assert_equal(expected,actual,1e-5));
-        // Rot3 actual2 = Rot3::AxisAngle(axis, angle-2*M_PI);
-        // assertTrue(assert_equal(expected,actual2,1e-5));
+        Rot3 actual = Rot3.AxisAngle(axis, angle);
+        assertTrue(assert_equal(expected, actual, 1e-5));
+        Rot3 actual2 = Rot3.AxisAngle(axis, angle - 2 * Math.PI);
+        assertTrue(assert_equal(expected, actual2, 1e-5));
 
-        // axis = Vector3(0, 50, 0);
-        // Rot3 actual3 = Rot3::AxisAngle(axis, angle);
-        // assertTrue(assert_equal(expected,actual3,1e-5));
+        axis = new Point3(0, 50, 0);
+        Rot3 actual3 = Rot3.AxisAngle(axis, angle);
+        assertTrue(assert_equal(expected, actual3, 1e-5));
     }
 
     @Test
     void testAxisAngle2() throws Throwable {
-        // // constructor from a rotation matrix, as doubles in *row-major* order.
-        // Rot3 R1(-0.999957, 0.00922903, 0.00203116, 0.00926964, 0.999739, 0.0208927,
-        // -0.0018374, 0.0209105, -0.999781);
+        // constructor from a rotation matrix, as doubles in *row-major* order.
+        Rot3 R1 = new Rot3(//
+                -0.999957, 0.00922903, 0.00203116, //
+                0.00926964, 0.999739, 0.0208927, //
+                -0.0018374, 0.0209105, -0.999781);
 
-        // // convert Rot3 to quaternion using GTSAM
+        // convert Rot3 to quaternion using GTSAM
+        // TODO: this is a "pair" return type
         // const auto [actualAxis, actualAngle] = R1.axisAngle();
 
-        // double expectedAngle = 3.1396582;
+        double expectedAngle = 3.1396582;
         // assertTrue(assert_equal(expectedAngle, actualAngle, 1e-5));
     }
 
@@ -141,13 +144,14 @@ public class Rot3Test {
 
     @Test
     void testRodrigues2() throws Throwable {
-        Vector3 axis = new Vector3(0., 1., 0.); // rotation around Y
+        Point3 axis = new Point3(0., 1., 0.); // rotation around Y
         double angle = 3.14 / 4.0;
-        // Rot3 expected(0.707388, 0, 0.706825,
-        // 0, 1, 0,
-        // -0.706825, 0, 0.707388);
-        // Rot3 actual = Rot3::AxisAngle(axis, angle);
-        // assertTrue(assert_equal(expected,actual,1e-5));
+        Rot3 expected = new Rot3(//
+                0.707388, 0, 0.706825, //
+                0, 1, 0, //
+                -0.706825, 0, 0.707388);
+        Rot3 actual = Rot3.AxisAngle(axis, angle);
+        assertTrue(assert_equal(expected, actual, 1e-5));
         // Rot3 actual2 = Rot3::Rodrigues(angle*axis);
         // assertTrue(assert_equal(expected,actual2,1e-5));
     }
@@ -175,8 +179,8 @@ public class Rot3Test {
 
     @Test
     void testretract() throws Throwable {
-        // Vector v = Z_3x1;
-        // assertTrue(assert_equal(R, R.retract(v)));
+        Vector3 v = new Vector3();
+        assertTrue(assert_equal(R, R.retract(v)));
     }
 
     // namespace {
@@ -317,64 +321,57 @@ public class Rot3Test {
 
     @Test
     void testretract_localCoordinates() throws Throwable {
-        // Vector3 d12 = Vector3::Constant(0.1);
-        // Rot3 R2 = R.retract(d12);
-        // assertTrue(assert_equal(d12, R.localCoordinates(R2)));
+        Vector3 d12 = new Vector3(0.1, 0.1, 0.1);
+        Rot3 R2 = R.retract(d12);
+        assertTrue(assert_equal(d12, R.localCoordinates(R2)));
     }
 
     @Test
     void testexpmap_logmap() throws Throwable {
-
-        // Vector d12 = Vector3::Constant(0.1);
-        // Rot3 R2 = R.expmap(d12);
-        // assertTrue(assert_equal(d12, R.logmap(R2)));
+        Vector3 d12 = new Vector3(0.1, 0.1, 0.1);
+        Rot3 R2 = R.expmap(d12);
+        assertTrue(assert_equal(d12, R.logmap(R2)));
     }
 
     @Test
     void testretract_localCoordinates2() throws Throwable {
-        // Rot3 t1 = R, t2 = R*R, origin;
-        // Vector d12 = t1.localCoordinates(t2);
-        // assertTrue(assert_equal(t2, t1.retract(d12)));
-        // Vector d21 = t2.localCoordinates(t1);
-        // assertTrue(assert_equal(t1, t2.retract(d21)));
-        // assertTrue(assert_equal(d12, -d21));
+        Rot3 t1 = R;
+        Rot3 t2 = R.compose(R);
+        Vector3 d12 = t1.localCoordinates(t2);
+        assertTrue(assert_equal(t2, t1.retract(d12)));
+        Vector3 d21 = t2.localCoordinates(t1);
+        assertTrue(assert_equal(t1, t2.retract(d21)));
+        assertTrue(assert_equal(d12, d21.times(-1.0)));
     }
 
     @Test
     void testmanifold_expmap() throws Throwable {
-        // Rot3 gR1 = Rot3::Rodrigues(0.1, 0.4, 0.2);
-        // Rot3 gR2 = Rot3::Rodrigues(0.3, 0.1, 0.7);
-        // Rot3 origin;
+        Rot3 gR1 = Rot3.Rodrigues(0.1, 0.4, 0.2);
+        Rot3 gR2 = Rot3.Rodrigues(0.3, 0.1, 0.7);
+        Rot3 origin = new Rot3();
 
-        // // log behaves correctly
-        // Vector d12 = Rot3::Logmap(gR1.between(gR2));
-        // Vector d21 = Rot3::Logmap(gR2.between(gR1));
+        // log behaves correctly
+        Vector3 d12 = Rot3.traits.Logmap(gR1.between(gR2));
+        Vector3 d21 = Rot3.traits.Logmap(gR2.between(gR1));
 
-        // // Check expmap
-        // assertTrue(assert_equal(gR2, gR1*Rot3::Expmap(d12)));
-        // assertTrue(assert_equal(gR1, gR2*Rot3::Expmap(d21)));
+        // Check expmap
+        assertTrue(assert_equal(gR2, gR1.compose(Rot3.traits.Expmap(d12))));
+        assertTrue(assert_equal(gR1, gR2.compose(Rot3.traits.Expmap(d21))));
 
-        // // Check that log(t1,t2)=-log(t2,t1)
-        // assertTrue(assert_equal(d12,-d21));
+        // Check that log(t1,t2)=-log(t2,t1)
+        assertTrue(assert_equal(d12, d21.times(-1)));
 
-        // // lines in canonical coordinates correspond to Abelian subgroups in SO(3)
-        // Vector d = Vector3(0.1, 0.2, 0.3);
-        // // exp(-d)=inverse(exp(d))
-        // assertTrue(assert_equal(Rot3::Expmap(-d),Rot3::Expmap(d).inverse()));
-        // // exp(5d)=exp(2*d+3*d)=exp(2*d)exp(3*d)=exp(3*d)exp(2*d)
-        // Rot3 R2 = Rot3::Expmap (2 * d);
-        // Rot3 R3 = Rot3::Expmap (3 * d);
-        // Rot3 R5 = Rot3::Expmap (5 * d);
-        // assertTrue(assert_equal(R5,R2*R3));
-        // assertTrue(assert_equal(R5,R3*R2));
-    }
-
-    // // Checks correct exponential map (Expmap) with brute force matrix
-    // exponential
-    @Test
-    void testBruteForceExpmap() throws Throwable {
-        // const Vector3 xi(0.1, 0.2, 0.3);
-        // assertTrue(assert_equal(Rot3::Expmap(xi), expm<Rot3>(xi), 1e-6));
+        // lines in canonical coordinates correspond to Abelian subgroups in SO(3)
+        Vector3 d = new Vector3(0.1, 0.2, 0.3);
+        // exp(-d)=inverse(exp(d))
+        assertTrue(assert_equal(Rot3.traits.Expmap(d.times(-1.0)),
+                Rot3.traits.Expmap(d).inverse()));
+        // exp(5d)=exp(2*d+3*d)=exp(2*d)exp(3*d)=exp(3*d)exp(2*d)
+        Rot3 R2 = Rot3.traits.Expmap(d.times(2));
+        Rot3 R3 = Rot3.traits.Expmap(d.times(3));
+        Rot3 R5 = Rot3.traits.Expmap(d.times(5));
+        assertTrue(assert_equal(R5, R2.compose(R3)));
+        assertTrue(assert_equal(R5, R3.compose(R2)));
     }
 
     // class AngularVelocity : public Vector3 {
@@ -392,7 +389,7 @@ public class Rot3Test {
 
     @Test
     void testBCH() throws Throwable {
-        // // Approximate exmap by BCH formula
+        // Approximate exmap by BCH formula
         // AngularVelocity w1(0.2, -0.1, 0.1);
         // AngularVelocity w2(0.01, 0.02, -0.03);
         // Rot3 R1 = Rot3::Expmap (w1), R2 = Rot3::Expmap (w2);
@@ -440,8 +437,9 @@ public class Rot3Test {
         Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
         Rot3 R2 = Rot3.Rodrigues(0.2, 0.3, 0.5);
 
-        // Rot3 expected = R1 * R2;
-        // Matrix actualH1, actualH2;
+        Rot3 expected = R1.compose(R2);
+        Matrix actualH1 = new Matrix();
+        Matrix actualH2 = new Matrix();
         // Rot3 actual = R1.compose(R2, actualH1, actualH2);
         // assertTrue(assert_equal(expected,actual));
 
@@ -505,8 +503,8 @@ public class Rot3Test {
         double st = Math.sin(t);
         double ct = Math.cos(t);
 
-        // // Make sure all counterclockwise
-        // // Diagrams below are all from from unchanging axis
+        // Make sure all counterclockwise
+        // Diagrams below are all from from unchanging axis
 
         // // z
         // // | * Y=(ct,st)
@@ -715,11 +713,11 @@ public class Rot3Test {
 
     @Test
     void testInvariants() throws Throwable {
-        assertTrue(Rot3.check_group_invariants(id, id, 1e-6));
-        assertTrue(Rot3.check_group_invariants(id, T1, 1e-6));
-        assertTrue(Rot3.check_group_invariants(T2, id, 1e-6));
-        assertTrue(Rot3.check_group_invariants(T2, T1, 1e-6));
-        assertTrue(Rot3.check_group_invariants(T1, T2, 1e-6));
+        assertTrue(Rot3.check_group_invariants(id, id));
+        assertTrue(Rot3.check_group_invariants(id, T1));
+        assertTrue(Rot3.check_group_invariants(T2, id));
+        assertTrue(Rot3.check_group_invariants(T2, T1));
+        assertTrue(Rot3.check_group_invariants(T1, T2));
 
         assertTrue(Rot3.check_manifold_invariants(id, id));
         assertTrue(Rot3.check_manifold_invariants(id, T1));
@@ -936,8 +934,8 @@ public class Rot3Test {
 
     @Test
     void testroll_derivative() throws Throwable {
-        // const auto aa = Vector3{0.8, -0.8, 0.8};
-        // const auto R = Rot3::Expmap(aa);
+        Vector3 aa = new Vector3(0.8, -0.8, 0.8);
+        Rot3 R = Rot3.traits.Expmap(aa);
         // const auto num = numericalDerivative11(roll_proxy, R);
         // Matrix13 calc;
         // R.roll(calc);

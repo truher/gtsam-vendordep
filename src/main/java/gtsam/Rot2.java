@@ -86,6 +86,11 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
 
     public static final Rot2Traits traits = new Rot2Traits();
 
+    @Override
+    public Traits<Rot2, Vector1> traits() {
+        return traits;
+    }
+
     public Rot2(MemorySegment p) {
         super(p, Rot2_delete);
     }
@@ -118,6 +123,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Matrix2((MemorySegment) Rot2_matrix.invokeExact(ptr));
     }
 
+    @Override
     public Rot2 compose(Rot2 other) throws Throwable {
         return new Rot2((MemorySegment) Rot2_compose.invokeExact(ptr, other.ptr));
     }
@@ -163,6 +169,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Point2((MemorySegment) Rot2_unit.invokeExact(ptr));
     }
 
+    @Override
     public Rot2 inverse() throws Throwable {
         return new Rot2((MemorySegment) Rot2_inverse.invokeExact(ptr));
     }
@@ -171,6 +178,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Matrix2((MemorySegment) Rot2_transpose.invokeExact(ptr));
     }
 
+    @Override
     public Rot2 between(Rot2 g) throws Throwable {
         return new Rot2((MemorySegment) Rot2_between.invokeExact(ptr, g.ptr));
     }
@@ -179,6 +187,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Rot2((MemorySegment) Rot2_betweenH.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
+    @Override
     public Rot2 retract(Vector1 v) throws Throwable {
         return new Rot2((MemorySegment) Rot2_retract.invokeExact(ptr, v.ptr));
     }
@@ -200,11 +209,6 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     @Override
     public Vector1 local(Rot2 other) throws Throwable {
         return localCoordinates(other);
-    }
-
-    @Override
-    public Traits<Rot2, Vector1> traits() {
-        return traits;
     }
 
     public static boolean check_group_invariants(Rot2 a, Rot2 b) throws Throwable {

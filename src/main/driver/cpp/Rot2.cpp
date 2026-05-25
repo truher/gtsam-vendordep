@@ -61,11 +61,9 @@ gtsam::Rot2* Rot2_inverse(const gtsam::Rot2* r) {
 gtsam::Matrix2* Rot2_transpose(const gtsam::Rot2* r) {
     return new gtsam::Matrix2(r->transpose());
 }
-// see Lie.h
 gtsam::Rot2* Rot2_between(const gtsam::Rot2* r, const gtsam::Rot2* g) {
     return new gtsam::Rot2(r->between(*g));
 }
-// see Lie.h
 gtsam::Rot2* Rot2_betweenH(const gtsam::Rot2* r, const gtsam::Rot2* g,
                            gtsam::Matrix* H1, gtsam::Matrix* H2) {
     return new gtsam::Rot2(r->between(*g, *H1, *H2));
