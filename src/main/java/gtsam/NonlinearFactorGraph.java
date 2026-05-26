@@ -4,6 +4,7 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
@@ -12,14 +13,18 @@ import org.team100.foreign.Lib;
  * add() methods use shared_ptr to save copying.
  */
 public class NonlinearFactorGraph {
+    public enum FF {
+        NonlinearFactorGraph(ADDRESS),
+        /** Expects shared_ptr<T extends NonlinearFactor>* */
+        NonlinearFactorGraph_add(null, ADDRESS, ADDRESS),
+        NonlinearFactorGraph_resize(null, ADDRESS, JAVA_LONG);
 
-    private static final MethodHandle NonlinearFactorGraph = Lib.down(
-            "NonlinearFactorGraph", ADDRESS);
-    /** Expects shared_ptr<T extends NonlinearFactor>* */
-    private static final MethodHandle NonlinearFactorGraph_add = Lib.downVoid(
-            "NonlinearFactorGraph_add", ADDRESS, ADDRESS);
-    private static final MethodHandle NonlinearFactorGraph_resize = Lib.downVoid(
-            "NonlinearFactorGraph_resize", ADDRESS, JAVA_LONG);
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     /** gtsam::NonlinearFactorGraph* */
     final MemorySegment ptr;
@@ -29,7 +34,7 @@ public class NonlinearFactorGraph {
     }
 
     public NonlinearFactorGraph() throws Throwable {
-        this((MemorySegment) NonlinearFactorGraph.invokeExact());
+        this((MemorySegment) FF.NonlinearFactorGraph.h.invokeExact());
     }
 
     /**
@@ -37,10 +42,10 @@ public class NonlinearFactorGraph {
      * the factor itself
      */
     public <T extends NonlinearFactor> void add(shared_ptr<T> f) throws Throwable {
-        NonlinearFactorGraph_add.invokeExact(ptr, f.sharedPtrPtr);
+        FF.NonlinearFactorGraph_add.h.invokeExact(ptr, f.sharedPtrPtr);
     }
 
     public void resize(long size) throws Throwable {
-        NonlinearFactorGraph_resize.invokeExact(ptr, size);
+        FF.NonlinearFactorGraph_resize.h.invokeExact(ptr, size);
     }
 }

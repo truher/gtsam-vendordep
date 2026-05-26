@@ -1,10 +1,5 @@
 package gtsam;
 
-/**
- * I'm not happy with the VectorSpace/LieGroup thing here,
- * but it does work, kinda.
- * TODO: add dimensionality as a type parameter somehow.
- */
 public class NumericalDerivative {
     @FunctionalInterface
     interface ThrowingFunction<X, Y> {

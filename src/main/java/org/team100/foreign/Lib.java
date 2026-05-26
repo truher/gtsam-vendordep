@@ -44,20 +44,6 @@ public class Lib {
 
     public static final Linker linker = Linker.nativeLinker();
 
-    public static MethodHandle down(
-            String name, ValueLayout returnType, ValueLayout... parameterTypes) {
-        return linker.downcallHandle(
-                lib.findOrThrow(name),
-                FunctionDescriptor.of(returnType, parameterTypes));
-    }
-
-    public static MethodHandle downVoid(
-            String name, ValueLayout... parameterTypes) {
-        return linker.downcallHandle(
-                lib.findOrThrow(name),
-                FunctionDescriptor.ofVoid(parameterTypes));
-    }
-
     public static MethodHandle ff(Enum<?> fn, ValueLayout returnType, ValueLayout... parameterTypes) {
         return linker.downcallHandle(
                 lib.findOrThrow(fn.name()),

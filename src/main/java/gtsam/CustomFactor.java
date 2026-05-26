@@ -5,17 +5,24 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
 public class CustomFactor extends NonlinearFactor {
-    private static final MethodHandle CustomFactor = Lib.down(
-            "CustomFactor", ADDRESS, ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle CustomFactor_keys = Lib.down(
-            "CustomFactor_keys", ADDRESS, ADDRESS);
-    private static final MethodHandle CustomFactor_error = Lib.down(
-            "CustomFactor_error", JAVA_DOUBLE, ADDRESS, ADDRESS);
+    public enum FF {
+
+        CustomFactor(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        CustomFactor_keys(ADDRESS, ADDRESS),
+        CustomFactor_error(JAVA_DOUBLE, ADDRESS, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     /** @param p pointer to the factor itself, not the shared_ptr. */
     CustomFactor(MemorySegment p) {
@@ -31,17 +38,17 @@ public class CustomFactor extends NonlinearFactor {
                 bindHandle,
                 FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
                 Lib.arena);
-        MemorySegment sharedPtrPtr = (MemorySegment) CustomFactor.invokeExact(
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.CustomFactor.h.invokeExact(
                 noiseModel.ptr, keys.ptr, errorFunctionPtr);
         return new shared_ptr<>(sharedPtrPtr, CustomFactor::new);
     }
 
     public KeyVector keys() throws Throwable {
-        return new KeyVector((MemorySegment) CustomFactor_keys.invokeExact(ptr));
+        return new KeyVector((MemorySegment) FF.CustomFactor_keys.h.invokeExact(ptr));
     }
 
     public double error(Values v) throws Throwable {
-        return (double) CustomFactor_error.invokeExact(ptr, v.ptr);
+        return (double) FF.CustomFactor_error.h.invokeExact(ptr, v.ptr);
     }
 
 }

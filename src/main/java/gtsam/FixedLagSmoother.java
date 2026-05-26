@@ -5,6 +5,7 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -23,11 +24,18 @@ public class FixedLagSmoother {
      * }
      */
     public static class Result extends ForeignObject {
-        private static final MethodHandle Result_delete = Lib.downVoid(
-                "Result_delete", ADDRESS);
+        public enum FF {
+            Result_delete(null, ADDRESS);
+
+            public final MethodHandle h;
+
+            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+                h = Lib.ff(this, returnType, parameterTypes);
+            }
+        }
 
         public Result(MemorySegment p) {
-            super(p, Result_delete);
+            super(p, FF.Result_delete.h);
         }
     }
 
@@ -38,29 +46,33 @@ public class FixedLagSmoother {
      * }
      */
     public static class KeyTimestampMap extends ForeignObject {
-        private static final MethodHandle KeyTimestampMap = Lib.down(
-                "KeyTimestampMap", ADDRESS);
-        private static final MethodHandle KeyTimestampMap_delete = Lib.downVoid(
-                "KeyTimestampMap_delete", ADDRESS);
-        private static final MethodHandle KeyTimestampMap_put = Lib.downVoid(
-                "KeyTimestampMap_put", ADDRESS, JAVA_LONG, JAVA_DOUBLE);
-        private static final MethodHandle KeyTimestampMap_clear = Lib.downVoid(
-                "KeyTimestampMap_clear", ADDRESS);
+        public enum FF {
+            KeyTimestampMap(ADDRESS),
+            KeyTimestampMap_delete(null, ADDRESS),
+            KeyTimestampMap_put(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
+            KeyTimestampMap_clear(null, ADDRESS);
+
+            public final MethodHandle h;
+
+            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+                h = Lib.ff(this, returnType, parameterTypes);
+            }
+        }
 
         public KeyTimestampMap(MemorySegment p) {
-            super(p, KeyTimestampMap_delete);
+            super(p, FF.KeyTimestampMap_delete.h);
         }
 
         public KeyTimestampMap() throws Throwable {
-            this((MemorySegment) KeyTimestampMap.invokeExact());
+            this((MemorySegment) FF.KeyTimestampMap.h.invokeExact());
         }
 
         public void put(Key k, double v) throws Throwable {
-            KeyTimestampMap_put.invokeExact(ptr, k.j, v);
+            FF.KeyTimestampMap_put.h.invokeExact(ptr, k.j, v);
         }
 
         public void clear() throws Throwable {
-            KeyTimestampMap_clear.invokeExact(ptr);
+            FF.KeyTimestampMap_clear.h.invokeExact(ptr);
         }
     }
 }

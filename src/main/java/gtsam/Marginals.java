@@ -4,6 +4,7 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -11,23 +12,28 @@ import org.team100.foreign.Lib;
 
 /** https://en.wikipedia.org/wiki/Marginal_distribution */
 public class Marginals extends ForeignObject {
-    private static final MethodHandle Marginals = Lib.down(
-            "Marginals", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Marginals_delete = Lib.downVoid(
-            "Marginals_delete", ADDRESS);
-    private static final MethodHandle Marginals_marginalCovariance = Lib.down(
-            "Marginals_marginalCovariance", ADDRESS, ADDRESS, JAVA_LONG);
+    public enum FF {
+        Marginals(ADDRESS, ADDRESS, ADDRESS),
+        Marginals_delete(null, ADDRESS),
+        Marginals_marginalCovariance(ADDRESS, ADDRESS, JAVA_LONG);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public Marginals(MemorySegment p) {
-        super(p, Marginals_delete);
+        super(p, FF.Marginals_delete.h);
     }
 
     public Marginals(NonlinearFactorGraph graph, Values result) throws Throwable {
-        this((MemorySegment) Marginals.invokeExact(graph.ptr, result.ptr));
+        this((MemorySegment) FF.Marginals.h.invokeExact(graph.ptr, result.ptr));
     }
 
     public Matrix marginalCovariance(Key key) throws Throwable {
-        return new Matrix((MemorySegment) Marginals_marginalCovariance.invokeExact(ptr, key.j));
+        return new Matrix((MemorySegment) FF.Marginals_marginalCovariance.h.invokeExact(ptr, key.j));
     }
 
 }

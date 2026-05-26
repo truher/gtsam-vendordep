@@ -4,20 +4,25 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
-    private static final MethodHandle Point2 = Lib.down(
-            "Point2", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE);
-    private static final MethodHandle Point2_delete = Lib.downVoid(
-            "Point2_delete", ADDRESS);
-    private static final MethodHandle Point2_x = Lib.down(
-            "Point2_x", JAVA_DOUBLE, ADDRESS);
-    private static final MethodHandle Point2_y = Lib.down(
-            "Point2_y", JAVA_DOUBLE, ADDRESS);
+    public enum FF {
+        Point2(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
+        Point2_delete(null, ADDRESS),
+        Point2_x(JAVA_DOUBLE, ADDRESS),
+        Point2_y(JAVA_DOUBLE, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public static class Traits implements Manifold.Traits<Point2, Vector2> {
 
@@ -36,19 +41,19 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     }
 
     public Point2(MemorySegment p) {
-        super(p, Point2_delete);
+        super(p, FF.Point2_delete.h);
     }
 
     public Point2(double x, double y) throws Throwable {
-        this((MemorySegment) Point2.invokeExact(x, y));
+        this((MemorySegment) FF.Point2.h.invokeExact(x, y));
     }
 
     public double x() throws Throwable {
-        return (double) Point2_x.invokeExact(ptr);
+        return (double) FF.Point2_x.h.invokeExact(ptr);
     }
 
     public double y() throws Throwable {
-        return (double) Point2_y.invokeExact(ptr);
+        return (double) FF.Point2_y.h.invokeExact(ptr);
     }
 
     @Override

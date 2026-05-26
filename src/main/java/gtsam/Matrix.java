@@ -5,6 +5,7 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -14,63 +15,53 @@ import org.team100.foreign.Lib;
  * Dynamically-dimensioned Matrix, corresponds to Eigen::MatrixXd.
  */
 public class Matrix extends ForeignObject {
-    private static final MethodHandle Matrix = Lib.down(
-            "Matrix", ADDRESS);
-    private static final MethodHandle Matrix_identity1 = Lib.down(
-            "Matrix_identity1", ADDRESS);
-    private static final MethodHandle Matrix_identity3 = Lib.down(
-            "Matrix_identity3", ADDRESS);
-    private static final MethodHandle Matrix_withRowsCols = Lib.down(
-            "Matrix_withRowsCols", ADDRESS, JAVA_INT, JAVA_INT);
-    private static final MethodHandle Matrix_delete = Lib.downVoid(
-            "Matrix_delete", ADDRESS);
-    private static final MethodHandle Matrix_Matrix3 = Lib.down(
-            "Matrix_Matrix3", ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_set = Lib.downVoid(
-            "Matrix_set", ADDRESS, JAVA_INT, JAVA_INT, JAVA_DOUBLE);
-    // private static final MethodHandle Matrix_setCol = Lib.downVoid(
-    // "Matrix_setCol", ADDRESS, JAVA_INT, ADDRESS);
-    private static final MethodHandle Matrix_at = Lib.down(
-            "Matrix_at", JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT);
-    private static final MethodHandle Matrix_diagonal_cwiseSqrt = Lib.down(
-            "Matrix_diagonal_cwiseSqrt", ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_rows = Lib.down(
-            "Matrix_rows", JAVA_INT, ADDRESS);
-    private static final MethodHandle Matrix_cols = Lib.down(
-            "Matrix_cols", JAVA_INT, ADDRESS);
-    private static final MethodHandle Matrix_inverse = Lib.down(
-            "Matrix_inverse", ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_compose = Lib.down(
-            "Matrix_compose", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_transpose = Lib.down(
-            "Matrix_transpose", ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_timesVector3 = Lib.down(
-            "Matrix_timesVector3", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Matrix_timesDouble = Lib.down(
-            "Matrix_timesDouble", ADDRESS, ADDRESS, JAVA_DOUBLE);
+    public enum FF {
+        Matrix(ADDRESS),
+        Matrix_identity1(ADDRESS),
+        Matrix_identity3(ADDRESS),
+        Matrix_withRowsCols(ADDRESS, JAVA_INT, JAVA_INT),
+        Matrix_delete(null, ADDRESS),
+        Matrix_Matrix3(ADDRESS, ADDRESS),
+        Matrix_set(null, ADDRESS, JAVA_INT, JAVA_INT, JAVA_DOUBLE),
+        Matrix_at(JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT),
+        Matrix_diagonal_cwiseSqrt(ADDRESS, ADDRESS),
+        Matrix_rows(JAVA_INT, ADDRESS),
+        Matrix_cols(JAVA_INT, ADDRESS),
+        Matrix_inverse(ADDRESS, ADDRESS),
+        Matrix_compose(ADDRESS, ADDRESS, ADDRESS),
+        Matrix_transpose(ADDRESS, ADDRESS),
+        Matrix_timesVector3(ADDRESS, ADDRESS, ADDRESS),
+        Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public Matrix(MemorySegment p) {
-        super(p, Matrix_delete);
+        super(p, FF.Matrix_delete.h);
     }
 
     public Matrix() throws Throwable {
-        this((MemorySegment) Matrix.invokeExact());
+        this((MemorySegment) FF.Matrix.h.invokeExact());
     }
 
     public static Matrix I_1x1() throws Throwable {
-        return new Matrix((MemorySegment) Matrix_identity1.invokeExact());
+        return new Matrix((MemorySegment) FF.Matrix_identity1.h.invokeExact());
     }
 
     public static Matrix I_3x3() throws Throwable {
-        return new Matrix((MemorySegment) Matrix_identity3.invokeExact());
+        return new Matrix((MemorySegment) FF.Matrix_identity3.h.invokeExact());
     }
 
     public Matrix(int rows, int cols) throws Throwable {
-        this((MemorySegment) Matrix_withRowsCols.invokeExact(rows, cols));
+        this((MemorySegment) FF.Matrix_withRowsCols.h.invokeExact(rows, cols));
     }
 
     public Matrix(Matrix3 m) throws Throwable {
-        this((MemorySegment) Matrix_Matrix3.invokeExact(m.ptr));
+        this((MemorySegment) FF.Matrix_Matrix3.h.invokeExact(m.ptr));
     }
 
     public Matrix(double[][] x) throws Throwable {
@@ -85,7 +76,7 @@ public class Matrix extends ForeignObject {
     }
 
     public void set(int row, int col, double v) throws Throwable {
-        Matrix_set.invokeExact(ptr, row, col, v);
+        FF.Matrix_set.h.invokeExact(ptr, row, col, v);
     }
 
     public <V extends VectorType<V>> void setCol(int col, V v) throws Throwable {
@@ -95,47 +86,25 @@ public class Matrix extends ForeignObject {
     }
 
     public double at(int r, int c) throws Throwable {
-        return (double) Matrix_at.invokeExact(ptr, r, c);
+        return (double) FF.Matrix_at.h.invokeExact(ptr, r, c);
     }
 
     public Vector diagonal_cwiseSqrt() throws Throwable {
         return new Vector(
-                (MemorySegment) Matrix_diagonal_cwiseSqrt.invokeExact(ptr));
+                (MemorySegment) FF.Matrix_diagonal_cwiseSqrt.h.invokeExact(ptr));
     }
 
     public int rows() throws Throwable {
-        return (int) Matrix_rows.invokeExact(ptr);
+        return (int) FF.Matrix_rows.h.invokeExact(ptr);
     }
 
     public int cols() throws Throwable {
-        return (int) Matrix_cols.invokeExact(ptr);
-    }
-
-    @Override
-    public String toString() {
-        try {
-            StringBuilder b = new StringBuilder();
-            int rows = rows();
-            int cols = cols();
-            b.append("[\n");
-            for (int r = 0; r < rows; ++r) {
-                b.append("  [");
-                for (int c = 0; c < cols; ++c) {
-                    b.append(String.format(" %9.6f ", at(r, c)));
-                }
-                b.append("]\n");
-            }
-            b.append("]\n");
-            return b.toString();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return "";
-        }
+        return (int) FF.Matrix_cols.h.invokeExact(ptr);
     }
 
     /** TODO: what if not square? Pseudo-inverse? */
     public Matrix inverse() throws Throwable {
-        return new Matrix((MemorySegment) Matrix_inverse.invokeExact(ptr));
+        return new Matrix((MemorySegment) FF.Matrix_inverse.h.invokeExact(ptr));
     }
 
     /**
@@ -143,20 +112,20 @@ public class Matrix extends ForeignObject {
      * Note this type, compose arg, and return type might all be different.
      */
     public Matrix compose(Matrix other) throws Throwable {
-        return new Matrix((MemorySegment) Matrix_compose.invokeExact(ptr, other.ptr));
+        return new Matrix((MemorySegment) FF.Matrix_compose.h.invokeExact(ptr, other.ptr));
     }
 
     /** Note return type may be different than this type. */
     public Matrix transpose() throws Throwable {
-        return new Matrix((MemorySegment) Matrix_transpose.invokeExact(ptr));
+        return new Matrix((MemorySegment) FF.Matrix_transpose.h.invokeExact(ptr));
     }
 
     public Vector3 times(Vector3 v) throws Throwable {
-        return new Vector3((MemorySegment) Matrix_timesVector3.invokeExact(ptr, v.ptr));
+        return new Vector3((MemorySegment) FF.Matrix_timesVector3.h.invokeExact(ptr, v.ptr));
     }
 
     public Matrix times(double a) throws Throwable {
-        return new Matrix((MemorySegment) Matrix_timesDouble.invokeExact(ptr, a));
+        return new Matrix((MemorySegment) FF.Matrix_timesDouble.h.invokeExact(ptr, a));
     }
 
 }

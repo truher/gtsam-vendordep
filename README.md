@@ -24,7 +24,7 @@ Point2*
 Make sure you update `symbols.txt` when you add new cpp code!
 
 The Java bindings are sugared a little via the enum pattern, using
-the return type and argument types:
+the return type and argument types, just to make the whole thing more terse:
 
 ```
 public enum FF {

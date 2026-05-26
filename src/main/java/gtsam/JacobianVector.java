@@ -4,6 +4,7 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
@@ -13,16 +14,19 @@ import org.team100.foreign.Lib;
  * see gtsam/nonlinear/CustomFactor.h
  * using JacobianVector = std::vector<Matrix>;
  * 
- * This does not own the pointer.
+ * This does not own the pointer; never deleted.
  */
 public class JacobianVector {
-    // this is never deleted, it is owned by the caller
-    // private static final MethodHandle JacobianVector_delete = Lib.downVoid(
-    // "JacobianVector_delete", ADDRESS);
-    private static final MethodHandle JacobianVector_insert = Lib.downVoid(
-            "JacobianVector_insert", ADDRESS, JAVA_INT, ADDRESS);
-    private static final MethodHandle JacobianVector_insertMatrix3 = Lib.downVoid(
-            "JacobianVector_insertMatrix3", ADDRESS, JAVA_INT, ADDRESS);
+    public enum FF {
+        JacobianVector_insert(null, ADDRESS, JAVA_INT, ADDRESS),
+        JacobianVector_insertMatrix3(null, ADDRESS, JAVA_INT, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public final MemorySegment ptr;
 
@@ -38,10 +42,10 @@ public class JacobianVector {
     }
 
     public void insert(int i, Matrix m) throws Throwable {
-        JacobianVector_insert.invokeExact(ptr, i, m.ptr);
+        FF.JacobianVector_insert.h.invokeExact(ptr, i, m.ptr);
     }
 
     public void insert(int i, Matrix3 m) throws Throwable {
-        JacobianVector_insertMatrix3.invokeExact(ptr, i, m.ptr);
+        FF.JacobianVector_insertMatrix3.h.invokeExact(ptr, i, m.ptr);
     }
 }

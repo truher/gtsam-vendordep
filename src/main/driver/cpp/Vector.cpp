@@ -14,9 +14,6 @@ gtsam::Vector* Vector(int size) {
 void Vector_delete(gtsam::Vector* p) {
     delete p;
 }
-gtsam::Vector* Vector_fromTangentVector(gtsam::Pose2::TangentVector* v) {
-    return new gtsam::Vector(*v);
-}
 gtsam::Vector* Vector_fromVector2(gtsam::Vector2* v) {
     return new gtsam::Vector(*v);
 }
