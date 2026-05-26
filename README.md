@@ -57,10 +57,13 @@ with the (simpler) Java type system.  Here are some of the highlights:
 * The C++ code uses operator overloading for things like `compose`; in Java
   there are only methods.
 * Geometry traits specify static methods; these are implemented as methods
-  on a singleton `Traits` object.
+  on a singleton `Traits` object.  Some are implemented as defaults.
+  Many have the same implementation in all subclasses: note
+  the implementation guide in the comments.
 * Some of the geometry requirements (not traits) are also static, and
-  they use a similar singleton.  Some are explicit (implemented in C++ via
-  the ChartAtOrigin struct) and some are implied.
+  they use a similar "Statics" singleton.  Some are explicit
+  (implemented in C++ via the ChartAtOrigin struct) and some are implied.
+  Note the covariant return in the `traits()` and `statics()` methods.
 * There's a lot of duplication between these two sets of static methods
   (traits seem to be implemented in terms of class statics), so it might
   be good to remove somehow.

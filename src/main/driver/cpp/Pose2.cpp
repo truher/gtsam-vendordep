@@ -25,11 +25,17 @@ gtsam::Pose2* Pose2Vector3(const gtsam::Vector3* v) {
 gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector3* v) {
     return new gtsam::Pose2(p->retract(*v));
 }
+gtsam::Pose2* Pose2_retractH(const gtsam::Pose2* p,    //
+                             const gtsam::Vector3* v,  //
+                             gtsam::Matrix* H1,        //
+                             gtsam::Matrix* H2) {
+    return new gtsam::Pose2(p->retract(*v, *H1, *H2));
+}
 /** This is from the LieGroup trait, see gtsam/base/Lie.h */
 gtsam::Pose2* Pose2_Retract(const gtsam::Pose2* origin,  //
                             const gtsam::Vector3* v,     //
                             gtsam::Matrix* Horigin,      //
-                            gtsam::Matrix* Hv) {
+                            gtsam::Matrix* Hv) {         //
     return new gtsam::Pose2(origin->retract(gtsam::Vector3(*v), *Horigin, *Hv));
 }
 double Pose2_x(const gtsam::Pose2* p) {
@@ -51,11 +57,19 @@ gtsam::Vector3* Pose2_localCoordinates(const gtsam::Pose2* p,
                                        const gtsam::Pose2* g) {
     return new gtsam::Vector3(p->localCoordinates(*g));
 }
+gtsam::Vector3* Pose2_localCoordinatesH(const gtsam::Pose2* p,  //
+                                        const gtsam::Pose2* g,  //
+                                        gtsam::Matrix* H1,      //
+                                        gtsam::Matrix* H2) {
+    return new gtsam::Vector3(p->localCoordinates(*g, *H1, *H2));
+}
 gtsam::Pose2* Pose2_between(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2(a->between(*b));
 }
-gtsam::Pose2* Pose2_betweenH(const gtsam::Pose2* a, const gtsam::Pose2* b,
-                             gtsam::Matrix* H1, gtsam::Matrix* H2) {
+gtsam::Pose2* Pose2_betweenH(const gtsam::Pose2* a,  //
+                             const gtsam::Pose2* b,  //
+                             gtsam::Matrix* H1,      //
+                             gtsam::Matrix* H2) {
     return new gtsam::Pose2(a->between(*b, *H1, *H2));
 }
 gtsam::Pose2* Pose2_inverse(const gtsam::Pose2* p) {
@@ -67,6 +81,18 @@ gtsam::Pose2* Pose2_inverseH(const gtsam::Pose2* p, gtsam::Matrix* H) {
 /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
 gtsam::Matrix* Pose2_AdjointMap(const gtsam::Pose2* p) {
     return new gtsam::Matrix(p->AdjointMap());
+}
+gtsam::Pose2* Pose2_expmapH(const gtsam::Pose2* p,    //
+                            const gtsam::Vector3* v,  //
+                            gtsam::Matrix* H1,        //
+                            gtsam::Matrix* H2) {
+    return new gtsam::Pose2(p->expmap(*v, *H1, *H2));
+}
+gtsam::Vector3* Pose2_logmapH(const gtsam::Pose2* p,  //
+                              const gtsam::Pose2* g,  //
+                              gtsam::Matrix* H1,      //
+                              gtsam::Matrix* H2) {
+    return new gtsam::Vector3(p->logmap(*g, *H1, *H2));
 }
 gtsam::Vector3* Pose2_Adjoint(const gtsam::Pose2* p, const gtsam::Vector3* v) {
     return new gtsam::Vector3(p->Adjoint(*v));
@@ -86,6 +112,19 @@ gtsam::Vector3* Pose2_LogmapH(const gtsam::Pose2* p, gtsam::Matrix* H) {
 gtsam::Vector3* Pose2_logmap(const gtsam::Pose2* p0, const gtsam::Pose2* p1) {
     return new gtsam::Vector3(p0->logmap(*p1));
 }
+gtsam::Pose2* Pose2_OriginRetract(const gtsam::Vector3* v) {
+    return new gtsam::Pose2(gtsam::Pose2::Retract(*v));
+}
+gtsam::Vector3* Pose2_OriginLocalCoordinates(const gtsam::Pose2* g) {
+    return new gtsam::Vector3(gtsam::Pose2::LocalCoordinates(*g));
+}
+gtsam::Pose2* Pose2_OriginRetractH(const gtsam::Vector3* v, gtsam::Matrix* H) {
+    return new gtsam::Pose2(gtsam::Pose2::Retract(*v, *H));
+}
+gtsam::Vector3* Pose2_OriginLocalCoordinatesH(const gtsam::Pose2* g, gtsam::Matrix* H) {
+    return new gtsam::Vector3(gtsam::Pose2::LocalCoordinates(*g, *H));
+}
+
 gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2((*a) * (*b));
 }

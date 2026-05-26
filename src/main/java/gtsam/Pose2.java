@@ -19,6 +19,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2Matrix3(ADDRESS, ADDRESS),
         Pose2Vector3(ADDRESS, ADDRESS),
         Pose2_retract(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_Retract(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_x(JAVA_DOUBLE, ADDRESS),
         Pose2_y(JAVA_DOUBLE, ADDRESS),
@@ -26,17 +27,24 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_t(ADDRESS, ADDRESS),
         Pose2_r(ADDRESS, ADDRESS),
         Pose2_localCoordinates(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_between(ADDRESS, ADDRESS, ADDRESS),
         Pose2_betweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_inverse(ADDRESS, ADDRESS),
         Pose2_inverseH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_AdjointMap(ADDRESS, ADDRESS),
+        Pose2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_Adjoint(ADDRESS, ADDRESS, ADDRESS),
         Pose2_Expmap(ADDRESS, ADDRESS),
         Pose2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_Logmap(ADDRESS, ADDRESS),
         Pose2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_OriginRetract(ADDRESS, ADDRESS),
+        Pose2_OriginLocalCoordinates(ADDRESS, ADDRESS),
+        Pose2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_compose(ADDRESS, ADDRESS, ADDRESS),
         Pose2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_matrix(ADDRESS, ADDRESS),
@@ -64,7 +72,53 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
         @Override
         public Pose2 Identity() throws Throwable {
+            return statics.Identity();
+        }
+
+        @Override
+        public Vector3 Logmap(Pose2 g) throws Throwable {
+            return statics.Logmap(g);
+        }
+
+        @Override
+        public Vector3 Logmap(Pose2 g, Matrix H) throws Throwable {
+            return statics.Logmap(g, H);
+        }
+
+        @Override
+        public Pose2 Expmap(Vector3 xi) throws Throwable {
+            return statics.Expmap(xi);
+        }
+
+        @Override
+        public Pose2 Expmap(Vector3 xi, Matrix H) throws Throwable {
+            return statics.Expmap(xi, H);
+        }
+
+    }
+
+    public static final Pose2Traits traits = new Pose2Traits();
+
+    @Override
+    public Pose2Traits traits() {
+        return traits;
+    }
+
+    public static class Pose2Statics implements LieGroup.Statics<Pose2, Vector3> {
+        @Override
+        public Pose2 Identity() throws Throwable {
             return new Pose2();
+        }
+
+        @Override
+        public Vector3 Logmap(Pose2 g) throws Throwable {
+            return new Vector3((MemorySegment) FF.Pose2_Logmap.h.invokeExact(g.ptr));
+        }
+
+        @Override
+        public Vector3 Logmap(Pose2 g, Matrix H) throws Throwable {
+            return new Vector3((MemorySegment) FF.Pose2_LogmapH.h.invokeExact(
+                    g.ptr, H.ptr));
         }
 
         @Override
@@ -73,16 +127,38 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         }
 
         @Override
-        public Vector3 Logmap(Pose2 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Pose2_Logmap.h.invokeExact(g.ptr));
+        public Pose2 Expmap(Vector3 xi, Matrix H) throws Throwable {
+            return new Pose2((MemorySegment) FF.Pose2_ExpmapH.h.invokeExact(
+                    xi.ptr, H.ptr));
         }
+
+        @Override
+        public Pose2 Retract(Vector3 v) throws Throwable {
+            return new Pose2((MemorySegment) FF.Pose2_OriginRetract.h.invokeExact(v.ptr));
+        }
+
+        @Override
+        public Vector3 LocalCoordinates(Pose2 g) throws Throwable {
+            return new Vector3((MemorySegment) FF.Pose2_OriginLocalCoordinates.h.invokeExact(g.ptr));
+        }
+
+        @Override
+        public Pose2 Retract(Vector3 v, Matrix H) throws Throwable {
+            return new Pose2((MemorySegment) FF.Pose2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
+        }
+
+        @Override
+        public Vector3 LocalCoordinates(Pose2 g, Matrix H) throws Throwable {
+            return new Vector3((MemorySegment) FF.Pose2_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
+        }
+
     }
 
-    public static final Pose2Traits traits = new Pose2Traits();
+    public static final Pose2Statics statics = new Pose2Statics();
 
     @Override
-    public Pose2Traits traits() {
-        return traits;
+    public Pose2Statics statics() {
+        return statics;
     }
 
     @Override
@@ -124,6 +200,12 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) FF.Pose2_retract.h.invokeExact(ptr, v.ptr()));
     }
 
+    @Override
+    public Pose2 retract(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose2((MemorySegment) FF.Pose2_retractH.h.invokeExact(
+                ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
     public static Pose2 Retract(Pose2 origin, Vector3 v, Matrix Horigin, Matrix Hv) throws Throwable {
         return new Pose2((MemorySegment) FF.Pose2_Retract.h.invokeExact(origin.ptr, v.ptr, Horigin.ptr, Hv.ptr));
     }
@@ -155,6 +237,12 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     }
 
     @Override
+    public Vector3 localCoordinates(Pose2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector3(
+                (MemorySegment) FF.Pose2_localCoordinatesH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
     public Pose2 between(Pose2 other) throws Throwable {
         return new Pose2((MemorySegment) FF.Pose2_between.h.invokeExact(ptr, other.ptr));
     }
@@ -172,9 +260,20 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Pose2((MemorySegment) FF.Pose2_inverseH.h.invokeExact(ptr, H.ptr));
     }
 
-    /** underlying AdjointMap returns Matrix3 but we coerce to dynamic. */
+    @Override
     public Matrix AdjointMap() throws Throwable {
+        // coerce Matrix3 to dynamic. */
         return new Matrix((MemorySegment) FF.Pose2_AdjointMap.h.invokeExact(ptr));
+    }
+
+    @Override
+    public Pose2 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose2((MemorySegment) FF.Pose2_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Vector3 logmap(Pose2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector3((MemorySegment) FF.Pose2_logmapH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
     public Vector3 Adjoint(Vector3 v) throws Throwable {

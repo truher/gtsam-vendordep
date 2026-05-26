@@ -28,32 +28,65 @@ public interface LieGroup<//
             T extends LieGroup<T, V>, //
             V extends VectorType<V>>
             extends Group.Traits<T>, Manifold.Traits<T, V> {
-        // Group
+        /** Implement as statics.Identity(). */
         T Identity() throws Throwable;
 
-        // TODO: REMOVE!
-        T Expmap(V v) throws Throwable;
+        default V Local(T origin, T other) throws Throwable {
+            return origin.localCoordinates(other);
+        }
 
-        // TODO: REMOVE!
+        default V Local(T origin, T other, Matrix H1, Matrix H2) throws Throwable {
+            return origin.localCoordinates(other, H1, H2);
+        }
+
+        default T Retract(T origin, V v) throws Throwable {
+            return origin.retract(v);
+        }
+
+        default T Retract(T origin, V v, Matrix H, Matrix Hv) throws Throwable {
+            return origin.retract(v, H, Hv);
+        }
+
+        /** Implement as statics.Logmap() */
         V Logmap(T g) throws Throwable;
 
-        // // Manifold
-        // V Local(T origin, T other, Matrix H1, Matrix H2) throws Throwable;
+        /** Implement as statics.Logmap() */
+        V Logmap(T m, Matrix Hm) throws Throwable;
 
-        // T Retract(T origin, V v, Matrix H, Matrix Hv) throws Throwable;
+        /** Implement as statics.Expmap() */
+        T Expmap(V v) throws Throwable;
 
-        // // LieGroup
-        // V Logmap(T m, Matrix Hm) throws Throwable;
+        /** Implement as statics.Expmap() */
+        T Expmap(V v, Matrix Hv) throws Throwable;
 
-        // T Expmap(V v, Matrix Hv) throws Throwable;
+        default T Compose(T m1, T m2) throws Throwable {
+            return m1.compose(m2);
+        }
 
-        // T Compose(T m1, T m2, Matrix H1, Matrix H2) throws Throwable;
+        default T Compose(T m1, T m2, Matrix H1, Matrix H2) throws Throwable {
+            return m1.compose(m2, H1, H2);
+        }
 
-        // T Between(T m1, T m2, Matrix H1, Matrix H2) throws Throwable;
+        default T Between(T m1, T m2) throws Throwable {
+            return m1.between(m2);
+        }
 
-        // T Inverse(T m, Matrix H) throws Throwable;
+        default T Between(T m1, T m2, Matrix H1, Matrix H2) throws Throwable {
+            return m1.between(m2, H1, H2);
+        }
 
-        // Matrix AdjointMap(T m) throws Throwable;
+        default T Inverse(T m) throws Throwable {
+            return m.inverse();
+        }
+
+        default T Inverse(T m, Matrix H) throws Throwable {
+            return m.inverse(H);
+        }
+
+        default Matrix AdjointMap(T m) throws Throwable {
+            return m.AdjointMap();
+        }
+
     }
 
     /**
@@ -64,55 +97,70 @@ public interface LieGroup<//
             V extends VectorType<V>> {
         // Implied
 
-        // T Identity() throws Throwable;
+        T Identity() throws Throwable;
 
-        // T Expmap(V v) throws Throwable;
+        V Logmap(T g) throws Throwable;
 
-        // V Logmap(T g) throws Throwable;
+        V Logmap(T g, Matrix H) throws Throwable;
 
-        // T Expmap(V v, Matrix H) throws Throwable;
+        T Expmap(V v) throws Throwable;
 
-        // V Logmap(T g, Matrix H) throws Throwable;
+        T Expmap(V v, Matrix H) throws Throwable;
 
-        // // Explicit
+        // Explicit
 
-        // T Retract(V v) throws Throwable;
+        // Implementations depend on flags
+        // like GTSAM_SLOW_BUT_CORRECT_EXPMAP
+        // and GTSAM_POSE3_EXPMAP
+        // so these should be implemented by subclasses.
 
-        // V LocalCoordinates(T g) throws Throwable;
+        T Retract(V v) throws Throwable;
 
-        // T Retract(V v, Matrix H) throws Throwable;
+        V LocalCoordinates(T g) throws Throwable;
 
-        // V LocalCoordinates(T g, Matrix H) throws Throwable;
+        T Retract(V v, Matrix H) throws Throwable;
+
+        V LocalCoordinates(T g, Matrix H) throws Throwable;
     }
 
     Traits<T, V> traits();
 
-    // Statics<T, V> statics();
+    Statics<T, V> statics();
 
     T compose(T h) throws Throwable;
 
+    T compose(T h, Matrix H1, Matrix H2) throws Throwable;
+
     T between(T h) throws Throwable;
 
-    // T compose(T h, Matrix H1, Matrix H2) throws Throwable;
-
-    // T between(T h, Matrix H1, Matrix H2) throws Throwable;
+    T between(T h, Matrix H1, Matrix H2) throws Throwable;
 
     T inverse(Matrix H) throws Throwable;
 
-    // T expmap(V v) throws Throwable;
+    Matrix AdjointMap() throws Throwable;
 
-    // V logmap(T g) throws Throwable;
+    default T expmap(V v) throws Throwable {
+        return compose(statics().Expmap(v));
+    }
 
-    // T expmap(V v, Matrix H1, Matrix H2) throws Throwable;
+    default V logmap(T g) throws Throwable {
+        return statics().Logmap(between(g));
+    }
 
-    // V logmap(T g, Matrix H1, Matrix H2) throws Throwable;
+    T expmap(V v, Matrix H1, Matrix H2) throws Throwable;
 
-    T retract(V v) throws Throwable;
+    V logmap(T g, Matrix H1, Matrix H2) throws Throwable;
 
-    V localCoordinates(T g) throws Throwable;
+    default T retract(V v) throws Throwable {
+        return compose(statics().Retract(v));
+    }
 
-    // T retract(V v, Matrix H1, Matrix H2) throws Throwable;
+    default V localCoordinates(T g) throws Throwable {
+        return statics().LocalCoordinates(between(g));
+    }
 
-    // V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
+    T retract(V v, Matrix H1, Matrix H2) throws Throwable;
+
+    V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
 
 }
