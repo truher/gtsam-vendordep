@@ -5,6 +5,7 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -12,27 +13,28 @@ import org.team100.foreign.Lib;
 
 // TODO: finish implementation
 public class Vector6 extends ForeignObject implements VectorType<Vector6> {
-    private static final MethodHandle Vector6 = Lib.down(
-            "Vector6", ADDRESS);
-    private static final MethodHandle Vector6_delete = Lib.downVoid(
-            "Vector6_delete", ADDRESS);
-    private static final MethodHandle Vector6_at = Lib.down(
-            "Vector6_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
-    private static final MethodHandle Vector6_set = Lib.downVoid(
-            "Vector6_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Vector6_plus = Lib.down(
-            "Vector6_plus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector6_minus = Lib.down(
-            "Vector6_minus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector6_times = Lib.down(
-            "Vector6_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
+    public enum FF {
+        Vector6(ADDRESS),
+        Vector6_delete(null, ADDRESS),
+        Vector6_at(JAVA_DOUBLE, ADDRESS, JAVA_INT),
+        Vector6_set(null, ADDRESS, JAVA_INT, JAVA_DOUBLE),
+        Vector6_plus(ADDRESS, ADDRESS, ADDRESS),
+        Vector6_minus(ADDRESS, ADDRESS, ADDRESS),
+        Vector6_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public Vector6(MemorySegment p) {
-        super(p, Vector6_delete);
+        super(p, FF.Vector6_delete.h);
     }
 
     public Vector6() throws Throwable {
-        this((MemorySegment) Vector6.invokeExact());
+        this((MemorySegment) FF.Vector6.h.invokeExact());
     }
 
     public Vector6(//
@@ -54,27 +56,27 @@ public class Vector6 extends ForeignObject implements VectorType<Vector6> {
 
     @Override
     public double at(int i) throws Throwable {
-        return (double) Vector6_at.invokeExact(ptr, i);
+        return (double) FF.Vector6_at.h.invokeExact(ptr, i);
     }
 
     @Override
     public void set(int i, double val) throws Throwable {
-        Vector6_set.invokeExact(ptr, i, val);
+        FF.Vector6_set.h.invokeExact(ptr, i, val);
     }
 
     @Override
     public Vector6 plus(Vector6 other) throws Throwable {
-        return new Vector6((MemorySegment) Vector6_plus.invokeExact(ptr, other.ptr));
+        return new Vector6((MemorySegment) FF.Vector6_plus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector6 minus(Vector6 other) throws Throwable {
-        return new Vector6((MemorySegment) Vector6_minus.invokeExact(ptr, other.ptr));
+        return new Vector6((MemorySegment) FF.Vector6_minus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector6 times(double a) throws Throwable {
-        return new Vector6((MemorySegment) Vector6_times.invokeExact(ptr, a));
+        return new Vector6((MemorySegment) FF.Vector6_times.h.invokeExact(ptr, a));
     }
 
 }

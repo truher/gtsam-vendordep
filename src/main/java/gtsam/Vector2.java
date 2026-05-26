@@ -5,6 +5,7 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -12,20 +13,21 @@ import org.team100.foreign.Lib;
 
 public class Vector2 extends ForeignObject
         implements VectorType<Vector2>, Manifold<Vector2, Vector2> {
-    private static final MethodHandle Vector2 = Lib.down(
-            "Vector2", ADDRESS);
-    private static final MethodHandle Vector2_delete = Lib.downVoid(
-            "Vector2_delete", ADDRESS);
-    private static final MethodHandle Vector2_at = Lib.down(
-            "Vector2_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
-    private static final MethodHandle Vector2_set = Lib.downVoid(
-            "Vector2_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Vector2_plus = Lib.down(
-            "Vector2_plus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector2_minus = Lib.down(
-            "Vector2_minus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector2_times = Lib.down(
-            "Vector2_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
+    public enum FF {
+        Vector2(ADDRESS),
+        Vector2_delete(null, ADDRESS),
+        Vector2_at(JAVA_DOUBLE, ADDRESS, JAVA_INT),
+        Vector2_set(null, ADDRESS, JAVA_INT, JAVA_DOUBLE),
+        Vector2_plus(ADDRESS, ADDRESS, ADDRESS),
+        Vector2_minus(ADDRESS, ADDRESS, ADDRESS),
+        Vector2_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public static class Traits implements Manifold.Traits<Vector2, Vector2> {
 
@@ -44,11 +46,11 @@ public class Vector2 extends ForeignObject
     }
 
     public Vector2(MemorySegment p) {
-        super(p, Vector2_delete);
+        super(p, FF.Vector2_delete.h);
     }
 
     public Vector2() throws Throwable {
-        this((MemorySegment) Vector2.invokeExact());
+        this((MemorySegment) FF.Vector2.h.invokeExact());
     }
 
     public Vector2(double v0, double v1) throws Throwable {
@@ -63,27 +65,27 @@ public class Vector2 extends ForeignObject
     }
 
     public double at(int i) throws Throwable {
-        return (double) Vector2_at.invokeExact(ptr, i);
+        return (double) FF.Vector2_at.h.invokeExact(ptr, i);
     }
 
     @Override
     public void set(int i, double val) throws Throwable {
-        Vector2_set.invokeExact(ptr, i, val);
+        FF.Vector2_set.h.invokeExact(ptr, i, val);
     }
 
     @Override
     public Vector2 plus(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, other.ptr));
+        return new Vector2((MemorySegment) FF.Vector2_plus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector2 minus(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_minus.invokeExact(ptr, other.ptr));
+        return new Vector2((MemorySegment) FF.Vector2_minus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector2 times(double a) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_times.invokeExact(ptr, a));
+        return new Vector2((MemorySegment) FF.Vector2_times.h.invokeExact(ptr, a));
     }
 
     @Override
@@ -93,7 +95,7 @@ public class Vector2 extends ForeignObject
 
     @Override
     public Vector2 retract(Vector2 v) throws Throwable {
-        return new Vector2((MemorySegment) Vector2_plus.invokeExact(ptr, v.ptr));
+        return new Vector2((MemorySegment) FF.Vector2_plus.h.invokeExact(ptr, v.ptr));
     }
 
 }

@@ -5,6 +5,7 @@ import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
@@ -12,27 +13,28 @@ import org.team100.foreign.Lib;
 
 // TODO: finish implementation
 public class Vector9 extends ForeignObject implements VectorType<Vector9> {
-    private static final MethodHandle Vector9 = Lib.down(
-            "Vector9", ADDRESS);
-    private static final MethodHandle Vector9_delete = Lib.downVoid(
-            "Vector9_delete", ADDRESS);
-    private static final MethodHandle Vector9_at = Lib.down(
-            "Vector9_at", JAVA_DOUBLE, ADDRESS, JAVA_INT);
-    private static final MethodHandle Vector9_set = Lib.downVoid(
-            "Vector9_set", ADDRESS, JAVA_INT, JAVA_DOUBLE);
-    private static final MethodHandle Vector9_plus = Lib.down(
-            "Vector9_plus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector9_minus = Lib.down(
-            "Vector9_minus", ADDRESS, ADDRESS, ADDRESS);
-    private static final MethodHandle Vector9_times = Lib.down(
-            "Vector9_times", ADDRESS, ADDRESS, JAVA_DOUBLE);
+    public enum FF {
+        Vector9(ADDRESS),
+        Vector9_delete(null, ADDRESS),
+        Vector9_at(JAVA_DOUBLE, ADDRESS, JAVA_INT),
+        Vector9_set(null, ADDRESS, JAVA_INT, JAVA_DOUBLE),
+        Vector9_plus(ADDRESS, ADDRESS, ADDRESS),
+        Vector9_minus(ADDRESS, ADDRESS, ADDRESS),
+        Vector9_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     public Vector9(MemorySegment p) {
-        super(p, Vector9_delete);
+        super(p, FF.Vector9_delete.h);
     }
 
     public Vector9() throws Throwable {
-        this((MemorySegment) Vector9.invokeExact());
+        this((MemorySegment) FF.Vector9.h.invokeExact());
     }
 
     public Vector9(//
@@ -58,27 +60,27 @@ public class Vector9 extends ForeignObject implements VectorType<Vector9> {
 
     @Override
     public double at(int i) throws Throwable {
-        return (double) Vector9_at.invokeExact(ptr, i);
+        return (double) FF.Vector9_at.h.invokeExact(ptr, i);
     }
 
     @Override
     public void set(int i, double val) throws Throwable {
-        Vector9_set.invokeExact(ptr, i, val);
+        FF.Vector9_set.h.invokeExact(ptr, i, val);
     }
 
     @Override
     public Vector9 plus(Vector9 other) throws Throwable {
-        return new Vector9((MemorySegment) Vector9_plus.invokeExact(ptr, other.ptr));
+        return new Vector9((MemorySegment) FF.Vector9_plus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector9 minus(Vector9 other) throws Throwable {
-        return new Vector9((MemorySegment) Vector9_minus.invokeExact(ptr, other.ptr));
+        return new Vector9((MemorySegment) FF.Vector9_minus.h.invokeExact(ptr, other.ptr));
     }
 
     @Override
     public Vector9 times(double a) throws Throwable {
-        return new Vector9((MemorySegment) Vector9_times.invokeExact(ptr, a));
+        return new Vector9((MemorySegment) FF.Vector9_times.h.invokeExact(ptr, a));
     }
 
 }
