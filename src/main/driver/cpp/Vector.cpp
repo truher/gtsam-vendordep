@@ -129,6 +129,38 @@ gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
 gtsam::Vector3* Vector3_times(const gtsam::Vector3* v, double a) {
     return new gtsam::Vector3((*v) * a);
 }
+double Vector3_norm(const gtsam::Vector3* v) {
+    return v->norm();
+}
+
+//////////////////////////
+// Vector4
+gtsam::Vector4* Vector4() {
+    // Java users certainly expect zero initialization!
+    gtsam::Vector4* v = new gtsam::Vector4();
+    v->setZero();
+    return v;
+}
+void Vector4_delete(gtsam::Vector4* p) {
+    delete p;
+}
+double Vector4_at(const gtsam::Vector4* v, int i) {
+    return (*v)(i);
+}
+void Vector4_set(gtsam::Vector4* v, int i, double val) {
+    (*v)(i) = val;
+}
+gtsam::Vector4* Vector4_plus(const gtsam::Vector4* v,
+                             const gtsam::Vector4* other) {
+    return new gtsam::Vector4((*v) + (*other));
+}
+gtsam::Vector4* Vector4_minus(const gtsam::Vector4* v,
+                              const gtsam::Vector4* other) {
+    return new gtsam::Vector4((*v) - (*other));
+}
+gtsam::Vector4* Vector4_times(const gtsam::Vector4* v, double a) {
+    return new gtsam::Vector4((*v) * a);
+}
 
 //////////////////////////
 // Vector6

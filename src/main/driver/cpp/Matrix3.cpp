@@ -23,13 +23,22 @@ gtsam::Matrix3* Matrix3_unaryMinus(gtsam::Matrix3* m) {
 gtsam::Matrix3* Matrix3_identity() {
     return new gtsam::Matrix3(gtsam::Matrix3::Identity());
 }
-gtsam::Matrix3* Matrix3_compose(const gtsam::Matrix3* a, const gtsam::Matrix3* b) {
+gtsam::Matrix3* Matrix3_compose(const gtsam::Matrix3* a,
+                                const gtsam::Matrix3* b) {
     return new gtsam::Matrix3((*a) * (*b));
 }
-gtsam::Matrix3* Matrix3_plus(const gtsam::Matrix3* v, const gtsam::Matrix3* other) {
+gtsam::Matrix3* Matrix3_plus(const gtsam::Matrix3* v,
+                             const gtsam::Matrix3* other) {
     return new gtsam::Matrix3((*v) + (*other));
 }
 gtsam::Matrix3* Matrix3_times(const gtsam::Matrix3* v, double a) {
     return new gtsam::Matrix3((*v) * a);
+}
+gtsam::Vector3* Matrix3_timesVector3(const gtsam::Matrix3* m,
+                                     const gtsam::Vector3* v) {
+    return new gtsam::Vector3((*m) * (*v));
+}
+gtsam::Matrix3* Matrix3_skewSymmetric(const gtsam::Vector3* v) {
+    return new gtsam::Matrix3(gtsam::skewSymmetric(*v));
 }
 }

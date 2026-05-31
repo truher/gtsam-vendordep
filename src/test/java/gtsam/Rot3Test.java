@@ -92,14 +92,18 @@ public class Rot3Test {
         assertTrue(!R.equals(zero));
     }
 
-    // // Notice this uses J^2 whereas fast uses w*w', and has cos(t)*I + ....
-    // Rot3 slow_but_correct_Rodrigues(const Vector& w) {
-    // double t = w.norm();
-    // Matrix3 J = skewSymmetric(w / t);
-    // if (t < 1e-5) return Rot3();
-    // Matrix3 R = I_3x3 + sin(t) * J + (1.0 - cos(t)) * (J * J);
-    // return Rot3(R);
-    // }
+    // Notice this uses J^2 whereas fast uses w*w', and has cos(t)*I + ....
+    Rot3 slow_but_correct_Rodrigues(Point3 p) throws Throwable {
+        Vector3 w = new Vector3(p);
+        double t = w.norm();
+        Matrix3 J = Matrix3.skewSymmetric(w.times(1 / t));
+        if (t < 1e-5)
+            return new Rot3();
+        Matrix3 R = Matrix3.identity()
+                .plus(J.times(Math.sin(t))
+                        .plus((J.compose(J)).times(1 - Math.cos(t))));
+        return new Rot3(R);
+    }
 
     @Test
     void testAxisAngle() throws Throwable {
@@ -154,8 +158,8 @@ public class Rot3Test {
                 -0.706825, 0, 0.707388);
         Rot3 actual = Rot3.AxisAngle(axis, angle);
         assertTrue(assert_equal(expected, actual, 1e-5));
-        // Rot3 actual2 = Rot3::Rodrigues(angle*axis);
-        // assertTrue(assert_equal(expected,actual2,1e-5));
+        Rot3 actual2 = Rot3.Rodrigues(axis.times(angle));
+        assertTrue(assert_equal(expected, actual2, 1e-5));
     }
 
     @Test
@@ -168,15 +172,17 @@ public class Rot3Test {
 
     @Test
     void testRodrigues4() throws Throwable {
-        // Vector axis = Vector3(0., 0., 1.); // rotation around Z
-        // double angle = M_PI/2.0;
-        // Rot3 actual = Rot3::AxisAngle(axis, angle);
-        // double c=cos(angle),s=sin(angle);
-        // Rot3 expected(c,-s, 0,
-        // s, c, 0,
-        // 0, 0, 1);
-        // assertTrue(assert_equal(expected,actual));
-        // assertTrue(assert_equal(slow_but_correct_Rodrigues(axis*angle),actual));
+        Point3 axis = new Point3(0., 0., 1.); // rotation around Z
+        double angle = Math.PI / 2.0;
+        Rot3 actual = Rot3.AxisAngle(axis, angle);
+        double c = Math.cos(angle);
+        double s = Math.sin(angle);
+        Rot3 expected = new Rot3(
+                c, -s, 0,
+                s, c, 0,
+                0, 0, 1);
+        assertTrue(assert_equal(expected, actual));
+        assertTrue(assert_equal(slow_but_correct_Rodrigues(axis.times(angle)), actual));
     }
 
     @Test

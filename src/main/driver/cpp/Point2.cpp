@@ -13,4 +13,12 @@ double Point2_x(const gtsam::Point2* p) {
 double Point2_y(const gtsam::Point2* p) {
     return p->y();
 }
+bool Point2_check_group_invariants(const gtsam::Point2* a,  //
+                                   const gtsam::Point2* b) {
+    return gtsam::check_group_invariants(*a, *b);
+}
+bool Point2_check_manifold_invariants(const gtsam::Point2* a,    //
+                                      const gtsam::Point2* b) {  //
+    return gtsam::check_manifold_invariants(*a, *b);
+}
 }

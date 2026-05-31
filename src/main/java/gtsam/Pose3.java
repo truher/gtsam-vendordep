@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -34,7 +35,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_Expmap(ADDRESS, ADDRESS),
         Pose3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_Logmap(ADDRESS, ADDRESS),
-        Pose3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+        Pose3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_matrix(ADDRESS, ADDRESS),
+        Pose3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Pose3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -105,8 +109,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
                     xi.ptr, H.ptr));
         }
 
-
-              @Override
+        @Override
         public Pose3 Retract(Vector6 v) throws Throwable {
             return new Pose3((MemorySegment) FF.Pose3_OriginRetract.h.invokeExact(v.ptr));
         }
@@ -228,6 +231,19 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     @Override
     public Vector6 logmap(Pose3 g, Matrix H1, Matrix H2) throws Throwable {
         return new Vector6((MemorySegment) FF.Pose3_logmapH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    }
+
+    /** 4x4 homogeneous matrix */
+    public Matrix matrix() throws Throwable {
+        return new Matrix((MemorySegment) FF.Pose3_matrix.h.invokeExact(ptr));
+    }
+
+    public static boolean check_group_invariants(Pose3 a, Pose3 b) throws Throwable {
+        return (boolean) FF.Pose3_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public static boolean check_manifold_invariants(Pose3 a, Pose3 b) throws Throwable {
+        return (boolean) FF.Pose3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
 }

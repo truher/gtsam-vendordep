@@ -23,7 +23,9 @@ public class Matrix3 extends ForeignObject {
         Matrix3_identity(ADDRESS),
         Matrix3_compose(ADDRESS, ADDRESS, ADDRESS),
         Matrix3_plus(ADDRESS, ADDRESS, ADDRESS),
-        Matrix3_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Matrix3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Matrix3_timesVector3(ADDRESS, ADDRESS, ADDRESS),
+        Matrix3_skewSymmetric(ADDRESS,ADDRESS);
 
         public final MethodHandle h;
 
@@ -69,5 +71,13 @@ public class Matrix3 extends ForeignObject {
 
     public Matrix3 times(double a) throws Throwable {
         return new Matrix3((MemorySegment) FF.Matrix3_times.h.invokeExact(ptr, a));
+    }
+
+    public Vector3 times(Vector3 v) throws Throwable {
+        return new Vector3((MemorySegment) FF.Matrix3_timesVector3.h.invokeExact(ptr, v.ptr));
+    }
+
+    public static Matrix3 skewSymmetric(Vector3 v) throws Throwable {
+        return new Matrix3((MemorySegment) FF.Matrix3_skewSymmetric.h.invokeExact(v.ptr));
     }
 }

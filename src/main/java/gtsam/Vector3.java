@@ -20,7 +20,8 @@ public class Vector3 extends ForeignObject
         Vector3_set(null, ADDRESS, JAVA_INT, JAVA_DOUBLE),
         Vector3_plus(ADDRESS, ADDRESS, ADDRESS),
         Vector3_minus(ADDRESS, ADDRESS, ADDRESS),
-        Vector3_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Vector3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Vector3_norm(JAVA_DOUBLE, ADDRESS);
 
         public final MethodHandle h;
 
@@ -58,6 +59,10 @@ public class Vector3 extends ForeignObject
         set(0, v0);
         set(1, v1);
         set(2, v2);
+    }
+
+    public Vector3(Point3 p) throws Throwable {
+        this(p.x(), p.y(), p.z());
     }
 
     @Override
@@ -115,5 +120,9 @@ public class Vector3 extends ForeignObject
     @Override
     public Vector3 retract(Vector3 v) throws Throwable {
         return plus(v);
+    }
+
+    public double norm() throws Throwable {
+        return (double) FF.Vector3_norm.h.invokeExact(ptr);
     }
 }

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
  */
 public class BatchFixedLagSmootherTest {
 
-    // /* *************************************************************************
-    // */
+   
     // bool check_smoother(const NonlinearFactorGraph& fullgraph, const Values&
     // fullinit, const BatchFixedLagSmoother& smoother, const Key& key) {
 
@@ -22,8 +21,7 @@ public class BatchFixedLagSmootherTest {
     // return assert_equal(expected, actual);
     // }
 
-    // /* *************************************************************************
-    // */
+
     @Test
     void testExample() {
         // // Test the BatchFixedLagSmoother in a pure linear environment. Thus, full
@@ -228,8 +226,7 @@ public class BatchFixedLagSmootherTest {
         // }
     }
 
-    // /* *************************************************************************
-    // */
+  
     @Test
     void testEnforceConsistency() {
         // // Verify that enforceConsistency_ actually preserves linearization points

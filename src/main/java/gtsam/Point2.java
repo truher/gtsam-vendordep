@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -15,7 +16,9 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
         Point2(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
         Point2_delete(null, ADDRESS),
         Point2_x(JAVA_DOUBLE, ADDRESS),
-        Point2_y(JAVA_DOUBLE, ADDRESS);
+        Point2_y(JAVA_DOUBLE, ADDRESS),
+        Point2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -71,6 +74,14 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     @Override
     public Point2 retract(Vector2 v) throws Throwable {
         return new Point2(x() + v.at(0), y() + v.at(1));
+    }
+
+    public static boolean check_group_invariants(Point2 a, Point2 b) throws Throwable {
+        return (boolean) FF.Point2_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public static boolean check_manifold_invariants(Point2 a, Point2 b) throws Throwable {
+        return (boolean) FF.Point2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
 }

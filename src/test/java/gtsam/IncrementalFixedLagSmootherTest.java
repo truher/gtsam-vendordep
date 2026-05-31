@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
  */
 public class IncrementalFixedLagSmootherTest {
 
-    // /* *************************************************************************
-    // */
+  
     // bool check_smoother(const NonlinearFactorGraph& fullgraph,
     // const Values& fullinit,
     // const IncrementalFixedLagSmoother& smoother,
@@ -23,8 +22,7 @@ public class IncrementalFixedLagSmootherTest {
     // return assert_equal(expected, actual);
     // }
 
-    // /* *************************************************************************
-    // */
+ 
     // void PrintSymbolicTreeHelper(const ISAM2Clique::shared_ptr& clique,
     // const std::string indent = "") {
     // // Print the current clique
@@ -44,8 +42,7 @@ public class IncrementalFixedLagSmootherTest {
     // }
     // }
 
-    // /* *************************************************************************
-    // */
+
     // void PrintSymbolicTree(const ISAM2& isam, const std::string& label) {
     // std::cout << label << std::endl;
     // if (!isam.roots().empty()) {
@@ -324,8 +321,6 @@ public class IncrementalFixedLagSmootherTest {
         // }
     }
 
-    // /* *************************************************************************
-    // */
     @Test
     void testExampleWithFactorRemoval() {
         // // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus,

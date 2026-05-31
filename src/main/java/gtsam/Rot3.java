@@ -22,6 +22,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_delete(null, ADDRESS),
         Rot3_Ypr(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_Rodrigues(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Rot3_RodriguesVector3(ADDRESS, ADDRESS),
         Rot3_AxisAngle(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Rot3_matrix(ADDRESS, ADDRESS),
         Rot3_compose(ADDRESS, ADDRESS, ADDRESS),
@@ -40,7 +41,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         // Rot3_expmap(ADDRESS, ADDRESS, ADDRESS),
         Rot3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-             Rot3_OriginRetract(ADDRESS, ADDRESS),
+        Rot3_OriginRetract(ADDRESS, ADDRESS),
         Rot3_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Rot3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Rot3_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
@@ -122,7 +123,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                     v.ptr, H.ptr));
         }
 
-              @Override
+        @Override
         public Rot3 Retract(Vector3 v) throws Throwable {
             return new Rot3((MemorySegment) FF.Rot3_OriginRetract.h.invokeExact(v.ptr));
         }
@@ -183,6 +184,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public static Rot3 Rodrigues(double wx, double wy, double wz) throws Throwable {
         return new Rot3((MemorySegment) FF.Rot3_Rodrigues.h.invokeExact(wx, wy, wz));
+    }
+
+    public static Rot3 Rodrigues(Point3 v) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_RodriguesVector3.h.invokeExact(v.ptr));
     }
 
     public static Rot3 AxisAngle(Point3 axis, double angle) throws Throwable {

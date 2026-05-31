@@ -78,7 +78,6 @@ gtsam::Vector6* Pose3_logmapH(const gtsam::Pose3* p,  //
     return new gtsam::Vector6(p->logmap(*g, *H1, *H2));
 }
 
-
 gtsam::Pose3* Pose3_OriginRetract(const gtsam::Vector6* v) {
     return new gtsam::Pose3(gtsam::Pose3::Retract(*v));
 }
@@ -88,11 +87,10 @@ gtsam::Vector6* Pose3_OriginLocalCoordinates(const gtsam::Pose3* g) {
 gtsam::Pose3* Pose3_OriginRetractH(const gtsam::Vector6* v, gtsam::Matrix* H) {
     return new gtsam::Pose3(gtsam::Pose3::Retract(*v, *H));
 }
-gtsam::Vector6* Pose3_OriginLocalCoordinatesH(const gtsam::Pose3* g, gtsam::Matrix* H) {
+gtsam::Vector6* Pose3_OriginLocalCoordinatesH(const gtsam::Pose3* g,
+                                              gtsam::Matrix* H) {
     return new gtsam::Vector6(gtsam::Pose3::LocalCoordinates(*g, *H));
 }
-
-
 
 gtsam::Vector6* Pose3_Logmap(const gtsam::Pose3* p) {
     return new gtsam::Vector6(gtsam::Pose3::Logmap(*p));
@@ -105,5 +103,17 @@ gtsam::Pose3* Pose3_Expmap(const gtsam::Vector6* xi) {
 }
 gtsam::Pose3* Pose3_ExpmapH(const gtsam::Vector6* xi, gtsam::Matrix* H) {
     return new gtsam::Pose3(gtsam::Pose3::Expmap(*xi, *H));
+}
+gtsam::Matrix* Pose3_matrix(const gtsam::Pose3* p) {
+    // 4x4 matrix
+    return new gtsam::Matrix(p->matrix());
+}
+bool Pose3_check_group_invariants(const gtsam::Pose3* a,  //
+                                  const gtsam::Pose3* b) {
+    return gtsam::check_group_invariants(*a, *b);
+}
+bool Pose3_check_manifold_invariants(const gtsam::Pose3* a,    //
+                                     const gtsam::Pose3* b) {  //
+    return gtsam::check_manifold_invariants(*a, *b);
 }
 }

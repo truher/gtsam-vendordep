@@ -14,6 +14,9 @@ gtsam::Matrix* Matrix_identity1() {
 gtsam::Matrix* Matrix_identity3() {
     return new gtsam::Matrix(gtsam::I_3x3);
 }
+gtsam::Matrix* Matrix_identity4() {
+    return new gtsam::Matrix(gtsam::I_4x4);
+}
 void Matrix_delete(gtsam::Matrix* m) {
     delete m;
 }

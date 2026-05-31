@@ -1,5 +1,7 @@
 package gtsam;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -7,27 +9,34 @@ import org.junit.jupiter.api.Test;
  */
 public class Point3Test {
 
-    // static Point3 P(0.2, 0.7, -2);
+    static Point3 P;
+    static {
+        try {
+            P = new Point3(0.2, 0.7, -2);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
 
     @Test
     void testConstructor() throws Throwable {
         new Point3(0, 0, 0);
     }
 
-    //
     @Test
-    void testInvariants() {
-        // Point3 p1(1, 2, 3), p2(4, 5, 6);
-        // EXPECT(check_group_invariants(p1, p2));
-        // EXPECT(check_manifold_invariants(p1, p2));
+    void testInvariants() throws Throwable {
+        Point3 p1 = new Point3(1, 2, 3);
+        Point3 p2 = new Point3(4, 5, 6);
+        assertTrue(Point3.check_group_invariants(p1, p2));
+        assertTrue(Point3.check_manifold_invariants(p1, p2));
     }
 
-    //
     @Test
-    void testLie() {
-        // Point3 p1(1, 2, 3);
-        // Point3 p2(4, 5, 6);
-        // Matrix H1, H2;
+    void testLie() throws Throwable {
+        Point3 p1 = new Point3(1, 2, 3);
+        Point3 p2 = new Point3(4, 5, 6);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
 
         // EXPECT(assert_equal(Point3(5, 7, 9), traits<Point3>::Compose(p1, p2, H1,
         // H2)));
@@ -154,9 +163,9 @@ public class Point3Test {
     }
 
     @Test
-    void testnormalize() {
-        // Matrix actualH;
-        // Point3 point(1, -2, 3); // arbitrary point
+    void testnormalize() throws Throwable {
+        Matrix actualH = new Matrix();
+        Point3 point = new Point3(1, -2, 3); // arbitrary point
         // Point3 expected(point / sqrt(14.0));
         // EXPECT(assert_equal(expected, normalize(point, actualH), 1e-8));
         // auto fn = [](const Point3& p) { return normalize(p); };
@@ -165,8 +174,8 @@ public class Point3Test {
     }
 
     @Test
-    void testmean() {
-        // Point3 expected(2, 2, 2);
+    void testmean() throws Throwable {
+        Point3 expected = new Point3(2, 2, 2);
         // Point3 a1(0, 0, 0), a2(1, 2, 3), a3(5, 4, 3);
         // std::vector<Point3> a_points{a1, a2, a3};
         // Point3 actual = mean(a_points);
@@ -174,8 +183,9 @@ public class Point3Test {
     }
 
     @Test
-    void testmean_pair() {
-        // Point3 a_mean(2, 2, 2), b_mean(-1, 1, 0);
+    void testmean_pair() throws Throwable {
+        Point3 a_mean = new Point3(2, 2, 2);
+        Point3 b_mean = new Point3(-1, 1, 0);
         // Point3Pair expected = {a_mean, b_mean};
         // Point3 a1(0, 0, 0), a2(1, 2, 3), a3(5, 4, 3);
         // Point3 b1(-1, 0, 0), b2(-2, 4, 0), b3(0, -1, 0);
@@ -190,8 +200,8 @@ public class Point3Test {
     // }
 
     @Test
-    void testnorm() {
-        // Matrix actualH;
+    void testnorm() throws Throwable {
+        Matrix actualH = new Matrix();
         // Point3 point(3,4,5); // arbitrary point
         // double expected = sqrt(50);
         // EXPECT_DOUBLES_EQUAL(expected, norm3(point, actualH), 1e-8);
@@ -204,9 +214,10 @@ public class Point3Test {
     // }
 
     @Test
-    void testdistance() {
+    void testdistance() throws Throwable {
         // Point3 P(1., 12.8, -32.), Q(52.7, 4.9, -13.3);
-        // Matrix H1, H2;
+        Matrix H1 = new Matrix(); 
+        Matrix H2 = new Matrix();
         // double d = distance3(P, Q, H1, H2);
         // double expectedDistance = 55.542686;
         // Matrix numH1 = numericalDerivative21(testFunc, P, Q);

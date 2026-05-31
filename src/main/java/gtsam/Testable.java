@@ -23,7 +23,9 @@ public class Testable {
         Testable_assert_equal_Vector(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector1(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Vector3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Testable_assert_equal_Vector3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Vector6(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Vector9(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -134,6 +136,22 @@ public class Testable {
 
     public static boolean assert_equal(Vector3 expected, Vector3 actual) throws Throwable {
         return (boolean) FF.Testable_assert_equal_Vector3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    }
+
+    public static boolean assert_equal(Vector6 expected, Vector6 actual, double tol) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector6.h.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Vector6 expected, Vector6 actual) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector6.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    }
+
+    public static boolean assert_equal(Vector9 expected, Vector9 actual, double tol) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector9.h.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Vector9 expected, Vector9 actual) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector9.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
     }
 
 }

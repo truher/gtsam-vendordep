@@ -19,6 +19,7 @@ public class Matrix extends ForeignObject {
         Matrix(ADDRESS),
         Matrix_identity1(ADDRESS),
         Matrix_identity3(ADDRESS),
+        Matrix_identity4(ADDRESS),
         Matrix_withRowsCols(ADDRESS, JAVA_INT, JAVA_INT),
         Matrix_delete(null, ADDRESS),
         Matrix_Matrix3(ADDRESS, ADDRESS),
@@ -54,6 +55,10 @@ public class Matrix extends ForeignObject {
 
     public static Matrix I_3x3() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity3.h.invokeExact());
+    }
+
+    public static Matrix I_4x4() throws Throwable {
+        return new Matrix((MemorySegment) FF.Matrix_identity4.h.invokeExact());
     }
 
     public Matrix(int rows, int cols) throws Throwable {

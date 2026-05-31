@@ -1,5 +1,8 @@
 package gtsam;
 
+import static gtsam.Testable.assert_equal;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -14,28 +17,33 @@ public class Point2Test {
 
     //
     @Test
-    void testInvariants() {
-        // Point2 p1(1, 2), p2(4, 5);
-        // assertTrue(check_group_invariants(p1, p2));
-        // assertTrue(check_manifold_invariants(p1, p2));
+    void testInvariants() throws Throwable {
+        Point2 p1 = new Point2(1, 2);
+        Point2 p2 = new Point2(4, 5);
+        assertTrue(Point2.check_group_invariants(p1, p2));
+        assertTrue(Point2.check_manifold_invariants(p1, p2));
     }
 
     @Test
-    void testconstructor() {
-        // Point2 p1(1, 2), p2 = p1;
-        // assertTrue(assert_equal(p1, p2));
+    void testconstructor() throws Throwable {
+        Point2 p1 = new Point2(1, 2);
+        Point2 p2 = p1;
+        assertTrue(assert_equal(p1, p2));
     }
 
     @Test
-    void testequality() {
-        // Point2 p1(1, 2), p2(1,3);
-        // assertTrue(!(p1 == p2));
+    void testequality() throws Throwable {
+        Point2 p1 = new Point2(1, 2);
+        Point2 p2 = new Point2(1, 3);
+        assertTrue(!(assert_equal(p1, p2)));
     }
 
     @Test
-    void testLie() {
-        // Point2 p1(1, 2), p2(4, 5);
-        // Matrix H1, H2;
+    void testLie() throws Throwable {
+        Point2 p1 = new Point2(1, 2);
+        Point2 p2 = new Point2(4, 5);
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
 
         // assertTrue(assert_equal(Point2(5,7), traits<Point2>::Compose(p1, p2, H1,
         // H2)));
@@ -72,8 +80,10 @@ public class Point2Test {
     }
 
     @Test
-    void testunit() {
-        // Point2 p0(10, 0), p1(0, -10), p2(10, 10);
+    void testunit() throws Throwable {
+        Point2 p0 = new Point2(10, 0);
+        Point2 p1 = new Point2(0, -10);
+        Point2 p2 = new Point2(10, 10);
         // assertTrue(assert_equal(Point2(1, 0), Point2(p0.normalized()), 1e-6));
         // assertTrue(assert_equal(Point2(0,-1), Point2(p1.normalized()), 1e-6));
         // assertTrue(assert_equal(Point2(sqrt(2.0)/2.0, sqrt(2.0)/2.0),
@@ -126,8 +136,11 @@ public class Point2Test {
     // }
     // }
     @Test
-    void testdistance() {
-        // Matrix expectedH1, actualH1, expectedH2, actualH2;
+    void testdistance() throws Throwable {
+        Matrix expectedH1 = new Matrix();
+        Matrix actualH1 = new Matrix();
+        Matrix expectedH2 = new Matrix();
+        Matrix actualH2 = new Matrix();
 
         // // establish distance is indeed zero
         // EXPECT_DOUBLES_EQUAL(1, distance2(x1, l1), 1e-9);
@@ -159,8 +172,8 @@ public class Point2Test {
     @Test
     void testcircleCircleIntersection() {
 
-        // double offset = 0.994987;
-        // // Test intersections of circle moving from inside to outside
+        double offset = 0.994987;
+        // Test intersections of circle moving from inside to outside
 
         // list<Point2> inside = circleCircleIntersection(Point2(0,0),5,Point2(0,0),1);
         // EXPECT_LONGS_EQUAL(0,inside.size());

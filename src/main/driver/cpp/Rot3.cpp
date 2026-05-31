@@ -27,6 +27,9 @@ gtsam::Rot3* Rot3_Ypr(double y, double p, double r) {
 gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
     return new gtsam::Rot3(gtsam::Rot3::Rodrigues(wx, wy, wz));
 }
+gtsam::Rot3* Rot3_RodriguesVector3(const gtsam::Point3* v) {
+    return new gtsam::Rot3(gtsam::Rot3::Rodrigues(*v));
+}
 gtsam::Rot3* Rot3_AxisAngle(const gtsam::Point3* axis, double angle) {
     return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
 }
