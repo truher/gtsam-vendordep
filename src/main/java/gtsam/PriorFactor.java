@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
@@ -11,9 +12,11 @@ import org.team100.foreign.Lib;
 
 public class PriorFactor<T> extends NonlinearFactor {
     public enum FF {
+        PriorFactorDouble(ADDRESS, JAVA_LONG, JAVA_DOUBLE, ADDRESS),
         PriorFactorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorPose3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorCal3DS2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
+        PriorFactorDouble_delete(null, ADDRESS),
         PriorFactorPose2_delete(null, ADDRESS),
         PriorFactorPose3_delete(null, ADDRESS),
         PriorFactorCal3DS2_delete(null, ADDRESS);
@@ -28,6 +31,13 @@ public class PriorFactor<T> extends NonlinearFactor {
     /** @param p pointer to the factor itself, not the shared_ptr. */
     private PriorFactor(MemorySegment p) {
         super(p);
+    }
+
+      public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
+            Key poseKey, double prior, SharedNoiseModel model) throws Throwable {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose2.h.invokeExact(
+                poseKey.j, prior, model.ptr);
+        return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorDouble_delete.h);
     }
 
     /** @param prior is copied, ok to delete. */

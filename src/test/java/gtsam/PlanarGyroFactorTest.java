@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import gtsam.NumericalDerivative.ThrowingFunction;
 import gtsam.NumericalDerivative.ThrowingFunction2;
 import gtsam.NumericalDerivative.ThrowingFunction3;
+import gtsam.PlanarGyroFactor.PlanarGyroBiasFactor;
 import gtsam.PlanarGyroFactor.PlanarGyroParams;
 
 /**
@@ -194,38 +195,37 @@ public class PlanarGyroFactorTest {
     void testoptimize() throws Throwable {
         // using noiseModel::Diagonal;
 
-        // NonlinearFactorGraph graph;
+        NonlinearFactorGraph graph = new NonlinearFactorGraph();
 
-        // // Starting pose is known.
-        // graph.add(PriorFactor<Pose2>(P(0), Pose2(),
-        // Diagonal::Sigmas(Vector3(0.001, 0.001, 0.001))));
+        // Starting pose is known.
+        graph.add(PriorFactor.PriorFactorPose2(Key.P(0), new Pose2(),
+                SharedNoiseModel.Sigmas(new Vector3(0.001, 0.001, 0.001))));
 
-        // // BetweenFactors that simulate odometry.
-        // Pose2 p0 = Pose2(0, 0, 0);
-        // Pose2 p1 = Pose2(0, 0, 0.1);
-        // Pose2 p2 = Pose2(0.1, 0, 0.2);
-        // Pose2 p3 = Pose2(0.2, 0, 0.3);
-        // Pose2 p4 = Pose2(0.3, 0, 0.4);
-        // // Add error in the "between" rotation, so the gyro factor can fix it.
-        // Pose2 pErr = Pose2(0, 0, 0.1);
-        // // When motionless, the rotation is known.
-        // // This is how we learn the bias.
-        // SharedDiagonal lowRotationNoise = Diagonal::Sigmas(Vector3(1e-3, 1e-3,
-        // 1e-3));
-        // graph.add(BetweenFactor<Pose2>(P(0), P(1), p0.between(p1),
-        // lowRotationNoise));
+        // BetweenFactors that simulate odometry.
+        Pose2 p0 = new Pose2(0, 0, 0);
+        Pose2 p1 = new Pose2(0, 0, 0.1);
+        Pose2 p2 = new Pose2(0.1, 0, 0.2);
+        Pose2 p3 = new Pose2(0.2, 0, 0.3);
+        Pose2 p4 = new Pose2(0.3, 0, 0.4);
+        // Add error in the "between" rotation, so the gyro factor can fix it.
+        Pose2 pErr = new Pose2(0, 0, 0.1);
+        // When motionless, the rotation is known.
+        // This is how we learn the bias.
+        SharedNoiseModel lowRotationNoise = SharedNoiseModel.Sigmas(new Vector3(1e-3, 1e-3, 1e-3));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
+                Key.P(0), Key.P(1), p0.between(p1), lowRotationNoise));
 
-        // // When moving, rotation is much less certain.
-        // SharedDiagonal highRotationNoise = Diagonal::Sigmas(Vector3(1e-3, 1e-3, 1));
-        // graph.add(BetweenFactor<Pose2>(P(1), P(2), p1.between(p2).compose(pErr),
-        // highRotationNoise));
-        // graph.add(BetweenFactor<Pose2>(P(2), P(3), p2.between(p3).compose(pErr),
-        // highRotationNoise));
-        // graph.add(BetweenFactor<Pose2>(P(3), P(4), p3.between(p4).compose(pErr),
-        // highRotationNoise));
+        // When moving, rotation is much less certain.
+        SharedNoiseModel highRotationNoise = SharedNoiseModel.Sigmas(new Vector3(1e-3, 1e-3, 1));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
+                Key.P(1), Key.P(2), p1.between(p2).compose(pErr), highRotationNoise));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
+                Key.P(2), Key.P(3), p2.between(p3).compose(pErr), highRotationNoise));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
+                Key.P(3), Key.P(4), p3.between(p4).compose(pErr), highRotationNoise));
 
-        // // Bias prior: very uncertain.
-        // graph.add(PriorFactor<double>(B(0), 1.0, Diagonal::Sigmas(Vector1(1))));
+        // Bias priorr: very uncertain.
+        graph.add(PriorFactor.PriorFactorDouble(Key.B(0), 1.0, SharedNoiseModel.Sigmas(new Vector1(1))));
 
         // // Gyro measurements affect rotation only.
         double trueOmega = 0.1;
@@ -238,87 +238,78 @@ public class PlanarGyroFactorTest {
         // Bias evolution. Bias stability is an important parameter.
         shared_ptr<PlanarGyroParams> p = PlanarGyroParams.makeSharedPlanarGyroParams(//
                 arwSigma, biasInstabilitySigma);
-        // graph.add(PlanarGyroBiasFactor(B(0), B(1), p));
-        // graph.add(PlanarGyroBiasFactor(B(1), B(2), p));
-        // graph.add(PlanarGyroBiasFactor(B(2), B(3), p));
-        // graph.add(PlanarGyroBiasFactor(B(3), B(4), p));
+        graph.add(PlanarGyroBiasFactor.makeSharedPlanarGyroBiasFactor(Key.B(0), Key.B(1), p));
+        graph.add(PlanarGyroBiasFactor.makeSharedPlanarGyroBiasFactor(Key.B(1), Key.B(2), p));
+        graph.add(PlanarGyroBiasFactor.makeSharedPlanarGyroBiasFactor(Key.B(2), Key.B(3), p));
+        graph.add(PlanarGyroBiasFactor.makeSharedPlanarGyroBiasFactor(Key.B(3), Key.B(4), p));
 
-        // graph.add(PlanarGyroFactor::FromRate(P(0), P(1), B(0), p, measuredOmega,
-        // dt));
-        // graph.add(PlanarGyroFactor::FromRate(P(1), P(2), B(1), p, measuredOmega,
-        // dt));
-        // graph.add(PlanarGyroFactor::FromRate(P(2), P(3), B(2), p, measuredOmega,
-        // dt));
-        // graph.add(PlanarGyroFactor::FromRate(P(3), P(4), B(3), p, measuredOmega,
-        // dt));
+        graph.add(PlanarGyroFactor.FromRate(Key.P(0), Key.P(1), Key.B(0), p, measuredOmega, dt));
+        graph.add(PlanarGyroFactor.FromRate(Key.P(1), Key.P(2), Key.B(1), p, measuredOmega, dt));
+        graph.add(PlanarGyroFactor.FromRate(Key.P(2), Key.P(3), Key.B(2), p, measuredOmega, dt));
+        graph.add(PlanarGyroFactor.FromRate(Key.P(3), Key.P(4), Key.B(3), p, measuredOmega, dt));
 
         // // Initial values should not matter.
-        // Values values;
-        // values.insert(B(0), 0.0);
-        // values.insert(B(1), 0.0);
-        // values.insert(B(2), 0.0);
-        // values.insert(B(3), 0.0);
-        // values.insert(B(4), 0.0);
-        // values.insert(P(0), Pose2());
-        // values.insert(P(1), Pose2());
-        // values.insert(P(2), Pose2());
-        // values.insert(P(3), Pose2());
-        // values.insert(P(4), Pose2());
+        Values values = new Values();
+        values.insert(Key.B(0), 0.0);
+        values.insert(Key.B(1), 0.0);
+        values.insert(Key.B(2), 0.0);
+        values.insert(Key.B(3), 0.0);
+        values.insert(Key.B(4), 0.0);
+        values.insert(Key.P(0), new Pose2());
+        values.insert(Key.P(1), new Pose2());
+        values.insert(Key.P(2), new Pose2());
+        values.insert(Key.P(3), new Pose2());
+        values.insert(Key.P(4), new Pose2());
 
-        // LevenbergMarquardtParams params;
-        // LevenbergMarquardtOptimizer optimizer(graph, values, params);
-        // Values result = optimizer.optimize();
+        LevenbergMarquardtParams params = new LevenbergMarquardtParams();
+        LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer(graph, values, params);
+        Values result = optimizer.optimize();
 
-        // // Rotation increments are what the more-certain gyro factor said, overriding
-        // // what the less-certain "between" factor said.
-        // assertTrue(assert_equal(Pose2(0.0, 0.0, 0.0), result.at<Pose2>(P(0)), 1e-5));
-        // assertTrue(assert_equal(Pose2(0.0, 0.0, 0.1), result.at<Pose2>(P(1)), 1e-5));
-        // assertTrue(assert_equal(Pose2(0.1, 0.0, 0.2), result.at<Pose2>(P(2)), 1e-5));
-        // assertTrue(assert_equal(Pose2(0.2, 0.0, 0.3), result.at<Pose2>(P(3)), 1e-5));
-        // assertTrue(assert_equal(Pose2(0.3, 0.0, 0.4), result.at<Pose2>(P(4)), 1e-5));
+        // Rotation increments are what the more-certain gyro factor said, overriding
+        // what the less-certain "between" factor said.
+        assertTrue(assert_equal(new Pose2(0.0, 0.0, 0.0), result.atPose2(Key.P(0)), 1e-5));
+        assertTrue(assert_equal(new Pose2(0.0, 0.0, 0.1), result.atPose2(Key.P(1)), 1e-5));
+        assertTrue(assert_equal(new Pose2(0.1, 0.0, 0.2), result.atPose2(Key.P(2)), 1e-5));
+        assertTrue(assert_equal(new Pose2(0.2, 0.0, 0.3), result.atPose2(Key.P(3)), 1e-5));
+        assertTrue(assert_equal(new Pose2(0.3, 0.0, 0.4), result.atPose2(Key.P(4)), 1e-5));
 
-        // // Bias is correctly learned.
-        // assertTrue(assert_equal(1.0, result.at<double>(B(0)), 1e-6));
-        // assertTrue(assert_equal(1.0, result.at<double>(B(1)), 1e-6));
-        // assertTrue(assert_equal(1.0, result.at<double>(B(2)), 1e-6));
-        // assertTrue(assert_equal(1.0, result.at<double>(B(3)), 1e-6));
-        // assertTrue(assert_equal(1.0, result.at<double>(B(4)), 1e-6));
+        // Bias is correctly learned.
+        assertTrue(assert_equal(1.0, result.atDouble(Key.B(0)), 1e-6));
+        assertTrue(assert_equal(1.0, result.atDouble(Key.B(1)), 1e-6));
+        assertTrue(assert_equal(1.0, result.atDouble(Key.B(2)), 1e-6));
+        assertTrue(assert_equal(1.0, result.atDouble(Key.B(3)), 1e-6));
+        assertTrue(assert_equal(1.0, result.atDouble(Key.B(4)), 1e-6));
 
-        // Marginals marginals(graph, result);
+        Marginals marginals = new Marginals(graph, result);
 
-        // // Look at std dev because it's not so tiny.
-        // assertTrue(assert_equal(
-        // Vector3(0.001000, 0.001000, 0.001000),
-        // Vector3(marginals.marginalCovariance(P(0)).diagonal().cwiseSqrt()), 1e-6))
-        // assertTrue(assert_equal(
-        // Vector3(0.001414, 0.001414, 0.001414),
-        // Vector3(marginals.marginalCovariance(P(1)).diagonal().cwiseSqrt()), 1e-6))
-        // assertTrue(assert_equal(
-        // Vector3(0.001732, 0.001738, 0.002261),
-        // Vector3(marginals.marginalCovariance(P(2)).diagonal().cwiseSqrt()), 1e-6))
-        // assertTrue(assert_equal(
-        // Vector3(0.002003, 0.002030, 0.003242),
-        // Vector3(marginals.marginalCovariance(P(3)).diagonal().cwiseSqrt()), 1e-6))
-        // assertTrue(assert_equal(
-        // Vector3(0.002252, 0.002322, 0.004287),
-        // Vector3(marginals.marginalCovariance(P(4)).diagonal().cwiseSqrt()), 1e-6))
+        // Look at std dev because it's not so tiny.
+        assertTrue(assert_equal(
+                new Vector3(0.001000, 0.001000, 0.001000),
+                new Vector3(marginals.marginalCovariance(Key.P(0)).diagonal_cwiseSqrt()), 1e-6));
+        assertTrue(assert_equal(
+                new Vector3(0.001414, 0.001414, 0.001414),
+                new Vector3(marginals.marginalCovariance(Key.P(1)).diagonal_cwiseSqrt()), 1e-6));
+        assertTrue(assert_equal(
+                new Vector3(0.001732, 0.001738, 0.002261),
+                new Vector3(marginals.marginalCovariance(Key.P(2)).diagonal_cwiseSqrt()), 1e-6));
+        assertTrue(assert_equal(
+                new Vector3(0.002003, 0.002030, 0.003242),
+                new Vector3(marginals.marginalCovariance(Key.P(3)).diagonal_cwiseSqrt()), 1e-6));
+        assertTrue(assert_equal(
+                new Vector3(0.002252, 0.002322, 0.004287),
+                new Vector3(marginals.marginalCovariance(Key.P(4)).diagonal_cwiseSqrt()), 1e-6));
 
-        // // Bias variance is roughly constant.
-        // assertTrue(assert_equal(0.001005, sqrt(marginals.marginalCovariance(B(0))(0,
-        // 0)),
-        // 1e-6))
-        // assertTrue(assert_equal(0.001049, sqrt(marginals.marginalCovariance(B(1))(0,
-        // 0)),
-        // 1e-6))
-        // assertTrue(assert_equal(0.001091, sqrt(marginals.marginalCovariance(B(2))(0,
-        // 0)),
-        // 1e-6))
-        // assertTrue(assert_equal(0.001131, sqrt(marginals.marginalCovariance(B(3))(0,
-        // 0)),
-        // 1e-6))
-        // assertTrue(assert_equal(0.001170, sqrt(marginals.marginalCovariance(B(4))(0,
-        // 0)),
-        // 1e-6))
+        // Bias variance is roughly constant.
+        assertTrue(assert_equal(0.001005,
+                Math.sqrt(marginals.marginalCovariance(Key.B(0)).at(0, 0)), 1e-6));
+        assertTrue(assert_equal(0.001049,
+                Math.sqrt(marginals.marginalCovariance(Key.B(1)).at(0, 0)), 1e-6));
+        assertTrue(assert_equal(0.001091,
+                Math.sqrt(marginals.marginalCovariance(Key.B(2)).at(0, 0)), 1e-6));
+        assertTrue(assert_equal(0.001131,
+                Math.sqrt(marginals.marginalCovariance(Key.B(3)).at(0, 0)), 1e-6));
+        assertTrue(assert_equal(0.001170,
+                Math.sqrt(marginals.marginalCovariance(Key.B(4)).at(0, 0)), 1e-6));
     }
 
 }

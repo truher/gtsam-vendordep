@@ -2,6 +2,7 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
@@ -19,9 +20,11 @@ public class Values extends ForeignObject {
     public enum FF {
         Values(ADDRESS),
         Values_delete(null, ADDRESS),
+        Values_insertDouble(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
         Values_insertPose2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertPose3(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertCal3DS2(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_atDouble(JAVA_DOUBLE, ADDRESS, JAVA_LONG),
         Values_atPose2(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPose3(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atCal3DS2(ADDRESS, ADDRESS, JAVA_LONG),
@@ -72,6 +75,10 @@ public class Values extends ForeignObject {
         FF.Values_print.h.invokeExact(ptr);
     }
 
+    public void insert(Key j, double p) throws Throwable {
+        FF.Values_insertDouble.h.invokeExact(ptr, j.j, p);
+    }
+
     /** Clones p, ok to delete after this. */
     public void insert(Key j, Pose2 p) throws Throwable {
         FF.Values_insertPose2.h.invokeExact(ptr, j.j, p.ptr);
@@ -87,6 +94,10 @@ public class Values extends ForeignObject {
 
     public void insert(Key j, Cal3DS2 p) throws Throwable {
         FF.Values_insertCal3DS2.h.invokeExact(ptr, j.j, p.ptr);
+    }
+
+    public double atDouble(Key j) throws Throwable {
+        return (double) FF.Values_atPose2.h.invokeExact(ptr, j.j);
     }
 
     public Pose2 atPose2(Key j) throws Throwable {

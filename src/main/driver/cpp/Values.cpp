@@ -18,6 +18,11 @@ void Values_print(gtsam::Values* v) {
     v->print();
 }
 /** Clones val. */
+void Values_insertDouble(gtsam::Values* v,    //
+                         const gtsam::Key j,  //
+                         double val) {
+    v->insert(j, val);
+}
 void Values_insertPose2(gtsam::Values* v,    //
                         const gtsam::Key j,  //
                         const gtsam::Pose2* val) {
@@ -32,6 +37,10 @@ void Values_insertCal3DS2(gtsam::Values* v,    //
                           const gtsam::Key j,  //
                           const gtsam::Cal3DS2* val) {
     v->insert(j, *val);
+}
+const double Values_atDouble(const gtsam::Values* v,  //
+                             const gtsam::Key j) {
+    return v->at<double>(j);
 }
 const gtsam::Pose2* Values_atPose2(const gtsam::Values* v,  //
                                    const gtsam::Key j) {

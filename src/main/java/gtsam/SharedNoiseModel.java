@@ -14,6 +14,7 @@ import org.team100.foreign.Lib;
  * Actually a shared_ptr
  * TODO: maybe actually use the shared_ptr thing in java, instead of doing it
  * differently here.
+ * TODO: use "Diagonal" in here somewhere.
  */
 public class SharedNoiseModel {
     public enum FF {

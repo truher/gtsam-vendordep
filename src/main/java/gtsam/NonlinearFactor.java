@@ -6,9 +6,10 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
+import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class NonlinearFactor {
+public class NonlinearFactor extends ForeignObject {
     public enum FF {
         NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS);
 

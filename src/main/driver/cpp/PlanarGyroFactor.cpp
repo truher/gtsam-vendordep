@@ -17,6 +17,21 @@ double PlanarGyroParams_arwSigma(gtsam::PlanarGyroParams* p, double dt) {
 //
 //
 //
+std::shared_ptr<gtsam::PlanarGyroBiasFactor>* PlanarGyroParams(
+    const gtsam::Key bias_i,  //
+    const gtsam::Key bias_j,  //
+    const std::shared_ptr<gtsam::PlanarGyroParams>* p) {
+    return new std::shared_ptr<gtsam::PlanarGyroBiasFactor>(
+        new gtsam::PlanarGyroBiasFactor(bias_i, bias_j, *p));
+}
+void PlanarGyroBiasFactor_delete(
+    std::shared_ptr<gtsam::PlanarGyroBiasFactor>* obj) {
+    // decrements the shared_ptr counter
+    delete obj;
+}
+//
+//
+//
 
 void PlanarGyroFactor_delete(std::shared_ptr<gtsam::PlanarGyroFactor>* obj) {
     // decrements the shared_ptr counter

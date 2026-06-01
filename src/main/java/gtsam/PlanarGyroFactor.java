@@ -46,6 +46,32 @@ public class PlanarGyroFactor extends ForeignObject {
 
     }
 
+    public static class PlanarGyroBiasFactor extends ForeignObject {
+        public enum FF {
+            PlanarGyroBiasFactor(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS),
+            PlanarGyroBiasFactor_delete(null, ADDRESS);
+
+            public final MethodHandle h;
+
+            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+                h = Lib.ff(this, returnType, parameterTypes);
+            }
+        }
+
+        /** @param p pointer to the factor itself, not the shared_ptr. */
+        private PlanarGyroBiasFactor(MemorySegment p) {
+            super(p, null);
+        }
+
+        public static shared_ptr<PlanarGyroBiasFactor> makeSharedPlanarGyroBiasFactor(
+                Key bias_i, Key bias_j, shared_ptr<PlanarGyroParams> p)
+                throws Throwable {
+            MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroBiasFactor.h.invokeExact(//
+                    bias_i.j, bias_j.j, p.sharedPtrPtr);
+            return new shared_ptr<>(sharedPtrPtr, PlanarGyroBiasFactor::new, FF.PlanarGyroBiasFactor_delete.h);
+        }
+    }
+
     public enum FF {
         PlanarGyroFactor_delete(null, ADDRESS),
         PlanarGyroFactor_FromRotation(

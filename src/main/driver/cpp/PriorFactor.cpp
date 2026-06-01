@@ -5,6 +5,15 @@
 #include <gtsam/nonlinear/PriorFactor.h>
 
 extern "C" {
+std::shared_ptr<gtsam::PriorFactor<double>>* PriorFactorDouble(
+    const gtsam::Key key, double prior, const gtsam::SharedNoiseModel* model) {
+    return new std::shared_ptr<gtsam::PriorFactor<double>>(
+        new gtsam::PriorFactor<double>(key, prior, *model));
+}
+void PriorFactorDouble_delete(
+    std::shared_ptr<gtsam::PriorFactor<double>>* obj) {
+    delete obj;
+}
 /**
  * @param prior is copied, ok to delete
  */

@@ -65,6 +65,10 @@ public class Vector3 extends ForeignObject
         this(p.x(), p.y(), p.z());
     }
 
+    public Vector3(Vector v) throws Throwable {
+        this(v.at(0), v.at(1), v.at(2));
+    }
+
     @Override
     public int dimension() throws Throwable {
         return 3;
