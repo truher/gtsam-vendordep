@@ -7,6 +7,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
+import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
@@ -16,7 +17,7 @@ import org.team100.foreign.Lib;
  * 
  * This does not own the pointer; never deleted.
  */
-public class JacobianVector {
+public class JacobianVector extends ForeignObject {
     public enum FF {
         JacobianVector_insert(null, ADDRESS, JAVA_INT, ADDRESS),
         JacobianVector_insertMatrix3(null, ADDRESS, JAVA_INT, ADDRESS);
@@ -28,11 +29,9 @@ public class JacobianVector {
         }
     }
 
-    public final MemorySegment ptr;
-
     /** Does not own the pointer */
     private JacobianVector(MemorySegment p) {
-        ptr = p;
+        super(p, null);
     }
 
     public static JacobianVector fromPointer(MemorySegment p) {

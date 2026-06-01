@@ -29,6 +29,9 @@ gtsam::SharedNoiseModel* SharedNoiseModel_Sigmas3(const gtsam::Vector3* v) {
 gtsam::SharedNoiseModel* SharedNoiseModel_Unit(int dim) {
     return new gtsam::SharedNoiseModel(gtsam::noiseModel::Unit::Create(dim));
 }
+void SharedNoiseModel_delete(gtsam::SharedNoiseModel* m) {
+    delete m;
+}
 long SharedNoiseModel_use_count(const gtsam::SharedNoiseModel* p) {
     return p->use_count();
 }

@@ -7,12 +7,13 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
+import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
  * add() methods use shared_ptr to save copying.
  */
-public class NonlinearFactorGraph {
+public class NonlinearFactorGraph extends ForeignObject {
     public enum FF {
         NonlinearFactorGraph(ADDRESS),
         /** Expects shared_ptr<T extends NonlinearFactor>* */
@@ -26,11 +27,8 @@ public class NonlinearFactorGraph {
         }
     }
 
-    /** gtsam::NonlinearFactorGraph* */
-    final MemorySegment ptr;
-
     NonlinearFactorGraph(MemorySegment p) {
-        ptr = p;
+        super(p, null);
     }
 
     public NonlinearFactorGraph() throws Throwable {
@@ -42,7 +40,7 @@ public class NonlinearFactorGraph {
      * the factor itself
      */
     public <T extends NonlinearFactor> void add(shared_ptr<T> f) throws Throwable {
-        FF.NonlinearFactorGraph_add.h.invokeExact(ptr, f.sharedPtrPtr);
+        FF.NonlinearFactorGraph_add.h.invokeExact(ptr, f.ptr);
     }
 
     public void resize(long size) throws Throwable {

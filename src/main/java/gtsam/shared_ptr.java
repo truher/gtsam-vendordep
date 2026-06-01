@@ -11,11 +11,13 @@ import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
- * A pointer to a shared pointer. The shared pointer can be "deleted"
- * (decrementing its counter), but the underlying pointer must not be
- * deleted (since it is shared).
+ * A pointer to a shared pointer.
  * 
- * ForeignObject handles the deleting of the shared pointer.
+ * Extends ForeignObject so that the shared pointer will be "deleted"
+ * (decrementing its counter) when this container object is no longer reachable.
+ * 
+ * The underlying pointer must not be deleted (since it is shared), and so
+ * generally should not extend ForeignObject.
  */
 public class shared_ptr<T> extends ForeignObject {
     public enum FF {
@@ -28,19 +30,18 @@ public class shared_ptr<T> extends ForeignObject {
         }
     }
 
-    final MemorySegment sharedPtrPtr;
     final Function<MemorySegment, T> construct;
 
     /**
-     * @param ptrPtr pointer to the shared_ptr itself
-     * @param ctor   constructor of T, using a pointer
+     * @param p    pointer to the shared_ptr itself.
+     * @param ctor constructor of T, using the inner pointer (from get()).
+     * @param del  deletes the shared_ptr itself.
      */
     shared_ptr(//
-            MemorySegment ptrPtr, //
+            MemorySegment p, //
             Function<MemorySegment, T> ctor,
-            MethodHandle deleter) {
-        super(ptrPtr, deleter);
-        sharedPtrPtr = ptrPtr;
+            MethodHandle del) {
+        super(p, del);
         construct = ctor;
     }
 
@@ -51,6 +52,6 @@ public class shared_ptr<T> extends ForeignObject {
      * TODO: the pointer here must not be owned.
      */
     public T get() throws Throwable {
-        return construct.apply((MemorySegment) FF.shared_ptr_get.h.invokeExact(sharedPtrPtr));
+        return construct.apply((MemorySegment) FF.shared_ptr_get.h.invokeExact(ptr));
     }
 }

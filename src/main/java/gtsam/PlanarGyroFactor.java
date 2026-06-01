@@ -14,7 +14,7 @@ import org.team100.foreign.Lib;
 /**
  * See gtsam/navigation/PlanarGyroFactor.h
  */
-public class PlanarGyroFactor extends ForeignObject {
+public class PlanarGyroFactor extends NonlinearFactor {
     public static class PlanarGyroParams extends ForeignObject {
         public enum FF {
             PlanarGyroParams(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
@@ -46,7 +46,7 @@ public class PlanarGyroFactor extends ForeignObject {
 
     }
 
-    public static class PlanarGyroBiasFactor extends ForeignObject {
+    public static class PlanarGyroBiasFactor extends NonlinearFactor {
         public enum FF {
             PlanarGyroBiasFactor(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS),
             PlanarGyroBiasFactor_delete(null, ADDRESS);
@@ -60,14 +60,14 @@ public class PlanarGyroFactor extends ForeignObject {
 
         /** @param p pointer to the factor itself, not the shared_ptr. */
         private PlanarGyroBiasFactor(MemorySegment p) {
-            super(p, null);
+            super(p);
         }
 
         public static shared_ptr<PlanarGyroBiasFactor> makeSharedPlanarGyroBiasFactor(
                 Key bias_i, Key bias_j, shared_ptr<PlanarGyroParams> p)
                 throws Throwable {
             MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroBiasFactor.h.invokeExact(//
-                    bias_i.j, bias_j.j, p.sharedPtrPtr);
+                    bias_i.j, bias_j.j, p.ptr);
             return new shared_ptr<>(sharedPtrPtr, PlanarGyroBiasFactor::new, FF.PlanarGyroBiasFactor_delete.h);
         }
     }
@@ -92,13 +92,13 @@ public class PlanarGyroFactor extends ForeignObject {
 
     /** @param p pointer to the factor itself, not the shared_ptr. */
     private PlanarGyroFactor(MemorySegment p) {
-        super(p, null);
+        super(p);
     }
 
     public static shared_ptr<PlanarGyroFactor> FromRotation(
             Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, Rot2 dr, double dt) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroFactor_FromRotation.h.invokeExact(
-                pose_i.j, pose_j.j, bias.j, p.sharedPtrPtr, dr.ptr, dt);
+                pose_i.j, pose_j.j, bias.j, p.ptr, dr.ptr, dt);
         return new shared_ptr<>(sharedPtrPtr, PlanarGyroFactor::new, FF.PlanarGyroFactor_delete.h);
     }
 
@@ -106,7 +106,7 @@ public class PlanarGyroFactor extends ForeignObject {
             Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, double omega, double dt)
             throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroFactor_FromRate.h.invokeExact(
-                pose_i.j, pose_j.j, bias.j, p.sharedPtrPtr, omega, dt);
+                pose_i.j, pose_j.j, bias.j, p.ptr, omega, dt);
         return new shared_ptr<>(sharedPtrPtr, PlanarGyroFactor::new, FF.PlanarGyroFactor_delete.h);
     }
 

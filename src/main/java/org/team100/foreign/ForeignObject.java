@@ -5,7 +5,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.ref.Cleaner;
 
 /**
- * This has a pointer to a heap-allocated object in C++.
+ * Facilitates deletion of a foreign object after this Java container is no
+ * longer reachable, if desired.
+ * 
+ * Has a pointer to a C++ heap-allocated object.
  * Deletes it when this gets garbage-collected.
  */
 public abstract class ForeignObject {

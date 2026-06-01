@@ -9,6 +9,10 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
+/**
+ * Factors are always passed around inside shared_ptr, so this does not manage
+ * its own lifecycle.
+ */
 public class NonlinearFactor extends ForeignObject {
     public enum FF {
         NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS);
@@ -20,15 +24,16 @@ public class NonlinearFactor extends ForeignObject {
         }
     }
 
-    /** Pointer to the factor, the result of shared_ptr.get(). */
-    final MemorySegment ptr;
-
     /** @param p pointer to the factor itself, not the shared_ptr. */
     NonlinearFactor(MemorySegment p) {
-        ptr = p;
+        super(p, null);
     }
 
-    /** returns shared_ptr<GaussianFactor> */
+    /**
+     * Linearize this factor.
+     * 
+     * Returns shared_ptr<GaussianFactor>
+     */
     public GaussianFactor linearize(Values v) throws Throwable {
         return new GaussianFactor((MemorySegment) FF.NonlinearFactor_linearize.h.invokeExact(
                 ptr, v.ptr));

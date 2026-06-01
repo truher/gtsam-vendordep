@@ -97,7 +97,7 @@ public class Values extends ForeignObject {
     }
 
     public double atDouble(Key j) throws Throwable {
-        return (double) FF.Values_atPose2.h.invokeExact(ptr, j.j);
+        return (double) FF.Values_atDouble.h.invokeExact(ptr, j.j);
     }
 
     public Pose2 atPose2(Key j) throws Throwable {

@@ -71,6 +71,25 @@ with the (simpler) Java type system.  Here are some of the highlights:
   for types like Point3 which are typedefs of something else.  Traits are also
   explicitly used by numeric differentiation.
 
+## Lifecycle
+
+Everything passed between Java and C++ is heap-allocated. Values returned
+to Java are generally pointers to these heap-allocated objects, and the
+same pointers are passed back to C++.
+
+There are two ways to manage the lifecycle of these heap objects.
+
+The most common method uses ForeignObject, which manages "owned" objects,
+mirroring the JVM. When the wrapper becomes unreachable, the "cleaner" is
+called to delete the corresponding C++ object.  So shared_ptr itself is a
+ForeignObject: deleting it doesn't actually delete the referent, it just
+decrements the reference count.
+
+Some objects are merely "observed", so there is no deleter, just pass null.
+
+The shared_ptr object's lifecycle is managed by Java, but the
+objects it returns with get() are not managed -- they have null deleters.
+
 
 ## Warnings
 

@@ -8,6 +8,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
+import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
@@ -16,13 +17,14 @@ import org.team100.foreign.Lib;
  * differently here.
  * TODO: use "Diagonal" in here somewhere.
  */
-public class SharedNoiseModel {
+public class SharedNoiseModel extends ForeignObject {
     public enum FF {
         SharedNoiseModel_Sigmas(ADDRESS, ADDRESS),
         SharedNoiseModel_Sigmas1(ADDRESS, ADDRESS),
         SharedNoiseModel_Sigmas2(ADDRESS, ADDRESS),
         SharedNoiseModel_Sigmas3(ADDRESS, ADDRESS),
         SharedNoiseModel_Unit(ADDRESS, JAVA_INT),
+        SharedNoiseModel_delete(null, ADDRESS),
         SharedNoiseModel_use_count(JAVA_LONG, ADDRESS);
 
         public final MethodHandle h;
@@ -32,11 +34,8 @@ public class SharedNoiseModel {
         }
     }
 
-    /** Pointer to the shared pointer. */
-    public final MemorySegment ptr;
-
     private SharedNoiseModel(MemorySegment p) {
-        ptr = p;
+        super(p, FF.SharedNoiseModel_delete.h);
     }
 
     public static SharedNoiseModel Sigmas(Vector v) throws Throwable {

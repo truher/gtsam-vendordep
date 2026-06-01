@@ -35,7 +35,7 @@ public class PriorFactor<T> extends NonlinearFactor {
 
       public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
             Key poseKey, double prior, SharedNoiseModel model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose2.h.invokeExact(
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorDouble.h.invokeExact(
                 poseKey.j, prior, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorDouble_delete.h);
     }
