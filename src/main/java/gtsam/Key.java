@@ -2,7 +2,6 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
@@ -41,9 +40,7 @@ public class Key {
     private static final MethodHandle symbol_shorthand_Z = symbol("Z");
 
     private static final MethodHandle symbol(String label) {
-        return Lib.linker.downcallHandle(
-                Lib.lib.findOrThrow("symbol_shorthand_" + label),
-                FunctionDescriptor.of(JAVA_LONG, JAVA_LONG));
+        return Lib.ff("symbol_shorthand_" + label, JAVA_LONG, JAVA_LONG);
     }
 
     public final long j;

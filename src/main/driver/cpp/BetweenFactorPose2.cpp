@@ -13,6 +13,10 @@ std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>>* BetweenFactorPose2(
     return new std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>>(  //
         new gtsam::BetweenFactor<gtsam::Pose2>(key1, key2, *measured, *model));
 }
+void BetweenFactorPose2_delete(
+    std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>>* obj) {
+    delete obj;
+}
 /** @param p shared_ptr* */
 double BetweenFactorPose2_error(                  //
     const gtsam::BetweenFactor<gtsam::Pose2>* p,  //

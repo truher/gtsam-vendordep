@@ -12,7 +12,7 @@ import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 public class Vector1 extends ForeignObject
-        implements VectorType<Vector1> {
+        implements VectorType<Vector1>, Manifold<Vector1, Vector1>  {
     public enum FF {
         Vector1(ADDRESS, JAVA_DOUBLE),
         Vector1_delete(null, ADDRESS),
@@ -27,6 +27,22 @@ public class Vector1 extends ForeignObject
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
+    }
+
+        public static class Traits implements Manifold.Traits<Vector1, Vector1> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
+    @Override
+    public Vector1 dxZero() throws Throwable {
+        return new Vector1(0);
     }
 
     public Vector1(MemorySegment p) {
@@ -65,5 +81,15 @@ public class Vector1 extends ForeignObject
     @Override
     public Vector1 times(double a) throws Throwable {
         return new Vector1((MemorySegment) FF.Vector1_times.h.invokeExact(ptr, a));
+    }
+
+        @Override
+    public Vector1 localCoordinates(Vector1 other) throws Throwable {
+        return other.minus(this);
+    }
+
+    @Override
+    public Vector1 retract(Vector1 v) throws Throwable {
+        return plus(v);
     }
 }

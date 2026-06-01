@@ -12,8 +12,8 @@ import org.team100.foreign.Lib;
 
 public class CustomFactor extends NonlinearFactor {
     public enum FF {
-
         CustomFactor(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        CustomFactor_delete(null, ADDRESS),
         CustomFactor_keys(ADDRESS, ADDRESS),
         CustomFactor_error(JAVA_DOUBLE, ADDRESS, ADDRESS);
 
@@ -40,7 +40,7 @@ public class CustomFactor extends NonlinearFactor {
                 Lib.arena);
         MemorySegment sharedPtrPtr = (MemorySegment) FF.CustomFactor.h.invokeExact(
                 noiseModel.ptr, keys.ptr, errorFunctionPtr);
-        return new shared_ptr<>(sharedPtrPtr, CustomFactor::new);
+        return new shared_ptr<>(sharedPtrPtr, CustomFactor::new, FF.CustomFactor_delete.h);
     }
 
     public KeyVector keys() throws Throwable {

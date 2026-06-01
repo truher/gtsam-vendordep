@@ -11,6 +11,7 @@ import org.team100.foreign.Lib;
 
 public class Testable {
     public enum FF {
+        Testable_assert_equal_Double(JAVA_BOOLEAN, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Testable_assert_equal_Rot2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Rot3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Point2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
@@ -32,6 +33,10 @@ public class Testable {
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
+    }
+
+    public static boolean assert_equal(double expected, double actual, double tol) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Double.h.invokeExact(expected, actual, tol);
     }
 
     public static boolean assert_equal(Rot2 expected, Rot2 actual, double tol) throws Throwable {

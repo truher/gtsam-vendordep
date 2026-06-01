@@ -81,6 +81,10 @@ public class Values extends ForeignObject {
         FF.Values_insertPose3.h.invokeExact(ptr, j.j, p.ptr);
     }
 
+    public void insert(long key, Pose3 p) throws Throwable {
+        FF.Values_insertPose3.h.invokeExact(ptr, key, p.ptr);
+    }
+
     public void insert(Key j, Cal3DS2 p) throws Throwable {
         FF.Values_insertCal3DS2.h.invokeExact(ptr, j.j, p.ptr);
     }

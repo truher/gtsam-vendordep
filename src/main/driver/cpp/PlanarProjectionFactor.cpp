@@ -13,12 +13,12 @@ extern "C" {
  *
  * @param key  pass-by-value since it's a primitive typedef
  */
-std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(
-    const gtsam::Key poseKey,       //
-    const gtsam::Point3* landmark,  //
-    const gtsam::Point2* measured,  //
-    const gtsam::Pose3* bTc,        //
-    const gtsam::Cal3DS2* calib,    //
+std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(  //
+    const gtsam::Key poseKey,                                              //
+    const gtsam::Point3* landmark,                                         //
+    const gtsam::Point2* measured,                                         //
+    const gtsam::Pose3* bTc,                                               //
+    const gtsam::Cal3DS2* calib,                                           //
     const gtsam::SharedNoiseModel* model) {
     // Because we want to pass this back as a shared pointer,
     // we need to create it here, and pass a pointer to it.
@@ -27,7 +27,13 @@ std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(
             poseKey, *landmark, *measured, *bTc, *calib, *model));
 }
 
-/** OptionalMatrixType is typedef Matrix*
+void PlanarProjectionFactor1_delete(
+    std::shared_ptr<gtsam::PlanarProjectionFactor1>* obj) {
+    delete obj;
+}
+
+/**
+ * OptionalMatrixType is typedef Matrix*
  *
  * TODO: maybe this should be Vector instead of Vector2
  */
@@ -38,26 +44,31 @@ gtsam::Vector2* PlanarProjectionFactor1_evaluateError(
     return new gtsam::Vector2(p->evaluateError(*wTb, *HwTb));
 }
 
-std::shared_ptr<gtsam::PlanarProjectionFactor3>* PlanarProjectionFactor3(
-    const gtsam::Key poseKey,    //
-    const gtsam::Key offsetKey,  //
-    const gtsam::Key calibKey,   //
-    const gtsam::Point3* landmark,      //
-    const gtsam::Point2* measured,      //
-    const gtsam::SharedNoiseModel* model) {
-    return new std::shared_ptr<gtsam::PlanarProjectionFactor3>(  //
-        new gtsam::PlanarProjectionFactor3(                      //
+std::shared_ptr<gtsam::PlanarProjectionFactor3>* PlanarProjectionFactor3(  //
+    const gtsam::Key poseKey,                                              //
+    const gtsam::Key offsetKey,                                            //
+    const gtsam::Key calibKey,                                             //
+    const gtsam::Point3* landmark,                                         //
+    const gtsam::Point2* measured,                                         //
+    const gtsam::SharedNoiseModel* model) {                                //
+    return new std::shared_ptr<gtsam::PlanarProjectionFactor3>(            //
+        new gtsam::PlanarProjectionFactor3(                                //
             poseKey, offsetKey, calibKey, *landmark, *measured, *model));
 }
 
-gtsam::Vector* PlanarProjectionFactor3_evaluateError(
-    gtsam::PlanarProjectionFactor3* p,  //
-    const gtsam::Pose2* wTb,                   //
-    const gtsam::Pose3* bTc,                   //
-    const gtsam::Cal3DS2* calib,               //
-    gtsam::Matrix* HwTb,                //
-    gtsam::Matrix* HbTc,                //
-    gtsam::Matrix* Hcalib) {
+void PlanarProjectionFactor3_delete(
+    std::shared_ptr<gtsam::PlanarProjectionFactor3>* obj) {
+    delete obj;
+}
+
+gtsam::Vector* PlanarProjectionFactor3_evaluateError(  //
+    gtsam::PlanarProjectionFactor3* p,                 //
+    const gtsam::Pose2* wTb,                           //
+    const gtsam::Pose3* bTc,                           //
+    const gtsam::Cal3DS2* calib,                       //
+    gtsam::Matrix* HwTb,                               //
+    gtsam::Matrix* HbTc,                               //
+    gtsam::Matrix* Hcalib) {                           //
     return new gtsam::Vector(
         p->evaluateError(*wTb, *bTc, *calib, *HwTb, *HbTc, *Hcalib));
 }

@@ -3,6 +3,7 @@ package org.team100.foreign;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
+import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
@@ -50,10 +51,27 @@ public class Lib {
                 of(returnType, parameterTypes));
     }
 
+    public static MethodHandle ff(String name, ValueLayout returnType, ValueLayout... parameterTypes) {
+        return linker.downcallHandle(
+                lib.findOrThrow(name),
+                of(returnType, parameterTypes));
+    }
+
+    public static MethodHandle ff(Enum<?> fn, StructLayout returnType, ValueLayout... parameterTypes) {
+        return linker.downcallHandle(
+                lib.findOrThrow(fn.name()),
+                of(returnType, parameterTypes));
+    }
+
     public static FunctionDescriptor of(ValueLayout returnType, ValueLayout... parameterTypes) {
         if (returnType == null)
             return FunctionDescriptor.ofVoid(parameterTypes);
         return FunctionDescriptor.of(returnType, parameterTypes);
+    }
 
+    public static FunctionDescriptor of(StructLayout returnType, ValueLayout... parameterTypes) {
+        if (returnType == null)
+            return FunctionDescriptor.ofVoid(parameterTypes);
+        return FunctionDescriptor.of(returnType, parameterTypes);
     }
 }

@@ -3,8 +3,8 @@ package gtsam;
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
@@ -27,19 +27,19 @@ import org.team100.foreign.Lib;
  * without the cheirality exception (!?)
  */
 public class PlanarProjectionFactor1 extends NonlinearFactor {
-    private static final MethodHandle PlanarProjectionFactor1 = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("PlanarProjectionFactor1"),
-            FunctionDescriptor.of(
-                    ADDRESS,
-                    JAVA_LONG,
-                    ADDRESS,
-                    ADDRESS,
-                    ADDRESS,
-                    ADDRESS,
-                    ADDRESS));
-    private static final MethodHandle evaluateError = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("PlanarProjectionFactor1_evaluateError"),
-            FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, ADDRESS));
+    public enum FF {
+        PlanarProjectionFactor1(
+                ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        PlanarProjectionFactor1_delete(null, ADDRESS),
+        PlanarProjectionFactor1_evaluateError(
+                ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     /** @param p pointer to the factor itself, not the shared_ptr. */
     private PlanarProjectionFactor1(MemorySegment p) {
@@ -53,15 +53,15 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
             Pose3 bTc,
             Cal3DS2 calib,
             SharedNoiseModel model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) PlanarProjectionFactor1.invokeExact(
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarProjectionFactor1.h.invokeExact(
                 poseKey.j, landmark.ptr, measured.ptr, bTc.ptr, calib.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PlanarProjectionFactor1::new);
+        return new shared_ptr<>(sharedPtrPtr, PlanarProjectionFactor1::new, FF.PlanarProjectionFactor1_delete.h);
     }
 
     public Vector2 evaluateError(Pose2 pose, Matrix H) throws Throwable {
         // TODO: maybe this should be Vector instead of Vector2
         return new Vector2(
-                (MemorySegment) evaluateError.invokeExact(
+                (MemorySegment) FF.PlanarProjectionFactor1_evaluateError.h.invokeExact(
                         ptr, pose.ptr, H.ptr));
 
     }

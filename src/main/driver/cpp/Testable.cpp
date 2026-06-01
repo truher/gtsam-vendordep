@@ -8,7 +8,11 @@
 #include <gtsam/geometry/Rot2.h>
 
 extern "C" {
-bool Testable_assert_equal_Rot2(  //
+bool Testable_assert_equal_Double(  //
+    double expected, double actual, double tol) {
+    return gtsam::assert_equal<double>(expected, actual, tol);
+}
+    bool Testable_assert_equal_Rot2(  //
     const gtsam::Rot2* expected, const gtsam::Rot2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Rot2>(*expected, *actual, tol);
 }
