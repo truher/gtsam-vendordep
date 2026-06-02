@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import gtsam.NumericalDerivative.ThrowingFunction;
 import gtsam.NumericalDerivative.ThrowingFunction3;
+import gtsam.noiseModel.Diagonal;
 
 /**
  * See gtsam/slam/tests/testPlanarProjectionFactor.cpp.
@@ -29,7 +30,7 @@ public class PlanarProjectionFactorTest {
                         0, -1, 0),
                 new Point3(0, 0, 0));
         Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor1> factor = PlanarProjectionFactor1.newPlanarProjectionFactor1(
                 Key.X(0), landmark, measured, offset, calib, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -56,7 +57,7 @@ public class PlanarProjectionFactorTest {
                         0, -1, 0),
                 new Point3(0, 0, 0));
         Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, 0, 0);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor1> factor = PlanarProjectionFactor1.newPlanarProjectionFactor1(
                 Key.X(0), landmark, measured, offset, calib, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -83,7 +84,7 @@ public class PlanarProjectionFactorTest {
                         0, -1, 0),
                 new Point3(0, 0, 0));
         Cal3DS2 calib = new Cal3DS2(200, 200, 0, 200, 200, -0.2, 0.1); // note distortion
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor1> factor = PlanarProjectionFactor1.newPlanarProjectionFactor1(
                 Key.X(0), landmark, measured, offset, calib, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -104,7 +105,7 @@ public class PlanarProjectionFactorTest {
     void Jacobian() throws Throwable {
         Random rng = new Random(42);
         DoubleSupplier dist = () -> rng.nextDouble(-0.3, 0.3);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         // center of the random camera poses
         Pose3 centerOffset = new Pose3(
                 new Rot3(0, 0, 1, //
@@ -137,9 +138,9 @@ public class PlanarProjectionFactorTest {
      */
     @Test
     void Solve() throws Throwable {
-        SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> pxModel = Diagonal.Sigmas(new Vector2(1, 1));
         // pose model is wide, so the solver finds the right answer.
-        SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(10, 10, 10));
+        shared_ptr<Diagonal> xNoise = Diagonal.Sigmas(new Vector3(10, 10, 10));
 
         // landmarks
         Point3 l0 = new Point3(1, 0.1, 1);
@@ -202,7 +203,7 @@ public class PlanarProjectionFactorTest {
     void Error3_1() throws Throwable {
         Point3 landmark = new Point3(1, 0, 0);
         Point2 measured = new Point2(200, 200);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
                 Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -235,7 +236,7 @@ public class PlanarProjectionFactorTest {
     void Error3_2() throws Throwable {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
                 Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -269,7 +270,7 @@ public class PlanarProjectionFactorTest {
     void Error3_3() throws Throwable {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<PlanarProjectionFactor3> factor = PlanarProjectionFactor3.newPlanarProjectionFactor3(
                 Key.X(0), Key.C(0), Key.K(0), landmark, measured, model);
         Pose2 pose = new Pose2(0, 0, 0);
@@ -303,7 +304,7 @@ public class PlanarProjectionFactorTest {
     void Jacobian3() throws Throwable {
         Random rng = new Random(42);
         DoubleSupplier dist = () -> rng.nextDouble(-0.3, 0.3);
-        SharedNoiseModel model = SharedNoiseModel.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
         // center of the random camera poses
         Pose3 centerOffset = new Pose3(
                 new Rot3(0, 0, 1, //
@@ -370,13 +371,13 @@ public class PlanarProjectionFactorTest {
      */
     @Test
     void SolveOffset() throws Throwable {
-        SharedNoiseModel pxModel = SharedNoiseModel.Sigmas(new Vector2(1, 1));
-        SharedNoiseModel xNoise = SharedNoiseModel.Sigmas(new Vector3(0.01, 0.01,
+        shared_ptr<Diagonal> pxModel = Diagonal.Sigmas(new Vector2(1, 1));
+        shared_ptr<Diagonal> xNoise = Diagonal.Sigmas(new Vector3(0.01, 0.01,
                 0.01));
         // offset model is wide, so the solver finds the right answer.
-        SharedNoiseModel cNoise = SharedNoiseModel.Sigmas(
+        shared_ptr<Diagonal> cNoise = Diagonal.Sigmas(
                 new Vector(new double[] { 10, 10, 10, 10, 10, 10 }));
-        SharedNoiseModel kNoise = SharedNoiseModel.Sigmas(
+        shared_ptr<Diagonal> kNoise = Diagonal.Sigmas(
                 new Vector(new double[] { 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001 }));
 
         // landmarks

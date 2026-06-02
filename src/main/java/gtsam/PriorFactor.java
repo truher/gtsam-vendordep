@@ -33,8 +33,10 @@ public class PriorFactor<T> extends NonlinearFactor {
         super(p);
     }
 
-      public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
-            Key poseKey, double prior, SharedNoiseModel model) throws Throwable {
+    public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
+            Key poseKey,
+            double prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorDouble.h.invokeExact(
                 poseKey.j, prior, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorDouble_delete.h);
@@ -42,7 +44,9 @@ public class PriorFactor<T> extends NonlinearFactor {
 
     /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Pose2>> PriorFactorPose2(
-            Key poseKey, Pose2 prior, SharedNoiseModel model) throws Throwable {
+            Key poseKey,
+            Pose2 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose2.h.invokeExact(
                 poseKey.j, prior.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorPose2_delete.h);
@@ -50,7 +54,9 @@ public class PriorFactor<T> extends NonlinearFactor {
 
     /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Pose3>> PriorFactorPose3(
-            Key key, Pose3 prior, SharedNoiseModel model) throws Throwable {
+            Key key,
+            Pose3 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose3.h.invokeExact(
                 key.j, prior.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorPose3_delete.h);
@@ -59,7 +65,9 @@ public class PriorFactor<T> extends NonlinearFactor {
 
     /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Cal3DS2>> PriorFactorCal3DS2(
-            Key key, Cal3DS2 prior, SharedNoiseModel model) throws Throwable {
+            Key key,
+            Cal3DS2 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorCal3DS2.h.invokeExact(
                 key.j, prior.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorCal3DS2_delete.h);

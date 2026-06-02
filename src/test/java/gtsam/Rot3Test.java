@@ -107,7 +107,6 @@ public class Rot3Test {
 
     @Test
     void testAxisAngle() throws Throwable {
-
         Point3 axis = new Point3(0., 1., 0.); // rotation around Y
         double angle = 3.14 / 4.0;
         Rot3 expected = new Rot3(//

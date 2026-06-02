@@ -30,7 +30,7 @@ public class CustomFactor extends NonlinearFactor {
     }
 
     public static shared_ptr<CustomFactor> newCustomFactor(
-            SharedNoiseModel noiseModel,
+            shared_ptr<? extends gtsam.noiseModel.Base> noiseModel,
             KeyVector keys,
             CustomErrorFunction errorFunction) throws Throwable {
         MethodHandle bindHandle = CustomErrorFunction.f.bindTo(errorFunction);

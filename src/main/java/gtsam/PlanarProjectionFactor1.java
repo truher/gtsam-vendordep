@@ -30,6 +30,7 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
     public enum FF {
         PlanarProjectionFactor1(
                 ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        /** Decrements reference count of shared_ptr. */
         PlanarProjectionFactor1_delete(null, ADDRESS),
         PlanarProjectionFactor1_evaluateError(
                 ADDRESS, ADDRESS, ADDRESS, ADDRESS);
@@ -52,10 +53,12 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
             Point2 measured,
             Pose3 bTc,
             Cal3DS2 calib,
-            SharedNoiseModel model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarProjectionFactor1.h.invokeExact(
-                poseKey.j, landmark.ptr, measured.ptr, bTc.ptr, calib.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PlanarProjectionFactor1::new, FF.PlanarProjectionFactor1_delete.h);
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.PlanarProjectionFactor1.h.invokeExact(
+                        poseKey.j, landmark.ptr, measured.ptr, bTc.ptr, calib.ptr, model.ptr),
+                PlanarProjectionFactor1::new,
+                FF.PlanarProjectionFactor1_delete.h);
     }
 
     public Vector2 evaluateError(Pose2 pose, Matrix H) throws Throwable {

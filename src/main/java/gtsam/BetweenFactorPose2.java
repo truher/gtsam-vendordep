@@ -4,7 +4,6 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
@@ -33,7 +32,10 @@ public class BetweenFactorPose2 extends NonlinearFactor {
 
     /** @param measured is copied, ok to delete */
     public static shared_ptr<BetweenFactorPose2> newBetweenFactorPose2(
-            Key key1, Key key2, Pose2 measured, SharedNoiseModel model) throws Throwable {
+            Key key1,
+            Key key2,
+            Pose2 measured,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPose2.h.invokeExact(
                 key1.j, key2.j, measured.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BetweenFactorPose2::new, FF.BetweenFactorPose2_delete.h);

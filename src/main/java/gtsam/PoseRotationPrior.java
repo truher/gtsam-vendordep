@@ -27,7 +27,9 @@ public class PoseRotationPrior<T> extends NonlinearFactor {
     }
 
     public static shared_ptr<PoseRotationPrior<Pose2>> PoseRotationPriorPose2(
-            Key k, Pose2 p, SharedNoiseModel model) throws Throwable {
+            Key k,
+            Pose2 p,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PoseRotationPriorPose2.h.invokeExact(
                 k.j, p.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PoseRotationPrior::new, FF.PoseRotationPriorPose2_delete.h);

@@ -10,6 +10,7 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
 import gtsam.NumericalDerivative.ThrowingFunction3;
 import gtsam.PlanarGyroFactor.PlanarGyroBiasFactor;
 import gtsam.PlanarGyroFactor.PlanarGyroParams;
+import gtsam.noiseModel.Diagonal;
 
 /**
  * See gtsam/navigation/tests/testPlanarGyroFactor.cpp.
@@ -199,7 +200,7 @@ public class PlanarGyroFactorTest {
 
         // Starting pose is known.
         graph.add(PriorFactor.PriorFactorPose2(Key.P(0), new Pose2(),
-                SharedNoiseModel.Sigmas(new Vector3(0.001, 0.001, 0.001))));
+                Diagonal.Sigmas(new Vector3(0.001, 0.001, 0.001))));
 
         // BetweenFactors that simulate odometry.
         Pose2 p0 = new Pose2(0, 0, 0);
@@ -211,12 +212,12 @@ public class PlanarGyroFactorTest {
         Pose2 pErr = new Pose2(0, 0, 0.1);
         // When motionless, the rotation is known.
         // This is how we learn the bias.
-        SharedNoiseModel lowRotationNoise = SharedNoiseModel.Sigmas(new Vector3(1e-3, 1e-3, 1e-3));
+        shared_ptr<Diagonal> lowRotationNoise = Diagonal.Sigmas(new Vector3(1e-3, 1e-3, 1e-3));
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
                 Key.P(0), Key.P(1), p0.between(p1), lowRotationNoise));
 
         // When moving, rotation is much less certain.
-        SharedNoiseModel highRotationNoise = SharedNoiseModel.Sigmas(new Vector3(1e-3, 1e-3, 1));
+        shared_ptr<Diagonal> highRotationNoise = Diagonal.Sigmas(new Vector3(1e-3, 1e-3, 1));
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
                 Key.P(1), Key.P(2), p1.between(p2).compose(pErr), highRotationNoise));
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
@@ -225,7 +226,7 @@ public class PlanarGyroFactorTest {
                 Key.P(3), Key.P(4), p3.between(p4).compose(pErr), highRotationNoise));
 
         // Bias priorr: very uncertain.
-        graph.add(PriorFactor.PriorFactorDouble(Key.B(0), 1.0, SharedNoiseModel.Sigmas(new Vector1(1))));
+        graph.add(PriorFactor.PriorFactorDouble(Key.B(0), 1.0, Diagonal.Sigmas(new Vector1(1))));
 
         // // Gyro measurements affect rotation only.
         double trueOmega = 0.1;

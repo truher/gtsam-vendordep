@@ -27,6 +27,7 @@ std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(  //
             poseKey, *landmark, *measured, *bTc, *calib, *model));
 }
 
+/** Decrement reference count */
 void PlanarProjectionFactor1_delete(
     std::shared_ptr<gtsam::PlanarProjectionFactor1>* obj) {
     delete obj;

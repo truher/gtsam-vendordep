@@ -11,7 +11,7 @@ import org.team100.foreign.Lib;
 
 /**
  * Factors are always passed around inside shared_ptr, so this does not manage
- * its own lifecycle.
+ * its own lifecycle, passes null to the parent ForeignObject deleter.
  */
 public class NonlinearFactor extends ForeignObject {
     public enum FF {

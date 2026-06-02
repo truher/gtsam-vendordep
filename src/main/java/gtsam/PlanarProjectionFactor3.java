@@ -35,7 +35,7 @@ public class PlanarProjectionFactor3 extends NonlinearFactor {
             Key calibKey,
             Point3 landmark,
             Point2 measured,
-            SharedNoiseModel model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarProjectionFactor3.h.invokeExact(
                 poseKey.j, offsetKey.j, calibKey.j, landmark.ptr, measured.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, PlanarProjectionFactor3::new, FF.PlanarProjectionFactor3_delete.h);

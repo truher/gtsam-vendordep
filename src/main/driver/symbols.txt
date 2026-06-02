@@ -11,6 +11,7 @@ LevenbergMarquardtParams*
 Marginals*
 Matrix*
 Matrix3*
+noiseModel*
 NonlinearFactor*
 NonlinearFactorGraph*
 PinholeCamera*
@@ -27,7 +28,6 @@ PriorFactor*
 Result*
 Rot2*
 Rot3*
-SharedNoiseModel*
 shared_ptr*
 symbol_shorthand*
 TangentVector*
