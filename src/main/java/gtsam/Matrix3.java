@@ -19,13 +19,14 @@ public class Matrix3 extends ForeignObject {
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Matrix3_delete(null, ADDRESS),
         Matrix3_at(JAVA_DOUBLE, ADDRESS, JAVA_INT, JAVA_INT),
+        Matrix3_col(ADDRESS, ADDRESS, JAVA_INT),
         Matrix3_unaryMinus(ADDRESS, ADDRESS),
         Matrix3_identity(ADDRESS),
         Matrix3_compose(ADDRESS, ADDRESS, ADDRESS),
         Matrix3_plus(ADDRESS, ADDRESS, ADDRESS),
         Matrix3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Matrix3_timesVector3(ADDRESS, ADDRESS, ADDRESS),
-        Matrix3_skewSymmetric(ADDRESS,ADDRESS);
+        Matrix3_skewSymmetric(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -50,6 +51,10 @@ public class Matrix3 extends ForeignObject {
 
     public double at(int r, int c) throws Throwable {
         return (double) FF.Matrix3_at.h.invokeExact(ptr, r, c);
+    }
+
+    public Vector3 col(int c) throws Throwable {
+        return new Vector3((MemorySegment) FF.Matrix3_col.h.invokeExact(ptr, c));
     }
 
     public Matrix3 unaryMinus() throws Throwable {

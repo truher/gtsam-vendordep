@@ -21,7 +21,8 @@ public class Vector3 extends ForeignObject
         Vector3_plus(ADDRESS, ADDRESS, ADDRESS),
         Vector3_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Vector3_norm(JAVA_DOUBLE, ADDRESS);
+        Vector3_norm(JAVA_DOUBLE, ADDRESS),
+        Vector3_dot(JAVA_DOUBLE, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -128,5 +129,9 @@ public class Vector3 extends ForeignObject
 
     public double norm() throws Throwable {
         return (double) FF.Vector3_norm.h.invokeExact(ptr);
+    }
+
+    public double dot(Vector3 other) throws Throwable {
+        return (double) FF.Vector3_dot.h.invokeExact(ptr, other.ptr);
     }
 }

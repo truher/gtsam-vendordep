@@ -17,6 +17,9 @@ void Matrix3_delete(gtsam::Matrix3* p) {
 double Matrix3_at(const gtsam::Matrix3* m, int r, int c) {
     return (*m)(r, c);
 }
+gtsam::Vector3* Matrix3_col(const gtsam::Matrix3* m, int c) {
+    return new gtsam::Vector3(m->col(c));
+}
 gtsam::Matrix3* Matrix3_unaryMinus(gtsam::Matrix3* m) {
     return new gtsam::Matrix3(-(*m));
 }

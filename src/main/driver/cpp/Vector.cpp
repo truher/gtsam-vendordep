@@ -118,12 +118,12 @@ double Vector3_at(const gtsam::Vector3* v, int i) {
 void Vector3_set(gtsam::Vector3* v, int i, double val) {
     (*v)(i) = val;
 }
-gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,
-                             const gtsam::Vector3* other) {
+gtsam::Vector3* Vector3_plus(const gtsam::Vector3* v,        //
+                             const gtsam::Vector3* other) {  //
     return new gtsam::Vector3((*v) + (*other));
 }
-gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,
-                              const gtsam::Vector3* other) {
+gtsam::Vector3* Vector3_minus(const gtsam::Vector3* v,        //
+                              const gtsam::Vector3* other) {  //
     return new gtsam::Vector3((*v) - (*other));
 }
 gtsam::Vector3* Vector3_times(const gtsam::Vector3* v, double a) {
@@ -131,6 +131,10 @@ gtsam::Vector3* Vector3_times(const gtsam::Vector3* v, double a) {
 }
 double Vector3_norm(const gtsam::Vector3* v) {
     return v->norm();
+}
+double Vector3_dot(const gtsam::Vector3* p,    //
+                   const gtsam::Vector3* q) {  //
+    return p->dot(*q);
 }
 
 //////////////////////////

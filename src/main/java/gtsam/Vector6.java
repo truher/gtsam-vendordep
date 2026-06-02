@@ -12,7 +12,8 @@ import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 // TODO: finish implementation
-public class Vector6 extends ForeignObject implements VectorType<Vector6> {
+public class Vector6 extends ForeignObject
+        implements Manifold<Vector6, Vector6>, VectorType<Vector6> {
     public enum FF {
         Vector6(ADDRESS),
         Vector6_delete(null, ADDRESS),
@@ -77,6 +78,32 @@ public class Vector6 extends ForeignObject implements VectorType<Vector6> {
     @Override
     public Vector6 times(double a) throws Throwable {
         return new Vector6((MemorySegment) FF.Vector6_times.h.invokeExact(ptr, a));
+    }
+
+    public static class Traits implements Manifold.Traits<Vector6, Vector6> {
+
+    }
+
+    public static final Traits traits = new Traits();
+
+    @Override
+    public Traits traits() {
+        return traits;
+    }
+
+    @Override
+    public Vector6 dxZero() throws Throwable {
+        return new Vector6(0, 0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public Vector6 localCoordinates(Vector6 other) throws Throwable {
+        return other.minus(this);
+    }
+
+    @Override
+    public Vector6 retract(Vector6 v) throws Throwable {
+        return plus(v);
     }
 
 }

@@ -21,6 +21,15 @@ gtsam::Rot3* Rot3Matrix3(gtsam::Matrix3* R) {
 void Rot3_delete(gtsam::Rot3* p) {
     delete p;
 }
+gtsam::Rot3* Rot3_Yaw(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Yaw(t));
+}
+gtsam::Rot3* Rot3_Pitch(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Yaw(t));
+}
+gtsam::Rot3* Rot3_Roll(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Roll(t));
+}
 gtsam::Rot3* Rot3_Ypr(double y, double p, double r) {
     return new gtsam::Rot3(gtsam::Rot3::Ypr(y, p, r));
 }
@@ -105,8 +114,6 @@ gtsam::Vector3* Rot3_logmapH(const gtsam::Rot3* r,  //
     return new gtsam::Vector3(r->logmap(*g, *H1, *H2));
 }
 
-
-
 gtsam::Rot3* Rot3_OriginRetract(const gtsam::Vector3* v) {
     return new gtsam::Rot3(gtsam::Rot3::Retract(*v));
 }
@@ -116,12 +123,10 @@ gtsam::Vector3* Rot3_OriginLocalCoordinates(const gtsam::Rot3* g) {
 gtsam::Rot3* Rot3_OriginRetractH(const gtsam::Vector3* v, gtsam::Matrix* H) {
     return new gtsam::Rot3(gtsam::Rot3::Retract(*v, *H));
 }
-gtsam::Vector3* Rot3_OriginLocalCoordinatesH(const gtsam::Rot3* g, gtsam::Matrix* H) {
+gtsam::Vector3* Rot3_OriginLocalCoordinatesH(const gtsam::Rot3* g,
+                                             gtsam::Matrix* H) {
     return new gtsam::Vector3(gtsam::Rot3::LocalCoordinates(*g, *H));
 }
-
-
-
 
 gtsam::Vector3* Rot3_Logmap(const gtsam::Rot3* p) {
     return new gtsam::Vector3(gtsam::Rot3::Logmap(*p));
@@ -134,6 +139,24 @@ gtsam::Rot3* Rot3_Expmap(const gtsam::Vector3* xi) {
 }
 gtsam::Rot3* Rot3_ExpmapH(const gtsam::Vector3* xi, gtsam::Matrix* H) {
     return new gtsam::Rot3(gtsam::Rot3::Expmap(*xi, *H));
+}
+gtsam::Unit3* Rot3_rotate(const gtsam::Rot3* r, const gtsam::Unit3* p) {
+    return new gtsam::Unit3(r->rotate(*p));
+}
+gtsam::Unit3* Rot3_rotateH(const gtsam::Rot3* r,   //
+                           const gtsam::Unit3* p,  //
+                           gtsam::Matrix* H1,      //
+                           gtsam::Matrix* H2) {    //
+    return new gtsam::Unit3(r->rotate(*p, *H1, *H2));
+}
+gtsam::Unit3* Rot3_unrotate(const gtsam::Rot3* r, const gtsam::Unit3* p) {
+    return new gtsam::Unit3(r->unrotate(*p));
+}
+gtsam::Unit3* Rot3_unrotateH(const gtsam::Rot3* r,   //
+                             const gtsam::Unit3* p,  //
+                             gtsam::Matrix* H1,      //
+                             gtsam::Matrix* H2) {    //
+    return new gtsam::Unit3(r->unrotate(*p, *H1, *H2));
 }
 bool Rot3_check_group_invariants(const gtsam::Rot3* a,  //
                                  const gtsam::Rot3* b) {

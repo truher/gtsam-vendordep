@@ -20,6 +20,9 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3Matrix3(ADDRESS, ADDRESS),
         Rot3_delete(null, ADDRESS),
+        Rot3_Yaw(ADDRESS, JAVA_DOUBLE),
+        Rot3_Pitch(ADDRESS, JAVA_DOUBLE),
+        Rot3_Roll(ADDRESS, JAVA_DOUBLE),
         Rot3_Ypr(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_Rodrigues(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_RodriguesVector3(ADDRESS, ADDRESS),
@@ -49,6 +52,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_Logmap(ADDRESS, ADDRESS),
         Rot3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotate(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotate(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Rot3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
@@ -178,6 +185,18 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         this((MemorySegment) FF.Rot3Matrix3.h.invokeExact(R.ptr));
     }
 
+    public static Rot3 Yaw(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Yaw.h.invokeExact(t));
+    }
+
+    public static Rot3 Pitch(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Pitch.h.invokeExact(t));
+    }
+
+    public static Rot3 Roll(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Roll.h.invokeExact(t));
+    }
+
     public static Rot3 Ypr(double y, double p, double r) throws Throwable {
         return new Rot3((MemorySegment) FF.Rot3_Ypr.h.invokeExact(y, p, r));
     }
@@ -288,6 +307,22 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public Matrix3 transpose() throws Throwable {
         return new Matrix3((MemorySegment) FF.Rot3_transpose.h.invokeExact(ptr));
+    }
+
+    public Unit3 rotate(Unit3 p) throws Throwable {
+        return new Unit3((MemorySegment) FF.Rot3_rotate.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Unit3 rotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Unit3((MemorySegment) FF.Rot3_rotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Unit3 unrotate(Unit3 p) throws Throwable {
+        return new Unit3((MemorySegment) FF.Rot3_unrotate.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Unit3 unrotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Unit3((MemorySegment) FF.Rot3_unrotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
     public static boolean check_group_invariants(Rot3 a, Rot3 b) throws Throwable {

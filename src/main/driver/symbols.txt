@@ -32,5 +32,6 @@ shared_ptr*
 symbol_shorthand*
 TangentVector*
 Testable*
+Unit3*
 Values*
 Vector*

@@ -12,7 +12,7 @@ bool Testable_assert_equal_Double(  //
     double expected, double actual, double tol) {
     return gtsam::assert_equal<double>(expected, actual, tol);
 }
-    bool Testable_assert_equal_Rot2(  //
+bool Testable_assert_equal_Rot2(  //
     const gtsam::Rot2* expected, const gtsam::Rot2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Rot2>(*expected, *actual, tol);
 }
@@ -47,6 +47,14 @@ bool Testable_assert_equal_Matrix2(  //
 bool Testable_assert_equal_Matrix3(  //
     const gtsam::Matrix3* expected, const gtsam::Matrix3* actual, double tol) {
     return gtsam::assert_equal<gtsam::Matrix3>(*expected, *actual, tol);
+}
+bool Testable_assert_equal_Point3(  //
+    const gtsam::Point3* expected, const gtsam::Point3* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Point3>(*expected, *actual, tol);
+}
+bool Testable_assert_equal_Unit3(  //
+    const gtsam::Unit3* expected, const gtsam::Unit3* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Unit3>(*expected, *actual, tol);
 }
 bool Testable_assert_equal_Vector(  //
     const gtsam::Vector* expected, const gtsam::Vector* actual, double tol) {
