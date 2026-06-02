@@ -29,7 +29,9 @@ public class Unit3Test {
         ThrowingFunction<Unit3, Point3> f = (p) -> p.point3();
         for (Point3 p : ps) {
             Unit3 s = new Unit3(p);
-            expectedH = NumericalDerivative.<Point3, Vector3, Unit3, Vector2>numericalDerivative11(f, s, 1e-4);
+            expectedH = NumericalDerivative.<//
+                    Point3, Vector3, //
+                    Unit3, Vector2>numericalDerivative11(f, s, 1e-5);
             assertTrue(assert_equal(p, s.point3(actualH), 1e-5));
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
@@ -50,7 +52,7 @@ public class Unit3Test {
             expectedH = NumericalDerivative.<//
                     Unit3, Vector2, //
                     Rot3, Vector3, //
-                    Unit3, Vector2>numericalDerivative21(f, R, p, 1e-4);
+                    Unit3, Vector2>numericalDerivative21(f, R, p, 1e-5);
             R.rotate(p, actualH, new Matrix());
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
@@ -58,7 +60,7 @@ public class Unit3Test {
             expectedH = NumericalDerivative.<//
                     Unit3, Vector2, //
                     Rot3, Vector3, //
-                    Unit3, Vector2>numericalDerivative22(f, R, p, 1e-4);
+                    Unit3, Vector2>numericalDerivative22(f, R, p, 1e-5);
             R.rotate(p, new Matrix(), actualH);
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
@@ -80,7 +82,7 @@ public class Unit3Test {
             expectedH = NumericalDerivative.<//
                     Unit3, Vector2, //
                     Rot3, Vector3, //
-                    Unit3, Vector2>numericalDerivative21(f, R, p, 1e-4);
+                    Unit3, Vector2>numericalDerivative21(f, R, p, 1e-5);
             R.unrotate(p, actualH, new Matrix());
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
@@ -88,7 +90,7 @@ public class Unit3Test {
             expectedH = NumericalDerivative.<//
                     Unit3, Vector2, //
                     Rot3, Vector3, //
-                    Unit3, Vector2>numericalDerivative22(f, R, p, 1e-4);
+                    Unit3, Vector2>numericalDerivative22(f, R, p, 1e-5);
             R.unrotate(p, new Matrix(), actualH);
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
@@ -114,33 +116,33 @@ public class Unit3Test {
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative21(f, p, q, 1e-4), H1, 1e-5));
+                    Unit3, Vector2>numericalDerivative21(f, p, q, 1e-5), H1, 1e-5));
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative22(f, p, q, 1e-4), H2, 1e-5));
+                    Unit3, Vector2>numericalDerivative22(f, p, q, 1e-5), H2, 1e-5));
         }
         {
             p.dot(r, H1, H2);
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative21(f, p, r, 1e-4), H1, 1e-5));
+                    Unit3, Vector2>numericalDerivative21(f, p, r, 1e-5), H1, 1e-5));
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative22(f, p, r, 1e-4), H2, 1e-5));
+                    Unit3, Vector2>numericalDerivative22(f, p, r, 1e-5), H2, 1e-5));
         }
         {
             p.dot(t, H1, H2);
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative21(f, p, t, 1e-4), H1, 1e-5));
+                    Unit3, Vector2>numericalDerivative21(f, p, t, 1e-5), H1, 1e-5));
             assertTrue(assert_equal(NumericalDerivative.<//
                     Vector1, Vector1, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative22(f, p, t, 1e-4), H2, 1e-5));
+                    Unit3, Vector2>numericalDerivative22(f, p, t, 1e-5), H2, 1e-5));
         }
     }
 
@@ -160,14 +162,14 @@ public class Unit3Test {
         {
             expected = NumericalDerivative.<//
                     Vector2, Vector2, //
-                    Unit3, Vector2>numericalDerivative11(f, q, 1e-4);
+                    Unit3, Vector2>numericalDerivative11(f, q, 1e-5);
             p.errorVector(q, new Matrix(), actual);
             assertTrue(assert_equal(expected.transpose(), actual, 1e-5));
         }
         {
             expected = NumericalDerivative.<//
                     Vector2, Vector2, //
-                    Unit3, Vector2>numericalDerivative11(f, r, 1e-4);
+                    Unit3, Vector2>numericalDerivative11(f, r, 1e-5);
             p.errorVector(r, new Matrix(), actual);
             assertTrue(assert_equal(expected.transpose(), actual, 1e-5));
         }
@@ -194,7 +196,7 @@ public class Unit3Test {
             expected = NumericalDerivative.<//
                     Vector2, Vector2, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative21(f, p, q, 1e-4);
+                    Unit3, Vector2>numericalDerivative21(f, p, q, 1e-5);
             p.errorVector(q, actual, new Matrix());
             assertTrue(assert_equal(expected, actual, 1e-5));
         }
@@ -210,7 +212,7 @@ public class Unit3Test {
             expected = NumericalDerivative.<//
                     Vector2, Vector2, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative22(f, p, q, 1e-4);
+                    Unit3, Vector2>numericalDerivative22(f, p, q, 1e-5);
             p.errorVector(q, new Matrix(), actual);
             assertTrue(assert_equal(expected, actual, 1e-5));
         }
@@ -218,7 +220,7 @@ public class Unit3Test {
             expected = NumericalDerivative.<//
                     Vector2, Vector2, //
                     Unit3, Vector2, //
-                    Unit3, Vector2>numericalDerivative22(f, p, r, 1e-4);
+                    Unit3, Vector2>numericalDerivative22(f, p, r, 1e-5);
             p.errorVector(r, new Matrix(), actual);
             assertTrue(assert_equal(expected, actual, 1e-5));
         }
@@ -241,16 +243,16 @@ public class Unit3Test {
 
             expected = NumericalDerivative.< //
                     Vector1, Vector1, //
-                    Unit3, Vector2>numericalDerivative11(f, q, 1e-4);
+                    Unit3, Vector2>numericalDerivative11(f, q, 1e-5);
             p.distance(q, actual);
-            assertTrue(assert_equal(expected.transpose(), actual, 1e-5));
+            assertTrue(assert_equal(expected, actual, 1e-5));
         }
         {
             expected = NumericalDerivative.< //
                     Vector1, Vector1, //
-                    Unit3, Vector2>numericalDerivative11(f, r, 1e-4);
+                    Unit3, Vector2>numericalDerivative11(f, r, 1e-5);
             p.distance(r, actual);
-            assertTrue(assert_equal(expected.transpose(), actual, 1e-5));
+            assertTrue(assert_equal(expected, actual, 1e-5));
         }
     }
 
@@ -354,7 +356,7 @@ public class Unit3Test {
         ThrowingFunction<Unit3, Vector6> f = (pp) -> BasisTest(pp, new Matrix());
         Matrix expectedH = NumericalDerivative.<//
                 Vector6, Vector6, //
-                Unit3, Vector2>numericalDerivative11(f, p, 1e-4);
+                Unit3, Vector2>numericalDerivative11(f, p, 1e-5);
 
         // without H, first time
         assertTrue(assert_equal(expected, p.basis(), 1e-6));
@@ -385,7 +387,7 @@ public class Unit3Test {
             ThrowingFunction<Unit3, Vector6> f = (pp) -> BasisTest(pp, new Matrix());
             Matrix expectedH = NumericalDerivative.<//
                     Vector6, Vector6, //
-                    Unit3, Vector2>numericalDerivative11(f, p, 1e-4);
+                    Unit3, Vector2>numericalDerivative11(f, p, 1e-5);
             assertTrue(assert_equal(expectedH, actualH, 1e-5));
         }
     }
@@ -418,15 +420,16 @@ public class Unit3Test {
             Vector2 v = new Vector2(-0.2, 0.1);
             p.retract(v, H);
             Matrix H_expected_numerical = NumericalDerivative.<//
-                    Unit3, Vector2, Vector2, Vector2>numericalDerivative11(f,
-                            v, 1e-4);
+                    Unit3, Vector2, //
+                    Vector2, Vector2>numericalDerivative11(f, v, 1e-5);
             assertTrue(assert_equal(H_expected_numerical, H, 1e-5));
         }
         {
             Vector2 v = new Vector2(0, 0);
             p.retract(v, H);
             Matrix H_expected_numerical = NumericalDerivative.<//
-                    Unit3, Vector2, Vector2, Vector2>numericalDerivative11(f, v, 1e-4);
+                    Unit3, Vector2, //
+                    Vector2, Vector2>numericalDerivative11(f, v, 1e-5);
             assertTrue(assert_equal(H_expected_numerical, H, 1e-5));
         }
     }
@@ -447,9 +450,10 @@ public class Unit3Test {
         // Check that means are all zero at least
         Point3 expectedMean = new Point3(0, 0, 0);
         Point3 actualMean = new Point3(0, 0, 0);
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 1000; i++) {
             actualMean = actualMean.plus(Unit3.Random(rng).point3());
-        actualMean = actualMean.times(1.0 / 100);
+        }
+        actualMean = actualMean.times(1.0 / 1000);
         assertTrue(assert_equal(expectedMean, actualMean, 0.1));
     }
 
@@ -484,7 +488,7 @@ public class Unit3Test {
         ThrowingFunction<Point3, Unit3> f = (p) -> Unit3.FromPoint3(p);
         Matrix expectedH = NumericalDerivative.<//
                 Unit3, Vector2, //
-                Point3, Vector3>numericalDerivative11(f, point, 1e-4);
+                Point3, Vector3>numericalDerivative11(f, point, 1e-5);
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
@@ -511,11 +515,11 @@ public class Unit3Test {
         assertTrue(assert_equal(NumericalDerivative.<//
                 Unit3, Vector2, //
                 Unit3, Vector2, //
-                Unit3, Vector2>numericalDerivative21(f, p, q, 1e-4), aH1));
+                Unit3, Vector2>numericalDerivative21(f, p, q, 1e-5), aH1));
         assertTrue(assert_equal(NumericalDerivative.<//
                 Unit3, Vector2, //
                 Unit3, Vector2, //
-                Unit3, Vector2>numericalDerivative22(f, p, q, 1e-4), aH2));
+                Unit3, Vector2>numericalDerivative22(f, p, q, 1e-5), aH2));
     }
 
     @Test
@@ -534,17 +538,17 @@ public class Unit3Test {
 
         // Define a lambda function for numerical differentiation
         ThrowingFunction2<Unit3, Point3, Point3> f = (pp, qq) -> Unit3.cross(
-                p, q, new Matrix(), new Matrix());
+                pp, qq, new Matrix(), new Matrix());
 
         // Calculate numerical Jacobians
         Matrix expectedH1 = NumericalDerivative.<//
                 Point3, Vector3, //
                 Unit3, Vector2, //
-                Point3, Vector3>numericalDerivative21(f, p, q, 1e-4);
+                Point3, Vector3>numericalDerivative21(f, p, q, 1e-5);
         Matrix expectedH2 = NumericalDerivative.<//
                 Point3, Vector3, //
                 Unit3, Vector2, //
-                Point3, Vector3>numericalDerivative22(f, p, q, 1e-4);
+                Point3, Vector3>numericalDerivative22(f, p, q, 1e-5);
 
         // Check correctness of Jacobians
         assertTrue(assert_equal(expectedH1, aH1, 1e-5));
@@ -571,17 +575,18 @@ public class Unit3Test {
         assertTrue(assert_equal(expected, actual, 1e-9));
 
         // Define a lambda function for numerical differentiation
-        ThrowingFunction2<Point3, Unit3, Point3> f = (pp, qq) -> Unit3.cross(pp, qq, new Matrix(), new Matrix());
+        ThrowingFunction2<Point3, Unit3, Point3> f = (pp, qq) -> Unit3.cross(
+                pp, qq, new Matrix(), new Matrix());
 
         // Calculate numerical Jacobians
         Matrix expectedH1 = NumericalDerivative.<//
                 Point3, Vector3, //
                 Point3, Vector3, //
-                Unit3, Vector2>numericalDerivative21(f, p, q, 1e-4);
+                Unit3, Vector2>numericalDerivative21(f, p, q, 1e-5);
         Matrix expectedH2 = NumericalDerivative.<//
                 Point3, Vector3, //
                 Point3, Vector3, //
-                Unit3, Vector2>numericalDerivative22(f, p, q, 1e-4);
+                Unit3, Vector2>numericalDerivative22(f, p, q, 1e-5);
 
         // Check correctness of Jacobians
         assertTrue(assert_equal(expectedH1, aH1, 1e-5));

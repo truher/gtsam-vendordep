@@ -55,7 +55,8 @@ public class Unit3 extends ForeignObject
     }
 
     public Unit3() throws Throwable {
-        this(0, 0, 0);
+        // default unit vector is pointing along the x axis.
+        this(1, 0, 0);
     }
 
     public Unit3(double x, double y, double z) throws Throwable {
