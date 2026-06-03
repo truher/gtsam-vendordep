@@ -9,14 +9,17 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
+import gtsam.noiseModel.Gaussian;
+
 public class Testable {
     public enum FF {
+        Testable_assert_equal_Cal3DS2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Double(JAVA_BOOLEAN, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Testable_assert_equal_Gaussian(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Rot2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Rot3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Point2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Pose2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Cal3DS2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Pose3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Matrix(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Matrix2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
@@ -47,6 +50,16 @@ public class Testable {
 
     public static boolean assert_equal(double expected, double actual, double tol) throws Throwable {
         return (boolean) FF.Testable_assert_equal_Double.h.invokeExact(expected, actual, tol);
+    }
+
+    public static boolean assert_equal(Gaussian expected, Gaussian actual, double tol)
+            throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Gaussian.h.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Gaussian expected, Gaussian actual)
+            throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Gaussian.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
     }
 
     public static boolean assert_equal(Matrix expected, Matrix actual, double tol) throws Throwable {

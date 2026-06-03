@@ -6,11 +6,22 @@
 #include <gtsam/geometry/Pose2.h>
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/geometry/Rot2.h>
+#include <gtsam/linear/NoiseModel.h>
 
 extern "C" {
+bool Testable_assert_equal_Cal3DS2(  //
+    const gtsam::Cal3DS2* expected, const gtsam::Cal3DS2* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Cal3DS2>(*expected, *actual, tol);
+}
 bool Testable_assert_equal_Double(  //
     double expected, double actual, double tol) {
     return gtsam::assert_equal<double>(expected, actual, tol);
+}
+bool Testable_assert_equal_Gaussian(  //
+    const gtsam::noiseModel::Gaussian* expected,
+    const gtsam::noiseModel::Gaussian* actual, double tol) {
+    return gtsam::assert_equal<gtsam::noiseModel::Gaussian>(  //
+        *expected, *actual, tol);
 }
 bool Testable_assert_equal_Rot2(  //
     const gtsam::Rot2* expected, const gtsam::Rot2* actual, double tol) {
@@ -27,10 +38,6 @@ bool Testable_assert_equal_Point2(  //
 bool Testable_assert_equal_Pose2(  //
     const gtsam::Pose2* expected, const gtsam::Pose2* actual, double tol) {
     return gtsam::assert_equal<gtsam::Pose2>(*expected, *actual, tol);
-}
-bool Testable_assert_equal_Cal3DS2(  //
-    const gtsam::Cal3DS2* expected, const gtsam::Cal3DS2* actual, double tol) {
-    return gtsam::assert_equal<gtsam::Cal3DS2>(*expected, *actual, tol);
 }
 bool Testable_assert_equal_Pose3(  //
     const gtsam::Pose3* expected, const gtsam::Pose3* actual, double tol) {

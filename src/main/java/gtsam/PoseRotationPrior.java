@@ -11,8 +11,7 @@ import org.team100.foreign.Lib;
 
 public class PoseRotationPrior<T> extends NonlinearFactor {
     public enum FF {
-        PoseRotationPriorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
-        PoseRotationPriorPose2_delete(null, ADDRESS);
+        PoseRotationPriorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -30,9 +29,9 @@ public class PoseRotationPrior<T> extends NonlinearFactor {
             Key k,
             Pose2 p,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PoseRotationPriorPose2.h.invokeExact(
-                k.j, p.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PoseRotationPrior::new, FF.PoseRotationPriorPose2_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PoseRotationPriorPose2.h.invokeExact(k.j, p.ptr, model.ptr),
+                PoseRotationPrior::new);
     }
 
 }

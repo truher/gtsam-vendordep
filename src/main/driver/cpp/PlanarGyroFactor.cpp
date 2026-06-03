@@ -6,10 +6,6 @@ std::shared_ptr<gtsam::PlanarGyroParams>* PlanarGyroParams(
     return new std::shared_ptr<gtsam::PlanarGyroParams>(
         new gtsam::PlanarGyroParams(arw, biasInstability));
 }
-void PlanarGyroParams_delete(std::shared_ptr<gtsam::PlanarGyroParams>* obj) {
-    // decrements the shared_ptr counter
-    delete obj;
-}
 double PlanarGyroParams_arwSigma(gtsam::PlanarGyroParams* p, double dt) {
     // TODO: make arwSigma const in gtsam
     return p->arwSigma(dt);
@@ -24,19 +20,9 @@ std::shared_ptr<gtsam::PlanarGyroBiasFactor>* PlanarGyroBiasFactor(
     return new std::shared_ptr<gtsam::PlanarGyroBiasFactor>(
         new gtsam::PlanarGyroBiasFactor(bias_i, bias_j, *p));
 }
-void PlanarGyroBiasFactor_delete(
-    std::shared_ptr<gtsam::PlanarGyroBiasFactor>* obj) {
-    // decrements the shared_ptr counter
-    delete obj;
-}
 //
 //
 //
-
-void PlanarGyroFactor_delete(std::shared_ptr<gtsam::PlanarGyroFactor>* obj) {
-    // decrements the shared_ptr counter
-    delete obj;
-}
 std::shared_ptr<gtsam::PlanarGyroFactor>* PlanarGyroFactor_FromRotation(  //
     const gtsam::Key pose_i,                                              //
     const gtsam::Key pose_j,                                              //

@@ -42,9 +42,6 @@ std::shared_ptr<gtsam::CustomFactor>* CustomFactor(
                 return gtsam::Vector(*(errorFunction(&factor, &v, H)));
             }));
 }
-void CustomFactor_delete(std::shared_ptr<gtsam::CustomFactor>* obj) {
-    delete obj;
-}
 const gtsam::KeyVector* CustomFactor_keys(const gtsam::CustomFactor* p) {
     return new gtsam::KeyVector(p->keys());
 }

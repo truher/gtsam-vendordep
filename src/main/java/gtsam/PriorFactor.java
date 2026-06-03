@@ -15,11 +15,7 @@ public class PriorFactor<T> extends NonlinearFactor {
         PriorFactorDouble(ADDRESS, JAVA_LONG, JAVA_DOUBLE, ADDRESS),
         PriorFactorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorPose3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
-        PriorFactorCal3DS2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
-        PriorFactorDouble_delete(null, ADDRESS),
-        PriorFactorPose2_delete(null, ADDRESS),
-        PriorFactorPose3_delete(null, ADDRESS),
-        PriorFactorCal3DS2_delete(null, ADDRESS);
+        PriorFactorCal3DS2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -37,9 +33,9 @@ public class PriorFactor<T> extends NonlinearFactor {
             Key poseKey,
             double prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorDouble.h.invokeExact(
-                poseKey.j, prior, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorDouble_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorDouble.h.invokeExact(poseKey.j, prior, model.ptr),
+                PriorFactor::new);
     }
 
     /** @param prior is copied, ok to delete. */
@@ -47,9 +43,9 @@ public class PriorFactor<T> extends NonlinearFactor {
             Key poseKey,
             Pose2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose2.h.invokeExact(
-                poseKey.j, prior.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorPose2_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorPose2.h.invokeExact(poseKey.j, prior.ptr, model.ptr),
+                PriorFactor::new);
     }
 
     /** @param prior is copied, ok to delete. */
@@ -57,9 +53,9 @@ public class PriorFactor<T> extends NonlinearFactor {
             Key key,
             Pose3 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorPose3.h.invokeExact(
-                key.j, prior.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorPose3_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorPose3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                PriorFactor::new);
 
     }
 
@@ -68,8 +64,8 @@ public class PriorFactor<T> extends NonlinearFactor {
             Key key,
             Cal3DS2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PriorFactorCal3DS2.h.invokeExact(
-                key.j, prior.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, PriorFactor::new, FF.PriorFactorCal3DS2_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorCal3DS2.h.invokeExact(key.j, prior.ptr, model.ptr),
+                PriorFactor::new);
     }
 }

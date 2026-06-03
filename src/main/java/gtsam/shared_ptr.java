@@ -21,7 +21,8 @@ import org.team100.foreign.Lib;
  */
 public class shared_ptr<T> extends ForeignObject {
     public enum FF {
-        shared_ptr_get(ADDRESS, ADDRESS);
+        shared_ptr_get(ADDRESS, ADDRESS),
+        shared_ptr_delete(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -39,9 +40,8 @@ public class shared_ptr<T> extends ForeignObject {
      */
     public shared_ptr(//
             MemorySegment p, //
-            Function<MemorySegment, T> ctor,
-            MethodHandle del) {
-        super(p, del);
+            Function<MemorySegment, T> ctor) {
+        super(p, FF.shared_ptr_delete.h);
         construct = ctor;
     }
 

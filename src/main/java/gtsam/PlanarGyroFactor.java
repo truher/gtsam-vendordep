@@ -18,7 +18,6 @@ public class PlanarGyroFactor extends NonlinearFactor {
     public static class PlanarGyroParams extends ForeignObject {
         public enum FF {
             PlanarGyroParams(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
-            PlanarGyroParams_delete(null, ADDRESS),
             PlanarGyroParams_arwSigma(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE);
 
             public final MethodHandle h;
@@ -36,8 +35,9 @@ public class PlanarGyroFactor extends NonlinearFactor {
         public static shared_ptr<PlanarGyroParams> makeSharedPlanarGyroParams(
                 double arw, double biasInstability)
                 throws Throwable {
-            MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroParams.h.invokeExact(arw, biasInstability);
-            return new shared_ptr<>(sharedPtrPtr, PlanarGyroParams::new, FF.PlanarGyroParams_delete.h);
+            return new shared_ptr<>(
+                    (MemorySegment) FF.PlanarGyroParams.h.invokeExact(arw, biasInstability),
+                    PlanarGyroParams::new);
         }
 
         public double arwSigma(double dt) throws Throwable {
@@ -48,8 +48,7 @@ public class PlanarGyroFactor extends NonlinearFactor {
 
     public static class PlanarGyroBiasFactor extends NonlinearFactor {
         public enum FF {
-            PlanarGyroBiasFactor(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS),
-            PlanarGyroBiasFactor_delete(null, ADDRESS);
+            PlanarGyroBiasFactor(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS);
 
             public final MethodHandle h;
 
@@ -66,14 +65,13 @@ public class PlanarGyroFactor extends NonlinearFactor {
         public static shared_ptr<PlanarGyroBiasFactor> makeSharedPlanarGyroBiasFactor(
                 Key bias_i, Key bias_j, shared_ptr<PlanarGyroParams> p)
                 throws Throwable {
-            MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroBiasFactor.h.invokeExact(//
-                    bias_i.j, bias_j.j, p.ptr);
-            return new shared_ptr<>(sharedPtrPtr, PlanarGyroBiasFactor::new, FF.PlanarGyroBiasFactor_delete.h);
+            return new shared_ptr<>(
+                    (MemorySegment) FF.PlanarGyroBiasFactor.h.invokeExact(bias_i.j, bias_j.j, p.ptr),
+                    PlanarGyroBiasFactor::new);
         }
     }
 
     public enum FF {
-        PlanarGyroFactor_delete(null, ADDRESS),
         PlanarGyroFactor_FromRotation(
                 ADDRESS, JAVA_LONG, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS, JAVA_DOUBLE),
         PlanarGyroFactor_FromRate(
@@ -97,17 +95,19 @@ public class PlanarGyroFactor extends NonlinearFactor {
 
     public static shared_ptr<PlanarGyroFactor> FromRotation(
             Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, Rot2 dr, double dt) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroFactor_FromRotation.h.invokeExact(
-                pose_i.j, pose_j.j, bias.j, p.ptr, dr.ptr, dt);
-        return new shared_ptr<>(sharedPtrPtr, PlanarGyroFactor::new, FF.PlanarGyroFactor_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PlanarGyroFactor_FromRotation.h.invokeExact(
+                        pose_i.j, pose_j.j, bias.j, p.ptr, dr.ptr, dt),
+                PlanarGyroFactor::new);
     }
 
     public static shared_ptr<PlanarGyroFactor> FromRate(
             Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, double omega, double dt)
             throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.PlanarGyroFactor_FromRate.h.invokeExact(
-                pose_i.j, pose_j.j, bias.j, p.ptr, omega, dt);
-        return new shared_ptr<>(sharedPtrPtr, PlanarGyroFactor::new, FF.PlanarGyroFactor_delete.h);
+        return new shared_ptr<>(
+                (MemorySegment) FF.PlanarGyroFactor_FromRate.h.invokeExact(
+                        pose_i.j, pose_j.j, bias.j, p.ptr, omega, dt),
+                PlanarGyroFactor::new);
     }
 
     public Rot2 deltaR(double bias, Matrix H) throws Throwable {

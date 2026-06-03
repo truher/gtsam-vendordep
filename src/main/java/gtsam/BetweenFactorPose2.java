@@ -16,7 +16,6 @@ public class BetweenFactorPose2 extends NonlinearFactor {
 
     public enum FF {
         BetweenFactorPose2(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS),
-        BetweenFactorPose2_delete(null, ADDRESS),
         BetweenFactorPose2_error(JAVA_DOUBLE, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
@@ -38,7 +37,7 @@ public class BetweenFactorPose2 extends NonlinearFactor {
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPose2.h.invokeExact(
                 key1.j, key2.j, measured.ptr, model.ptr);
-        return new shared_ptr<>(sharedPtrPtr, BetweenFactorPose2::new, FF.BetweenFactorPose2_delete.h);
+        return new shared_ptr<>(sharedPtrPtr, BetweenFactorPose2::new);
     }
 
     public double error(Values v) throws Throwable {

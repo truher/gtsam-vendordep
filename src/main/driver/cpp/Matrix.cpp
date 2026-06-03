@@ -11,6 +11,9 @@ gtsam::Matrix* Matrix() {
 gtsam::Matrix* Matrix_identity1() {
     return new gtsam::Matrix(gtsam::I_1x1);
 }
+gtsam::Matrix* Matrix_identity2() {
+    return new gtsam::Matrix(gtsam::I_2x2);
+}
 gtsam::Matrix* Matrix_identity3() {
     return new gtsam::Matrix(gtsam::I_3x3);
 }

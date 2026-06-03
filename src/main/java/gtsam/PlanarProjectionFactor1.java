@@ -30,8 +30,6 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
     public enum FF {
         PlanarProjectionFactor1(
                 ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        /** Decrements reference count of shared_ptr. */
-        PlanarProjectionFactor1_delete(null, ADDRESS),
         PlanarProjectionFactor1_evaluateError(
                 ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
@@ -57,8 +55,7 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
         return new shared_ptr<>(
                 (MemorySegment) FF.PlanarProjectionFactor1.h.invokeExact(
                         poseKey.j, landmark.ptr, measured.ptr, bTc.ptr, calib.ptr, model.ptr),
-                PlanarProjectionFactor1::new,
-                FF.PlanarProjectionFactor1_delete.h);
+                PlanarProjectionFactor1::new);
     }
 
     public Vector2 evaluateError(Pose2 pose, Matrix H) throws Throwable {

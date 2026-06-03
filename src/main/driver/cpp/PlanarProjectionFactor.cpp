@@ -26,13 +26,6 @@ std::shared_ptr<gtsam::PlanarProjectionFactor1>* PlanarProjectionFactor1(  //
         new gtsam::PlanarProjectionFactor1(                      //
             poseKey, *landmark, *measured, *bTc, *calib, *model));
 }
-
-/** Decrement reference count */
-void PlanarProjectionFactor1_delete(
-    std::shared_ptr<gtsam::PlanarProjectionFactor1>* obj) {
-    delete obj;
-}
-
 /**
  * OptionalMatrixType is typedef Matrix*
  *
@@ -56,12 +49,6 @@ std::shared_ptr<gtsam::PlanarProjectionFactor3>* PlanarProjectionFactor3(  //
         new gtsam::PlanarProjectionFactor3(                                //
             poseKey, offsetKey, calibKey, *landmark, *measured, *model));
 }
-
-void PlanarProjectionFactor3_delete(
-    std::shared_ptr<gtsam::PlanarProjectionFactor3>* obj) {
-    delete obj;
-}
-
 gtsam::Vector* PlanarProjectionFactor3_evaluateError(  //
     gtsam::PlanarProjectionFactor3* p,                 //
     const gtsam::Pose2* wTb,                           //

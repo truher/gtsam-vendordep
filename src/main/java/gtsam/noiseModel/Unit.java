@@ -18,8 +18,7 @@ import gtsam.shared_ptr;
  */
 public class Unit extends Isotropic {
     public enum FF {
-        noiseModel_Unit_Create(ADDRESS, JAVA_INT),
-        noiseModel_Unit_delete(null, ADDRESS);
+        noiseModel_Unit_Create(ADDRESS, JAVA_INT);
 
         public final MethodHandle h;
 
@@ -34,8 +33,7 @@ public class Unit extends Isotropic {
 
     public static shared_ptr<Unit> Create(int dim) throws Throwable {
         return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_Create.h.invokeExact(dim),
-                Unit::new,
-                FF.noiseModel_Unit_delete.h);
+                Unit::new);
     }
 
 }

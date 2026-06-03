@@ -18,6 +18,7 @@ public class Matrix extends ForeignObject {
     public enum FF {
         Matrix(ADDRESS),
         Matrix_identity1(ADDRESS),
+        Matrix_identity2(ADDRESS),
         Matrix_identity3(ADDRESS),
         Matrix_identity4(ADDRESS),
         Matrix_withRowsCols(ADDRESS, JAVA_INT, JAVA_INT),
@@ -52,7 +53,9 @@ public class Matrix extends ForeignObject {
     public static Matrix I_1x1() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity1.h.invokeExact());
     }
-
+    public static Matrix I_2x2() throws Throwable {
+        return new Matrix((MemorySegment) FF.Matrix_identity2.h.invokeExact());
+    }
     public static Matrix I_3x3() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity3.h.invokeExact());
     }
