@@ -9,6 +9,8 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.NumericalDerivative.ThrowingFunction;
+
 /**
  * See gtsam/geometry/tests/testPose3.cpp
  */
@@ -145,8 +147,8 @@ public class Pose3Test {
 
     // // Check Adjoint numerical derivatives
     @Test
-    void testAdjoint_jacobians() {
-        // Vector6 xi = (Vector6() << 0.1, 1.2, 2.3, 3.1, 1.4, 4.5).finished();
+    void testAdjoint_jacobians() throws Throwable {
+        Vector6 xi = new Vector6(0.1, 1.2, 2.3, 3.1, 1.4, 4.5);
 
         // // Check evaluation sanity check
         // EQUALITY(static_cast<gtsam::Vector>(T.AdjointMap() * xi), T.Adjoint(xi));
@@ -176,10 +178,10 @@ public class Pose3Test {
         // assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    // // Check AdjointTranspose and jacobians
+    // Check AdjointTranspose and jacobians
     @Test
-    void testAdjointTranspose() {
-        // Vector6 xi = (Vector6() << 0.1, 1.2, 2.3, 3.1, 1.4, 4.5).finished();
+    void testAdjointTranspose() throws Throwable {
+        Vector6 xi = new Vector6(0.1, 1.2, 2.3, 3.1, 1.4, 4.5);
 
         // // Check evaluation
         // EQUALITY(static_cast<Vector>(T.AdjointMap().transpose() * xi),
@@ -248,10 +250,9 @@ public class Pose3Test {
     // }
 
     @Test
-    void testexpmaps_galore_full() {
-        // Vector xi; Pose3 actual;
-        // xi = (Vector(6) << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6).finished();
-        // actual = Pose3::Expmap(xi);
+    void testexpmaps_galore_full() throws Throwable {
+        Vector6 xi = new Vector6(0.1, 0.2, 0.3, 0.4, 0.5, 0.6);
+        Pose3 actual = Pose3.statics.Expmap(xi);
         // assertTrue(assert_equal(expm<Pose3>(xi), actual,1e-6));
         // assertTrue(assert_equal(Agrawal06iros(xi), actual,1e-6));
         // assertTrue(assert_equal(xi, Pose3::Logmap(actual),1e-6));
@@ -277,8 +278,8 @@ public class Pose3Test {
 
     // // Check translation and its pushforward
     @Test
-    void testtranslation() {
-        // Matrix actualH;
+    void testtranslation() throws Throwable {
+        Matrix actualH = new Matrix();
         // assertTrue(assert_equal(Point3(3.5, -8.2, 4.2), T.translation(actualH),
         // 1e-8));
 
@@ -299,27 +300,28 @@ public class Pose3Test {
     }
 
     @Test
-    void testAdjoint_compose_full() {
-        // // To debug derivatives of compose, assert that
-        // // T1*T2*exp(Adjoint(inv(T2),x) = T1*exp(x)*T2
-        // const Pose3& T1 = T;
-        // Vector x = (Vector(6) << 0.1, 0.1, 0.1, 0.4, 0.2, 0.8).finished();
-        // Pose3 expected = T1 * Pose3::Expmap(x) * T2;
+    void testAdjoint_compose_full() throws Throwable {
+        // To debug derivatives of compose, assert that
+        // T1*T2*exp(Adjoint(inv(T2),x) = T1*exp(x)*T2
+        Pose3 T1 = T;
+        Vector6 x = new Vector6(0.1, 0.1, 0.1, 0.4, 0.2, 0.8);
+        Pose3 expected = T1.compose(Pose3.statics.Expmap(x)).compose(T2);
         // Vector y = T2.inverse().Adjoint(x);
         // Pose3 actual = T1 * T2 * Pose3::Expmap(y);
         // assertTrue(assert_equal(expected, actual, 1e-6));
     }
 
-    // // Check compose and its pushforward
-    // // NOTE: testing::compose<Pose3>(t1,t2) = t1.compose(t2) (see lieProxies.h)
+    // Check compose and its pushforward
+    // NOTE: testing::compose<Pose3>(t1,t2) = t1.compose(t2) (see lieProxies.h)
     @Test
-    void testcompose() {
-        // Matrix actual = (T2*T2).matrix();
-        // Matrix expected = T2.matrix()*T2.matrix();
-        // assertTrue(assert_equal(actual,expected,1e-8));
+    void testcompose() throws Throwable {
+        Matrix actual = (T2.compose(T2)).matrix();
+        Matrix expected = T2.matrix().compose(T2.matrix());
+        assertTrue(assert_equal(actual, expected, 1e-8));
 
-        // Matrix actualDcompose1, actualDcompose2;
-        // T2.compose(T2, actualDcompose1, actualDcompose2);
+        Matrix actualDcompose1 = new Matrix();
+        Matrix actualDcompose2 = new Matrix();
+        T2.compose(T2, actualDcompose1, actualDcompose2);
 
         // Matrix numericalH1 = numericalDerivative21(testing::compose<Pose3>, T2, T2);
         // assertTrue(assert_equal(numericalH1,actualDcompose1,5e-3));
@@ -329,16 +331,17 @@ public class Pose3Test {
         // assertTrue(assert_equal(numericalH2,actualDcompose2,1e-4));
     }
 
-    // // Check compose and its pushforward, another case
+    // Check compose and its pushforward, another case
     @Test
-    void testcompose2() {
-        // const Pose3& T1 = T;
-        // Matrix actual = (T1*T2).matrix();
-        // Matrix expected = T1.matrix()*T2.matrix();
-        // assertTrue(assert_equal(actual,expected,1e-8));
+    void testcompose2() throws Throwable {
+        Pose3 T1 = T;
+        Matrix actual = (T1.compose(T2)).matrix();
+        Matrix expected = T1.matrix().compose(T2.matrix());
+        assertTrue(assert_equal(actual, expected, 1e-8));
 
-        // Matrix actualDcompose1, actualDcompose2;
-        // T1.compose(T2, actualDcompose1, actualDcompose2);
+        Matrix actualDcompose1 = new Matrix();
+        Matrix actualDcompose2 = new Matrix();
+        T1.compose(T2, actualDcompose1, actualDcompose2);
 
         // Matrix numericalH1 = numericalDerivative21(testing::compose<Pose3>, T1, T2);
         // assertTrue(assert_equal(numericalH1,actualDcompose1,5e-3));
@@ -463,8 +466,9 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_from_with_derivatives() {
-        // Matrix actH1, actH2;
+    void testtransform_from_with_derivatives() throws Throwable {
+        Matrix actH1 = new Matrix();
+        Matrix actH2 = new Matrix();
         // T.transformFrom(P, actH1, actH2);
         // Matrix expH1 = numericalDerivative21(transformFrom_, T, P),
         // expH2 = numericalDerivative22(transformFrom_, T, P);
@@ -473,18 +477,18 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_to_translate() {
+    void testtransform_to_translate() throws Throwable {
         // Point3 actual =
         // Pose3(Rot3(), Point3(1, 2, 3)).transformTo(Point3(10., 20., 30.));
-        // Point3 expected(9., 18., 27.);
+        Point3 expected = new Point3(9., 18., 27.);
         // assertTrue(assert_equal(expected, actual));
     }
 
     @Test
-    void testtransform_to_rotate() {
-        // Pose3 transform(Rot3::Rodrigues(0, 0, -1.570796), Point3(0, 0, 0));
+    void testtransform_to_rotate() throws Throwable {
+        Pose3 transform = new Pose3(Rot3.Rodrigues(0, 0, -1.570796), new Point3(0, 0, 0));
         // Point3 actual = transform.transformTo(Point3(2, 1, 10));
-        // Point3 expected(-1, 2, 10);
+        Point3 expected = new Point3(-1, 2, 10);
         // assertTrue(assert_equal(expected, actual, 0.001));
     }
 
@@ -494,12 +498,13 @@ public class Pose3Test {
     // }
 
     @Test
-    void testtransformPoseFrom() {
-        // Matrix actual = (T2*T2).matrix();
-        // Matrix expected = T2.matrix()*T2.matrix();
-        // assertTrue(assert_equal(actual, expected, 1e-8));
+    void testtransformPoseFrom() throws Throwable {
+        Matrix actual = (T2.compose(T2)).matrix();
+        Matrix expected = T2.matrix().compose(T2.matrix());
+        assertTrue(assert_equal(actual, expected, 1e-8));
 
-        // Matrix H1, H2;
+        Matrix H1 = new Matrix();
+        Matrix H2 = new Matrix();
         // T2.transformPoseFrom(T2, H1, H2);
 
         // Matrix numericalH1 = numericalDerivative21(transformPoseFrom_, T2, T2);
@@ -571,7 +576,7 @@ public class Pose3Test {
     @Test
     void testRetract_LocalCoordinates() throws Throwable {
         Vector6 d = new Vector6(1, 2, 3, 4, 5, 6);
-        // d/=10;
+        d = d.times(0.1);
         // const Rot3 R = Rot3::Retract(d.head<3>());
         // Pose3 t = Pose3::Retract(d);
         // assertTrue(assert_equal(d, Pose3::LocalCoordinates(t)));
@@ -580,9 +585,10 @@ public class Pose3Test {
     @Test
     void testretract_localCoordinates() throws Throwable {
         Vector6 d12 = new Vector6(1, 2, 3, 4, 5, 6);
-        // d12/=10;
-        // Pose3 t1 = T, t2 = t1.retract(d12);
-        // assertTrue(assert_equal(d12, t1.localCoordinates(t2)));
+        d12 = d12.times(0.1);
+        Pose3 t1 = T;
+        Pose3 t2 = t1.retract(d12);
+        assertTrue(assert_equal(d12, t1.localCoordinates(t2)));
     }
 
     @Test
@@ -619,26 +625,27 @@ public class Pose3Test {
     }
 
     @Test
-    void testsubgroups() {
-        // // Frank - Below only works for correct "Agrawal06iros style expmap
-        // // lines in canonical coordinates correspond to Abelian subgroups in SE(3)
-        // Vector d = (Vector(6) << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6).finished();
-        // // exp(-d)=inverse(exp(d))
-        // assertTrue(assert_equal(Pose3::Expmap(-d),Pose3::Expmap(d).inverse()));
-        // // exp(5d)=exp(2*d+3*d)=exp(2*d)exp(3*d)=exp(3*d)exp(2*d)
-        // Pose3 T2 = Pose3::Expmap(2*d);
-        // Pose3 T3 = Pose3::Expmap(3*d);
-        // Pose3 T5 = Pose3::Expmap(5*d);
-        // assertTrue(assert_equal(T5,T2*T3));
-        // assertTrue(assert_equal(T5,T3*T2));
+    void testsubgroups() throws Throwable {
+        // Frank - Below only works for correct "Agrawal06iros style expmap
+        // lines in canonical coordinates correspond to Abelian subgroups in SE(3)
+        Vector6 d = new Vector6(0.1, 0.2, 0.3, 0.4, 0.5, 0.6);
+        // exp(-d)=inverse(exp(d))
+        assertTrue(assert_equal(Pose3.statics.Expmap(d.times(-1)), Pose3.statics.Expmap(d).inverse()));
+        // exp(5d)=exp(2*d+3*d)=exp(2*d)exp(3*d)=exp(3*d)exp(2*d)
+        Pose3 T2 = Pose3.statics.Expmap(d.times(2));
+        Pose3 T3 = Pose3.statics.Expmap(d.times(3));
+        Pose3 T5 = Pose3.statics.Expmap(d.times(5));
+        assertTrue(assert_equal(T5, T2.compose(T3)));
+        assertTrue(assert_equal(T5, T3.compose(T2)));
     }
 
     @Test
     void testbetween() throws Throwable {
         Pose3 expected = T2.inverse().compose(T3);
-        // Matrix actualDBetween1,actualDBetween2;
-        // Pose3 actual = T2.between(T3, actualDBetween1,actualDBetween2);
-        // assertTrue(assert_equal(expected,actual));
+        Matrix actualDBetween1 = new Matrix();
+        Matrix actualDBetween2 = new Matrix();
+        Pose3 actual = T2.between(T3, actualDBetween1, actualDBetween2);
+        assertTrue(assert_equal(expected, actual));
 
         // Matrix numericalH1 = numericalDerivative21(testing::between<Pose3> , T2, T3);
         // assertTrue(assert_equal(numericalH1,actualDBetween1,5e-3));
@@ -927,12 +934,12 @@ public class Pose3Test {
             for (final Vector3 w : pose3_test_cases.omegas.apply(nearZero)) {
                 for (Vector3 v : pose3_test_cases.vs) {
                     final Vector6 xi = new Vector6(w, v);
-                    // const Matrix6 expectedH =
-                    // numericalDerivative21<Pose3, Vector6, OptionalJacobian<6, 6> >(
-                    // &Pose3::Expmap, xi, {});
+                    ThrowingFunction<Vector6, Pose3> f = (x) -> Pose3.statics.Expmap(x);
+                    Matrix expectedH = NumericalDerivative.<Pose3, Vector6, //
+                            Vector6, Vector6>numericalDerivative11(f, xi, 1e-5);
                     Matrix actualH = new Matrix();
                     Pose3.statics.Expmap(xi, actualH);
-                    // assertTrue(assert_equal(expectedH, actualH));
+                    assertTrue(assert_equal(expectedH, actualH));
                 }
             }
         }
@@ -1038,7 +1045,7 @@ public class Pose3Test {
 
     @Test
     void testadjoint() throws Throwable {
-        // Vector6 v = (Vector6() << 1, 2, 3, 4, 5, 6).finished();
+        Vector6 v = new Vector6(1, 2, 3, 4, 5, 6);
         // Vector expected = testDerivAdjoint(screwPose3::xi, v);
 
         Matrix actualH1 = new Matrix();
@@ -1062,7 +1069,7 @@ public class Pose3Test {
     @Test
     void testadjointTranspose() throws Throwable {
         Vector6 xi = new Vector6(0.01, 0.02, 0.03, 1.0, 2.0, 3.0);
-        // Vector v = (Vector(6) << 0.04, 0.05, 0.06, 4.0, 5.0, 6.0).finished();
+        Vector6 v = new Vector6(0.04, 0.05, 0.06, 4.0, 5.0, 6.0);
         // Vector expected = testDerivAdjointTranspose(xi, v);
 
         Matrix actualH1 = new Matrix();
@@ -1153,8 +1160,8 @@ public class Pose3Test {
 
     @Test
     void testTransformCovariance6() {
-        // // Use simple covariance matrices and transforms to create tests that can be
-        // // validated with simple computations.
+        // Use simple covariance matrices and transforms to create tests that can be
+        // validated with simple computations.
         // using namespace test_pose_adjoint_map;
 
         // // rotate 90 around z axis and then 90 around y axis
@@ -1215,17 +1222,17 @@ public class Pose3Test {
     }
 
     @Test
-    void testinterpolate() {
+    void testinterpolate() throws Throwable {
         // assertTrue(assert_equal(T2, interpolate(T2,T3, 0.0)));
         // assertTrue(assert_equal(T3, interpolate(T2,T3, 1.0)));
 
-        // // Trivial example: start at origin and move to (1, 0, 0) while rotating pi/2
-        // // about z-axis.
-        // Pose3 start;
-        // Pose3 end(Rot3::Rz(M_PI_2), Point3(1, 0, 0));
-        // // This interpolation is easy to calculate by hand.
-        // double t = 0.5;
-        // Pose3 expected0(Rot3::Rz(M_PI_4), Point3(0.5, 0, 0));
+        // Trivial example: start at origin and move to (1, 0, 0) while rotating pi/2
+        // about z-axis.
+        Pose3 start = new Pose3();
+        Pose3 end = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
+        // This interpolation is easy to calculate by hand.
+        double t = 0.5;
+        Pose3 expected0 = new Pose3(Rot3.Rz(Math.PI / 4), new Point3(0.5, 0, 0));
         // assertTrue(assert_equal(expected0, start.interpolateRt(end, t)));
 
         // // Example from Peter Corke
@@ -1254,8 +1261,8 @@ public class Pose3Test {
     void testinterpolateJacobians() throws Throwable {
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Rz(M_PI_2), Point3(1, 0, 0));
-            // double t = 0.5;
+            Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
+            double t = 0.5;
             // Pose3 expectedPoseInterp(Rot3::Rz(M_PI_4), Point3(0.5, -0.207107, 0)); //
             // note: different from test above: this is full Pose3 interpolation
             // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
@@ -1280,8 +1287,8 @@ public class Pose3Test {
         }
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Identity(), Point3(1, 0, 0));
-            // double t = 0.3;
+            Pose3 Y = new Pose3(Rot3.statics.Identity(), new Point3(1, 0, 0));
+            double t = 0.3;
             // Pose3 expectedPoseInterp(Rot3::Identity(), Point3(0.3, 0, 0));
             // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
             // assertTrue(assert_equal(expectedPoseInterp, interpolate(X, Y, t,
@@ -1305,8 +1312,8 @@ public class Pose3Test {
         }
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Rz(M_PI_2), Point3(0, 0, 0));
-            // double t = 0.5;
+            Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(0, 0, 0));
+            double t = 0.5;
             // Pose3 expectedPoseInterp(Rot3::Rz(M_PI_4), Point3(0, 0, 0));
             // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
             // assertTrue(assert_equal(expectedPoseInterp, interpolate(X, Y, t,
@@ -1329,11 +1336,13 @@ public class Pose3Test {
             // assertTrue(assert_equal(expectedJacobianT,actualJacobianT,1e-6));
         }
         {
-            // Pose3 X(Rot3::Ypr(0.1,0.2,0.3), Point3(10, 5, -2));
-            // Pose3 Y(Rot3::Ypr(1.1,-2.2,-0.3), Point3(-5, 1, 1));
-            // double t = 0.3;
-            // Pose3 expectedPoseInterp(Rot3::Rz(M_PI_4), Point3(0, 0, 0));
-            // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
+            Pose3 X = new Pose3(Rot3.Ypr(0.1, 0.2, 0.3), new Point3(10, 5, -2));
+            Pose3 Y = new Pose3(Rot3.Ypr(1.1, -2.2, -0.3), new Point3(-5, 1, 1));
+            double t = 0.3;
+            Pose3 expectedPoseInterp = new Pose3(Rot3.Rz(Math.PI / 4), new Point3(0, 0, 0));
+            Matrix actualJacobianX = new Matrix();
+            Matrix actualJacobianY = new Matrix();
+            Matrix actualJacobianT = new Matrix();
             // interpolate(X, Y, t, actualJacobianX, actualJacobianY, actualJacobianT);
 
             // Matrix expectedJacobianX =
@@ -1360,9 +1369,11 @@ public class Pose3Test {
     void testinterpolateRtJacobians() throws Throwable {
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Rz(M_PI_2), Point3(1, 0, 0));
-            // double t = 0.5;
-            // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
+            Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
+            double t = 0.5;
+            Matrix actualJacobianX = new Matrix();
+            Matrix actualJacobianY = new Matrix();
+            Matrix actualJacobianT = new Matrix();
             // X.interpolateRt(Y, t, actualJacobianX, actualJacobianY, actualJacobianT);
 
             // Matrix expectedJacobianX =
@@ -1382,9 +1393,11 @@ public class Pose3Test {
         }
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Identity(), Point3(1, 0, 0));
-            // double t = 0.3;
-            // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
+            Pose3 Y = new Pose3(Rot3.statics.Identity(), new Point3(1, 0, 0));
+            double t = 0.3;
+            Matrix actualJacobianX = new Matrix();
+            Matrix actualJacobianY = new Matrix();
+            Matrix actualJacobianT = new Matrix();
             // X.interpolateRt(Y, t, actualJacobianX, actualJacobianY, actualJacobianT);
 
             // Matrix expectedJacobianX =
@@ -1404,9 +1417,11 @@ public class Pose3Test {
         }
         {
             Pose3 X = Pose3.statics.Identity();
-            // Pose3 Y(Rot3::Rz(M_PI_2), Point3(0, 0, 0));
-            // double t = 0.5;
-            // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
+            Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(0, 0, 0));
+            double t = 0.5;
+            Matrix actualJacobianX = new Matrix();
+            Matrix actualJacobianY = new Matrix();
+            Matrix actualJacobianT = new Matrix();
             // X.interpolateRt(Y, t, actualJacobianX, actualJacobianY, actualJacobianT);
 
             // Matrix expectedJacobianX =
@@ -1425,10 +1440,12 @@ public class Pose3Test {
             // assertTrue(assert_equal(expectedJacobianT,actualJacobianT,1e-6));
         }
         {
-            // Pose3 X(Rot3::Ypr(0.1,0.2,0.3), Point3(10, 5, -2));
-            // Pose3 Y(Rot3::Ypr(1.1,-2.2,-0.3), Point3(-5, 1, 1));
-            // double t = 0.3;
-            // Matrix actualJacobianX, actualJacobianY, actualJacobianT;
+            Pose3 X = new Pose3(Rot3.Ypr(0.1, 0.2, 0.3), new Point3(10, 5, -2));
+            Pose3 Y = new Pose3(Rot3.Ypr(1.1, -2.2, -0.3), new Point3(-5, 1, 1));
+            double t = 0.3;
+            Matrix actualJacobianX = new Matrix();
+            Matrix actualJacobianY = new Matrix();
+            Matrix actualJacobianT = new Matrix();
             // X.interpolateRt(Y, t, actualJacobianX, actualJacobianY, actualJacobianT);
 
             // Matrix expectedJacobianX =
@@ -1503,26 +1520,28 @@ public class Pose3Test {
 
     @Test
     void testExpmapChainRule() throws Throwable {
-        // // Muliply with an arbitrary matrix and exponentiate
-        // Matrix6 M;
-        // M << 1, 2, 3, 4, 5, 6, //
-        // 7, 8, 9, 1, 2, 3, //
-        // 4, 5, 6, 7, 8, 9, //
-        // 1, 2, 3, 4, 5, 6, //
-        // 7, 8, 9, 1, 2, 3, //
-        // 4, 5, 6, 7, 8, 9;
-        // auto g = [&](const Vector6& omega) {
-        // return Pose3::Expmap(M*omega);
-        // };
+        // Muliply with an arbitrary matrix and exponentiate
+        Matrix M = new Matrix(new double[][] {
+                { 1, 2, 3, 4, 5, 6 }, //
+                { 7, 8, 9, 1, 2, 3 }, //
+                { 4, 5, 6, 7, 8, 9 }, //
+                { 1, 2, 3, 4, 5, 6 }, //
+                { 7, 8, 9, 1, 2, 3 }, //
+                { 4, 5, 6, 7, 8, 9 } });
 
-        // // Test the derivatives at zero
-        // const Matrix6 expected = numericalDerivative11<Pose3, Vector6>(g, Z_6x1);
-        // assertTrue(assert_equal<Matrix6>(expected, M, 1e-5)); //
-        // Pose3::ExpmapDerivative(Z_6x1) is identity
+        ThrowingFunction<Vector6, Pose3> g = (omega) -> Pose3.statics.Expmap(
+                new Vector6(M.times(new Vector(omega))));
+
+        // Test the derivatives at zero
+        Matrix expected = NumericalDerivative.<Pose3, Vector6, //
+                Vector6, Vector6>numericalDerivative11(g, new Vector6(), 1e-5);
+        assertTrue(assert_equal(expected, M, 1e-5)); //
+        // Pose3::ExpmapDerivative(Z_63) is identity
 
         // // Test the derivatives at another value
         final Vector6 delta = new Vector6(0.1, 0.2, 0.3, 0.4, 0.5, 0.6);
-        // const Matrix6 expected2 = numericalDerivative11<Pose3, Vector6>(g, delta);
+        Matrix expected2 = NumericalDerivative.<Pose3, Vector6, //
+                Vector6, Vector6>numericalDerivative11(g, delta, 1e-5);
         // const Matrix6 analytic = Pose3::ExpmapDerivative(M*delta) * M;
         // assertTrue(assert_equal<Matrix6>(expected2, analytic, 1e-5)); // note
         // tolerance

@@ -659,20 +659,32 @@ public class Pose2Test {
         assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual23));
 
         // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(bearing_proxy, x2, l3);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // expectedH2 = numericalDerivative22(bearing_proxy, x2, l3);
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative21(this::bearing_proxy, x2, l3, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        expectedH2 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative22(this::bearing_proxy, x2, l3, 1e-5);
+        assertTrue(assert_equal(expectedH2, actualH2));
 
         // establish bearing is indeed 45 degrees even if rotated
         Rot2 actual34 = x3.bearing(l4, actualH1, actualH2);
         assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual34));
 
-        // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(bearing_proxy, x3, l4);
-        // expectedH2 = numericalDerivative22(bearing_proxy, x3, l4);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        // Check numerical derivatives
+        expectedH1 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative21(this::bearing_proxy, x3, l4, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative22(this::bearing_proxy, x3, l4, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
     }
 
     Rot2 bearing_pose_proxy(Pose2 pose, Pose2 pt) throws Throwable {
@@ -702,24 +714,36 @@ public class Pose2Test {
         assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual23));
 
         // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(bearing_pose_proxy, x2, xl3);
-        // expectedH2 = numericalDerivative22(bearing_pose_proxy, x2, xl3);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(this::bearing_pose_proxy, x2, xl3, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(this::bearing_pose_proxy, x2, xl3, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
 
         // establish bearing is indeed 45 degrees even if rotated
         Rot2 actual34 = x3.bearing(xl4, actualH1, actualH2);
         assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual34));
 
         // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(bearing_pose_proxy, x3, xl4);
-        // expectedH2 = numericalDerivative22(bearing_pose_proxy, x3, xl4);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(this::bearing_pose_proxy, x3, xl4, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Rot2, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(this::bearing_pose_proxy, x3, xl4, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    double range_proxy(Pose2 pose, Point2 point) throws Throwable {
-        return pose.range(point);
+    Vector1 range_proxy(Pose2 pose, Point2 point) throws Throwable {
+        return new Vector1(pose.range(point));
     }
 
     @Test
@@ -730,7 +754,7 @@ public class Pose2Test {
         Matrix expectedH2 = new Matrix();
         Matrix actualH2 = new Matrix();
 
-        // // establish range is indeed zero
+        // establish range is indeed zero
         assertEquals(1, x1.range(l1), 1e-9);
 
         // establish range is indeed 45 degrees
@@ -741,20 +765,32 @@ public class Pose2Test {
         assertEquals(Math.sqrt(2.0), actual23, 1e-9);
 
         // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(range_proxy, x2, l3);
-        // expectedH2 = numericalDerivative22(range_proxy, x2, l3);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative21(this::range_proxy, x2, l3, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative22(this::range_proxy, x2, l3, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
 
         // Another test
         double actual34 = x3.range(l4, actualH1, actualH2);
         assertEquals(2, actual34, 1e-9);
 
         // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(range_proxy, x3, l4);
-        // expectedH2 = numericalDerivative22(range_proxy, x3, l4);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative21(this::range_proxy, x3, l4, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Point2, Vector2>numericalDerivative22(this::range_proxy, x3, l4, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
     }
 
     double range_pose_proxy(Pose2 pose, Pose2 point) throws Throwable {

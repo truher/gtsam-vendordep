@@ -30,6 +30,7 @@ public class Vector extends ForeignObject
         Vector_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Vector_fromVector2(ADDRESS, ADDRESS),
         Vector_fromVector3(ADDRESS, ADDRESS),
+        Vector_fromVector6(ADDRESS, ADDRESS),
         Vector_Local(ADDRESS, ADDRESS, ADDRESS),
         Vector_rows(JAVA_INT, ADDRESS),
         Vector_at(JAVA_DOUBLE, ADDRESS, JAVA_INT);
@@ -71,6 +72,10 @@ public class Vector extends ForeignObject
 
     public Vector(Vector3 v) throws Throwable {
         this((MemorySegment) FF.Vector_fromVector3.h.invokeExact(v.ptr));
+    }
+
+    public Vector(Vector6 v) throws Throwable {
+        this((MemorySegment) FF.Vector_fromVector6.h.invokeExact(v.ptr));
     }
 
     public Vector(double[] vals) throws Throwable {

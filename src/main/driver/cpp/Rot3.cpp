@@ -33,6 +33,12 @@ gtsam::Rot3* Rot3_Roll(double t) {
 gtsam::Rot3* Rot3_Ypr(double y, double p, double r) {
     return new gtsam::Rot3(gtsam::Rot3::Ypr(y, p, r));
 }
+gtsam::Rot3* Rot3_YprH(double y, double p, double r,  //
+                       gtsam::Matrix* H1,             //
+                       gtsam::Matrix* H2,             //
+                       gtsam::Matrix* H3) {           //
+    return new gtsam::Rot3(gtsam::Rot3::Ypr(y, p, r, *H1, *H2, *H3));
+}
 gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
     return new gtsam::Rot3(gtsam::Rot3::Rodrigues(wx, wy, wz));
 }
@@ -201,10 +207,58 @@ gtsam::Rot3* Rot3_Rz(double t) {
 gtsam::Rot3* Rot3_RzRyRx(double x, double y, double z) {
     return new gtsam::Rot3(gtsam::Rot3::RzRyRx(x, y, z));
 }
+gtsam::Rot3* Rot3_RzRyRxH(double x, double y, double z,
+                          gtsam::Matrix* H1,  //
+                          gtsam::Matrix* H2,  //
+                          gtsam::Matrix* H3) {
+    return new gtsam::Rot3(gtsam::Rot3::RzRyRx(x, y, z, *H1, *H2, *H3));
+}
+gtsam::Rot3* Rot3_RzRyRxVector3(const gtsam::Vector3* xyz) {
+    return new gtsam::Rot3(gtsam::Rot3::RzRyRx(*xyz));
+}
+gtsam::Rot3* Rot3_RzRyRxVector3H(const gtsam::Vector3* xyz, gtsam::Matrix* H) {
+    return new gtsam::Rot3(gtsam::Rot3::RzRyRx(*xyz, *H));
+}
 gtsam::Vector3* Rot3_ypr(gtsam::Rot3* r) {
     return new gtsam::Vector3(r->ypr());
 }
 gtsam::Rot3* Rot3_normalized(const gtsam::Rot3* r) {
     return new gtsam::Rot3(r->normalized());
+}
+double Rot3_roll(const gtsam::Rot3* r) {
+    return r->roll();
+}
+double Rot3_pitch(const gtsam::Rot3* r) {
+    return r->pitch();
+}
+double Rot3_yaw(const gtsam::Rot3* r) {
+    return r->yaw();
+}
+double Rot3_rollH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return r->roll(*H);
+}
+double Rot3_pitchH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return r->pitch(*H);
+}
+double Rot3_yawH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return r->yaw(*H);
+}
+gtsam::Vector3* Rot3_xyz(const gtsam::Rot3* r) {
+    return new Vector3(r->xyz());
+}
+gtsam::Vector3* Rot3_ypr(const gtsam::Rot3* r) {
+    return new Vector3(r->ypr());
+}
+gtsam::Vector3* Rot3_rpy(const gtsam::Rot3* r) {
+    return new Vector3(r->rpy());
+}
+gtsam::Vector3* Rot3_xyzH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return new Vector3(r->xyz(*H));
+}
+gtsam::Vector3* Rot3_yprH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return new Vector3(r->ypr(*H));
+}
+gtsam::Vector3* Rot3_rpyH(const gtsam::Rot3* r, gtsam::Matrix* H) {
+    return new Vector3(r->rpy(*H));
 }
 }

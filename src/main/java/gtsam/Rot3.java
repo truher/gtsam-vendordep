@@ -36,6 +36,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_Pitch(ADDRESS, JAVA_DOUBLE),
         Rot3_Roll(ADDRESS, JAVA_DOUBLE),
         Rot3_Ypr(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Rot3_YprH(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS),
         Rot3_Rodrigues(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_RodriguesVector3(ADDRESS, ADDRESS),
         Rot3_AxisAnglePoint3(ADDRESS, ADDRESS, JAVA_DOUBLE),
@@ -79,8 +80,22 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_Ry(ADDRESS, JAVA_DOUBLE),
         Rot3_Rz(ADDRESS, JAVA_DOUBLE),
         Rot3_RzRyRx(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Rot3_RzRyRxH(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_RzRyRxVector3(ADDRESS, ADDRESS),
+        Rot3_RzRyRxVector3H(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_normalized(ADDRESS, ADDRESS),
+        Rot3_roll(JAVA_DOUBLE, ADDRESS),
+        Rot3_pitch(JAVA_DOUBLE, ADDRESS),
+        Rot3_yaw(JAVA_DOUBLE, ADDRESS),
+        Rot3_rollH(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Rot3_pitchH(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Rot3_yawH(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Rot3_xyz(ADDRESS, ADDRESS),
         Rot3_ypr(ADDRESS, ADDRESS),
-        Rot3_normalized(ADDRESS, ADDRESS);
+        Rot3_rpy(ADDRESS, ADDRESS),
+        Rot3_xyzH(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_yprH(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rpyH(ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -226,6 +241,11 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public static Rot3 Ypr(double y, double p, double r) throws Throwable {
         return new Rot3((MemorySegment) FF.Rot3_Ypr.h.invokeExact(y, p, r));
+    }
+
+    public static Rot3 Ypr(double y, double p, double r, //
+            Matrix H1, Matrix H2, Matrix H3) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_YprH.h.invokeExact(y, p, r, H1.ptr, H2.ptr, H3.ptr));
     }
 
     public static Rot3 Rodrigues(double wx, double wy, double wz) throws Throwable {
@@ -400,11 +420,68 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         return new Rot3((MemorySegment) FF.Rot3_RzRyRx.h.invokeExact(x, y, z));
     }
 
-    public Vector3 ypr() throws Throwable {
-        return new Vector3((MemorySegment) FF.Rot3_ypr.h.invokeExact(ptr));
+    public static Rot3 RzRyRx(double x, double y, double z, //
+            Matrix H1, Matrix H2, Matrix H3) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_RzRyRx.h.invokeExact(x, y, z, H1.ptr, H2.ptr, H3.ptr));
+    }
+
+    public static Rot3 RzRyRx(Vector3 xyz) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_RzRyRxVector3.h.invokeExact(xyz));
+    }
+
+    public static Rot3 RzRyRx(Vector3 xyz, Matrix H) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_RzRyRxVector3H.h.invokeExact(xyz, H.ptr));
     }
 
     public Rot3 normalized() throws Throwable {
         return new Rot3((MemorySegment) FF.Rot3_normalized.h.invokeExact(ptr));
+    }
+
+    public double roll() throws Throwable {
+        return (double) FF.Rot3_roll.h.invokeExact(ptr);
+    }
+
+    public double pitch() throws Throwable {
+        return (double) FF.Rot3_pitch.h.invokeExact(ptr);
+    }
+
+    public double yaw() throws Throwable {
+        return (double) FF.Rot3_yaw.h.invokeExact(ptr);
+    }
+
+    public double roll(Matrix H) throws Throwable {
+        return (double) FF.Rot3_rollH.h.invokeExact(ptr, H.ptr);
+    }
+
+    public double pitch(Matrix H) throws Throwable {
+        return (double) FF.Rot3_pitchH.h.invokeExact(ptr, H.ptr);
+    }
+
+    public double yaw(Matrix H) throws Throwable {
+        return (double) FF.Rot3_yawH.h.invokeExact(ptr, H.ptr);
+    }
+
+    public Vector3 xyz() throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_xyz.h.invokeExact(ptr));
+    }
+
+    public Vector3 ypr() throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_ypr.h.invokeExact(ptr));
+    }
+
+    public Vector3 rpy() throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_rpy.h.invokeExact(ptr));
+    }
+
+    public Vector3 xyz(Matrix H) throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_xyz.h.invokeExact(ptr, H.ptr));
+    }
+
+    public Vector3 ypr(Matrix H) throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_ypr.h.invokeExact(ptr, H.ptr));
+    }
+
+    public Vector3 rpy(Matrix H) throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_rpy.h.invokeExact(ptr, H.ptr));
     }
 }

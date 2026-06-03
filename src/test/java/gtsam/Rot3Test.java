@@ -835,22 +835,25 @@ public class Rot3Test {
         // assertTrue(assert_equal(num_z, act_z));
     }
 
-    // Rot3 RzRyRx_proxy(Vector3 const& xyz) { return Rot3::RzRyRx(xyz); }
+    Rot3 RzRyRx_proxy(Vector3 xyz) throws Throwable {
+        return Rot3.RzRyRx(xyz);
+    }
 
     @Test
     void testRzRyRx_vector_derivative() throws Throwable {
         final Vector3 xyz = new Vector3(-0.3, 0.1, 0.7);
-        // const auto num = numericalDerivative11(RzRyRx_proxy, xyz);
+        Matrix num = NumericalDerivative.<Rot3, Vector3, //
+                Vector3, Vector3>numericalDerivative11(this::RzRyRx_proxy, xyz, 1e-5);
 
-        Matrix3 act = new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0);
-        // Rot3::RzRyRx(xyz, act);
+        Matrix act = new Matrix(new double[][] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } });
+        Rot3.RzRyRx(xyz, act);
 
-        // assertTrue(assert_equal(num, act));
+        assertTrue(assert_equal(num, act));
     }
 
-    // Rot3 Ypr_proxy(double const& y, double const& p, double const& r) {
-    // return Rot3::Ypr(y, p, r);
-    // }
+    Rot3 Ypr_proxy(double y, double p, double r) throws Throwable {
+        return Rot3.Ypr(y, p, r);
+    }
 
     @Test
     void testYpr_derivative() throws Throwable {
@@ -909,82 +912,100 @@ public class Rot3Test {
         // }
     }
 
-    // Vector3 xyz_proxy(Rot3 const& R) { return R.xyz(); }
+    Vector3 xyz_proxy(Rot3 R) throws Throwable {
+        return R.xyz();
+    }
 
     @Test
     void testxyz_derivative() throws Throwable {
         final Vector3 aa = new Vector3(-0.6, 0.3, 0.2);
         final Rot3 R = Rot3.statics.Expmap(aa);
-        // const auto num = numericalDerivative11(xyz_proxy, R);
-        // Matrix3 calc;
-        // R.xyz(calc);
+        Matrix num = NumericalDerivative.<Vector3, Vector3, //
+                Rot3, Vector3>numericalDerivative11(this::xyz_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.xyz(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
-    // Vector3 ypr_proxy(Rot3 const& R) { return R.ypr(); }
+    Vector3 ypr_proxy(Rot3 R) throws Throwable {
+        return R.ypr();
+    }
 
     @Test
     void testypr_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.1, -0.3, -0.2);
         final Rot3 R = Rot3.statics.Expmap(aa);
-        // const auto num = numericalDerivative11(ypr_proxy, R);
-        // Matrix3 calc;
-        // R.ypr(calc);
+        Matrix num = NumericalDerivative.<Vector3, Vector3, //
+                Rot3, Vector3>numericalDerivative11(this::ypr_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.ypr(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
-    // Vector3 rpy_proxy(Rot3 const& R) { return R.rpy(); }
+    Vector3 rpy_proxy(Rot3 R) throws Throwable {
+        return R.rpy();
+    }
 
     @Test
     void testrpy_derivative() throws Throwable {
         final Vector3 aa = new Vector3(1.2, 0.3, -0.9);
         final Rot3 R = Rot3.statics.Expmap(aa);
-        // const auto num = numericalDerivative11(rpy_proxy, R);
-        // Matrix3 calc;
-        // R.rpy(calc);
+        Matrix num = NumericalDerivative.<Vector3, Vector3, //
+                Rot3, Vector3>numericalDerivative11(this::rpy_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.rpy(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
-    // double roll_proxy(Rot3 const& R) { return R.roll(); }
+    Vector1 roll_proxy(Rot3 R) throws Throwable {
+        return new Vector1(R.roll());
+    }
 
     @Test
     void testroll_derivative() throws Throwable {
         Vector3 aa = new Vector3(0.8, -0.8, 0.8);
         Rot3 R = Rot3.traits.Expmap(aa);
-        // const auto num = numericalDerivative11(roll_proxy, R);
-        // Matrix13 calc;
-        // R.roll(calc);
+        Matrix num = NumericalDerivative.<Vector1, Vector1, //
+                Rot3, Vector3>numericalDerivative11(this::roll_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.roll(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
-    // double pitch_proxy(Rot3 const& R) { return R.pitch(); }
+    Vector1 pitch_proxy(Rot3 R) throws Throwable {
+        return new Vector1(R.pitch());
+    }
 
     @Test
     void testpitch_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.01, 0.1, 0.0);
         final Rot3 R = Rot3.statics.Expmap(aa);
-        // const auto num = numericalDerivative11(pitch_proxy, R);
-        // Matrix13 calc;
-        // R.pitch(calc);
+        final Matrix num = NumericalDerivative.<Vector1, Vector1, //
+                Rot3, Vector3>numericalDerivative11(this::pitch_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.pitch(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
-    // double yaw_proxy(Rot3 const& R) { return R.yaw(); }
+    Vector1 yaw_proxy(Rot3 R) throws Throwable {
+        return new Vector1(R.yaw());
+    }
 
     @Test
     void testyaw_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.0, 0.1, 0.6);
         final Rot3 R = Rot3.statics.Expmap(aa);
-        // const auto num = numericalDerivative11(yaw_proxy, R);
-        // Matrix13 calc;
-        // R.yaw(calc);
+        Matrix num = NumericalDerivative.<Vector1, Vector1, //
+                Rot3, Vector3>numericalDerivative11(this::yaw_proxy, R, 1e-5);
+        Matrix calc = new Matrix();
+        R.yaw(calc);
 
-        // assertTrue(assert_equal(num, calc));
+        assertTrue(assert_equal(num, calc));
     }
 
     @Test
@@ -1048,7 +1069,7 @@ public class Rot3Test {
         // return R.expmap(M*omega);
         // };
 
-        // // Test the derivatives at zero
+        // Test the derivatives at zero
         // const Matrix3 expected = numericalDerivative11<Rot3, Vector3>(g, Z_3x1);
         // assertTrue(assert_equal<Matrix3>(expected, M, 1e-5));
 

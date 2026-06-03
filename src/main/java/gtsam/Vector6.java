@@ -34,6 +34,7 @@ public class Vector6 extends ForeignObject
         super(p, FF.Vector6_delete.h);
     }
 
+    /** Initializes to zero. */
     public Vector6() throws Throwable {
         this((MemorySegment) FF.Vector6.h.invokeExact());
     }
@@ -52,6 +53,10 @@ public class Vector6 extends ForeignObject
 
     public Vector6(Vector3 a, Vector3 b) throws Throwable {
         this(a.at(0), a.at(1), a.at(2), b.at(0), b.at(1), b.at(2));
+    }
+
+    public Vector6(Vector a) throws Throwable {
+        this(a.at(0), a.at(1), a.at(2), a.at(3), a.at(4), a.at(5));
     }
 
     @Override
