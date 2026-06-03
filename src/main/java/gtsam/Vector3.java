@@ -51,6 +51,7 @@ public class Vector3 extends ForeignObject
         super(p, FF.Vector3_delete.h);
     }
 
+    /** Initializes to zero. */
     public Vector3() throws Throwable {
         this((MemorySegment) FF.Vector3.h.invokeExact());
     }

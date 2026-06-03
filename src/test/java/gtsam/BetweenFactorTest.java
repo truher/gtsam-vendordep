@@ -2,7 +2,7 @@ package gtsam;
 
 import org.junit.jupiter.api.Test;
 
-public class BetweeenFactorTest {
+public class BetweenFactorTest {
 
     // /**
     // * @file testBetweenFactor.cpp

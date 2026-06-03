@@ -25,7 +25,7 @@ gtsam::Rot3* Rot3_Yaw(double t) {
     return new gtsam::Rot3(gtsam::Rot3::Yaw(t));
 }
 gtsam::Rot3* Rot3_Pitch(double t) {
-    return new gtsam::Rot3(gtsam::Rot3::Yaw(t));
+    return new gtsam::Rot3(gtsam::Rot3::Pitch(t));
 }
 gtsam::Rot3* Rot3_Roll(double t) {
     return new gtsam::Rot3(gtsam::Rot3::Roll(t));
@@ -39,7 +39,10 @@ gtsam::Rot3* Rot3_Rodrigues(double wx, double wy, double wz) {
 gtsam::Rot3* Rot3_RodriguesVector3(const gtsam::Point3* v) {
     return new gtsam::Rot3(gtsam::Rot3::Rodrigues(*v));
 }
-gtsam::Rot3* Rot3_AxisAngle(const gtsam::Point3* axis, double angle) {
+gtsam::Rot3* Rot3_AxisAnglePoint3(const gtsam::Point3* axis, double angle) {
+    return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
+}
+gtsam::Rot3* Rot3_AxisAngleUnit3(const gtsam::Unit3* axis, double angle) {
     return new gtsam::Rot3(gtsam::Rot3::AxisAngle(*axis, angle));
 }
 gtsam::Matrix3* Rot3_matrix(const gtsam::Rot3* p) {
@@ -140,8 +143,11 @@ gtsam::Rot3* Rot3_Expmap(const gtsam::Vector3* xi) {
 gtsam::Rot3* Rot3_ExpmapH(const gtsam::Vector3* xi, gtsam::Matrix* H) {
     return new gtsam::Rot3(gtsam::Rot3::Expmap(*xi, *H));
 }
-gtsam::Unit3* Rot3_rotate(const gtsam::Rot3* r, const gtsam::Unit3* p) {
+gtsam::Unit3* Rot3_rotateUnit3(const gtsam::Rot3* r, const gtsam::Unit3* p) {
     return new gtsam::Unit3(r->rotate(*p));
+}
+gtsam::Point3* Rot3_rotatePoint3(const gtsam::Rot3* r, const gtsam::Point3* p) {
+    return new gtsam::Point3(r->rotate(*p));
 }
 gtsam::Unit3* Rot3_rotateH(const gtsam::Rot3* r,   //
                            const gtsam::Unit3* p,  //
@@ -152,11 +158,17 @@ gtsam::Unit3* Rot3_rotateH(const gtsam::Rot3* r,   //
 gtsam::Unit3* Rot3_unrotate(const gtsam::Rot3* r, const gtsam::Unit3* p) {
     return new gtsam::Unit3(r->unrotate(*p));
 }
-gtsam::Unit3* Rot3_unrotateH(const gtsam::Rot3* r,   //
-                             const gtsam::Unit3* p,  //
-                             gtsam::Matrix* H1,      //
-                             gtsam::Matrix* H2) {    //
+gtsam::Unit3* Rot3_unrotateUnit3H(const gtsam::Rot3* r,   //
+                                  const gtsam::Unit3* p,  //
+                                  gtsam::Matrix* H1,      //
+                                  gtsam::Matrix* H2) {    //
     return new gtsam::Unit3(r->unrotate(*p, *H1, *H2));
+}
+gtsam::Point3* Rot3_unrotatePoint3H(const gtsam::Rot3* r,    //
+                                    const gtsam::Point3* p,  //
+                                    gtsam::Matrix* H1,       //
+                                    gtsam::Matrix* H2) {     //
+    return new gtsam::Point3(r->unrotate(*p, *H1, *H2));
 }
 bool Rot3_check_group_invariants(const gtsam::Rot3* a,  //
                                  const gtsam::Rot3* b) {
@@ -165,5 +177,34 @@ bool Rot3_check_group_invariants(const gtsam::Rot3* a,  //
 bool Rot3_check_manifold_invariants(const gtsam::Rot3* a,    //
                                     const gtsam::Rot3* b) {  //
     return gtsam::check_manifold_invariants(*a, *b);
+}
+struct AxisAngle {
+    void* first;
+    double second;
+};
+AxisAngle Rot3_axisAngle(const gtsam::Rot3* r) {
+    std::pair<gtsam::Unit3, double> a = r->axisAngle();
+    return {new gtsam::Unit3(a.first), a.second};
+}
+gtsam::Rot3* Rot3_ClosestTo(const gtsam::Matrix3* M) {
+    return new gtsam::Rot3(gtsam::Rot3::ClosestTo(*M));
+}
+gtsam::Rot3* Rot3_Rx(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Rx(t));
+}
+gtsam::Rot3* Rot3_Ry(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Ry(t));
+}
+gtsam::Rot3* Rot3_Rz(double t) {
+    return new gtsam::Rot3(gtsam::Rot3::Rz(t));
+}
+gtsam::Rot3* Rot3_RzRyRx(double x, double y, double z) {
+    return new gtsam::Rot3(gtsam::Rot3::RzRyRx(x, y, z));
+}
+gtsam::Vector3* Rot3_ypr(gtsam::Rot3* r) {
+    return new gtsam::Vector3(r->ypr());
+}
+gtsam::Rot3* Rot3_normalized(const gtsam::Rot3* r) {
+    return new gtsam::Rot3(r->normalized());
 }
 }

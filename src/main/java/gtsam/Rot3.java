@@ -4,14 +4,26 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
+import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SegmentAllocator;
+import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
 
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
+    private static final StructLayout AxisAngle = MemoryLayout.structLayout(
+            ValueLayout.ADDRESS.withName("first"),
+            ValueLayout.JAVA_DOUBLE.withName("second"));
+    private static final VarHandle AxisAngle_first = AxisAngle
+            .varHandle(MemoryLayout.PathElement.groupElement("first"));
+    private static final VarHandle AxisAngle_second = AxisAngle
+            .varHandle(MemoryLayout.PathElement.groupElement("second"));
+
     public enum FF {
         Rot3Point3(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3(ADDRESS,
@@ -19,14 +31,15 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3Matrix3(ADDRESS, ADDRESS),
-        Rot3_delete(null, ADDRESS),
+        Rot3_delete((ValueLayout) null, ADDRESS),
         Rot3_Yaw(ADDRESS, JAVA_DOUBLE),
         Rot3_Pitch(ADDRESS, JAVA_DOUBLE),
         Rot3_Roll(ADDRESS, JAVA_DOUBLE),
         Rot3_Ypr(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_Rodrigues(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_RodriguesVector3(ADDRESS, ADDRESS),
-        Rot3_AxisAngle(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Rot3_AxisAnglePoint3(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Rot3_AxisAngleUnit3(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Rot3_matrix(ADDRESS, ADDRESS),
         Rot3_compose(ADDRESS, ADDRESS, ADDRESS),
         Rot3_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
@@ -52,16 +65,30 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_Logmap(ADDRESS, ADDRESS),
         Rot3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot3_rotate(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotateUnit3(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotatePoint3(ADDRESS, ADDRESS, ADDRESS),
         Rot3_rotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_unrotate(ADDRESS, ADDRESS, ADDRESS),
-        Rot3_unrotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotateUnit3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotatePoint3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
-        Rot3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        Rot3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Rot3_axisAngle(AxisAngle, ADDRESS),
+        Rot3_ClosestTo(ADDRESS, ADDRESS),
+        Rot3_Rx(ADDRESS, JAVA_DOUBLE),
+        Rot3_Ry(ADDRESS, JAVA_DOUBLE),
+        Rot3_Rz(ADDRESS, JAVA_DOUBLE),
+        Rot3_RzRyRx(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Rot3_ypr(ADDRESS, ADDRESS),
+        Rot3_normalized(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        FF(StructLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
     }
@@ -210,7 +237,11 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     }
 
     public static Rot3 AxisAngle(Point3 axis, double angle) throws Throwable {
-        return new Rot3((MemorySegment) FF.Rot3_AxisAngle.h.invokeExact(axis.ptr, angle));
+        return new Rot3((MemorySegment) FF.Rot3_AxisAnglePoint3.h.invokeExact(axis.ptr, angle));
+    }
+
+    public static Rot3 AxisAngle(Unit3 axis, double angle) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_AxisAngleUnit3.h.invokeExact(axis.ptr, angle));
     }
 
     @Override
@@ -310,7 +341,11 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     }
 
     public Unit3 rotate(Unit3 p) throws Throwable {
-        return new Unit3((MemorySegment) FF.Rot3_rotate.h.invokeExact(ptr, p.ptr));
+        return new Unit3((MemorySegment) FF.Rot3_rotateUnit3.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Point3 rotate(Point3 p) throws Throwable {
+        return new Point3((MemorySegment) FF.Rot3_rotatePoint3.h.invokeExact(ptr, p.ptr));
     }
 
     public Unit3 rotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
@@ -322,7 +357,11 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     }
 
     public Unit3 unrotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Unit3((MemorySegment) FF.Rot3_unrotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+        return new Unit3((MemorySegment) FF.Rot3_unrotateUnit3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Point3 unrotate(Point3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Point3((MemorySegment) FF.Rot3_unrotatePoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
     public static boolean check_group_invariants(Rot3 a, Rot3 b) throws Throwable {
@@ -333,4 +372,39 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         return (boolean) FF.Rot3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
+    public Pair<Unit3, Double> axisAngle() throws Throwable {
+        MemorySegment resultStruct = (MemorySegment) FF.Rot3_axisAngle.h.invokeExact(
+                (SegmentAllocator) Lib.arena, ptr);
+        MemorySegment first = (MemorySegment) AxisAngle_first.get(resultStruct, 0);
+        double second = (double) AxisAngle_second.get(resultStruct, 0);
+        return new Pair<>(new Unit3(first), second);
+    }
+
+    public static Rot3 ClosestTo(Matrix3 M) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_ClosestTo.h.invokeExact(M.ptr));
+    }
+
+    public static Rot3 Rx(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Rx.h.invokeExact(t));
+    }
+
+    public static Rot3 Ry(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Ry.h.invokeExact(t));
+    }
+
+    public static Rot3 Rz(double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Rz.h.invokeExact(t));
+    }
+
+    public static Rot3 RzRyRx(double x, double y, double z) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_RzRyRx.h.invokeExact(x, y, z));
+    }
+
+    public Vector3 ypr() throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_ypr.h.invokeExact(ptr));
+    }
+
+    public Rot3 normalized() throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_normalized.h.invokeExact(ptr));
+    }
 }

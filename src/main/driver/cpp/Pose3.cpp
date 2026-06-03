@@ -116,4 +116,40 @@ bool Pose3_check_manifold_invariants(const gtsam::Pose3* a,    //
                                      const gtsam::Pose3* b) {  //
     return gtsam::check_manifold_invariants(*a, *b);
 }
+gtsam::Unit3* Pose3_bearingPoint3(const gtsam::Pose3* p, gtsam::Point3* pt) {
+    return new gtsam::Unit3(p->bearing(*pt));
+}
+gtsam::Unit3* Pose3_bearingPoint3H(const gtsam::Pose3* p,    //
+                                   const gtsam::Point3* pt,  //
+                                   gtsam::Matrix* H1,        //
+                                   gtsam::Matrix* H2) {      //
+    return new gtsam::Unit3(p->bearing(*pt, *H1, *H2));
+}
+gtsam::Unit3* Pose3_bearingPose3(const gtsam::Pose3* p, gtsam::Pose3* p2) {
+    return new gtsam::Unit3(p->bearing(*p2));
+}
+gtsam::Unit3* Pose3_bearingPose3H(const gtsam::Pose3* p,   //
+                                  const gtsam::Pose3* p2,  //
+                                  gtsam::Matrix* H1,       //
+                                  gtsam::Matrix* H2) {     //
+    return new gtsam::Unit3(p->bearing(*p2, *H1, *H2));
+}
+double Pose3_rangePoint3(const gtsam::Pose3* p, gtsam::Point3* pt) {
+    return p->range(*pt);
+}
+double Pose3_rangePoint3H(const gtsam::Pose3* p,  //
+                          gtsam::Point3* pt,      //
+                          gtsam::Matrix* H1,      //
+                          gtsam::Matrix* H2) {    //
+    return p->range(*pt, *H1, *H2);
+}
+double Pose3_rangePose3(const gtsam::Pose3* p, gtsam::Pose3* p2) {
+    return p->range(*p2);
+}
+double Pose3_rangePose3H(const gtsam::Pose3* p,  //
+                         gtsam::Pose3* p2,       //
+                         gtsam::Matrix* H1,      //
+                         gtsam::Matrix* H2) {    //
+    return p->range(*p2, *H1, *H2);
+}
 }

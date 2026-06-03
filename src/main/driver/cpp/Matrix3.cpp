@@ -44,4 +44,7 @@ gtsam::Vector3* Matrix3_timesVector3(const gtsam::Matrix3* m,
 gtsam::Matrix3* Matrix3_skewSymmetric(const gtsam::Vector3* v) {
     return new gtsam::Matrix3(gtsam::skewSymmetric(*v));
 }
+double Matrix3_determinant(const gtsam::Matrix3* M) {
+    return M->determinant();
+}
 }

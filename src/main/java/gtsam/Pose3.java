@@ -2,6 +2,7 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -33,10 +34,18 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Expmap(ADDRESS, ADDRESS),
-        Pose3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Logmap(ADDRESS, ADDRESS),
         Pose3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_matrix(ADDRESS, ADDRESS),
+        Pose3_bearingPoint3(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_bearingPoint3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_bearingPose3(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_bearingPose3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_rangePoint3(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Pose3_rangePoint3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_rangePose3(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Pose3_rangePose3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Pose3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
@@ -236,6 +245,38 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     /** 4x4 homogeneous matrix */
     public Matrix matrix() throws Throwable {
         return new Matrix((MemorySegment) FF.Pose3_matrix.h.invokeExact(ptr));
+    }
+
+    public Unit3 bearing(Point3 p) throws Throwable {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Unit3 bearing(Point3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Unit3 bearing(Pose3 p) throws Throwable {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPose3.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Unit3 bearing(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPose3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public double range(Point3 p) throws Throwable {
+        return (double) FF.Pose3_rangePoint3.h.invokeExact(ptr, p.ptr);
+    }
+
+    public double range(Point3 p, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Pose3_rangePoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
+    }
+
+    public double range(Pose3 p) throws Throwable {
+        return (double) FF.Pose3_rangePose3.h.invokeExact(ptr, p.ptr);
+    }
+
+    public double range(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Pose3_rangePose3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
     }
 
     public static boolean check_group_invariants(Pose3 a, Pose3 b) throws Throwable {

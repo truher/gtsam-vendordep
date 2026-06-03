@@ -283,7 +283,8 @@ public class NoiseModelTest {
     @Test
     void testQR() throws Throwable {
         Matrix Ab1 = exampleQR.Ab;
-        Matrix Ab2 = exampleQR.Ab; // otherwise overwritten !
+        // make a copy. otherwise overwritten !
+        Matrix Ab2 = exampleQR.Ab.times(1.0); 
 
         // Call Gaussian version
         shared_ptr<Diagonal> actual1 = exampleQR.diagonal.get().QR(Ab1);

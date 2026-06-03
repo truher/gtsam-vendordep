@@ -28,7 +28,7 @@ gtsam::Pose2* Pose2_retract(const gtsam::Pose2* p, const gtsam::Vector3* v) {
 gtsam::Pose2* Pose2_retractH(const gtsam::Pose2* p,    //
                              const gtsam::Vector3* v,  //
                              gtsam::Matrix* H1,        //
-                             gtsam::Matrix* H2) {
+                             gtsam::Matrix* H2) {      //
     return new gtsam::Pose2(p->retract(*v, *H1, *H2));
 }
 /** This is from the LieGroup trait, see gtsam/base/Lie.h */
@@ -60,7 +60,7 @@ gtsam::Vector3* Pose2_localCoordinates(const gtsam::Pose2* p,
 gtsam::Vector3* Pose2_localCoordinatesH(const gtsam::Pose2* p,  //
                                         const gtsam::Pose2* g,  //
                                         gtsam::Matrix* H1,      //
-                                        gtsam::Matrix* H2) {
+                                        gtsam::Matrix* H2) {    //
     return new gtsam::Vector3(p->localCoordinates(*g, *H1, *H2));
 }
 gtsam::Pose2* Pose2_between(const gtsam::Pose2* a, const gtsam::Pose2* b) {
@@ -69,7 +69,7 @@ gtsam::Pose2* Pose2_between(const gtsam::Pose2* a, const gtsam::Pose2* b) {
 gtsam::Pose2* Pose2_betweenH(const gtsam::Pose2* a,  //
                              const gtsam::Pose2* b,  //
                              gtsam::Matrix* H1,      //
-                             gtsam::Matrix* H2) {
+                             gtsam::Matrix* H2) {    //
     return new gtsam::Pose2(a->between(*b, *H1, *H2));
 }
 gtsam::Pose2* Pose2_inverse(const gtsam::Pose2* p) {
@@ -85,13 +85,13 @@ gtsam::Matrix* Pose2_AdjointMap(const gtsam::Pose2* p) {
 gtsam::Pose2* Pose2_expmapH(const gtsam::Pose2* p,    //
                             const gtsam::Vector3* v,  //
                             gtsam::Matrix* H1,        //
-                            gtsam::Matrix* H2) {
+                            gtsam::Matrix* H2) {      //
     return new gtsam::Pose2(p->expmap(*v, *H1, *H2));
 }
 gtsam::Vector3* Pose2_logmapH(const gtsam::Pose2* p,  //
                               const gtsam::Pose2* g,  //
                               gtsam::Matrix* H1,      //
-                              gtsam::Matrix* H2) {
+                              gtsam::Matrix* H2) {    //
     return new gtsam::Vector3(p->logmap(*g, *H1, *H2));
 }
 gtsam::Vector3* Pose2_Adjoint(const gtsam::Pose2* p, const gtsam::Vector3* v) {
@@ -121,8 +121,8 @@ gtsam::Vector3* Pose2_OriginLocalCoordinates(const gtsam::Pose2* g) {
 gtsam::Pose2* Pose2_OriginRetractH(const gtsam::Vector3* v, gtsam::Matrix* H) {
     return new gtsam::Pose2(gtsam::Pose2::Retract(*v, *H));
 }
-gtsam::Vector3* Pose2_OriginLocalCoordinatesH(const gtsam::Pose2* g,
-                                              gtsam::Matrix* H) {
+gtsam::Vector3* Pose2_OriginLocalCoordinatesH(const gtsam::Pose2* g,  //
+                                              gtsam::Matrix* H) {     //
     return new gtsam::Vector3(gtsam::Pose2::LocalCoordinates(*g, *H));
 }
 
@@ -132,22 +132,22 @@ gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
 gtsam::Pose2* Pose2_composeH(const gtsam::Pose2* a,  //
                              const gtsam::Pose2* b,  //
                              gtsam::Matrix* H1,      //
-                             gtsam::Matrix* H2) {
+                             gtsam::Matrix* H2) {    //
     return new gtsam::Pose2(a->compose(*b, *H1, *H2));
 }
 gtsam::Matrix3* Pose2_matrix(const gtsam::Pose2* p) {
     return new gtsam::Matrix3(p->matrix());
 }
-gtsam::Vector3* Pose2_logmap_default(const gtsam::Pose2* a,
-                                     const gtsam::Pose2* b) {
+gtsam::Vector3* Pose2_logmap_default(const gtsam::Pose2* a,    //
+                                     const gtsam::Pose2* b) {  //
     return new gtsam::Vector3(gtsam::logmap_default(*a, *b));
 }
-gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,
-                                   const gtsam::Vector3* d) {
+gtsam::Pose2* Pose2_expmap_default(const gtsam::Pose2* p,      //
+                                   const gtsam::Vector3* d) {  //
     return new gtsam::Pose2(gtsam::expmap_default(*p, *d));
 }
-gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,  //
-                                 const gtsam::Point2* point) {
+gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,         //
+                                 const gtsam::Point2* point) {  //
     return new gtsam::Point2(p->transformTo(*point));
 }
 // the actual type here is OptionalJacobian which "ururps"
@@ -162,17 +162,17 @@ gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,  //
 gtsam::Point2* Pose2_transformToH(const gtsam::Pose2* p,       //
                                   const gtsam::Point2* point,  //
                                   gtsam::Matrix* Dpose,        //
-                                  gtsam::Matrix* Dpoint) {
+                                  gtsam::Matrix* Dpoint) {     //
     return new gtsam::Point2(p->transformTo(*point, *Dpose, *Dpoint));
 }
 gtsam::Point2* Pose2_transformFrom(const gtsam::Pose2* p,
                                    const gtsam::Point2* point) {
     return new gtsam::Point2(p->transformFrom(*point));
 }
-gtsam::Point2* Pose2_transformFromH(const gtsam::Pose2* p,
-                                    const gtsam::Point2* point,
-                                    gtsam::Matrix* Dpose,
-                                    gtsam::Matrix* Dpoint) {
+gtsam::Point2* Pose2_transformFromH(const gtsam::Pose2* p,       //
+                                    const gtsam::Point2* point,  //
+                                    gtsam::Matrix* Dpose,        //
+                                    gtsam::Matrix* Dpoint) {     //
     return new gtsam::Point2(p->transformFrom(*point, *Dpose, *Dpoint));
 }
 gtsam::Matrix3* Pose2_ExpmapDerivative(const gtsam::Vector3* v) {
@@ -184,9 +184,10 @@ gtsam::Point2* Pose2_translation(const gtsam::Pose2* p, gtsam::Matrix* H) {
 gtsam::Rot2* Pose2_bearingPoint2(const gtsam::Pose2* p, gtsam::Point2* pt) {
     return new gtsam::Rot2(p->bearing(*pt));
 }
-gtsam::Rot2* Pose2_bearingPoint2H(const gtsam::Pose2* p,
-                                  const gtsam::Point2* pt.gtsam::Matrix* H1,
-                                  gtsam::Matrix* H2) {
+gtsam::Rot2* Pose2_bearingPoint2H(const gtsam::Pose2* p,    //
+                                  const gtsam::Point2* pt,  //
+                                  gtsam::Matrix* H1,        //
+                                  gtsam::Matrix* H2) {      //
     return new gtsam::Rot2(p->bearing(*pt, *H1, *H2));
 }
 gtsam::Rot2* Pose2_bearingPose2(const gtsam::Pose2* p, gtsam::Pose2* p2) {
@@ -199,15 +200,19 @@ gtsam::Rot2* Pose2_bearingPose2H(const gtsam::Pose2* p, const gtsam::Pose2* p2,
 double Pose2_rangePoint2(const gtsam::Pose2* p, gtsam::Point2* pt) {
     return p->range(*pt);
 }
-double Pose2_rangePoint2H(const gtsam::Pose2* p, gtsam::Point2* pt,
-                          gtsam::Matrix* H1, gtsam::Matrix* H2) {
+double Pose2_rangePoint2H(const gtsam::Pose2* p,  //
+                          gtsam::Point2* pt,      //
+                          gtsam::Matrix* H1,      //
+                          gtsam::Matrix* H2) {    //
     return p->range(*pt, *H1, *H2);
 }
 double Pose2_rangePose2(const gtsam::Pose2* p, gtsam::Pose2* p2) {
     return p->range(*p2);
 }
-double Pose2_rangePose2H(const gtsam::Pose2* p, gtsam::Pose2* p2,
-                         gtsam::Matrix* H1, gtsam::Matrix* H2) {
+double Pose2_rangePose2H(const gtsam::Pose2* p,  //
+                         gtsam::Pose2* p2,       //
+                         gtsam::Matrix* H1,      //
+                         gtsam::Matrix* H2) {    //
     return p->range(*p2, *H1, *H2);
 }
 bool Pose2_check_group_invariants(const gtsam::Pose2* a,  //

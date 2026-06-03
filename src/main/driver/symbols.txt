@@ -10,6 +10,7 @@ LevenbergMarquardtOptimizer*
 LevenbergMarquardtParams*
 Marginals*
 Matrix*
+Matrix2*
 Matrix3*
 noiseModel*
 NonlinearFactor*

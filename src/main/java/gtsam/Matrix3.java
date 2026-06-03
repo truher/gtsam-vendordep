@@ -26,7 +26,8 @@ public class Matrix3 extends ForeignObject {
         Matrix3_plus(ADDRESS, ADDRESS, ADDRESS),
         Matrix3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Matrix3_timesVector3(ADDRESS, ADDRESS, ADDRESS),
-        Matrix3_skewSymmetric(ADDRESS, ADDRESS);
+        Matrix3_skewSymmetric(ADDRESS, ADDRESS),
+        Matrix3_determinant(JAVA_DOUBLE, ADDRESS);
 
         public final MethodHandle h;
 
@@ -84,5 +85,9 @@ public class Matrix3 extends ForeignObject {
 
     public static Matrix3 skewSymmetric(Vector3 v) throws Throwable {
         return new Matrix3((MemorySegment) FF.Matrix3_skewSymmetric.h.invokeExact(v.ptr));
+    }
+
+    public double determinant() throws Throwable {
+        return (double) FF.Matrix3_determinant.h.invokeExact(ptr);
     }
 }

@@ -1,6 +1,7 @@
 package gtsam;
 
 import static gtsam.Testable.assert_equal;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -132,11 +133,10 @@ public class Rot3Test {
                 -0.0018374, 0.0209105, -0.999781);
 
         // convert Rot3 to quaternion using GTSAM
-        // TODO: this is a "pair" return type
-        // const auto [actualAxis, actualAngle] = R1.axisAngle();
-
+        Pair<Unit3, Double> aa = R1.axisAngle();
+        double actualAngle = aa.second;
         double expectedAngle = 3.1396582;
-        // assertTrue(assert_equal(expectedAngle, actualAngle, 1e-5));
+        assertTrue(assert_equal(expectedAngle, actualAngle, 1e-5));
     }
 
     @Test
@@ -250,7 +250,7 @@ public class Rot3Test {
 
     @Test
     void testlog() throws Throwable {
-        // static const double PI = std::acos(-1.0);
+        final double PI = Math.acos(-1.0);
         // Vector w;
         // Rot3 R;
 
@@ -424,11 +424,11 @@ public class Rot3Test {
 
     @Test
     void testunrotate() throws Throwable {
-        // Point3 w = R * P;
+        Point3 w = R.rotate(P);
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
-        // Point3 actual = R.unrotate(w,H1,H2);
-        // assertTrue(assert_equal(P,actual));
+        Point3 actual = R.unrotate(w, H1, H2);
+        assertTrue(assert_equal(P, actual));
 
         // Matrix numerical1 = numericalDerivative21(testing::unrotate<Rot3,Point3>, R,
         // w);
@@ -447,8 +447,8 @@ public class Rot3Test {
         Rot3 expected = R1.compose(R2);
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();
-        // Rot3 actual = R1.compose(R2, actualH1, actualH2);
-        // assertTrue(assert_equal(expected,actual));
+        Rot3 actual = R1.compose(R2, actualH1, actualH2);
+        assertTrue(assert_equal(expected, actual));
 
         // Matrix numericalH1 = numericalDerivative21(testing::compose<Rot3>, R1,
         // R2, 1e-2);
@@ -517,47 +517,47 @@ public class Rot3Test {
         // Make sure all counterclockwise
         // Diagrams below are all from from unchanging axis
 
-        // // z
-        // // | * Y=(ct,st)
-        // // x----y
-        // Rot3 expected1(1, 0, 0, 0, ct, -st, 0, st, ct);
-        // assertTrue(assert_equal(expected1,Rot3::Rx(t)));
+        // z
+        // | * Y=(ct,st)
+        // x----y
+        Rot3 expected1 = new Rot3(1, 0, 0, 0, ct, -st, 0, st, ct);
+        assertTrue(assert_equal(expected1, Rot3.Rx(t)));
 
-        // // x
-        // // | * Z=(ct,st)
-        // // y----z
-        // Rot3 expected2(ct, 0, st, 0, 1, 0, -st, 0, ct);
-        // assertTrue(assert_equal(expected2,Rot3::Ry(t)));
+        // x
+        // | * Z=(ct,st)
+        // y----z
+        Rot3 expected2 = new Rot3(ct, 0, st, 0, 1, 0, -st, 0, ct);
+        assertTrue(assert_equal(expected2, Rot3.Ry(t)));
 
-        // // y
-        // // | X=* (ct,st)
-        // // z----x
-        // Rot3 expected3(ct, -st, 0, st, ct, 0, 0, 0, 1);
-        // assertTrue(assert_equal(expected3,Rot3::Rz(t)));
+        // y
+        // | X=* (ct,st)
+        // z----x
+        Rot3 expected3 = new Rot3(ct, -st, 0, st, ct, 0, 0, 0, 1);
+        assertTrue(assert_equal(expected3, Rot3.Rz(t)));
 
-        // // Check compound rotation
-        // Rot3 expected = Rot3::Rz(0.3) * Rot3::Ry(0.2) * Rot3::Rx(0.1);
-        // assertTrue(assert_equal(expected,Rot3::RzRyRx(0.1,0.2,0.3)));
+        // Check compound rotation
+        Rot3 expected = Rot3.Rz(0.3).compose(Rot3.Ry(0.2)).compose(Rot3.Rx(0.1));
+        assertTrue(assert_equal(expected, Rot3.RzRyRx(0.1, 0.2, 0.3)));
     }
 
     @Test
     void testyaw_pitch_roll() throws Throwable {
         double t = 0.1;
 
-        // // yaw is around z axis
-        // assertTrue(assert_equal(Rot3::Rz(t),Rot3::Yaw(t)));
+        // yaw is around z axis
+        assertTrue(assert_equal(Rot3.Rz(t), Rot3.Yaw(t)));
 
-        // // pitch is around y axis
-        // assertTrue(assert_equal(Rot3::Ry(t),Rot3::Pitch(t)));
+        // pitch is around y axis
+        assertTrue(assert_equal(Rot3.Ry(t), Rot3.Pitch(t)));
 
-        // // roll is around x axis
-        // assertTrue(assert_equal(Rot3::Rx(t),Rot3::Roll(t)));
+        // roll is around x axis
+        assertTrue(assert_equal(Rot3.Rx(t), Rot3.Roll(t)));
 
-        // // Check compound rotation
-        // Rot3 expected = Rot3::Yaw(0.1) * Rot3::Pitch(0.2) * Rot3::Roll(0.3);
-        // assertTrue(assert_equal(expected,Rot3::Ypr(0.1,0.2,0.3)));
+        // Check compound rotation
+        Rot3 expected = Rot3.Yaw(0.1).compose(Rot3.Pitch(0.2)).compose(Rot3.Roll(0.3));
+        assertTrue(assert_equal(expected, Rot3.Ypr(0.1, 0.2, 0.3)));
 
-        // assertTrue(assert_equal((Vector)Vector3(0.1, 0.2, 0.3),expected.ypr()));
+        assertTrue(assert_equal(new Vector3(0.1, 0.2, 0.3), expected.ypr()));
     }
 
     @Test
@@ -594,9 +594,9 @@ public class Rot3Test {
     @Test
     void testexpmapStability() throws Throwable {
         Vector3 w = new Vector3(78e-9, 5e-8, 97e-7);
-        // double theta = w.norm();
-        // double theta2 = theta*theta;
-        // Rot3 actualR = Rot3::Expmap(w);
+        double theta = w.norm();
+        double theta2 = theta * theta;
+        Rot3 actualR = Rot3.statics.Expmap(w);
         // Matrix W = (Matrix(3, 3) << 0.0, -w(2), w(1),
         // w(2), 0.0, -w(0),
         // -w(1), w(0), 0.0 ).finished();
@@ -611,7 +611,7 @@ public class Rot3Test {
     @Test
     void testlogmapStability() throws Throwable {
         Vector3 w = new Vector3(1e-8, 0.0, 0.0);
-        // Rot3 R = Rot3::Expmap(w);
+        Rot3 R = Rot3.statics.Expmap(w);
         // // double tr = R.r1().x()+R.r2().y()+R.r3().z();
         // // std::cout.precision(5000);
         // // std::cout << "theta: " << w.norm() << std::endl;
@@ -650,9 +650,9 @@ public class Rot3Test {
         // assertTrue(assert_equal(Vector(R2.toQuaternion().coeffs()),
         // Vector(q2.coeffs())));
 
-        // // Check that quaternion and Rot3 represent the same rotation
-        // Point3 p1(1.0, 2.0, 3.0);
-        // Point3 p2(8.0, 7.0, 9.0);
+        // Check that quaternion and Rot3 represent the same rotation
+        Point3 p1 = new Point3(1.0, 2.0, 3.0);
+        Point3 p2 = new Point3(8.0, 7.0, 9.0);
 
         // Point3 expected1 = R1*p1;
         // Point3 expected2 = R2*p2;
@@ -671,16 +671,16 @@ public class Rot3Test {
         // eigenQuaternion.x() = 2.0;
         // eigenQuaternion.y() = 3.0;
         // eigenQuaternion.z() = 4.0;
-        // EXPECT_DOUBLES_EQUAL(1, eigenQuaternion.w(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(2, eigenQuaternion.x(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(3, eigenQuaternion.y(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(4, eigenQuaternion.z(), 1e-9);
+        // assertEquals(1, eigenQuaternion.w(), 1e-9);
+        // assertEquals(2, eigenQuaternion.x(), 1e-9);
+        // assertEquals(3, eigenQuaternion.y(), 1e-9);
+        // assertEquals(4, eigenQuaternion.z(), 1e-9);
 
         // Rot3 R(eigenQuaternion);
-        // EXPECT_DOUBLES_EQUAL(1, R.toQuaternion().w(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(2, R.toQuaternion().x(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(3, R.toQuaternion().y(), 1e-9);
-        // EXPECT_DOUBLES_EQUAL(4, R.toQuaternion().z(), 1e-9);
+        // assertEquals(1, R.toQuaternion().w(), 1e-9);
+        // assertEquals(2, R.toQuaternion().x(), 1e-9);
+        // assertEquals(3, R.toQuaternion().y(), 1e-9);
+        // assertEquals(4, R.toQuaternion().z(), 1e-9);
     }
 
     // Matrix Cayley(const Matrix& A) {
@@ -739,78 +739,77 @@ public class Rot3Test {
 
     @Test
     void testClosestTo() throws Throwable {
-        // Matrix3 M;
-        // M << 0.79067393, 0.6051136, -0.0930814, //
-        // 0.4155925, -0.64214347, -0.64324489, //
-        // -0.44948549, 0.47046326, -0.75917576;
+        Matrix3 M = new Matrix3(
+                0.79067393, 0.6051136, -0.0930814, //
+                0.4155925, -0.64214347, -0.64324489, //
+                -0.44948549, 0.47046326, -0.75917576);
 
-        // Matrix expected(3, 3);
-        // expected << 0.790687, 0.605096, -0.0931312, //
-        // 0.415746, -0.642355, -0.643844, //
-        // -0.449411, 0.47036, -0.759468;
+        Matrix3 expected = new Matrix3(
+                0.790687, 0.605096, -0.0931312, //
+                0.415746, -0.642355, -0.643844, //
+                -0.449411, 0.47036, -0.759468);
 
-        // auto actual = Rot3::ClosestTo(3*M);
-        // assertTrue(assert_equal(expected, actual.matrix(), 1e-6));
+        Rot3 actual = Rot3.ClosestTo(M.times(3.0));
+        assertTrue(assert_equal(expected, actual.matrix(), 1e-6));
+    }
+
+    void CHECK_AXIS_ANGLE(Unit3 expectedAxis, double expectedAngle, Rot3 rotation) throws Throwable {
+        Pair<Unit3, Double> aa = rotation.axisAngle();
+        Unit3 actualAxis = aa.first;
+        double actualAngle = aa.second;
+        assertTrue(assert_equal(expectedAxis, actualAxis, 1e-9));
+        assertEquals(expectedAngle, actualAngle, 1e-9);
+        assertTrue(assert_equal(rotation, Rot3.AxisAngle(expectedAxis, expectedAngle)));
     }
 
     @Test
     void testaxisAngle() throws Throwable {
-        // Unit3 actualAxis;
-        // double actualAngle;
+        // CHECK R defined at top = Rot3::Rodrigues(0.1, 0.4, 0.2)
+        Vector3 omega = new Vector3(0.1, 0.4, 0.2);
+        Unit3 axis = new Unit3(omega);
+        Unit3 _axis = new Unit3(omega.times(-1));
+        CHECK_AXIS_ANGLE(axis, omega.norm(), R);
 
-        // // not a lambda as otherwise we can't trace error easily
-        // #define CHECK_AXIS_ANGLE(expectedAxis, expectedAngle, rotation) \
-        // std::tie(actualAxis, actualAngle) = rotation.axisAngle(); \
-        // assertTrue(assert_equal(expectedAxis, actualAxis, 1e-9)); \
-        // EXPECT_DOUBLES_EQUAL(expectedAngle, actualAngle, 1e-9); \
-        // assertTrue(assert_equal(rotation, Rot3::AxisAngle(expectedAxis,
-        // expectedAngle)))
+        // rotate by 90
+        CHECK_AXIS_ANGLE(new Unit3(1, 0, 0), Math.PI / 2, Rot3.Ypr(0, 0, Math.PI / 2));
+        CHECK_AXIS_ANGLE(new Unit3(0, 1, 0), Math.PI / 2, Rot3.Ypr(0, Math.PI / 2, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, 1), Math.PI / 2, Rot3.Ypr(Math.PI / 2, 0, 0));
+        CHECK_AXIS_ANGLE(axis, Math.PI / 2, Rot3.AxisAngle(axis, Math.PI / 2));
 
-        // // CHECK R defined at top = Rot3::Rodrigues(0.1, 0.4, 0.2)
-        // Vector3 omega(0.1, 0.4, 0.2);
-        // Unit3 axis(omega), _axis(-omega);
-        // CHECK_AXIS_ANGLE(axis, omega.norm(), R);
+        // rotate by -90
+        CHECK_AXIS_ANGLE(new Unit3(-1, 0, 0), Math.PI / 2, Rot3.Ypr(0, 0, -Math.PI / 2));
+        CHECK_AXIS_ANGLE(new Unit3(0, -1, 0), Math.PI / 2, Rot3.Ypr(0, -Math.PI / 2, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, -1), Math.PI / 2, Rot3.Ypr(-Math.PI / 2, 0, 0));
+        CHECK_AXIS_ANGLE(_axis, Math.PI / 2, Rot3.AxisAngle(axis, -Math.PI / 2));
 
-        // // rotate by 90
-        // CHECK_AXIS_ANGLE(Unit3(1, 0, 0), M_PI_2, Rot3::Ypr(0, 0, M_PI_2))
-        // CHECK_AXIS_ANGLE(Unit3(0, 1, 0), M_PI_2, Rot3::Ypr(0, M_PI_2, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, 1), M_PI_2, Rot3::Ypr(M_PI_2, 0, 0))
-        // CHECK_AXIS_ANGLE(axis, M_PI_2, Rot3::AxisAngle(axis, M_PI_2))
+        // rotate by 270
+        final double theta270 = Math.PI + Math.PI / 2;
+        CHECK_AXIS_ANGLE(new Unit3(-1, 0, 0), Math.PI / 2, Rot3.Ypr(0, 0, theta270));
+        CHECK_AXIS_ANGLE(new Unit3(0, -1, 0), Math.PI / 2, Rot3.Ypr(0, theta270, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, -1), Math.PI / 2, Rot3.Ypr(theta270, 0, 0));
+        CHECK_AXIS_ANGLE(_axis, Math.PI / 2, Rot3.AxisAngle(axis, theta270));
 
-        // // rotate by -90
-        // CHECK_AXIS_ANGLE(Unit3(-1, 0, 0), M_PI_2, Rot3::Ypr(0, 0, -M_PI_2))
-        // CHECK_AXIS_ANGLE(Unit3(0, -1, 0), M_PI_2, Rot3::Ypr(0, -M_PI_2, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, -1), M_PI_2, Rot3::Ypr(-M_PI_2, 0, 0))
-        // CHECK_AXIS_ANGLE(_axis, M_PI_2, Rot3::AxisAngle(axis, -M_PI_2))
+        // rotate by -270
+        final double theta_270 = -(Math.PI + Math.PI / 2); // 90 (or -270) degrees
+        CHECK_AXIS_ANGLE(new Unit3(1, 0, 0), Math.PI / 2, Rot3.Ypr(0, 0, theta_270));
+        CHECK_AXIS_ANGLE(new Unit3(0, 1, 0), Math.PI / 2, Rot3.Ypr(0, theta_270, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, 1), Math.PI / 2, Rot3.Ypr(theta_270, 0, 0));
+        CHECK_AXIS_ANGLE(axis, Math.PI / 2, Rot3.AxisAngle(axis, theta_270));
 
-        // // rotate by 270
-        // const double theta270 = M_PI + M_PI / 2;
-        // CHECK_AXIS_ANGLE(Unit3(-1, 0, 0), M_PI_2, Rot3::Ypr(0, 0, theta270))
-        // CHECK_AXIS_ANGLE(Unit3(0, -1, 0), M_PI_2, Rot3::Ypr(0, theta270, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, -1), M_PI_2, Rot3::Ypr(theta270, 0, 0))
-        // CHECK_AXIS_ANGLE(_axis, M_PI_2, Rot3::AxisAngle(axis, theta270))
+        final double theta195 = 195 * Math.PI / 180;
+        final double theta165 = 165 * Math.PI / 180;
 
-        // // rotate by -270
-        // const double theta_270 = -(M_PI + M_PI / 2); // 90 (or -270) degrees
-        // CHECK_AXIS_ANGLE(Unit3(1, 0, 0), M_PI_2, Rot3::Ypr(0, 0, theta_270))
-        // CHECK_AXIS_ANGLE(Unit3(0, 1, 0), M_PI_2, Rot3::Ypr(0, theta_270, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, 1), M_PI_2, Rot3::Ypr(theta_270, 0, 0))
-        // CHECK_AXIS_ANGLE(axis, M_PI_2, Rot3::AxisAngle(axis, theta_270))
+        /// Non-trivial angle 165
+        CHECK_AXIS_ANGLE(new Unit3(1, 0, 0), theta165, Rot3.Ypr(0, 0, theta165));
+        CHECK_AXIS_ANGLE(new Unit3(0, 1, 0), theta165, Rot3.Ypr(0, theta165, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, 1), theta165, Rot3.Ypr(theta165, 0, 0));
+        CHECK_AXIS_ANGLE(axis, theta165, Rot3.AxisAngle(axis, theta165));
 
-        // const double theta195 = 195 * M_PI / 180;
-        // const double theta165 = 165 * M_PI / 180;
-
-        // /// Non-trivial angle 165
-        // CHECK_AXIS_ANGLE(Unit3(1, 0, 0), theta165, Rot3::Ypr(0, 0, theta165))
-        // CHECK_AXIS_ANGLE(Unit3(0, 1, 0), theta165, Rot3::Ypr(0, theta165, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, 1), theta165, Rot3::Ypr(theta165, 0, 0))
-        // CHECK_AXIS_ANGLE(axis, theta165, Rot3::AxisAngle(axis, theta165))
-
-        // /// Non-trivial angle 195
-        // CHECK_AXIS_ANGLE(Unit3(-1, 0, 0), theta165, Rot3::Ypr(0, 0, theta195))
-        // CHECK_AXIS_ANGLE(Unit3(0, -1, 0), theta165, Rot3::Ypr(0, theta195, 0))
-        // CHECK_AXIS_ANGLE(Unit3(0, 0, -1), theta165, Rot3::Ypr(theta195, 0, 0))
-        // CHECK_AXIS_ANGLE(_axis, theta165, Rot3::AxisAngle(axis, theta195))
+        /// Non-trivial angle 195
+        CHECK_AXIS_ANGLE(new Unit3(-1, 0, 0), theta165, Rot3.Ypr(0, 0, theta195));
+        CHECK_AXIS_ANGLE(new Unit3(0, -1, 0), theta165, Rot3.Ypr(0, theta195, 0));
+        CHECK_AXIS_ANGLE(new Unit3(0, 0, -1), theta165, Rot3.Ypr(theta195, 0, 0));
+        CHECK_AXIS_ANGLE(_axis, theta165, Rot3.AxisAngle(axis, theta195));
     }
 
     // Rot3 RzRyRx_proxy(double const& a, double const& b, double const& c) {
@@ -819,12 +818,16 @@ public class Rot3Test {
 
     @Test
     void testRzRyRx_scalars_derivative() throws Throwable {
-        // const auto x = 0.1, y = 0.4, z = 0.2;
+        final double x = 0.1;
+        final double y = 0.4;
+        final double z = 0.2;
         // const auto num_x = numericalDerivative31(RzRyRx_proxy, x, y, z);
         // const auto num_y = numericalDerivative32(RzRyRx_proxy, x, y, z);
         // const auto num_z = numericalDerivative33(RzRyRx_proxy, x, y, z);
 
-        // Vector3 act_x, act_y, act_z;
+        Vector3 act_x = new Vector3();
+        Vector3 act_y = new Vector3();
+        Vector3 act_z = new Vector3();
         // Rot3::RzRyRx(x, y, z, act_x, act_y, act_z);
 
         // assertTrue(assert_equal(num_x, act_x));
@@ -836,10 +839,10 @@ public class Rot3Test {
 
     @Test
     void testRzRyRx_vector_derivative() throws Throwable {
-        // const auto xyz = Vector3{-0.3, 0.1, 0.7};
+        final Vector3 xyz = new Vector3(-0.3, 0.1, 0.7);
         // const auto num = numericalDerivative11(RzRyRx_proxy, xyz);
 
-        // Matrix3 act;
+        Matrix3 act = new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0);
         // Rot3::RzRyRx(xyz, act);
 
         // assertTrue(assert_equal(num, act));
@@ -851,12 +854,16 @@ public class Rot3Test {
 
     @Test
     void testYpr_derivative() throws Throwable {
-        // const auto y = 0.7, p = -0.3, r = 0.1;
+        final double y = 0.7;
+        final double p = -0.3;
+        final double r = 0.1;
         // const auto num_y = numericalDerivative31(Ypr_proxy, y, p, r);
         // const auto num_p = numericalDerivative32(Ypr_proxy, y, p, r);
         // const auto num_r = numericalDerivative33(Ypr_proxy, y, p, r);
 
-        // Vector3 act_y, act_p, act_r;
+        Vector3 act_y = new Vector3();
+        Vector3 act_p = new Vector3();
+        Vector3 act_r = new Vector3();
         // Rot3::Ypr(y, p, r, act_y, act_p, act_r);
 
         // assertTrue(assert_equal(num_y, act_y));
@@ -906,8 +913,8 @@ public class Rot3Test {
 
     @Test
     void testxyz_derivative() throws Throwable {
-        // const auto aa = Vector3{-0.6, 0.3, 0.2};
-        // const auto R = Rot3::Expmap(aa);
+        final Vector3 aa = new Vector3(-0.6, 0.3, 0.2);
+        final Rot3 R = Rot3.statics.Expmap(aa);
         // const auto num = numericalDerivative11(xyz_proxy, R);
         // Matrix3 calc;
         // R.xyz(calc);
@@ -919,8 +926,8 @@ public class Rot3Test {
 
     @Test
     void testypr_derivative() throws Throwable {
-        // const auto aa = Vector3{0.1, -0.3, -0.2};
-        // const auto R = Rot3::Expmap(aa);
+        final Vector3 aa = new Vector3(0.1, -0.3, -0.2);
+        final Rot3 R = Rot3.statics.Expmap(aa);
         // const auto num = numericalDerivative11(ypr_proxy, R);
         // Matrix3 calc;
         // R.ypr(calc);
@@ -932,8 +939,8 @@ public class Rot3Test {
 
     @Test
     void testrpy_derivative() throws Throwable {
-        // const auto aa = Vector3{1.2, 0.3, -0.9};
-        // const auto R = Rot3::Expmap(aa);
+        final Vector3 aa = new Vector3(1.2, 0.3, -0.9);
+        final Rot3 R = Rot3.statics.Expmap(aa);
         // const auto num = numericalDerivative11(rpy_proxy, R);
         // Matrix3 calc;
         // R.rpy(calc);
@@ -958,8 +965,8 @@ public class Rot3Test {
 
     @Test
     void testpitch_derivative() throws Throwable {
-        // const auto aa = Vector3{0.01, 0.1, 0.0};
-        // const auto R = Rot3::Expmap(aa);
+        final Vector3 aa = new Vector3(0.01, 0.1, 0.0);
+        final Rot3 R = Rot3.statics.Expmap(aa);
         // const auto num = numericalDerivative11(pitch_proxy, R);
         // Matrix13 calc;
         // R.pitch(calc);
@@ -971,8 +978,8 @@ public class Rot3Test {
 
     @Test
     void testyaw_derivative() throws Throwable {
-        // const auto aa = Vector3{0.0, 0.1, 0.6};
-        // const auto R = Rot3::Expmap(aa);
+        final Vector3 aa = new Vector3(0.0, 0.1, 0.6);
+        final Rot3 R = Rot3.statics.Expmap(aa);
         // const auto num = numericalDerivative11(yaw_proxy, R);
         // Matrix13 calc;
         // R.yaw(calc);
@@ -982,53 +989,61 @@ public class Rot3Test {
 
     @Test
     void testdeterminant() throws Throwable {
-        // size_t degree = 1;
-        // Rot3 R_w0; // Zero rotation
-        // Rot3 R_w1 = Rot3::Ry(degree * M_PI / 180);
+        int degree = 1;
+        Rot3 R_w0 = new Rot3(); // Zero rotation
+        Rot3 R_w1 = Rot3.Ry(degree * Math.PI / 180);
 
-        // Rot3 R_01, R_w2;
-        // double actual, expected = 1.0;
+        Rot3 R_01 = new Rot3();
+        Rot3 R_w2 = new Rot3();
+        double actual = 0;
+        double expected = 1.0;
 
-        // for (size_t i = 2; i < 360; ++i) {
-        // R_01 = R_w0.between(R_w1);
-        // R_w2 = R_w1 * R_01;
-        // R_w0 = R_w1;
-        // R_w1 = R_w2.normalized();
-        // actual = R_w2.matrix().determinant();
+        for (int i = 2; i < 360; ++i) {
+            R_01 = R_w0.between(R_w1);
+            R_w2 = R_w1.compose(R_01);
+            R_w0 = R_w1;
+            R_w1 = R_w2.normalized();
+            actual = R_w2.matrix().determinant();
 
-        // EXPECT_DOUBLES_EQUAL(expected, actual, 1e-7);
-        // }
+            assertEquals(expected, actual, 1e-7);
+        }
     }
 
     @Test
     void testExpmapChainRule() throws Throwable {
-        // // Multiply with an arbitrary matrix and exponentiate
-        // Matrix3 M;
-        // M << 1, 2, 3, 4, 5, 6, 7, 8, 9;
-        // auto g = [&](const Vector3& omega) {
-        // return Rot3::Expmap(M*omega);
-    };
+        // Multiply with an arbitrary matrix and exponentiate
+        Matrix3 M = new Matrix3( //
+                1, 2, 3, //
+                4, 5, 6, //
+                7, 8, 9);
+        ThrowingFunction<Vector3, Rot3> g = (omega) -> Rot3.statics.Expmap(M.times(omega));
 
-    // // Test the derivatives at zero
-    // const Matrix3 expected = numericalDerivative11<Rot3, Vector3>(g, Z_3x1);
-    // assertTrue(assert_equal<Matrix3>(expected, M, 1e-5)); //
-    // SO3::ExpmapDerivative(Z_3x1) is identity
+        // Test the derivatives at zero
+        final Matrix expected = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector3, Vector3>numericalDerivative11(g, new Vector3(0, 0, 0), 1e-5);
+        // SO3::ExpmapDerivative(Z_3x1) is identity
+        assertTrue(assert_equal(expected, new Matrix(M), 1e-5));
 
-    // // Test the derivatives at another value
-    // const Vector3 delta{0.1,0.2,0.3};
-    // const Matrix3 expected2 = numericalDerivative11<Rot3, Vector3>(g, delta);
-    // assertTrue(assert_equal<Matrix3>(expected2, SO3::ExpmapDerivative(M*delta) *
-    // M,
-    // 1e-5));
-    // }
+        // Test the derivatives at another value
+        final Vector3 delta = new Vector3(0.1, 0.2, 0.3);
+        final Matrix expected2 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector3, Vector3>numericalDerivative11(g, delta, 1e-5);
+        // TODO: implement SO3
+        // assertTrue(assert_equal(expected2,
+        // SO3::ExpmapDerivative(M*delta) * M, 1e-5));
+    }
 
     @Test
     void testexpmapChainRule() throws Throwable {
-        // // Multiply an arbitrary rotation with exp(M*x)
-        // // Perhaps counter-intuitively, this has the same derivatives as above
-        // Matrix3 M;
-        // M << 1, 2, 3, 4, 5, 6, 7, 8, 9;
-        // const Rot3 R = Rot3::Expmap({1, 2, 3});
+        // Multiply an arbitrary rotation with exp(M*x)
+        // Perhaps counter-intuitively, this has the same derivatives as above
+        Matrix3 M = new Matrix3( //
+                1, 2, 3, //
+                4, 5, 6, //
+                7, 8, 9);
+        final Rot3 R = Rot3.statics.Expmap(new Vector3(1, 2, 3));
         // auto g = [&](const Vector3& omega) {
         // return R.expmap(M*omega);
         // };
@@ -1038,7 +1053,7 @@ public class Rot3Test {
         // assertTrue(assert_equal<Matrix3>(expected, M, 1e-5));
 
         // // Test the derivatives at another value
-        // const Vector3 delta{0.1,0.2,0.3};
+        final Vector3 delta = new Vector3(0.1, 0.2, 0.3);
         // const Matrix3 expected2 = numericalDerivative11<Rot3, Vector3>(g, delta);
         // assertTrue(assert_equal<Matrix3>(expected2, SO3::ExpmapDerivative(M*delta) *
         // M,
