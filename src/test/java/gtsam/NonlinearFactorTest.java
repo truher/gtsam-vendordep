@@ -1,8 +1,14 @@
 package gtsam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
+import gtsam.noiseModel.Constrained;
 import gtsam.noiseModel.Isotropic;
+import gtsam.noiseModel.Robust;
+import gtsam.noiseModel.mEstimator.Huber;
 
 /** See tests/testNonlinearFactor.cpp */
 public class NonlinearFactorTest {
@@ -64,9 +70,9 @@ public class NonlinearFactorTest {
     }
 
     @Test
-    void testWeight() {
-        // // create a values structure for the non linear factor graph
-        // Values values;
+    void testWeight() throws Throwable {
+        // create a values structure for the non linear factor graph
+        Values values = new Values();
 
         // // Instantiate a concrete class version of a NoiseModelFactor
         // PriorFactor<Point2> factor1(X(1), Point2(0, 0));
@@ -84,22 +90,23 @@ public class NonlinearFactorTest {
         // Point2 estimate(3, 3), prior(1, 1);
         // double distance = (estimate - prior).norm();
 
-        // auto gaussian = noiseModel::Isotropic::Sigma(2, 0.2);
+        shared_ptr<Isotropic> gaussian = Isotropic.Sigma(2, 0.2, true);
 
         // PriorFactor<Point2> factor;
 
-        // // vector to store all the robust models in so we can test iteratively.
-        // vector<noiseModel::Robust::shared_ptr> robust_models;
+        // vector to store all the robust models in so we can test iteratively.
+        List<shared_ptr<? extends Robust>> robust_models = new ArrayList<>();
+        ;
 
         // // Fair noise model
         // auto fair = noiseModel::Robust::Create(
         // noiseModel::mEstimator::Fair::Create(1.3998), gaussian);
         // robust_models.push_back(fair);
 
-        // // Huber noise model
-        // auto huber = noiseModel::Robust::Create(
-        // noiseModel::mEstimator::Huber::Create(1.345), gaussian);
-        // robust_models.push_back(huber);
+        // Huber noise model
+        var huber = Robust.Create(
+                Huber.Create(1.345), gaussian);
+        robust_models.add(huber);
 
         // // Cauchy noise model
         // auto cauchy = noiseModel::Robust::Create(
@@ -131,13 +138,13 @@ public class NonlinearFactorTest {
         // noiseModel::mEstimator::L2WithDeadZone::Create(1.0), gaussian);
         // robust_models.push_back(l2);
 
-        // for(auto&& model: robust_models) {
-        // factor = PriorFactor<Point2>(X(3), prior, model);
-        // values.clear();
-        // values.insert(X(3), estimate);
-        // CHECK(assert_equal(model->robust()->weight(distance),
-        // factor.weight(values)));
-        // }
+        for (shared_ptr<? extends Robust> model : robust_models) {
+            // factor = PriorFactor<Point2>(X(3), prior, model);
+            // values.clear();
+            // values.insert(X(3), estimate);
+            // CHECK(assert_equal(model->robust()->weight(distance),
+            // factor.weight(values)));
+        }
     }
 
     @Test
@@ -228,20 +235,19 @@ public class NonlinearFactorTest {
     }
 
     @Test
-    void testlinearize_constraint1() {
-        // SharedDiagonal constraint =
-        // noiseModel::Constrained::MixedSigmas(Vector2(0.2,0));
+    void testlinearize_constraint1() throws Throwable {
+        shared_ptr<Constrained> constraint = Constrained.MixedSigmas(new Vector(new double[] { 0.2, 0 }));
 
-        // Point2 mu(1., -1.);
+        Point2 mu = new Point2(1., -1.);
         // NonlinearFactorGraph::sharedFactor f0(new simulated2D::Prior(mu, constraint,
         // X(1)));
 
-        // Values config;
+        Values config = new Values();
         // config.insert(X(1), Point2(1.0, 2.0));
         // GaussianFactor::shared_ptr actual = f0->linearize(config);
 
         // // create expected
-        // Vector2 b(0., -3.);
+        Vector2 b = new Vector2(0., -3.);
         // JacobianFactor expected(X(1), (Matrix(2, 2) << 5.0, 0.0, 0.0,
         // 1.0).finished(), b,
         // noiseModel::Constrained::MixedSigmas(Vector2(1,0)));
@@ -249,19 +255,18 @@ public class NonlinearFactorTest {
     }
 
     @Test
-    void testlinearize_constraint2() {
-        // SharedDiagonal constraint =
-        // noiseModel::Constrained::MixedSigmas(Vector2(0.2,0));
+    void testlinearize_constraint2() throws Throwable {
+        shared_ptr<Constrained> constraint = Constrained.MixedSigmas(new Vector(new double[] { 0.2, 0 }));
 
-        // Point2 z3(1.,-1.);
+        Point2 z3 = new Point2(1., -1.);
         // simulated2D::Measurement f0(z3, constraint, X(1),L(1));
 
-        // Values config;
+        Values config = new Values();
         // config.insert(X(1), Point2(1.0, 2.0));
         // config.insert(L(1), Point2(5.0, 4.0));
         // GaussianFactor::shared_ptr actual = f0.linearize(config);
 
-        // // create expected
+        // create expected
         // Matrix2 A; A << 5.0, 0.0, 0.0, 1.0;
         // Vector2 b(-15., -3.);
         // JacobianFactor expected(X(1), -1*A, L(1), A, b,
@@ -270,20 +275,20 @@ public class NonlinearFactorTest {
     }
 
     @Test
-    void testcloneWithNewNoiseModel() {
+    void testcloneWithNewNoiseModel() throws Throwable {
         // create original factor
         double sigma1 = 0.1;
         // NonlinearFactorGraph nfg =
         // example::nonlinearFactorGraphWithGivenSigma(sigma1);
 
-        // // create expected
-        // double sigma2 = 10;
+        // create expected
+        double sigma2 = 10;
         // NonlinearFactorGraph expected =
         // example::nonlinearFactorGraphWithGivenSigma(sigma2);
 
         // // create actual
         // NonlinearFactorGraph actual;
-        // SharedNoiseModel noise2 = noiseModel::Isotropic::Sigma(2,sigma2);
+        shared_ptr<Isotropic> noise2 = Isotropic.Sigma(2, sigma2, true);
         // actual.push_back(nfg.at<NoiseModelFactor>(0)->cloneWithNewNoiseModel(noise2));
 
         // // check it's all good
@@ -320,9 +325,9 @@ public class NonlinearFactorTest {
     // };
 
     @Test
-    void testNoiseModelFactor1() {
+    void testNoiseModelFactor1() throws Throwable {
         // TestFactor1 tf;
-        // Values tv;
+        Values tv = new Values();
         // tv.insert(L(1), double((1.0)));
         // EXPECT(assert_equal((Vector(1) << 1.0).finished(), tf.unwhitenedError(tv)));
         // DOUBLES_EQUAL(0.25 / 2.0, tf.error(tv), 1e-9);
@@ -387,9 +392,10 @@ public class NonlinearFactorTest {
     // };
 
     @Test
-    void testNoiseModelFactor4() {
+    void testNoiseModelFactor4() throws Throwable {
         // TestFactor4 tf;
-        // Values tv;
+        Values tv = new Values();
+
         // tv.insert(X(1), double((1.0)));
         // tv.insert(X(2), double((2.0)));
         // tv.insert(X(3), double((3.0)));
@@ -485,9 +491,9 @@ public class NonlinearFactorTest {
     // };
 
     @Test
-    void testNoiseModelFactor5() {
+    void testNoiseModelFactor5() throws Throwable {
         // TestFactor5 tf;
-        // Values tv;
+        Values tv = new Values();
         // tv.insert(X(1), double((1.0)));
         // tv.insert(X(2), double((2.0)));
         // tv.insert(X(3), double((3.0)));
@@ -550,9 +556,9 @@ public class NonlinearFactorTest {
     // };
 
     @Test
-    void testNoiseModelFactor6() {
+    void testNoiseModelFactor6() throws Throwable {
         // TestFactor6 tf;
-        // Values tv;
+        Values tv = new Values();
         // tv.insert(X(1), double((1.0)));
         // tv.insert(X(2), double((2.0)));
         // tv.insert(X(3), double((3.0)));
@@ -615,9 +621,9 @@ public class NonlinearFactorTest {
     // };
 
     @Test
-    void testNoiseModelFactorN() {
+    void testNoiseModelFactorN() throws Throwable {
         // TestFactorN tf;
-        // Values tv;
+        Values tv = new Values();
         // tv.insert(X(1), double((1.0)));
         // tv.insert(X(2), double((2.0)));
         // tv.insert(X(3), double((3.0)));

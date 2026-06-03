@@ -13,6 +13,7 @@ import org.team100.foreign.Lib;
 
 /**
  * TODO: Point3 is a typedef of Vector3, so this seems wrong.
+ * TODO: implement vectortype
  */
 public class Point3 extends ForeignObject
         implements LieGroup<Point3, Vector3> {

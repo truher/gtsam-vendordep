@@ -11,12 +11,19 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
+// TODO: implement LieGroup.
+// TOOD: implement VectorType
 public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     public enum FF {
         Point2(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
         Point2_delete(null, ADDRESS),
         Point2_x(JAVA_DOUBLE, ADDRESS),
         Point2_y(JAVA_DOUBLE, ADDRESS),
+        Point2_norm2(JAVA_DOUBLE, ADDRESS),
+        Point2_norm2H(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point2_distance2(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point2_distance2H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_norm(JAVA_DOUBLE, ADDRESS),
         Point2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
@@ -74,6 +81,26 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     @Override
     public Point2 retract(Vector2 v) throws Throwable {
         return new Point2(x() + v.at(0), y() + v.at(1));
+    }
+
+    public static double norm2(Point2 p) throws Throwable {
+        return (double) FF.Point2_norm2.h.invokeExact(p.ptr);
+    }
+
+    public static double norm2(Point2 p, Matrix H) throws Throwable {
+        return (double) FF.Point2_norm2H.h.invokeExact(p.ptr, H.ptr);
+    }
+
+    public static double distance2(Point2 p, Point2 q) throws Throwable {
+        return (double) FF.Point2_distance2.h.invokeExact(p.ptr, q.ptr);
+    }
+
+    public static double distance2(Point2 p, Point2 q, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Point2_distance2H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
+    }
+
+    public double norm() throws Throwable {
+        return (double) FF.Point2_norm.h.invokeExact(ptr);
     }
 
     public static boolean check_group_invariants(Point2 a, Point2 b) throws Throwable {

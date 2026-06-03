@@ -1,6 +1,7 @@
 package gtsam;
 
 import static gtsam.Testable.assert_equal;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -90,38 +91,53 @@ public class Point2Test {
         // Point2(p2.normalized()), 1e-6));
     }
 
-    // namespace {
-    // /* *************************************************************************
-    // */
-    // // some shared test values
-    // Point2 x1(0,0), x2(1, 1), x3(1, 1);
-    // Point2 l1(1, 0), l2(1, 1), l3(2, 2), l4(1, 3);
+    // some shared test values
+    static Point2 x1;
+    static Point2 x2;
+    static Point2 x3;
+    static Point2 l1;
+    static Point2 l2;
+    static Point2 l3;
+    static Point2 l4;
 
-    // /* *************************************************************************
-    // */
-    // double norm_proxy(const Point2& point) {
-    // return point.norm();
-    // }
-    // }
+    static {
+        try {
+            x1 = new Point2(0, 0);
+            x2 = new Point2(1, 1);
+            x3 = new Point2(1, 1);
+            l1 = new Point2(1, 0);
+            l2 = new Point2(1, 1);
+            l3 = new Point2(2, 2);
+            l4 = new Point2(1, 3);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
+
+    double norm_proxy(Point2 point) throws Throwable {
+        return point.norm();
+    }
+
     @Test
-    void testnorm() {
-        // Point2 p0(cos(5.0), sin(5.0));
-        // DOUBLES_EQUAL(1, p0.norm(), 1e-6);
-        // Point2 p1(4, 5), p2(1, 1);
-        // DOUBLES_EQUAL( 5, distance2(p1, p2), 1e-6);
-        // DOUBLES_EQUAL( 5, (p2-p1).norm(), 1e-6);
+    void testnorm() throws Throwable {
+        Point2 p0 = new Point2(Math.cos(5.0), Math.sin(5.0));
+        assertEquals(1, p0.norm(), 1e-6);
+        Point2 p1 = new Point2(4, 5);
+        Point2 p2 = new Point2(1, 1);
+        assertEquals(5, Point2.distance2(p1, p2), 1e-6);
+        // assertEquals( 5, (p2-p1).norm(), 1e-6);
 
         // Matrix expectedH, actualH;
         // double actual;
 
         // // exception, for (0,0) derivative is [Inf,Inf] but we return [1,1]
         // actual = norm2(x1, actualH);
-        // EXPECT_DOUBLES_EQUAL(0, actual, 1e-9);
+        // assertEquals(0, actual, 1e-9);
         // expectedH = (Matrix(1, 2) << 1.0, 1.0).finished();
         // assertTrue(assert_equal(expectedH,actualH));
 
         // actual = norm2(x2, actualH);
-        // EXPECT_DOUBLES_EQUAL(sqrt(2.0), actual, 1e-9);
+        // assertEquals(sqrt(2.0), actual, 1e-9);
         // expectedH = numericalDerivative11(norm_proxy, x2);
         // assertTrue(assert_equal(expectedH,actualH));
 
@@ -142,15 +158,15 @@ public class Point2Test {
         Matrix expectedH2 = new Matrix();
         Matrix actualH2 = new Matrix();
 
-        // // establish distance is indeed zero
-        // EXPECT_DOUBLES_EQUAL(1, distance2(x1, l1), 1e-9);
+        // establish distance is indeed zero
+        assertEquals(1, Point2.distance2(x1, l1), 1e-9);
 
-        // // establish distance is indeed 45 degrees
-        // EXPECT_DOUBLES_EQUAL(sqrt(2.0), distance2(x1, l2), 1e-9);
+        // establish distance is indeed 45 degrees
+        assertEquals(Math.sqrt(2.0), Point2.distance2(x1, l2), 1e-9);
 
-        // // Another pair
-        // double actual23 = distance2(x2, l3, actualH1, actualH2);
-        // EXPECT_DOUBLES_EQUAL(sqrt(2.0), actual23, 1e-9);
+        // Another pair
+        double actual23 = Point2.distance2(x2, l3, actualH1, actualH2);
+        assertEquals(Math.sqrt(2.0), actual23, 1e-9);
 
         // // Check numerical derivatives
         // expectedH1 = numericalDerivative21(distance_proxy, x2, l3);
@@ -160,7 +176,7 @@ public class Point2Test {
 
         // // Another test
         // double actual34 = distance2(x3, l4, actualH1, actualH2);
-        // EXPECT_DOUBLES_EQUAL(2, actual34, 1e-9);
+        // assertEquals(2, actual34, 1e-9);
 
         // // Check numerical derivatives
         // expectedH1 = numericalDerivative21(distance_proxy, x3, l4);
