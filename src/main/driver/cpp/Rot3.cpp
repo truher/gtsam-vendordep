@@ -155,14 +155,24 @@ gtsam::Unit3* Rot3_rotateUnit3(const gtsam::Rot3* r, const gtsam::Unit3* p) {
 gtsam::Point3* Rot3_rotatePoint3(const gtsam::Rot3* r, const gtsam::Point3* p) {
     return new gtsam::Point3(r->rotate(*p));
 }
-gtsam::Unit3* Rot3_rotateH(const gtsam::Rot3* r,   //
-                           const gtsam::Unit3* p,  //
-                           gtsam::Matrix* H1,      //
-                           gtsam::Matrix* H2) {    //
+gtsam::Unit3* Rot3_rotateUnit3H(const gtsam::Rot3* r,   //
+                                const gtsam::Unit3* p,  //
+                                gtsam::Matrix* H1,      //
+                                gtsam::Matrix* H2) {    //
     return new gtsam::Unit3(r->rotate(*p, *H1, *H2));
 }
-gtsam::Unit3* Rot3_unrotate(const gtsam::Rot3* r, const gtsam::Unit3* p) {
+gtsam::Point3* Rot3_rotatePoint3H(const gtsam::Rot3* r,    //
+                                  const gtsam::Point3* p,  //
+                                  gtsam::Matrix* H1,       //
+                                  gtsam::Matrix* H2) {     //
+    return new gtsam::Point3(r->rotate(*p, *H1, *H2));
+}
+gtsam::Unit3* Rot3_unrotateUnit3(const gtsam::Rot3* r, const gtsam::Unit3* p) {
     return new gtsam::Unit3(r->unrotate(*p));
+}
+gtsam::Point3* Rot3_unrotatePoint3(const gtsam::Rot3* r,      //
+                                   const gtsam::Point3* p) {  //
+    return new gtsam::Point3(r->unrotate(*p));
 }
 gtsam::Unit3* Rot3_unrotateUnit3H(const gtsam::Rot3* r,   //
                                   const gtsam::Unit3* p,  //

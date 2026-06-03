@@ -2,6 +2,8 @@ package gtsam;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.noiseModel.Isotropic;
+
 public class BetweenFactorTest {
 
     // /**
@@ -68,22 +70,22 @@ public class BetweenFactorTest {
     // Constructor vector3
     @Test
     void testConstructorVector3() throws Throwable {
-        // SharedNoiseModel model = noiseModel::Isotropic::Sigma(3, 1.0);
+        shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Vector3 measured = new Vector3(1, 2, 3);
         // BetweenFactor<Vector3> factor(1, 2, measured, model);
     }
 
     // Constructor dynamic sized vector
     @Test
-    void testConstructorDynamicSizeVector() {
-        // SharedNoiseModel model = noiseModel::Isotropic::Sigma(5, 1.0);
+    void testConstructorDynamicSizeVector() throws Throwable {
+        shared_ptr<Isotropic> model = Isotropic.Sigma(5, 1.0, true);
         // Vector measured(5); measured << 1, 2, 3, 4, 5;
         // BetweenFactor<Vector> factor(1, 2, measured, model);
     }
 
     @Test
     void testPoint3Jacobians() throws Throwable {
-        // SharedNoiseModel model = noiseModel::Isotropic::Sigma(3, 1.0);
+        shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Point3 measured = new Point3(1, 2, 3);
         // BetweenFactor<Point3> factor(1, 2, measured, model);
 
@@ -96,9 +98,9 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testRot3Jacobians() throws Throwable{
-        // SharedNoiseModel model = noiseModel::Isotropic::Sigma(3, 1.0);
-        // Rot3 measured = Rot3::Ry(M_PI_2);
+    void testRot3Jacobians() throws Throwable {
+        shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
+        Rot3 measured = Rot3.Ry(Math.PI / 2);
         // BetweenFactor<Rot3> factor(1, 2, measured, model);
 
         Values values = new Values();
@@ -110,9 +112,9 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testPose3Jacobians() throws Throwable{
-        // SharedNoiseModel model = noiseModel::Isotropic::Sigma(6, 1.0);
-        // Pose3 measured(Rot3(), Point3(1, 2, 3));
+    void testPose3Jacobians() throws Throwable {
+        shared_ptr<Isotropic> model = Isotropic.Sigma(6, 1.0, true);
+        Pose3 measured = new Pose3(new Rot3(), new Point3(1, 2, 3));
         // BetweenFactor<Pose3> factor(1, 2, measured, model);
 
         Pose3 pose1 = new Pose3();

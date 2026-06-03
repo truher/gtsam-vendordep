@@ -548,27 +548,29 @@ public class Pose2Test {
         assertTrue(assert_equal(expected, actual1, 1e-6));
         assertTrue(assert_equal(expected, actual2, 1e-6));
 
-        // Matrix expectedH1 = (Matrix(3,3) <<
-        // 0.0,-1.0,-2.0,
-        // 1.0, 0.0,-2.0,
-        // 0.0, 0.0,-1.0
-        // ).finished();
-        // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), gT1, gT2);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(numericalH1,actualH1));
-        // // Assert H1 = -AdjointMap(between(p2,p1)) as in doc/math.lyx
+        Matrix expectedH1 = new Matrix(new double[][]{
+        {0.0,-1.0,-2.0},
+        {1.0, 0.0,-2.0},
+        {0.0, 0.0,-1.0}});
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21((a, b) -> a.between(b), gT1, gT2, 1e-5);
+        assertTrue(assert_equal(expectedH1,actualH1));
+        assertTrue(assert_equal(numericalH1,actualH1));
+        // Assert H1 = -AdjointMap(between(p2,p1)) as in doc/math.lyx
         // assertTrue(assert_equal(-gT2.between(gT1).AdjointMap(),actualH1));
 
-        // Matrix expectedH2 = (Matrix(3,3) <<
-        // 1.0, 0.0, 0.0,
-        // 0.0, 1.0, 0.0,
-        // 0.0, 0.0, 1.0
-        // ).finished();
-        // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), gT1, gT2);
-        // assertTrue(assert_equal(expectedH2,actualH2));
-        // assertTrue(assert_equal(numericalH2,actualH2));
+        Matrix expectedH2 = new Matrix(new double[][]{
+        {1.0, 0.0, 0.0},
+        {0.0, 1.0, 0.0},
+        {0.0, 0.0, 1.0}});
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22((a, b) -> a.between(b), gT1, gT2, 1e-5);
+        assertTrue(assert_equal(expectedH2,actualH2));
+        assertTrue(assert_equal(numericalH2,actualH2));
 
     }
 
@@ -581,12 +583,16 @@ public class Pose2Test {
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();
         p1.between(p2, actualH1, actualH2);
-        // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
-        // assertTrue(assert_equal(numericalH1,actualH1));
-        // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
-        // assertTrue(assert_equal(numericalH2,actualH2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21((a, b) -> a.between(b), p1, p2, 1e-5);
+        assertTrue(assert_equal(numericalH1, actualH1));
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22((a, b) -> a.between(b), p1, p2, 1e-5);
+        assertTrue(assert_equal(numericalH2, actualH2));
     }
 
     // arbitrary, non perpendicular angles to be extra safe
@@ -598,12 +604,16 @@ public class Pose2Test {
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();
         p1.between(p2, actualH1, actualH2);
-        // Matrix numericalH1 =
-        // numericalDerivative21<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
-        // assertTrue(assert_equal(numericalH1,actualH1));
-        // Matrix numericalH2 =
-        // numericalDerivative22<Pose2,Pose2,Pose2>((a,b)->a.between(b), p1, p2);
-        // assertTrue(assert_equal(numericalH2,actualH2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21((a, b) -> a.between(b), p1, p2, 1e-5);
+        assertTrue(assert_equal(numericalH1, actualH1));
+        Matrix numericalH2 = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22((a, b) -> a.between(b), p1, p2, 1e-5);
+        assertTrue(assert_equal(numericalH2, actualH2));
     }
 
     @Test

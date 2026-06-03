@@ -43,4 +43,16 @@ bool Point3_check_manifold_invariants(const gtsam::Point3* a,    //
                                       const gtsam::Point3* b) {  //
     return gtsam::check_manifold_invariants(*a, *b);
 }
+gtsam::Vector3* Point3_Logmap(const gtsam::Point3* p) {
+    return new gtsam::Vector3(traits<gtsam::Point3>::Logmap(*p))
+}
+gtsam::Point3* Point3_Expmap(const gtsam::Vector3* v) {
+    return new gtsam::Point3(traits<gtsam::Point3>::Expmap(*v))
+}
+gtsam::Vector3* Point3_LogmapH(const gtsam::Point3* p, gtsam::Matrix* H) {
+    return new gtsam::Vector3(traits<gtsam::Point3>::Logmap(*p, *H))
+}
+gtsam::Point3* Point3_ExpmapH(const gtsam::Vector3* v, gtsam::Matrix* H) {
+    return new gtsam::Point3(traits<gtsam::Point3>::Expmap(*v, *H))
+}
 }

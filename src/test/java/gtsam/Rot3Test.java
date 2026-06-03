@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import gtsam.NumericalDerivative.ThrowingFunction;
+import gtsam.NumericalDerivative.ThrowingFunction2;
 
 /**
  * See gtsam/geometry/tests/testRot3.cpp
@@ -408,18 +409,27 @@ public class Rot3Test {
 
     @Test
     void testrotate_derivatives() throws Throwable {
-        // Matrix actualDrotate1a, actualDrotate1b, actualDrotate2;
-        // R.rotate(P, actualDrotate1a, actualDrotate2);
-        // R.inverse().rotate(P, actualDrotate1b, {});
-        // Matrix numerical1 = numericalDerivative21(testing::rotate<Rot3,Point3>, R,
-        // P);
-        // Matrix numerical2 = numericalDerivative21(testing::rotate<Rot3,Point3>,
-        // R.inverse(), P);
-        // Matrix numerical3 = numericalDerivative22(testing::rotate<Rot3,Point3>, R,
-        // P);
-        // assertTrue(assert_equal(numerical1,actualDrotate1a,error));
-        // assertTrue(assert_equal(numerical2,actualDrotate1b,error));
-        // assertTrue(assert_equal(numerical3,actualDrotate2, error));
+        Matrix actualDrotate1a = new Matrix();
+        Matrix actualDrotate1b = new Matrix();
+        Matrix actualDrotate2 = new Matrix();
+        R.rotate(P, actualDrotate1a, actualDrotate2);
+        R.inverse().rotate(P, actualDrotate1b, new Matrix());
+        ThrowingFunction2<Rot3, Point3, Point3> rotate = (a, b) -> a.rotate(b);
+        Matrix numerical1 = NumericalDerivative.<//
+                Point3, Vector3, //
+                Rot3, Vector3, //
+                Point3, Vector3>numericalDerivative21(rotate, R, P, 1e-5);
+        Matrix numerical2 = NumericalDerivative.<//
+                Point3, Vector3, //
+                Rot3, Vector3, //
+                Point3, Vector3>numericalDerivative21(rotate, R.inverse(), P, 1e-5);
+        Matrix numerical3 = NumericalDerivative.<//
+                Point3, Vector3, //
+                Rot3, Vector3, //
+                Point3, Vector3>numericalDerivative22(rotate, R, P, 1e-5);
+        assertTrue(assert_equal(numerical1, actualDrotate1a, error));
+        assertTrue(assert_equal(numerical2, actualDrotate1b, error));
+        assertTrue(assert_equal(numerical3, actualDrotate2, error));
     }
 
     @Test
@@ -430,13 +440,18 @@ public class Rot3Test {
         Point3 actual = R.unrotate(w, H1, H2);
         assertTrue(assert_equal(P, actual));
 
-        // Matrix numerical1 = numericalDerivative21(testing::unrotate<Rot3,Point3>, R,
-        // w);
-        // assertTrue(assert_equal(numerical1,H1,error));
+        ThrowingFunction2<Rot3, Point3, Point3> unrotate = (a, b) -> a.unrotate(b);
+        Matrix numerical1 = NumericalDerivative.<//
+                Point3, Vector3, //
+                Rot3, Vector3, //
+                Point3, Vector3>numericalDerivative21(unrotate, R, w, 1e-5);
+        assertTrue(assert_equal(numerical1, H1, error));
 
-        // Matrix numerical2 = numericalDerivative22(testing::unrotate<Rot3,Point3>, R,
-        // w);
-        // assertTrue(assert_equal(numerical2,H2,error));
+        Matrix numerical2 = NumericalDerivative.<//
+                Point3, Vector3, //
+                Rot3, Vector3, //
+                Point3, Vector3>numericalDerivative22(unrotate, R, w, 1e-5);
+        assertTrue(assert_equal(numerical2, H2, error));
     }
 
     @Test
@@ -450,13 +465,20 @@ public class Rot3Test {
         Rot3 actual = R1.compose(R2, actualH1, actualH2);
         assertTrue(assert_equal(expected, actual));
 
-        // Matrix numericalH1 = numericalDerivative21(testing::compose<Rot3>, R1,
-        // R2, 1e-2);
-        // assertTrue(assert_equal(numericalH1,actualH1));
+        ThrowingFunction2<Rot3, Rot3, Rot3> compose = (a, b) -> a.compose(b);
+        Matrix numericalH1 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative21(compose, R1,
+                        R2, 1e-2);
+        assertTrue(assert_equal(numericalH1, actualH1));
 
-        // Matrix numericalH2 = numericalDerivative22(testing::compose<Rot3>, R1,
-        // R2, 1e-2);
-        // assertTrue(assert_equal(numericalH2,actualH2));
+        Matrix numericalH2 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative22(compose, R1,
+                        R2, 1e-2);
+        assertTrue(assert_equal(numericalH2, actualH2));
     }
 
     @Test
@@ -479,33 +501,42 @@ public class Rot3Test {
 
     @Test
     void testbetween() throws Throwable {
-        // Rot3 r1 = Rot3::Rz(M_PI/3.0);
-        // Rot3 r2 = Rot3::Rz(2.0*M_PI/3.0);
+        Rot3 r1 = Rot3.Rz(Math.PI / 3.0);
+        Rot3 r2 = Rot3.Rz(2.0 * Math.PI / 3.0);
 
-        // Matrix expectedr1 = (Matrix(3, 3) <<
-        // 0.5, -sqrt(3.0)/2.0, 0.0,
-        // sqrt(3.0)/2.0, 0.5, 0.0,
-        // 0.0, 0.0, 1.0).finished();
-        // assertTrue(assert_equal(expectedr1, r1.matrix()));
+        Matrix3 expectedr1 = new Matrix3(
+                0.5, -Math.sqrt(3.0) / 2.0, 0.0, //
+                Math.sqrt(3.0) / 2.0, 0.5, 0.0, //
+                0.0, 0.0, 1.0);
+        assertTrue(assert_equal(expectedr1, r1.matrix()));
 
-        // Rot3 R = Rot3::Rodrigues(0.1, 0.4, 0.2);
-        // Rot3 origin;
-        // assertTrue(assert_equal(R, origin.between(R)));
-        // assertTrue(assert_equal(R.inverse(), R.between(origin)));
+        Rot3 R = Rot3.Rodrigues(0.1, 0.4, 0.2);
+        Rot3 origin = new Rot3();
+        assertTrue(assert_equal(R, origin.between(R)));
+        assertTrue(assert_equal(R.inverse(), R.between(origin)));
 
-        // Rot3 R1 = Rot3::Rodrigues(0.1, 0.2, 0.3);
-        // Rot3 R2 = Rot3::Rodrigues(0.2, 0.3, 0.5);
+        Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
+        Rot3 R2 = Rot3.Rodrigues(0.2, 0.3, 0.5);
 
-        // Rot3 expected = R1.inverse() * R2;
-        // Matrix actualH1, actualH2;
-        // Rot3 actual = R1.between(R2, actualH1, actualH2);
-        // assertTrue(assert_equal(expected,actual));
+        Rot3 expected = R1.inverse().compose(R2);
+        Matrix actualH1 = new Matrix();
+        Matrix actualH2 = new Matrix();
+        Rot3 actual = R1.between(R2, actualH1, actualH2);
+        assertTrue(assert_equal(expected, actual));
 
-        // Matrix numericalH1 = numericalDerivative21(testing::between<Rot3> , R1, R2);
-        // assertTrue(assert_equal(numericalH1,actualH1));
+        ThrowingFunction2<Rot3, Rot3, Rot3> between = (a, b) -> a.between(b);
 
-        // Matrix numericalH2 = numericalDerivative22(testing::between<Rot3> , R1, R2);
-        // assertTrue(assert_equal(numericalH2,actualH2));
+        Matrix numericalH1 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative21(between, R1, R2, 1e-5);
+        assertTrue(assert_equal(numericalH1, actualH1));
+
+        Matrix numericalH2 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative22(between, R1, R2, 1e-5);
+        assertTrue(assert_equal(numericalH2, actualH2));
     }
 
     @Test
@@ -612,13 +643,8 @@ public class Rot3Test {
     void testlogmapStability() throws Throwable {
         Vector3 w = new Vector3(1e-8, 0.0, 0.0);
         Rot3 R = Rot3.statics.Expmap(w);
-        // // double tr = R.r1().x()+R.r2().y()+R.r3().z();
-        // // std::cout.precision(5000);
-        // // std::cout << "theta: " << w.norm() << std::endl;
-        // // std::cout << "trace: " << tr << std::endl;
-        // // R.print("R = ");
-        // Vector actualw = Rot3::Logmap(R);
-        // assertTrue(assert_equal(w, actualw, 1e-15));
+        Vector3 actualw = Rot3.statics.Logmap(R);
+        assertTrue(assert_equal(w, actualw, 1e-15));
     }
 
     @Test
@@ -812,27 +838,39 @@ public class Rot3Test {
         CHECK_AXIS_ANGLE(_axis, theta165, Rot3.AxisAngle(axis, theta195));
     }
 
-    // Rot3 RzRyRx_proxy(double const& a, double const& b, double const& c) {
-    // return Rot3::RzRyRx(a, b, c);
-    // }
+    Rot3 RzRyRx_proxy(Vector1 a, Vector1 b, Vector1 c) throws Throwable {
+        return Rot3.RzRyRx(a.at(0), b.at(0), c.at(0));
+    }
 
     @Test
     void testRzRyRx_scalars_derivative() throws Throwable {
-        final double x = 0.1;
-        final double y = 0.4;
-        final double z = 0.2;
-        // const auto num_x = numericalDerivative31(RzRyRx_proxy, x, y, z);
-        // const auto num_y = numericalDerivative32(RzRyRx_proxy, x, y, z);
-        // const auto num_z = numericalDerivative33(RzRyRx_proxy, x, y, z);
+        final Vector1 x = new Vector1(0.1);
+        final Vector1 y = new Vector1(0.4);
+        final Vector1 z = new Vector1(0.2);
+        Matrix num_x = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative31(this::RzRyRx_proxy, x, y, z, 1e-5);
+        Matrix num_y = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative32(this::RzRyRx_proxy, x, y, z, 1e-5);
+        Matrix num_z = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative33(this::RzRyRx_proxy, x, y, z, 1e-5);
 
-        Vector3 act_x = new Vector3();
-        Vector3 act_y = new Vector3();
-        Vector3 act_z = new Vector3();
-        // Rot3::RzRyRx(x, y, z, act_x, act_y, act_z);
+        Matrix act_x = new Matrix();
+        Matrix act_y = new Matrix();
+        Matrix act_z = new Matrix();
+        Rot3.RzRyRx(x.at(0), y.at(0), z.at(0), act_x, act_y, act_z);
 
-        // assertTrue(assert_equal(num_x, act_x));
-        // assertTrue(assert_equal(num_y, act_y));
-        // assertTrue(assert_equal(num_z, act_z));
+        assertTrue(assert_equal(num_x, act_x));
+        assertTrue(assert_equal(num_y, act_y));
+        assertTrue(assert_equal(num_z, act_z));
     }
 
     Rot3 RzRyRx_proxy(Vector3 xyz) throws Throwable {
@@ -851,27 +889,39 @@ public class Rot3Test {
         assertTrue(assert_equal(num, act));
     }
 
-    Rot3 Ypr_proxy(double y, double p, double r) throws Throwable {
-        return Rot3.Ypr(y, p, r);
+    Rot3 Ypr_proxy(Vector1 y, Vector1 p, Vector1 r) throws Throwable {
+        return Rot3.Ypr(y.at(0), p.at(0), r.at(0));
     }
 
     @Test
     void testYpr_derivative() throws Throwable {
-        final double y = 0.7;
-        final double p = -0.3;
-        final double r = 0.1;
-        // const auto num_y = numericalDerivative31(Ypr_proxy, y, p, r);
-        // const auto num_p = numericalDerivative32(Ypr_proxy, y, p, r);
-        // const auto num_r = numericalDerivative33(Ypr_proxy, y, p, r);
+        final Vector1 y = new Vector1(0.7);
+        final Vector1 p = new Vector1(-0.3);
+        final Vector1 r = new Vector1(0.1);
+        Matrix num_y = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative31(this::Ypr_proxy, y, p, r, 1e-5);
+        Matrix num_p = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative32(this::Ypr_proxy, y, p, r, 1e-5);
+        Matrix num_r = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector1, Vector1, //
+                Vector1, Vector1, //
+                Vector1, Vector1>numericalDerivative33(this::Ypr_proxy, y, p, r, 1e-5);
 
-        Vector3 act_y = new Vector3();
-        Vector3 act_p = new Vector3();
-        Vector3 act_r = new Vector3();
-        // Rot3::Ypr(y, p, r, act_y, act_p, act_r);
+        Matrix act_y = new Matrix();
+        Matrix act_p = new Matrix();
+        Matrix act_r = new Matrix();
+        Rot3.Ypr(y.at(0), p.at(0), r.at(0), act_y, act_p, act_r);
 
-        // assertTrue(assert_equal(num_y, act_y));
-        // assertTrue(assert_equal(num_p, act_p));
-        // assertTrue(assert_equal(num_r, act_r));
+        assertTrue(assert_equal(num_y, act_y));
+        assertTrue(assert_equal(num_p, act_p));
+        assertTrue(assert_equal(num_r, act_r));
     }
 
     // Vector3 RQ_proxy(Matrix3 const& R) {
@@ -1065,20 +1115,23 @@ public class Rot3Test {
                 4, 5, 6, //
                 7, 8, 9);
         final Rot3 R = Rot3.statics.Expmap(new Vector3(1, 2, 3));
-        // auto g = [&](const Vector3& omega) {
-        // return R.expmap(M*omega);
-        // };
+
+        ThrowingFunction<Vector3, Rot3> g = (omega) -> R.expmap(M.times(omega));
 
         // Test the derivatives at zero
-        // const Matrix3 expected = numericalDerivative11<Rot3, Vector3>(g, Z_3x1);
-        // assertTrue(assert_equal<Matrix3>(expected, M, 1e-5));
+        Matrix expected = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector3, Vector3>numericalDerivative11(g, new Vector3(), 1e-5);
+        assertTrue(assert_equal(expected, new Matrix(M), 1e-5));
 
         // // Test the derivatives at another value
         final Vector3 delta = new Vector3(0.1, 0.2, 0.3);
-        // const Matrix3 expected2 = numericalDerivative11<Rot3, Vector3>(g, delta);
+        Matrix expected2 = NumericalDerivative.<//
+                Rot3, Vector3, //
+                Vector3, Vector3>numericalDerivative11(g, delta, 1e-5);
+        // TODO: implement SO3
         // assertTrue(assert_equal<Matrix3>(expected2, SO3::ExpmapDerivative(M*delta) *
-        // M,
-        // 1e-5));
+        // M, 1e-5));
     }
 
 }

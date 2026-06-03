@@ -68,8 +68,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_rotateUnit3(ADDRESS, ADDRESS, ADDRESS),
         Rot3_rotatePoint3(ADDRESS, ADDRESS, ADDRESS),
-        Rot3_rotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot3_unrotate(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotateUnit3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_rotatePoint3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotateUnit3(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_unrotatePoint3(ADDRESS, ADDRESS, ADDRESS),
         Rot3_unrotateUnit3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_unrotatePoint3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
@@ -209,6 +211,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                 col1.ptr, col2.ptr, col3.ptr));
     }
 
+    /** Identity. */
     public Rot3() throws Throwable {
         this(Matrix3.identity());
     }
@@ -369,11 +372,19 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     }
 
     public Unit3 rotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Unit3((MemorySegment) FF.Rot3_rotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+        return new Unit3((MemorySegment) FF.Rot3_rotateUnit3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Point3 rotate(Point3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Point3((MemorySegment) FF.Rot3_rotatePoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
     public Unit3 unrotate(Unit3 p) throws Throwable {
-        return new Unit3((MemorySegment) FF.Rot3_unrotate.h.invokeExact(ptr, p.ptr));
+        return new Unit3((MemorySegment) FF.Rot3_unrotateUnit3.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Point3 unrotate(Point3 p) throws Throwable {
+        return new Point3((MemorySegment) FF.Rot3_unrotatePoint3.h.invokeExact(ptr, p.ptr));
     }
 
     public Unit3 unrotate(Unit3 p, Matrix H1, Matrix H2) throws Throwable {
@@ -422,7 +433,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public static Rot3 RzRyRx(double x, double y, double z, //
             Matrix H1, Matrix H2, Matrix H3) throws Throwable {
-        return new Rot3((MemorySegment) FF.Rot3_RzRyRx.h.invokeExact(x, y, z, H1.ptr, H2.ptr, H3.ptr));
+        return new Rot3((MemorySegment) FF.Rot3_RzRyRxH.h.invokeExact(x, y, z, H1.ptr, H2.ptr, H3.ptr));
     }
 
     public static Rot3 RzRyRx(Vector3 xyz) throws Throwable {
