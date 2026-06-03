@@ -36,7 +36,6 @@ public class shared_ptr<T> extends ForeignObject {
     /**
      * @param p    pointer to the shared_ptr itself.
      * @param ctor constructor of T, using the inner pointer (from get()).
-     * @param del  deletes the shared_ptr itself.
      */
     public shared_ptr(//
             MemorySegment p, //

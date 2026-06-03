@@ -32,6 +32,7 @@ public class Matrix extends ForeignObject {
         Matrix_inverse(ADDRESS, ADDRESS),
         Matrix_compose(ADDRESS, ADDRESS, ADDRESS),
         Matrix_transpose(ADDRESS, ADDRESS),
+        Matrix_timesVector(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesVector3(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE);
 
@@ -53,9 +54,11 @@ public class Matrix extends ForeignObject {
     public static Matrix I_1x1() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity1.h.invokeExact());
     }
+
     public static Matrix I_2x2() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity2.h.invokeExact());
     }
+
     public static Matrix I_3x3() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_identity3.h.invokeExact());
     }
@@ -126,6 +129,10 @@ public class Matrix extends ForeignObject {
     /** Note return type may be different than this type. */
     public Matrix transpose() throws Throwable {
         return new Matrix((MemorySegment) FF.Matrix_transpose.h.invokeExact(ptr));
+    }
+
+    public Vector times(Vector v) throws Throwable {
+        return new Vector((MemorySegment) FF.Matrix_timesVector.h.invokeExact(ptr, v.ptr));
     }
 
     public Vector3 times(Vector3 v) throws Throwable {

@@ -2,7 +2,6 @@ package gtsam.noiseModel;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
-import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -10,6 +9,8 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
+import gtsam.Matrix;
+import gtsam.Vector;
 import gtsam.shared_ptr;
 
 /**
@@ -18,7 +19,9 @@ import gtsam.shared_ptr;
  */
 public class Unit extends Isotropic {
     public enum FF {
-        noiseModel_Unit_Create(ADDRESS, JAVA_INT);
+        noiseModel_Unit_Create(ADDRESS, JAVA_INT),
+        noiseModel_Unit_CreateVector(ADDRESS, ADDRESS),
+        noiseModel_Unit_CreateMatrix(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -36,4 +39,13 @@ public class Unit extends Isotropic {
                 Unit::new);
     }
 
+    public static shared_ptr<Unit> Create(Vector v) throws Throwable {
+        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateVector.h.invokeExact(v.ptr),
+                Unit::new);
+    }
+
+    public static shared_ptr<Unit> Create(Matrix m) throws Throwable {
+        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateMatrix.h.invokeExact(m.ptr),
+                Unit::new);
+    }
 }

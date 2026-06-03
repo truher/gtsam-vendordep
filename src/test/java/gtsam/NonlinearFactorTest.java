@@ -2,15 +2,17 @@ package gtsam;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.noiseModel.Isotropic;
+
 /** See tests/testNonlinearFactor.cpp */
 public class NonlinearFactorTest {
 
     @Test
-    void testequals() {
-        // SharedNoiseModel sigma(noiseModel::Isotropic::Sigma(2,1.0));
+    void testequals() throws Throwable {
+        shared_ptr<Isotropic> sigma = Isotropic.Sigma(2, 1.0, true);
 
-        // // create two nonlinear2 factors
-        // Point2 z3(0.,-1.);
+        // create two nonlinear2 factors
+        Point2 z3 = new Point2(0., -1.);
         // simulated2D::Measurement f0(z3, sigma, X(1),L(1));
 
         // // measurement between x2 and l1
@@ -25,7 +27,7 @@ public class NonlinearFactorTest {
 
     @Test
     void testequals2() {
-        // // create a non linear factor graph
+        // create a non linear factor graph
         // NonlinearFactorGraph fg = createNonlinearFactorGraph();
 
         // // get two factors
@@ -194,7 +196,7 @@ public class NonlinearFactorTest {
 
     @Test
     void testlinearize_f4() {
-        // // Grab a non-linear factor
+        // Grab a non-linear factor
         // NonlinearFactorGraph nfg = createNonlinearFactorGraph();
         // NonlinearFactorGraph::sharedFactor nlf = nfg[3];
 
@@ -210,7 +212,7 @@ public class NonlinearFactorTest {
 
     @Test
     void testsize() {
-        // // create a non linear factor graph
+        // create a non linear factor graph
         // NonlinearFactorGraph fg = createNonlinearFactorGraph();
 
         // // create a values structure for the non linear factor graph
@@ -269,8 +271,8 @@ public class NonlinearFactorTest {
 
     @Test
     void testcloneWithNewNoiseModel() {
-        // // create original factor
-        // double sigma1 = 0.1;
+        // create original factor
+        double sigma1 = 0.1;
         // NonlinearFactorGraph nfg =
         // example::nonlinearFactorGraphWithGivenSigma(sigma1);
 

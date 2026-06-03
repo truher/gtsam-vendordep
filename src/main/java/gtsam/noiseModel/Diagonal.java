@@ -70,9 +70,10 @@ public class Diagonal extends Gaussian {
     }
 
     public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas, boolean smart) throws Throwable {
-        return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector3.h.invokeExact(sigmas.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector3.h.invokeExact(sigmas.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<>(p, Diagonal::new);
     }
 
     public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas) throws Throwable {

@@ -56,6 +56,11 @@ gtsam::Matrix* Matrix_compose(const gtsam::Matrix* a, const gtsam::Matrix* b) {
 gtsam::Matrix* Matrix_transpose(const gtsam::Matrix* m) {
     return new gtsam::Matrix(m->transpose());
 }
+gtsam::Vector* Matrix_timesVector(const gtsam::Matrix* m,
+                                  const gtsam::Vector* v) {
+    return new gtsam::Vector((*m) * (*v));
+}
+
 gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m,
                                     const gtsam::Vector3* v) {
     return new gtsam::Vector3(gtsam::Matrix3(*m) * (*v));

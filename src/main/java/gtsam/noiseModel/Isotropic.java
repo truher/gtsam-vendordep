@@ -31,15 +31,17 @@ public class Isotropic extends Diagonal {
     }
 
     public static shared_ptr<Isotropic> Sigma(int dim, double sigma, boolean smart) throws Throwable {
-        return new shared_ptr<Isotropic>(
-                (MemorySegment) FF.noiseModel_Isotropic_Sigma.h.invokeExact(dim, sigma, smart),
-                Isotropic::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Sigma.h.invokeExact(dim, sigma, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
     public static shared_ptr<Isotropic> Variance(int dim, double variance, boolean smart) throws Throwable {
-        return new shared_ptr<Isotropic>(
-                (MemorySegment) FF.noiseModel_Isotropic_Variance.h.invokeExact(dim, variance, smart),
-                Isotropic::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Variance.h.invokeExact(dim, variance, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
     public static shared_ptr<Isotropic> Precision(int dim, double precision, boolean smart) throws Throwable {

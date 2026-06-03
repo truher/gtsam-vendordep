@@ -27,7 +27,8 @@ public class Gaussian extends Base {
         noiseModel_Gaussian_information(ADDRESS, ADDRESS),
         noiseModel_Gaussian_Whiten(ADDRESS, ADDRESS, ADDRESS),
         noiseModel_Gaussian_WhitenInPlace(null, ADDRESS, ADDRESS),
-        noiseModel_Gaussian_QR(ADDRESS, ADDRESS, ADDRESS);
+        noiseModel_Gaussian_QR(ADDRESS, ADDRESS, ADDRESS),
+        noiseModel_Gaussian_negLogConstant(JAVA_DOUBLE, ADDRESS);
 
         public final MethodHandle h;
 
@@ -99,5 +100,9 @@ public class Gaussian extends Base {
         return new shared_ptr<Diagonal>(
                 (MemorySegment) FF.noiseModel_Gaussian_QR.h.invokeExact(ptr, Ab.ptr),
                 Diagonal::new);
+    }
+
+    public double negLogConstant() throws Throwable {
+        return (double) FF.noiseModel_Gaussian_negLogConstant.h.invokeExact(ptr);
     }
 }

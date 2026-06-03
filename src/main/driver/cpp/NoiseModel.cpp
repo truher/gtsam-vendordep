@@ -1,16 +1,45 @@
-#include <gtsam/base/Vector.h>
+#include <gtsam/base/Matrix.h>
+// supplies necessary manifold traits!
+#include <gtsam/base/VectorSpace.h>
 #include <gtsam/linear/NoiseModel.h>
 
+// TODO: wrap all the invalid_argument exceptions with nullptr returns.
 extern "C" {
+//
+// UTIL
+//
+// TODO: figure out why this scalar doesn't work.
+bool noiseModel_matchesDimensionDouble(const gtsam::noiseModel::Base* model,
+                                       const double measured) {
+    return gtsam::noiseModel::matchesDimension(*model, measured);
+}
+bool noiseModel_matchesDimensionVector(const gtsam::noiseModel::Base* model,
+                                       const gtsam::Vector* measured) {
+    return gtsam::noiseModel::matchesDimension(*model, *measured);
+}
+bool noiseModel_matchesDimensionMatrix(const gtsam::noiseModel::Base* model,
+                                       const gtsam::Matrix* measured) {
+    return gtsam::noiseModel::matchesDimension(*model, *measured);
+}
 //
 // BASE
 //
 bool noiseModel_Base_isUnit(const gtsam::noiseModel::Base* model) {
     return model->isUnit();
 }
+int noiseModel_Base_dim(const gtsam::noiseModel::Base* model) {
+    return model->dim();
+}
 double noiseModel_Base_squaredMahalanobisDistance(
     const gtsam::noiseModel::Base* model, const gtsam::Vector* v) {
     return model->squaredMahalanobisDistance(*v);
+}
+double noiseModel_Base_loss(const gtsam::noiseModel::Base* model, double d) {
+    return model->loss(d);
+}
+void noiseModel_Base_WhitenSystem(const gtsam::noiseModel::Base* model,
+                                  gtsam::Matrix* A, gtsam::Vector* b) {
+    return model->WhitenSystem(*A, *b);
 }
 void noiseModel_Base_whitenInPlace(const gtsam::noiseModel::Base* model,
                                    gtsam::Vector* v) {
@@ -73,6 +102,10 @@ std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Gaussian_QR(
     const gtsam::noiseModel::Gaussian* model, gtsam::Matrix* Ab) {
     return new std::shared_ptr<gtsam::noiseModel::Diagonal>(model->QR(*Ab));
 }
+double noiseModel_Gaussian_negLogConstant(
+    const gtsam::noiseModel::Gaussian* model) {
+    return model->negLogConstant();
+}
 //
 // DIAGONAL
 //
@@ -93,8 +126,13 @@ std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector2(
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector3(
     const gtsam::Vector3* v, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>*
 noiseModel_Diagonal_VariancesVector3(const gtsam::Vector3* variances,
@@ -113,13 +151,23 @@ noiseModel_Diagonal_PrecisionsVector3(const gtsam::Vector3* precisions,
 //
 std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Sigma(
     int dim, double sigma, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
-        gtsam::noiseModel::Isotropic::Sigma(dim, sigma, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
+            gtsam::noiseModel::Isotropic::Sigma(dim, sigma, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Variance(
     int dim, double variance, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
-        gtsam::noiseModel::Isotropic::Variance(dim, variance, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
+            gtsam::noiseModel::Isotropic::Variance(dim, variance, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Precision(
     int dim, double precision, bool smart) {
@@ -133,6 +181,16 @@ std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Precision(
 std::shared_ptr<gtsam::noiseModel::Unit>* noiseModel_Unit_Create(int dim) {
     return new std::shared_ptr<gtsam::noiseModel::Unit>(
         gtsam::noiseModel::Unit::Create(dim));
+}
+std::shared_ptr<gtsam::noiseModel::Unit>* noiseModel_Unit_CreateVector(
+    const gtsam::Vector* v) {
+    return new std::shared_ptr<gtsam::noiseModel::Unit>(
+        gtsam::noiseModel::Unit::Create(*v));
+}
+std::shared_ptr<gtsam::noiseModel::Unit>* noiseModel_Unit_CreateMatrix(
+    const gtsam::Matrix* m) {
+    return new std::shared_ptr<gtsam::noiseModel::Unit>(
+        gtsam::noiseModel::Unit::Create(*m));
 }
 //
 // CONSTRAINED
