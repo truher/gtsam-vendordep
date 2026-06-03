@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
@@ -34,7 +35,8 @@ public class Matrix extends ForeignObject {
         Matrix_transpose(ADDRESS, ADDRESS),
         Matrix_timesVector(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesVector3(ADDRESS, ADDRESS, ADDRESS),
-        Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Matrix_linear_dependent(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -143,4 +145,11 @@ public class Matrix extends ForeignObject {
         return new Matrix((MemorySegment) FF.Matrix_timesDouble.h.invokeExact(ptr, a));
     }
 
+    public static boolean linear_dependent(Matrix A, Matrix B) throws Throwable {
+        return (boolean) FF.Matrix_linear_dependent.h.invokeExact(A.ptr, B.ptr, 1e-9);
+    }
+
+    public static boolean linear_dependent(Matrix A, Matrix B, double tol) throws Throwable {
+        return (boolean) FF.Matrix_linear_dependent.h.invokeExact(A.ptr, B.ptr, tol);
+    }
 }

@@ -213,15 +213,16 @@ public class NoiseModelTest {
         Vector3 feasible = new Vector3(0.0, 0.0, 0.0);
         Vector3 infeasible = new Vector3(1.0, 1.0, 1.0);
 
-        // shared_ptr<Constrained> i = Constrained::All(3);
-        // // NOTE: we catch constrained variables elsewhere, so whitening does nothing
-        // assertTrue(assert_equal(Vector3(1.0, 1.0, 1.0),i.get().whiten(infeasible)));
-        // assertTrue(assert_equal(Vector3(0.0, 0.0, 0.0),i.get().whiten(feasible)));
+        shared_ptr<Constrained> i = Constrained.All(3);
+        // NOTE: we catch constrained variables elsewhere, so whitening does nothing
+        assertTrue(assert_equal(new Vector(new double[] { 1.0, 1.0, 1.0 }), i.get().whiten(new Vector(infeasible))));
+        assertTrue(assert_equal(new Vector(new double[] { 0.0, 0.0, 0.0 }), i.get().whiten(new Vector(feasible))));
 
-        // assertEquals(0.5 * 1000.0 *
-        // 3.0,i.get().loss(i.get().squaredMahalanobisDistance(infeasible)),1e-9);
-        // assertEquals(0.0, i.get().squaredMahalanobisDistance(feasible), 1e-9);
-        // assertEquals(0.0, i.get().loss(0.0),1e-9);
+        assertEquals(0.5 * 1000.0 * 3.0,
+                i.get().loss(i.get().squaredMahalanobisDistance(new Vector(infeasible))),
+                1e-9);
+        assertEquals(0.0, i.get().squaredMahalanobisDistance(new Vector(feasible)), 1e-9);
+        assertEquals(0.0, i.get().loss(0.0), 1e-9);
     }
 
     @Test
@@ -287,9 +288,8 @@ public class NoiseModelTest {
         // Call Gaussian version
         shared_ptr<Diagonal> actual1 = exampleQR.diagonal.get().QR(Ab1);
         assertTrue(actual1.get().isUnit());
-        // assertTrue(linear_dependent(exampleQR::Rd,Ab1,1e-4)); // Ab was modified in
-        // place
-        // !!!
+        // Ab was modified in place !!!
+        assertTrue(Matrix.linear_dependent(exampleQR.Rd, Ab1, 1e-4));
 
         // // Expected result for constrained version
         Vector expectedSigmas = new Vector(new double[] {
@@ -302,13 +302,11 @@ public class NoiseModelTest {
                 { 0., 0., 0., 1., 0., -1., 0.2 } });
 
         // Call Constrained version
-        // shared_ptr<Diagonal> constrained =
-        // noiseModel::Constrained::MixedSigmas(exampleQR::sigmas);
-        // shared_ptr<Diagonal> actual2 = constrained.get().QR(Ab2);
-        // assertTrue(assert_equal(*expectedModel, *actual2, 1e-6));
-        // assertTrue(linear_dependent(expectedRd2, Ab2, 1e-6)); // Ab was modified in
-        // place
-        // !!!
+        shared_ptr<? extends Diagonal> constrained = Constrained.MixedSigmas(exampleQR.sigmas);
+        shared_ptr<Diagonal> actual2 = constrained.get().QR(Ab2);
+        assertTrue(assert_equal(expectedModel.get(), actual2.get(), 1e-6));
+        // Ab was modified in place !!!
+        assertTrue(Matrix.linear_dependent(expectedRd2, Ab2, 1e-6));
     }
 
     @Test
@@ -447,17 +445,22 @@ public class NoiseModelTest {
 
     // This matches constraint_eliminate2 in testJacobianFactor
     @Test
-    void testQRNan() {
-        // shared_ptr<Diagonal> constrained = noiseModel::Constrained::All(2);
-        // Matrix Ab = (Matrix25() << 2, 4, 2, 4, 6, 2, 1, 2, 4, 4).finished();
+    void testQRNan() throws Throwable {
+        shared_ptr<? extends Diagonal> constrained = Constrained.All(2);
+        Matrix Ab = new Matrix(new double[][] {
+                { 2, 4, 2, 4, 6 },
+                { 2, 1, 2, 4, 4 }
+        });
 
-        // shared_ptr<Diagonal> expected = noiseModel::Constrained::All(2);
-        // Matrix expectedAb = (Matrix25() << 1, 2, 1, 2, 3, 0, 1, 0, 0,
-        // 2.0/3).finished();
+        shared_ptr<? extends Diagonal> expected = Constrained.All(2);
+        Matrix expectedAb = new Matrix(new double[][] {
+                { 1, 2, 1, 2, 3 },
+                { 0, 1, 0, 0, 2.0 / 3 }
+        });
 
-        // shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
-        // assertTrue(assert_equal(*expected,*actual));
-        // assertTrue(linear_dependent(expectedAb,Ab));
+        shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
+        assertTrue(assert_equal(expected.get(), actual.get()));
+        assertTrue(Matrix.linear_dependent(expectedAb, Ab));
     }
 
     @Test
@@ -613,8 +616,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionFair() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::Fair::shared_ptr fair = mEstimator::Fair::Create(k);
         // assertEquals(0.8333333333333333, fair.get().weight(error1), 1e-8);
         // assertEquals(0.3333333333333333, fair.get().weight(error2), 1e-8);
@@ -630,8 +636,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionHuber() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::Huber::shared_ptr huber = mEstimator::Huber::Create(k);
         // assertEquals(1.0, huber.get().weight(error1), 1e-8);
         // assertEquals(0.5, huber.get().weight(error2), 1e-8);
@@ -647,8 +656,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionCauchy() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::Cauchy::shared_ptr cauchy = mEstimator::Cauchy::Create(k);
         // assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
         // assertEquals(0.2000, cauchy.get().weight(error2), 1e-8);
@@ -664,8 +676,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionAsymmetricCauchy() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::AsymmetricCauchy::shared_ptr cauchy =
         // mEstimator::AsymmetricCauchy::Create(k);
         // assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
@@ -682,8 +697,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionGemanMcClure() {
-        // const double k = 1.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 1.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::GemanMcClure::shared_ptr gmc =
         // mEstimator::GemanMcClure::Create(k);
         // assertEquals(0.25 , gmc.get().weight(error1), 1e-8);
@@ -699,8 +717,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionTLS() {
-        // const double k = 4.0, error1 = 0.5, error2 = 10.0, error3 = -10.0, error4 =
-        // -0.5;
+        final double k = 4.0;
+        final double error1 = 0.5;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -0.5;
         // const mEstimator::TruncatedLeastSquares::shared_ptr tls =
         // mEstimator::TruncatedLeastSquares::Create(k);
         // assertEquals(1.0, tls.get().weight(error1), 1e-8);
@@ -716,8 +737,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionWelsch() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::Welsch::shared_ptr welsch = mEstimator::Welsch::Create(k);
         // assertEquals(0.960789439152323, welsch.get().weight(error1), 1e-8);
         // assertEquals(0.018315638888734, welsch.get().weight(error2), 1e-8);
@@ -733,8 +757,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionTukey() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::Tukey::shared_ptr tukey = mEstimator::Tukey::Create(k);
         // assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
         // assertEquals(0.0, tukey.get().weight(error2), 1e-8);
@@ -750,8 +777,11 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionAsymmetricTukey() {
-        // const double k = 5.0, error1 = 1.0, error2 = 10.0, error3 = -10.0, error4 =
-        // -1.0;
+        final double k = 5.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
+        final double error3 = -10.0;
+        final double error4 = -1.0;
         // const mEstimator::AsymmetricTukey::shared_ptr tukey =
         // mEstimator::AsymmetricTukey::Create(k);
         // assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
@@ -768,7 +798,9 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionDCS() {
-        // const double k = 1.0, error1 = 1.0, error2 = 10.0;
+        final double k = 1.0;
+        final double error1 = 1.0;
+        final double error2 = 10.0;
         // const mEstimator::DCS::shared_ptr dcs = mEstimator::DCS::Create(k);
 
         // assertEquals(1.0 , dcs.get().weight(error1), 1e-8);
@@ -780,8 +812,13 @@ public class NoiseModelTest {
 
     @Test
     void testrobustFunctionL2WithDeadZone() {
-        // const double k = 1.0, e0 = -10.0, e1 = -1.01, e2 = -0.99, e3 = 0.99, e4 =
-        // 1.01, e5 = 10.0;
+        final double k = 1.0;
+        final double e0 = -10.0;
+        final double e1 = -1.01;
+        final double e2 = -0.99;
+        final double e3 = 0.99;
+        final double e4 = 1.01;
+        final double e5 = 10.0;
         // const mEstimator::L2WithDeadZone::shared_ptr lsdz =
         // mEstimator::L2WithDeadZone::Create(k);
 
@@ -801,9 +838,11 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseHuber() {
-        // const double k = 10.0, error1 = 1.0, error2 = 100.0;
-        // Matrix A = (Matrix(2, 2) << 1.0, 10.0, 100.0, 1000.0).finished();
+    void testrobustNoiseHuber() throws Throwable {
+        final double k = 10.0;
+        final double error1 = 1.0;
+        final double error2 = 100.0;
+        Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
         // Vector b = Vector2(error1, error2);
         // const Robust::shared_ptr robust = Robust::Create(
         // mEstimator::Huber::Create(k, mEstimator::Huber::Scalar),
@@ -821,11 +860,16 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseGemanMcClure() {
-        // const double k = 1.0, error1 = 1.0, error2 = 100.0;
-        // const double a00 = 1.0, a01 = 10.0, a10 = 100.0, a11 = 1000.0;
-        // Matrix A = (Matrix(2, 2) << a00, a01, a10, a11).finished();
-        // Vector b = Vector2(error1, error2);
+    void testrobustNoiseGemanMcClure() throws Throwable {
+        final double k = 1.0;
+        final double error1 = 1.0;
+        final double error2 = 100.0;
+        final double a00 = 1.0;
+        final double a01 = 10.0;
+        final double a10 = 100.0;
+        final double a11 = 1000.0;
+        Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
+        Vector b = new Vector(new double[] { error1, error2 });
         // const Robust::shared_ptr robust = Robust::Create(
         // mEstimator::GemanMcClure::Create(k, mEstimator::GemanMcClure::Scalar),
         // Unit::Create(2));
@@ -849,11 +893,16 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseTLS() {
-        // const double k = 1.0, error1 = 1.0, error2 = 100.0;
-        // const double a00 = 1.0, a01 = 10.0, a10 = 100.0, a11 = 1000.0;
-        // Matrix A = (Matrix(2, 2) << a00, a01, a10, a11).finished();
-        // Vector b = Vector2(error1, error2);
+    void testrobustNoiseTLS() throws Throwable {
+        final double k = 1.0;
+        final double error1 = 1.0;
+        final double error2 = 100.0;
+        final double a00 = 1.0;
+        final double a01 = 10.0;
+        final double a10 = 100.0;
+        final double a11 = 1000.0;
+        Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
+        Vector b = new Vector(new double[] { error1, error2 });
         // const Robust::shared_ptr robust = Robust::Create(
         // mEstimator::TruncatedLeastSquares::Create(k,
         // mEstimator::TruncatedLeastSquares::Scalar),
@@ -874,11 +923,16 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseDCS() {
-        // const double k = 1.0, error1 = 1.0, error2 = 100.0;
-        // const double a00 = 1.0, a01 = 10.0, a10 = 100.0, a11 = 1000.0;
-        // Matrix A = (Matrix(2, 2) << a00, a01, a10, a11).finished();
-        // Vector b = Vector2(error1, error2);
+    void testrobustNoiseDCS() throws Throwable {
+        final double k = 1.0;
+        final double error1 = 1.0;
+        final double error2 = 100.0;
+        final double a00 = 1.0;
+        final double a01 = 10.0;
+        final double a10 = 100.0;
+        final double a11 = 1000.0;
+        Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
+        Vector b = new Vector(new double[] { error1, error2 });
         // const Robust::shared_ptr robust = Robust::Create(
         // mEstimator::DCS::Create(k, mEstimator::DCS::Scalar),
         // Unit::Create(2));
@@ -898,24 +952,26 @@ public class NoiseModelTest {
 
     @Test
     void testrobustNoiseL2WithDeadZone() {
-        // double dead_zone_size = 1.0;
+        double dead_zone_size = 1.0;
         // var robust = noiseModel::Robust::Create(
         // noiseModel::mEstimator::L2WithDeadZone::Create(dead_zone_size),
         // Unit::Create(3));
 
-        // for (int i = 0; i < 5; i++) {
-        // Vector error = Vector3(i, 0, 0);
-        // robust.get().WhitenSystem(error);
-        // assertEquals(std::fmax(0, i - dead_zone_size) * i,
-        // robust.get().squaredMahalanobisDistance(error), 1e-8);
-        // }
+        for (int i = 0; i < 5; i++) {
+            // Vector error = Vector3(i, 0, 0);
+            // robust.get().WhitenSystem(error);
+            // assertEquals(std::fmax(0, i - dead_zone_size) * i,
+            // robust.get().squaredMahalanobisDistance(error), 1e-8);
+        }
     }
 
     @Test
-    void testrobustNoiseCustomHuber() {
-        // const double k = 10.0, error1 = 1.0, error2 = 100.0;
-        // Matrix A = (Matrix(2, 2) << 1.0, 10.0, 100.0, 1000.0).finished();
-        // Vector b = Vector2(error1, error2);
+    void testrobustNoiseCustomHuber() throws Throwable {
+        final double k = 10.0;
+        final double error1 = 1.0;
+        final double error2 = 100.0;
+        Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
+        Vector b = new Vector(new double[] { error1, error2 });
         // const Robust::shared_ptr robust =
         // Robust::Create(mEstimator::Custom::Create(
         // [k](double e) {
@@ -1106,9 +1162,9 @@ public class NoiseModelTest {
     // Negative sigma values should throw (#695)
     @Test
     void testNegativeSigmaThrows() {
-        assertThrows(Exception.class, () -> Isotropic.Sigma(2, -2.0, true));
-        assertThrows(Exception.class, () -> Isotropic.Variance(2, -1.0, true));
-        assertThrows(Exception.class, () -> Diagonal.Sigmas(new Vector3(-1.0, 2.0, 3.0)));
+        assertThrows(IllegalArgumentException.class, () -> Isotropic.Sigma(2, -2.0, true));
+        assertThrows(IllegalArgumentException.class, () -> Isotropic.Variance(2, -1.0, true));
+        assertThrows(IllegalArgumentException.class, () -> Diagonal.Sigmas(new Vector3(-1.0, 2.0, 3.0)));
     }
 
 }

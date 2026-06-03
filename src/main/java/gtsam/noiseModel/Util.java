@@ -14,7 +14,6 @@ import gtsam.Vector;
 
 public class Util {
     public enum FF {
-        // TODO: figure out why the scalar doesn't work.
         noiseModel_matchesDimensionDouble(JAVA_BOOLEAN, ADDRESS, JAVA_DOUBLE),
         noiseModel_matchesDimensionVector(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         noiseModel_matchesDimensionMatrix(JAVA_BOOLEAN, ADDRESS, ADDRESS);
@@ -26,7 +25,6 @@ public class Util {
         }
     }
 
-    // TODO: figure out why the scalar doesn't work.
     public static boolean matchesDimension(Base model, double measured) throws Throwable {
         return (boolean) FF.noiseModel_matchesDimensionDouble.h.invokeExact(model.ptr, measured);
     }

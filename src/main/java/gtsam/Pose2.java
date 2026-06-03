@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
@@ -57,9 +58,15 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_ExpmapDerivative(ADDRESS, ADDRESS),
         Pose2_translation(ADDRESS, ADDRESS, ADDRESS),
         Pose2_bearingPoint2(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_bearingPoint2H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_bearingPose2(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_bearingPose2H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_rangePoint2(JAVA_DOUBLE, ADDRESS, ADDRESS),
-        Pose2_rangePose2(JAVA_DOUBLE, ADDRESS, ADDRESS);
+        Pose2_rangePoint2H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose2_rangePose2(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Pose2_rangePose2H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Pose2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -367,16 +374,40 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Rot2((MemorySegment) FF.Pose2_bearingPoint2.h.invokeExact(ptr, p.ptr));
     }
 
+    public Rot2 bearing(Point2 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) FF.Pose2_bearingPoint2H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
     public Rot2 bearing(Pose2 p) throws Throwable {
         return new Rot2((MemorySegment) FF.Pose2_bearingPose2.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Rot2 bearing(Pose2 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Rot2((MemorySegment) FF.Pose2_bearingPose2H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
     public double range(Point2 p) throws Throwable {
         return (double) FF.Pose2_rangePoint2.h.invokeExact(ptr, p.ptr);
     }
 
+    public double range(Point2 p, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Pose2_rangePoint2H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
+    }
+
     public double range(Pose2 p) throws Throwable {
         return (double) FF.Pose2_rangePose2.h.invokeExact(ptr, p.ptr);
+    }
+
+    public double range(Pose2 p, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Pose2_rangePose2H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
+    }
+
+    public static boolean check_group_invariants(Pose2 a, Pose2 b) throws Throwable {
+        return (boolean) FF.Pose2_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public static boolean check_manifold_invariants(Pose2 a, Pose2 b) throws Throwable {
+        return (boolean) FF.Pose2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
 }

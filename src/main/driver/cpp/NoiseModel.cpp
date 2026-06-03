@@ -206,6 +206,11 @@ noiseModel_Constrained_MixedSigmasVector(gtsam::Vector* sigmas) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::MixedSigmas(*sigmas));
 }
+std::shared_ptr<gtsam::noiseModel::Constrained>*
+noiseModel_Constrained_AllInt(int dim) {
+    return new std::shared_ptr<gtsam::noiseModel::Constrained>(
+        gtsam::noiseModel::Constrained::All(dim));
+}
 //
 // ROBUST
 //

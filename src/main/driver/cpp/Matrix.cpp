@@ -60,12 +60,14 @@ gtsam::Vector* Matrix_timesVector(const gtsam::Matrix* m,
                                   const gtsam::Vector* v) {
     return new gtsam::Vector((*m) * (*v));
 }
-
 gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m,
                                     const gtsam::Vector3* v) {
     return new gtsam::Vector3(gtsam::Matrix3(*m) * (*v));
 }
 gtsam::Matrix* Matrix_timesDouble(const gtsam::Matrix* m, double a) {
     return new gtsam::Matrix((*m) * a);
+}
+static bool Matrix_linear_dependent(const gtsam::Matrix* A, const gtsam::Matrix* B, double tol) {
+    return gtsam::linear_dependent(*A, *B, tol);
 }
 }
