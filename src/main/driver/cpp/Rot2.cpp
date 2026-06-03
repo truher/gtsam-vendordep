@@ -36,8 +36,10 @@ gtsam::Point2* Rot2_rotateH(const gtsam::Rot2* r, const gtsam::Point2* p,
 gtsam::Point2* Rot2_unrotate(const gtsam::Rot2* r, const gtsam::Point2* p) {
     return new gtsam::Point2(r->unrotate((*p)));
 }
-gtsam::Point2* Rot2_unrotateH(const gtsam::Rot2* r, const gtsam::Point2* p,
-                              gtsam::Matrix* H1, gtsam::Matrix* H2) {
+gtsam::Point2* Rot2_unrotateH(const gtsam::Rot2* r,    //
+                              const gtsam::Point2* p,  //
+                              gtsam::Matrix* H1,       //
+                              gtsam::Matrix* H2) {     //
     return new gtsam::Point2(r->unrotate(*p, *H1, *H2));
 }
 gtsam::Rot2* Rot2_fromCosSin(double c, double s) {
@@ -93,10 +95,10 @@ gtsam::Vector1* Rot2_OriginLocalCoordinates(const gtsam::Rot2* g) {
 gtsam::Rot2* Rot2_OriginRetractH(const gtsam::Vector1* v, gtsam::Matrix* H) {
     return new gtsam::Rot2(gtsam::Rot2::Retract(*v, *H));
 }
-gtsam::Vector1* Rot2_OriginLocalCoordinatesH(const gtsam::Rot2* g, gtsam::Matrix* H) {
+gtsam::Vector1* Rot2_OriginLocalCoordinatesH(const gtsam::Rot2* g,
+                                             gtsam::Matrix* H) {
     return new gtsam::Vector1(gtsam::Rot2::LocalCoordinates(*g, *H));
 }
-
 
 gtsam::Matrix2* Rot2_transpose(const gtsam::Rot2* r) {
     return new gtsam::Matrix2(r->transpose());
