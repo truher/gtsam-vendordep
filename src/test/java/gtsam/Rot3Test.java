@@ -300,7 +300,7 @@ public class Rot3Test {
         Rot3 R = Rot3.Rodrigues(w);
         assertTrue(assert_equal(new Vector3(w.times(-1)), Rot3.statics.Logmap(R), 1e-12));
         // #else
-        CHECK_OMEGA(x * PI, y * PI, z * PI);
+        // CHECK_OMEGA(x * PI, y * PI, z * PI);
         // #endif
 
         // Check 360 degree rotations

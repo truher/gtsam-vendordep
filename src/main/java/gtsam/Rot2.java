@@ -37,7 +37,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         // Rot2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Rot2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-             Rot2_OriginRetract(ADDRESS, ADDRESS),
+        Rot2_OriginRetract(ADDRESS, ADDRESS),
         Rot2_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Rot2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Rot2_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
@@ -125,7 +125,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
                     v.ptr, H.ptr));
         }
 
-              @Override
+        @Override
         public Rot2 Retract(Vector1 v) throws Throwable {
             return new Rot2((MemorySegment) FF.Rot2_OriginRetract.h.invokeExact(v.ptr));
         }

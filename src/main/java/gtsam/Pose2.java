@@ -66,7 +66,9 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_rangePose2(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Pose2_rangePose2H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
-        Pose2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        Pose2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Pose2_rotation(ADDRESS, ADDRESS),
+        Pose2_rotationH(ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -408,6 +410,14 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
     public static boolean check_manifold_invariants(Pose2 a, Pose2 b) throws Throwable {
         return (boolean) FF.Pose2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public Rot2 rotation() throws Throwable {
+        return new Rot2((MemorySegment) FF.Pose2_rotation.h.invokeExact(ptr));
+    }
+
+    public Rot2 rotation(Matrix H) throws Throwable {
+        return new Rot2((MemorySegment) FF.Pose2_rotation.h.invokeExact(ptr, H.ptr));
     }
 
 }

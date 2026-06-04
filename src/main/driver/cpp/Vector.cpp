@@ -144,7 +144,7 @@ gtsam::Vector3* Vector3_normalized(const gtsam::Vector3* v) {
 }
 gtsam::Vector3* Vector3_cross(const gtsam::Vector3* a,
                               const gtsam::Vector3* b) {
-    return new gtwsam::Vector3(a->cross(*b));
+    return new gtsam::Vector3(a->cross(*b));
 }
 
 //////////////////////////

@@ -228,7 +228,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
 
     @Override
     public Matrix AdjointMap() throws Throwable {
-        // coerce Matrix6 do dynamic
+        // coerce Matrix6 to dynamic
         return new Matrix((MemorySegment) FF.Pose3_AdjointMap.h.invokeExact(ptr));
     }
 

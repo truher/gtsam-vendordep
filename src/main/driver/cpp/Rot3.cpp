@@ -1,4 +1,5 @@
 #include <gtsam/geometry/Rot3.h>
+#include "pairs.h"
 
 extern "C" {
 gtsam::Rot3* Rot3Point3(const gtsam::Point3* col1,  //
@@ -275,11 +276,11 @@ gtsam::Vector3* Rot3_rpyH(const gtsam::Rot3* r, gtsam::Matrix* H) {
     return new gtsam::Vector3(r->rpy(*H));
 }
 PtrPair Rot3_RQ(const gtsam::Matrix3* A) {
-    std::pair<Matrix3, Vector3> p = gtsam::RQ(*A);
+    std::pair<gtsam::Matrix3, gtsam::Vector3> p = gtsam::RQ(*A);
     return {new gtsam::Matrix3(p.first), new gtsam::Vector3(p.second)};
 }
 PtrPair Rot3_RQH(const gtsam::Matrix3* A, gtsam::Matrix* H) {
-    std::pair<Matrix3, Vector3> p = gtsam::RQ(*A, *H);
+    std::pair<gtsam::Matrix3, gtsam::Vector3> p = gtsam::RQ(*A, *H);
     return {new gtsam::Matrix3(p.first), new gtsam::Vector3(p.second)};
 }
 gtsam::Quaternion* Rot3_toQuaternion(const gtsam::Rot3* r) {

@@ -13,10 +13,14 @@ import org.team100.foreign.Lib;
 
 // TODO: implement LieGroup.
 // TOOD: implement VectorType
-public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
+public class Point2 extends ForeignObject
+        implements LieGroup<Point2, Vector2> {
     public enum FF {
         Point2(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
         Point2_delete(null, ADDRESS),
+        Point2_plus(ADDRESS, ADDRESS, ADDRESS),
+        Point2_minus(ADDRESS, ADDRESS, ADDRESS),
+        Point2_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Point2_x(JAVA_DOUBLE, ADDRESS),
         Point2_y(JAVA_DOUBLE, ADDRESS),
         Point2_norm2(JAVA_DOUBLE, ADDRESS),
@@ -24,8 +28,28 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
         Point2_distance2(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Point2_distance2H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Point2_norm(JAVA_DOUBLE, ADDRESS),
+        Point2_normalized(ADDRESS, ADDRESS),
         Point2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
-        Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point2_Logmap(ADDRESS, ADDRESS),
+        Point2_Expmap(ADDRESS, ADDRESS),
+        Point2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
+        Point2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
+        Point2_OriginRetract(ADDRESS, ADDRESS),
+        Point2_OriginLocalCoordinates(ADDRESS, ADDRESS),
+        Point2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
+        Point2_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
+        Point2_compose(ADDRESS, ADDRESS, ADDRESS),
+        Point2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_between(ADDRESS, ADDRESS, ADDRESS),
+        Point2_betweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_inverse(ADDRESS, ADDRESS),
+        Point2_inverseH(ADDRESS, ADDRESS, ADDRESS),
+        Point2_AdjointMap(ADDRESS, ADDRESS),
+        Point2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point2_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -34,8 +58,31 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
         }
     }
 
-    public static class Traits implements Manifold.Traits<Point2, Vector2> {
+    public static class Traits implements LieGroup.Traits<Point2, Vector2> {
+        @Override
+        public Point2 Identity() throws Throwable {
+            return statics.Identity();
+        }
 
+        @Override
+        public Vector2 Logmap(Point2 g) throws Throwable {
+            return statics.Logmap(g);
+        }
+
+        @Override
+        public Vector2 Logmap(Point2 g, Matrix H) throws Throwable {
+            return statics.Logmap(g, H);
+        }
+
+        @Override
+        public Point2 Expmap(Vector2 v) throws Throwable {
+            return statics.Expmap(v);
+        }
+
+        @Override
+        public Point2 Expmap(Vector2 v, Matrix H) throws Throwable {
+            return statics.Expmap(v, H);
+        }
     }
 
     public static final Traits traits = new Traits();
@@ -43,6 +90,119 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
     @Override
     public Traits traits() {
         return traits;
+    }
+
+    public static class Statics implements LieGroup.Statics<Point2, Vector2> {
+        @Override
+        public Point2 Identity() throws Throwable {
+            return new Point2(0, 0);
+        }
+
+        @Override
+        public Vector2 Logmap(Point2 g) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_Logmap.h.invokeExact(g.ptr));
+        }
+
+        @Override
+        public Vector2 Logmap(Point2 m, Matrix Hm) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
+        }
+
+        @Override
+        public Point2 Expmap(Vector2 v) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_Expmap.h.invokeExact(v.ptr));
+        }
+
+        @Override
+        public Point2 Expmap(Vector2 v, Matrix Hv) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
+        }
+
+        @Override
+        public Point2 Retract(Vector2 v) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_OriginRetract.h.invokeExact(v.ptr));
+        }
+
+        @Override
+        public Vector2 LocalCoordinates(Point2 g) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_OriginLocalCoordinates.h.invokeExact(g.ptr));
+        }
+
+        @Override
+        public Point2 Retract(Vector2 v, Matrix H) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
+        }
+
+        @Override
+        public Vector2 LocalCoordinates(Point2 g, Matrix H) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
+        }
+    }
+
+    public static final Statics statics = new Statics();
+
+    @Override
+    public Statics statics() {
+        return statics;
+    }
+
+    @Override
+    public Point2 compose(Point2 h) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_compose.h.invokeExact(ptr, h.ptr));
+    }
+
+    @Override
+    public Point2 compose(Point2 h, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_composeH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Point2 between(Point2 h) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_between.h.invokeExact(ptr, h.ptr));
+
+    }
+
+    @Override
+    public Point2 between(Point2 h, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_betweenH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Point2 inverse() throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_inverse.h.invokeExact(ptr));
+    }
+
+    @Override
+    public Point2 inverse(Matrix H) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_inverseH.h.invokeExact(ptr, H.ptr));
+    }
+
+    @Override
+    public Matrix AdjointMap() throws Throwable {
+        return new Matrix((MemorySegment) FF.Point2_AdjointMap.h.invokeExact(ptr));
+    }
+
+    @Override
+    public Point2 expmap(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Vector2 logmap(Point2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector2((MemorySegment) FF.Point2_logmapH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Point2 retract(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_retractH.h.invokeExact(
+                ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Vector2 localCoordinates(Point2 g, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector2((MemorySegment) FF.Point2_localCoordinatesH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
@@ -64,6 +224,18 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
 
     public double y() throws Throwable {
         return (double) FF.Point2_y.h.invokeExact(ptr);
+    }
+
+    public Point2 plus(Point2 other) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_plus.h.invokeExact(ptr, other.ptr));
+    }
+
+    public Point2 minus(Point2 other) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_minus.h.invokeExact(ptr, other.ptr));
+    }
+
+    public Point2 times(double a) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_times.h.invokeExact(ptr, a));
     }
 
     @Override
@@ -109,6 +281,10 @@ public class Point2 extends ForeignObject implements Manifold<Point2, Vector2> {
 
     public static boolean check_manifold_invariants(Point2 a, Point2 b) throws Throwable {
         return (boolean) FF.Point2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public Point2 normalized() throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_normalized.h.invokeExact(ptr));
     }
 
 }

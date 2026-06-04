@@ -178,44 +178,6 @@ public class Pose3Test {
         // assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    // Check AdjointTranspose and jacobians
-    @Test
-    void testAdjointTranspose() throws Throwable {
-        Vector6 xi = new Vector6(0.1, 1.2, 2.3, 3.1, 1.4, 4.5);
-
-        // // Check evaluation
-        // EQUALITY(static_cast<Vector>(T.AdjointMap().transpose() * xi),
-        // T.AdjointTranspose(xi));
-        // EQUALITY(static_cast<Vector>(T2.AdjointMap().transpose() * xi),
-        // T2.AdjointTranspose(xi));
-        // EQUALITY(static_cast<Vector>(T3.AdjointMap().transpose() * xi),
-        // T3.AdjointTranspose(xi));
-
-        // // Check jacobians
-        // Matrix6 actualH1, actualH2, expectedH1, expectedH2;
-        // auto AdT = [&](const Pose3& T, const Vector6& xi) {
-        // return T.AdjointTranspose(xi);
-        // };
-
-        // T.AdjointTranspose(xi, actualH1, actualH2);
-        // expectedH1 = numericalDerivative21(AdT, T, xi);
-        // expectedH2 = numericalDerivative22(AdT, T, xi);
-        // assertTrue(assert_equal(expectedH1, actualH1, 1e-8));
-        // assertTrue(assert_equal(expectedH2, actualH2));
-
-        // T2.AdjointTranspose(xi, actualH1, actualH2);
-        // expectedH1 = numericalDerivative21(AdT, T2, xi);
-        // expectedH2 = numericalDerivative22(AdT, T2, xi);
-        // assertTrue(assert_equal(expectedH1, actualH1, 1e-8));
-        // assertTrue(assert_equal(expectedH2, actualH2));
-
-        // T3.AdjointTranspose(xi, actualH1, actualH2);
-        // expectedH1 = numericalDerivative21(AdT, T3, xi);
-        // expectedH2 = numericalDerivative22(AdT, T3, xi);
-        // assertTrue(assert_equal(expectedH1, actualH1, 1e-8));
-        // assertTrue(assert_equal(expectedH2, actualH2));
-    }
-
     // // assert that T*Hat(xi)*T^-1 is equal to Hat(Ad_T(xi))
     @Test
     void testAdjoint_hat() {
@@ -826,18 +788,6 @@ public class Pose3Test {
     }
 
     @Test
-    void testadjointMap() {
-        // Matrix res = Pose3::adjointMap(screwPose3::xi);
-        // Matrix wh = skewSymmetric(screwPose3::xi(0), screwPose3::xi(1),
-        // screwPose3::xi(2));
-        // Matrix vh = skewSymmetric(screwPose3::xi(3), screwPose3::xi(4),
-        // screwPose3::xi(5));
-        // Matrix6 expected;
-        // expected << wh, Z_3x3, vh, wh;
-        // assertTrue(assert_equal(expected,res,1e-5));
-    }
-
-    @Test
     void testAlign1() throws Throwable {
         Pose3 expected = new Pose3(new Rot3(), new Point3(10, 10, 0));
 
@@ -1039,53 +989,6 @@ public class Pose3Test {
         // }
     }
 
-    // Vector6 testDerivAdjoint(const Vector6& xi, const Vector6& v) {
-    // return Pose3::adjointMap(xi) * v;
-    // }
-
-    @Test
-    void testadjoint() throws Throwable {
-        Vector6 v = new Vector6(1, 2, 3, 4, 5, 6);
-        // Vector expected = testDerivAdjoint(screwPose3::xi, v);
-
-        Matrix actualH1 = new Matrix();
-        Matrix actualH2 = new Matrix();
-        // Vector actual = Pose3::adjoint(screwPose3::xi, v, actualH1, actualH2);
-
-        // Matrix numericalH1 = numericalDerivative21<Vector6, Vector6, Vector6>(
-        // testDerivAdjoint, screwPose3::xi, v, 1e-5);
-        // Matrix numericalH2 = numericalDerivative22<Vector6, Vector6, Vector6>(
-        // testDerivAdjoint, screwPose3::xi, v, 1e-5);
-
-        // assertTrue(assert_equal(expected,actual,1e-5));
-        // assertTrue(assert_equal(numericalH1,actualH1,1e-5));
-        // assertTrue(assert_equal(numericalH2,actualH2,1e-5));
-    }
-
-    // Vector6 testDerivAdjointTranspose(const Vector6& xi, const Vector6& v) {
-    // return Pose3::adjointMap(xi).transpose() * v;
-    // }
-
-    @Test
-    void testadjointTranspose() throws Throwable {
-        Vector6 xi = new Vector6(0.01, 0.02, 0.03, 1.0, 2.0, 3.0);
-        Vector6 v = new Vector6(0.04, 0.05, 0.06, 4.0, 5.0, 6.0);
-        // Vector expected = testDerivAdjointTranspose(xi, v);
-
-        Matrix actualH1 = new Matrix();
-        Matrix actualH2 = new Matrix();
-        // Vector actual = Pose3::adjointTranspose(xi, v, actualH1, actualH2);
-
-        // Matrix numericalH1 = numericalDerivative21<Vector6, Vector6, Vector6>(
-        // testDerivAdjointTranspose, xi, v, 1e-5);
-        // Matrix numericalH2 = numericalDerivative22<Vector6, Vector6, Vector6>(
-        // testDerivAdjointTranspose, xi, v, 1e-5);
-
-        // assertTrue(assert_equal(expected,actual,1e-15));
-        // assertTrue(assert_equal(numericalH1,actualH1,1e-5));
-        // assertTrue(assert_equal(numericalH2,actualH2,1e-5));
-    }
-
     @Test
     void testInvariants() throws Throwable {
         Pose3 id = new Pose3();
@@ -1099,126 +1002,6 @@ public class Pose3Test {
         assertTrue(Pose3.check_manifold_invariants(id, T3));
         assertTrue(Pose3.check_manifold_invariants(T2, id));
         assertTrue(Pose3.check_manifold_invariants(T2, T3));
-    }
-
-    //
-    // #include "testPoseAdjointMap.h"
-
-    @Test
-    void testTransformCovariance6MapTo2d() throws Throwable {
-        // // Create 3d scenarios that map to 2d configurations and compare with Pose2
-        // results.
-        // using namespace test_pose_adjoint_map;
-        double degree = Math.PI / 180;
-
-        Vector3 s2 = new Vector3(0.1, 0.3, 0.7);
-        Pose2 p2 = new Pose2(1.1, 1.5, 31. * degree);
-        // auto cov2 = FullCovarianceFromSigmas<Pose2>(s2);
-        // auto transformed2 = TransformCovariance<Pose2>{p2}(cov2);
-
-        // auto match_cov3_to_cov2 = [&](int spatial_axis0, int spatial_axis1, int
-        // r_axis,
-        // const Pose2::Jacobian &cov2, const Pose3::Jacobian &cov3) -> void
-        // {
-        // assertTrue(assert_equal(
-        // Vector3{cov2.diagonal()},
-        // Vector3{cov3(spatial_axis0, spatial_axis0), cov3(spatial_axis1,
-        // spatial_axis1), cov3(r_axis, r_axis)}));
-        // assertTrue(assert_equal(
-        // Vector3{cov2(1, 0), cov2(2, 0), cov2(2, 1)},
-        // Vector3{cov3(spatial_axis1, spatial_axis0), cov3(r_axis, spatial_axis0),
-        // cov3(r_axis, spatial_axis1)}));
-        // };
-
-        // rotate around x axis
-        {
-            // auto cov3 = FullCovarianceFromSigmas<Pose3>((Vector6{} << s2(2), 0., 0., 0.,
-            // s2(0), s2(1)).finished());
-            // auto transformed3 = TransformCovariance<Pose3>{{Rot3::RzRyRx(p2.theta(), 0.,
-            // 0.), {0., p2.x(), p2.y()}}}(cov3);
-            // match_cov3_to_cov2(4, 5, 0, transformed2, transformed3);
-        }
-
-        // rotate around y axis
-        {
-            // auto cov3 = FullCovarianceFromSigmas<Pose3>((Vector6{} << 0., s2(2), 0.,
-            // s2(1), 0., s2(0)).finished());
-            // auto transformed3 = TransformCovariance<Pose3>{{Rot3::RzRyRx(0., p2.theta(),
-            // 0.), {p2.y(), 0., p2.x()}}}(cov3);
-            // match_cov3_to_cov2(5, 3, 1, transformed2, transformed3);
-        }
-
-        // rotate around z axis
-        {
-            // auto cov3 = FullCovarianceFromSigmas<Pose3>((Vector6{} << 0., 0., s2(2),
-            // s2(0), s2(1), 0.).finished());
-            // auto transformed3 = TransformCovariance<Pose3>{{Rot3::RzRyRx(0., 0.,
-            // p2.theta()), {p2.x(), p2.y(), 0.}}}(cov3);
-            // match_cov3_to_cov2(3, 4, 2, transformed2, transformed3);
-        }
-    }
-
-    @Test
-    void testTransformCovariance6() {
-        // Use simple covariance matrices and transforms to create tests that can be
-        // validated with simple computations.
-        // using namespace test_pose_adjoint_map;
-
-        // // rotate 90 around z axis and then 90 around y axis
-        {
-            // auto cov = FullCovarianceFromSigmas<Pose3>((Vector6{} << 0.1, 0.2, 0.3, 0.5,
-            // 0.7, 1.1).finished());
-            // auto transformed = TransformCovariance<Pose3>{{Rot3::RzRyRx(0., 90 * degree,
-            // 90 * degree), {0., 0., 0.}}}(cov);
-            // // x from y, y from z, z from x
-            // assertTrue(assert_equal(
-            // (Vector6{} << cov(1, 1), cov(2, 2), cov(0, 0), cov(4, 4), cov(5, 5), cov(3,
-            // 3)).finished(),
-            // Vector6{transformed.diagonal()}));
-            // // Both the x and z axes are pointing in the negative direction.
-            // assertTrue(assert_equal(
-            // (Vector5{} << -cov(2, 1), cov(0, 1), cov(4, 1), -cov(5, 1), cov(3,
-            // 1)).finished(),
-            // (Vector5{} << transformed(1, 0), transformed(2, 0), transformed(3, 0),
-            // transformed(4, 0), transformed(5, 0)).finished()));
-        }
-
-        // // translate along the x axis with uncertainty in roty and rotz
-        {
-            // auto cov = TwoVariableCovarianceFromSigmas<Pose3>(1, 2, 0.7, 0.3);
-            // auto transformed = TransformCovariance<Pose3>{{Rot3::RzRyRx(0., 0., 0.),
-            // {20., 0., 0.}}}(cov);
-            // // The uncertainty in roty and rotz causes off-diagonal covariances
-            // assertTrue(assert_equal(0.7 * 0.7 * 20., transformed(5, 1)));
-            // assertTrue(assert_equal(0.7 * 0.7 * 20. * 20., transformed(5, 5)));
-            // assertTrue(assert_equal(-0.3 * 0.3 * 20., transformed(4, 2)));
-            // assertTrue(assert_equal(0.3 * 0.3 * 20. * 20., transformed(4, 4)));
-            // assertTrue(assert_equal(-0.3 * 0.7 * 20., transformed(4, 1)));
-            // assertTrue(assert_equal(0.3 * 0.7 * 20., transformed(5, 2)));
-            // assertTrue(assert_equal(-0.3 * 0.7 * 20. * 20., transformed(5, 4)));
-        }
-
-        // // rotate around x axis and translate along the x axis with uncertainty in
-        // rotx
-        {
-            // auto cov = SingleVariableCovarianceFromSigma<Pose3>(0, 0.1);
-            // auto transformed = TransformCovariance<Pose3>{{Rot3::RzRyRx(90 * degree, 0.,
-            // 0.), {20., 0., 0.}}}(cov);
-            // // No change
-            // assertTrue(assert_equal(cov, transformed));
-        }
-
-        // // rotate around x axis and translate along the x axis with uncertainty in
-        // roty
-        {
-            // auto cov = SingleVariableCovarianceFromSigma<Pose3>(1, 0.1);
-            // auto transformed = TransformCovariance<Pose3>{{Rot3::RzRyRx(90 * degree, 0.,
-            // 0.), {20., 0., 0.}}}(cov);
-            // // Uncertainty is spread to other dimensions.
-            // assertTrue(assert_equal(
-            // (Vector6{} << 0., 0., 0.1 * 0.1, 0., 0.1 * 0.1 * 20. * 20., 0.).finished(),
-            // Vector6{transformed.diagonal()}));
-        }
     }
 
     @Test
@@ -1469,32 +1252,34 @@ public class Pose3Test {
     void testexpressionWrappers() throws Throwable {
         Pose3 X = new Pose3(Rot3.Ypr(0.1, 0.2, 0.3), new Point3(10, 5, -2));
         Pose3 Y = new Pose3(Rot3.Ypr(1.1, -2.2, -0.3), new Point3(-5, 1, 1));
-        // double t = 0.3;
-        // Values vals;
-        // vals.insert(0,X);
-        // vals.insert(1,Y);
+        double t = 0.3;
+        Values vals = new Values();
+        vals.insert(0, X);
+        vals.insert(1, Y);
         // vals.insert(2,t);
 
-        { // interpolate (templated wrapper applies to all classes)
-          // Matrix expectedJacobianX, expectedJacobianY, expectedJacobianT;
-          // std::vector<Matrix> Hlist = {{},{},{}};
-          // Pose3 expected = interpolate(X, Y, t, expectedJacobianX, expectedJacobianY,
-          // expectedJacobianT);
-          // Pose3 actual = interpolate(Pose3_(Key(0)), Pose3_(Key(1)),
-          // Double_(Key(2))).value(vals, Hlist);
+        {
+            // interpolate (templated wrapper applies to all classes)
+            // Matrix expectedJacobianX, expectedJacobianY, expectedJacobianT;
+            // std::vector<Matrix> Hlist = {{},{},{}};
+            // Pose3 expected = interpolate(X, Y, t, expectedJacobianX, expectedJacobianY,
+            // expectedJacobianT);
+            // Pose3 actual = interpolate(Pose3_(Key(0)), Pose3_(Key(1)),
+            // Double_(Key(2))).value(vals, Hlist);
 
             // assertTrue(assert_equal(expected,actual,1e-6));
             // assertTrue(assert_equal(expectedJacobianX,Hlist[0],1e-6));
             // assertTrue(assert_equal(expectedJacobianY,Hlist[1],1e-6));
             // assertTrue(assert_equal(expectedJacobianT,Hlist[2],1e-6));
         }
-        { // interpolateRt (Pose3 specialisation)
-          // Matrix expectedJacobianX, expectedJacobianY, expectedJacobianT;
-          // std::vector<Matrix> Hlist = {{},{},{}};
-          // Pose3 expected = X.interpolateRt(Y, t, expectedJacobianX, expectedJacobianY,
-          // expectedJacobianT);
-          // Pose3 actual = interpolateRt(Pose3_(Key(0)), Pose3_(Key(1)),
-          // Double_(Key(2))).value(vals, Hlist);
+        {
+            // interpolateRt (Pose3 specialisation)
+            // Matrix expectedJacobianX, expectedJacobianY, expectedJacobianT;
+            // std::vector<Matrix> Hlist = {{},{},{}};
+            // Pose3 expected = X.interpolateRt(Y, t, expectedJacobianX, expectedJacobianY,
+            // expectedJacobianT);
+            // Pose3 actual = interpolateRt(Pose3_(Key(0)), Pose3_(Key(1)),
+            // Double_(Key(2))).value(vals, Hlist);
 
             // assertTrue(assert_equal(expected,actual,1e-6));
             // assertTrue(assert_equal(expectedJacobianX,Hlist[0],1e-6));

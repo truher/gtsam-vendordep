@@ -2,12 +2,13 @@ package gtsam;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.noiseModel.Diagonal;
+
 /**
  * see gtsam/nonlinear/tests/testIncrementalFixedLagSmoother.cpp
  */
 public class IncrementalFixedLagSmootherTest {
 
-  
     // bool check_smoother(const NonlinearFactorGraph& fullgraph,
     // const Values& fullinit,
     // const IncrementalFixedLagSmoother& smoother,
@@ -22,7 +23,6 @@ public class IncrementalFixedLagSmootherTest {
     // return assert_equal(expected, actual);
     // }
 
- 
     // void PrintSymbolicTreeHelper(const ISAM2Clique::shared_ptr& clique,
     // const std::string indent = "") {
     // // Print the current clique
@@ -42,7 +42,6 @@ public class IncrementalFixedLagSmootherTest {
     // }
     // }
 
-
     // void PrintSymbolicTree(const ISAM2& isam, const std::string& label) {
     // std::cout << label << std::endl;
     // if (!isam.roots().empty()) {
@@ -54,27 +53,27 @@ public class IncrementalFixedLagSmootherTest {
     // }
 
     @Test
-    void testExample() {
-        // // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus,
-        // // full optimization and the IncrementalFixedLagSmoother should be identical
-        // // (even with the linearized approximations at the end of the smoothing lag)
+    void testExample() throws Throwable {
+        // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus,
+        // full optimization and the IncrementalFixedLagSmoother should be identical
+        // (even with the linearized approximations at the end of the smoothing lag)
 
         // SETDEBUG("IncrementalFixedLagSmoother update", true);
 
-        // // Set up parameters
-        // SharedDiagonal odoNoise = noiseModel::Diagonal::Sigmas(Vector2(0.1, 0.1));
-        // SharedDiagonal loopNoise = noiseModel::Diagonal::Sigmas(Vector2(0.1, 0.1));
+        // Set up parameters
+        shared_ptr<Diagonal> odoNoise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
+        shared_ptr<Diagonal> loopNoise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
 
-        // // Create a Fixed-Lag Smoother
+        // Create a Fixed-Lag Smoother
         // typedef IncrementalFixedLagSmoother::KeyTimestampMap Timestamps;
         // IncrementalFixedLagSmoother smoother(12.0, ISAM2Params());
 
-        // // Create containers to keep the full graph
-        // Values fullinit;
-        // NonlinearFactorGraph fullgraph;
+        // Create containers to keep the full graph
+        Values fullinit = new Values();
+        NonlinearFactorGraph fullgraph = new NonlinearFactorGraph();
 
         // // i keeps track of the time step
-        // size_t i = 0;
+        // int i = 0;
 
         // // Add a prior at time 0 and update the HMF
         // {
@@ -95,7 +94,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key0));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
         // ++i;
         // }
@@ -121,7 +120,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key2));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
         // ++i;
         // }
@@ -151,7 +150,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key2));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
         // ++i;
         // }
@@ -181,7 +180,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key2));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
         // ++i;
         // }
@@ -211,7 +210,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key2));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
         // // now remove one of the two and try again
         // // empty values and new factors for fake update in which we only remove
@@ -220,7 +219,7 @@ public class IncrementalFixedLagSmootherTest {
         // Values emptyNewValues;
         // Timestamps emptyNewTimestamps;
 
-        // size_t factorIndex =
+        // int factorIndex =
         // 25; // any index that does not break connectivity of the graph
         // FactorIndices factorToRemove;
         // factorToRemove.push_back(factorIndex);
@@ -238,19 +237,19 @@ public class IncrementalFixedLagSmootherTest {
 
         // // Note: the following test (checking that the number of factor is reduced
         // // by 1) fails since we are not reusing slots, hence also when removing a
-        // // factor we do not change the size of the factor graph size_t
+        // // factor we do not change the size of the factor graph int
         // // nrFactorsAfterRemoval = smoother.getFactors().size();
         // // DOUBLES_EQUAL(nrFactorsBeforeRemoval-1, nrFactorsAfterRemoval, 1e-5);
 
         // // check that the factors in the smoother are right
         // NonlinearFactorGraph actual = smoother.getFactors();
-        // for (size_t i = 0; i < smootherFactorsBeforeRemove.size(); i++) {
+        // for (int i = 0; i < smootherFactorsBeforeRemove.size(); i++) {
         // // check that the factors that were not removed are there
         // if (smootherFactorsBeforeRemove[i] && i != factorIndex) {
-        // EXPECT(smootherFactorsBeforeRemove[i]->equals(*actual[i]));
+        // assertTrue(smootherFactorsBeforeRemove[i]->equals(*actual[i]));
         // } else { // while the factors that were not there or were removed are no
         // // longer there
-        // EXPECT(!actual[i]);
+        // assertTrue(!actual[i]);
         // }
         // }
         // }
@@ -311,7 +310,7 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key_0));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key_0));
         // PrintSymbolicTree(
         // smoother.getISAM2(),
         // "Bayes Tree marginalization test: i = " + std::to_string(i));
@@ -322,32 +321,30 @@ public class IncrementalFixedLagSmootherTest {
     }
 
     @Test
-    void testExampleWithFactorRemoval() {
-        // // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus,
-        // full optimization and
-        // // the IncrementalFixedLagSmoother should be identical (even with the
-        // linearized approximations at
-        // // the end of the smoothing lag)
+    void testExampleWithFactorRemoval() throws Throwable {
+        // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus, full
+        // optimization and the IncrementalFixedLagSmoother should be identical (even
+        // with the linearized approximations at the end of the smoothing lag)
 
         // SETDEBUG("IncrementalFixedLagSmoother update", true);
 
-        // // Set up parameters
-        // SharedDiagonal noise = noiseModel::Diagonal::Sigmas(Vector2(0.1, 0.1));
+        // Set up parameters
+        shared_ptr<Diagonal> noise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
 
-        // // Create a Fixed-Lag Smoother
+        // Create a Fixed-Lag Smoother
         // typedef IncrementalFixedLagSmoother::KeyTimestampMap Timestamps;
         // IncrementalFixedLagSmoother smoother(5.0, ISAM2Params());
 
-        // // Create containers to keep the full graph
-        // Values fullinit;
-        // NonlinearFactorGraph fullgraph;
+        // Create containers to keep the full graph
+        Values fullinit = new Values();
+        NonlinearFactorGraph fullgraph = new NonlinearFactorGraph();
 
-        // // i keeps track of the time step
-        // size_t i = 0;
+        // i keeps track of the time step
+        int i = 0;
 
-        // // Add a prior at time 0 and update the HMF
-        // {
-        // Key key0 = X(0);
+        // Add a prior at time 0 and update the HMF
+        {
+        Key key0 = Key.X(0);
 
         // NonlinearFactorGraph newFactors;
         // Values newValues;
@@ -364,14 +361,14 @@ public class IncrementalFixedLagSmootherTest {
         // smoother.update(newFactors, newValues, newTimestamps);
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key0));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
-        // ++i;
-        // }
+        ++i;
+        }
 
         // FactorIndices factorsToRemove;
-        // size_t ref_i = 0;
-        // Key prev_key = 0;
+        int ref_i = 0;
+        Key prev_key = new Key(0);
 
         // // The lambda below helps to set up a usage pattern of the smoother where we
         // // add new values and update at a certain frequency, but do not keep all
@@ -380,14 +377,14 @@ public class IncrementalFixedLagSmootherTest {
         // // indices of the new factors being added, and using them to remove the
         // // factors later. The removal of factors may cause keys to become unused and
         // // be removed from the smoother.
-        // const auto add_x_check_keep_every_y = [&](size_t num_new_values,
-        // size_t keep_every) {
-        // for (size_t j = 0; j < num_new_values; ++j) {
+        // const auto add_x_check_keep_every_y = [&](int num_new_values,
+        // int keep_every) {
+        // for (int j = 0; j < num_new_values; ++j) {
         // Key key1 = X(ref_i);
         // Key key2 = X(i);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
+        NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
+        Values newValues = new Values();
         // Timestamps newTimestamps;
 
         // newFactors.push_back(
@@ -407,13 +404,13 @@ public class IncrementalFixedLagSmootherTest {
         // // NOTE: this test only work when factor slots are not being reused.
         // const NonlinearFactorGraph& actual = smoother.getFactors();
         // for (auto factor_i : factorsToRemove) {
-        // EXPECT(not actual[factor_i]);
+        // assertTrue(not actual[factor_i]);
         // }
 
         // if (not factorsToRemove.empty()) {
         // // Check that the previously added value is not in the smoother
         // // anymore.
-        // EXPECT(not smoother.getLinearizationPoint().exists(prev_key));
+        // assertTrue(not smoother.getLinearizationPoint().exists(prev_key));
         // }
 
         // // Store indexes of new factors so we're able to remove them later, if
@@ -421,7 +418,7 @@ public class IncrementalFixedLagSmootherTest {
         // factorsToRemove = smoother.getISAM2Result().newFactorsIndices;
 
         // // Check
-        // CHECK(check_smoother(fullgraph, fullinit, smoother, key2));
+        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
         // // Decide if we want to keep the new value in the smoother
         // if ((j + 1) % keep_every == 0) {

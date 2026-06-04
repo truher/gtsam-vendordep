@@ -517,12 +517,12 @@ public class Pose2Test {
     void testrotation() throws Throwable {
         Pose2 pose = new Pose2(3.5, -8.2, 4.2);
 
-        // Matrix actualH(4, 3);
-        // assertTrue(assert_equal(Rot2(4.2), pose.rotation(actualH), 1e-8));
+        Matrix actualH = new Matrix();
+        assertTrue(assert_equal(new Rot2(4.2), pose.rotation(actualH), 1e-8));
 
-        // auto f = [](const Pose2& T) { return T.rotation(); };
-        // Matrix numericalH = numericalDerivative11<Rot2, Pose2>(f, pose);
-        // assertTrue(assert_equal(numericalH, actualH, 1e-6));
+        ThrowingFunction<Pose2, Rot2> f = (t) -> t.rotation();
+        Matrix numericalH = NumericalDerivative.<Rot2, Vector1, Pose2, Vector3>numericalDerivative11(f, pose, 1e-5);
+        assertTrue(assert_equal(numericalH, actualH, 1e-6));
     }
 
     /**
@@ -548,29 +548,29 @@ public class Pose2Test {
         assertTrue(assert_equal(expected, actual1, 1e-6));
         assertTrue(assert_equal(expected, actual2, 1e-6));
 
-        Matrix expectedH1 = new Matrix(new double[][]{
-        {0.0,-1.0,-2.0},
-        {1.0, 0.0,-2.0},
-        {0.0, 0.0,-1.0}});
+        Matrix expectedH1 = new Matrix(new double[][] {
+                { 0.0, -1.0, -2.0 },
+                { 1.0, 0.0, -2.0 },
+                { 0.0, 0.0, -1.0 } });
         Matrix numericalH1 = NumericalDerivative.<//
                 Pose2, Vector3, //
                 Pose2, Vector3, //
                 Pose2, Vector3>numericalDerivative21((a, b) -> a.between(b), gT1, gT2, 1e-5);
-        assertTrue(assert_equal(expectedH1,actualH1));
-        assertTrue(assert_equal(numericalH1,actualH1));
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(numericalH1, actualH1));
         // Assert H1 = -AdjointMap(between(p2,p1)) as in doc/math.lyx
         // assertTrue(assert_equal(-gT2.between(gT1).AdjointMap(),actualH1));
 
-        Matrix expectedH2 = new Matrix(new double[][]{
-        {1.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0},
-        {0.0, 0.0, 1.0}});
+        Matrix expectedH2 = new Matrix(new double[][] {
+                { 1.0, 0.0, 0.0 },
+                { 0.0, 1.0, 0.0 },
+                { 0.0, 0.0, 1.0 } });
         Matrix numericalH2 = NumericalDerivative.<//
                 Pose2, Vector3, //
                 Pose2, Vector3, //
                 Pose2, Vector3>numericalDerivative22((a, b) -> a.between(b), gT1, gT2, 1e-5);
-        assertTrue(assert_equal(expectedH2,actualH2));
-        assertTrue(assert_equal(numericalH2,actualH2));
+        assertTrue(assert_equal(expectedH2, actualH2));
+        assertTrue(assert_equal(numericalH2, actualH2));
 
     }
 
@@ -803,8 +803,8 @@ public class Pose2Test {
         assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    double range_pose_proxy(Pose2 pose, Pose2 point) throws Throwable {
-        return pose.range(point);
+    Vector1 range_pose_proxy(Pose2 pose, Pose2 point) throws Throwable {
+        return new Vector1(pose.range(point));
     }
 
     @Test
@@ -831,97 +831,32 @@ public class Pose2Test {
         assertEquals(Math.sqrt(2.0), actual23, 1e-9);
 
         // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(range_pose_proxy, x2, xl3);
-        // expectedH2 = numericalDerivative22(range_pose_proxy, x2, xl3);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(this::range_pose_proxy, x2, xl3, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(this::range_pose_proxy, x2, xl3, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
 
         // // Another test
         double actual34 = x3.range(xl4, actualH1, actualH2);
         assertEquals(2, actual34, 1e-9);
 
-        // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(range_pose_proxy, x3, xl4);
-        // expectedH2 = numericalDerivative22(range_pose_proxy, x3, xl4);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
-    }
-
-    @Test
-    void testalign_1() throws Throwable {
-        Pose2 expected = new Pose2(Rot2.fromAngle(0), new Point2(10, 10));
-        // Point2Pairs ab_pairs {{Point2(10, 10), Point2(0, 0)},
-        // {Point2(30, 20), Point2(20, 10)}};
-        // std::optional<Pose2> aTb = Pose2::Align(ab_pairs);
-        // assertTrue(assert_equal(expected, *aTb));
-    }
-
-    @Test
-    void testalign_2() throws Throwable {
-        Point2 t = new Point2(20, 10);
-        Rot2 R = Rot2.fromAngle(Math.PI / 2.0);
-        Pose2 expected = new Pose2(R, t);
-
-        Point2 b1 = new Point2(0, 0);
-        Point2 b2 = new Point2(10, 0);
-        // Point2Pairs ab_pairs {{expected.transformFrom(b1), b1},
-        // {expected.transformFrom(b2), b2}};
-
-        // std::optional<Pose2> aTb = Pose2::Align(ab_pairs);
-        // assertTrue(assert_equal(expected, *aTb));
-    }
-
-    // namespace align_3 {
-    // Point2 t(10, 10);
-    // Pose2 expected(Rot2::fromAngle(2*M_PI/3), t);
-    // Point2 b1(0, 0), b2(10, 0), b3(10, 10);
-    // Point2 a1 = expected.transformFrom(b1),
-    // a2 = expected.transformFrom(b2),
-    // a3 = expected.transformFrom(b3);
-    // }
-
-    @Test
-    void testalign_3() throws Throwable {
-        // using namespace align_3;
-
-        // Point2Pair ab1(make_pair(a1, b1));
-        // Point2Pair ab2(make_pair(a2, b2));
-        // Point2Pair ab3(make_pair(a3, b3));
-        // const Point2Pairs ab_pairs{ab1, ab2, ab3};
-
-        // std::optional<Pose2> aTb = Pose2::Align(ab_pairs);
-        // assertTrue(assert_equal(expected, *aTb));
-    }
-
-    // namespace {
-    // /* *************************************************************************
-    // */
-    // // Prototype code to align two triangles using a rigid transform
-    // /* *************************************************************************
-    // */
-    // struct Triangle { size_t i_, j_, k_;};
-
-    // std::optional<Pose2> align2(const Point2Vector& as, const Point2Vector& bs,
-    // const pair<Triangle, Triangle>& trianglePair) {
-    // const Triangle& t1 = trianglePair.first, t2 = trianglePair.second;
-    // Point2Pairs ab_pairs = {{as[t1.i_], bs[t2.i_]},
-    // {as[t1.j_], bs[t2.j_]},
-    // {as[t1.k_], bs[t2.k_]}};
-    // return Pose2::Align(ab_pairs);
-    // }
-    // }
-
-    @Test
-    void testalign_4() throws Throwable {
-        // using namespace align_3;
-
-        // Point2Vector3 as{a1, a2, a3}, bs{b3, b1, b2}; // note in 3,1,2 order !
-
-        // Triangle t1; t1.i_=0; t1.j_=1; t1.k_=2;
-        // Triangle t2; t2.i_=1; t2.j_=2; t2.k_=0;
-
-        // std::optional<Pose2> actual = align2(as, bs, {t1, t2});
-        // assertTrue(assert_equal(expected, *actual));
+        // Check numerical derivatives
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative21(this::range_pose_proxy, x3, xl4, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Pose2, Vector3, //
+                Pose2, Vector3>numericalDerivative22(this::range_pose_proxy, x3, xl4, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
     }
 
     static Pose2 id;
@@ -950,146 +885,4 @@ public class Pose2Test {
         assertTrue(Pose2.check_manifold_invariants(T2, id));
         assertTrue(Pose2.check_manifold_invariants(T2, T1));
     }
-
-    // //******************************************************************************
-    // #include "testPoseAdjointMap.h"
-
-    // TEST(Pose2 , TransformCovariance3) {
-    // // Use simple covariance matrices and transforms to create tests that can be
-    // // validated with simple computations.
-    // using namespace test_pose_adjoint_map;
-
-    // // rotate
-    // {
-    // auto cov = FullCovarianceFromSigmas<Pose2>({0.1, 0.3, 0.7});
-    // auto transformed = TransformCovariance<Pose2>{{0., 0., 90 * degree}}(cov);
-    // // interchange x and y axes
-    // assertTrue(assert_equal(
-    // Vector3{cov(1, 1), cov(0, 0), cov(2, 2)},
-    // Vector3{transformed.diagonal()}));
-    // assertTrue(assert_equal(
-    // Vector3{-cov(1, 0), -cov(2, 1), cov(2, 0)},
-    // Vector3{transformed(1, 0), transformed(2, 0), transformed(2, 1)}));
-    // }
-
-    // // translate along x with uncertainty in x
-    // {
-    // auto cov = SingleVariableCovarianceFromSigma<Pose2>(0, 0.1);
-    // auto transformed = TransformCovariance<Pose2>{{20., 0., 0.}}(cov);
-    // // No change
-    // assertTrue(assert_equal(cov, transformed));
-    // }
-
-    // // translate along x with uncertainty in y
-    // {
-    // auto cov = SingleVariableCovarianceFromSigma<Pose2>(1, 0.1);
-    // auto transformed = TransformCovariance<Pose2>{{20., 0., 0.}}(cov);
-    // // No change
-    // assertTrue(assert_equal(cov, transformed));
-    // }
-
-    // // translate along x with uncertainty in theta
-    // {
-    // auto cov = SingleVariableCovarianceFromSigma<Pose2>(2, 0.1);
-    // auto transformed = TransformCovariance<Pose2>{{20., 0., 0.}}(cov);
-    // assertTrue(assert_equal(
-    // Vector3{0., 0.1 * 0.1 * 20. * 20., 0.1 * 0.1},
-    // Vector3{transformed.diagonal()}));
-    // assertTrue(assert_equal(
-    // Vector3{0., 0., -0.1 * 0.1 * 20.},
-    // Vector3{transformed(1, 0), transformed(2, 0), transformed(2, 1)}));
-    // }
-
-    // // rotate and translate along x with uncertainty in x
-    // {
-    // auto cov = SingleVariableCovarianceFromSigma<Pose2>(0, 0.1);
-    // auto transformed = TransformCovariance<Pose2>{{20., 0., 90 * degree}}(cov);
-    // // interchange x and y axes
-    // assertTrue(assert_equal(
-    // Vector3{cov(1, 1), cov(0, 0), cov(2, 2)},
-    // Vector3{transformed.diagonal()}));
-    // assertTrue(assert_equal(
-    // Vector3{Z_3x1},
-    // Vector3{transformed(1, 0), transformed(2, 0), transformed(2, 1)}));
-    // }
-
-    // // rotate and translate along x with uncertainty in theta
-    // {
-    // auto cov = SingleVariableCovarianceFromSigma<Pose2>(2, 0.1);
-    // auto transformed = TransformCovariance<Pose2>{{20., 0., 90 * degree}}(cov);
-    // assertTrue(assert_equal(
-    // Vector3{0., 0.1 * 0.1 * 20. * 20., 0.1 * 0.1},
-    // Vector3{transformed.diagonal()}));
-    // assertTrue(assert_equal(
-    // Vector3{0., 0., -0.1 * 0.1 * 20.},
-    // Vector3{transformed(1, 0), transformed(2, 0), transformed(2, 1)}));
-    // }
-    // }
-
-    @Test
-    void testVec() throws Throwable {
-        // Test a simple pose
-        Pose2 pose = new Pose2(Rot2.fromAngle(Math.PI / 4), new Point2(1, 2));
-
-        // Test the 'vec' method
-        // Vector9 expected_vec = Eigen::Map<Vector9>(pose.matrix().data());
-        // Matrix93 actualH;
-        // Vector9 actual_vec = pose.vec(actualH);
-        // assertTrue(assert_equal(expected_vec, actual_vec));
-
-        // // Verify Jacobian with numerical derivatives
-        // auto f = [](const Pose2& p) { return p.vec(); };
-        // Matrix93 numericalH = numericalDerivative11<Vector9, Pose2>(f, pose);
-        // assertTrue(assert_equal(numericalH, actualH, 1e-9));
-    }
-
-    @Test
-    void testAdjointMap() throws Throwable {
-        // Create a non-trivial Pose2 object
-        final Pose2 pose = new Pose2(Rot2.fromAngle(0.5), new Point2(1.0, 2.0));
-
-        // Call the specialized AdjointMap
-        // Matrix3 specialized_Adj = pose.AdjointMap();
-
-        // // Call the generic AdjointMap from the base class
-        // Matrix3 generic_Adj = static_cast<const MatrixLieGroup<Pose2, 3,
-        // 3>*>(&pose)->AdjointMap();
-
-        // // Assert that they are equal
-        // assertTrue(assert_equal(specialized_Adj, generic_Adj, 1e-9));
-    }
-
-    @Test
-    void testAdjointTranspose() throws Throwable {
-        final Pose2 pose = new Pose2(Rot2.fromAngle(0.5), new Point2(1.0, 2.0));
-        final Vector3 xi = new Vector3(0.2, -0.4, 0.7);
-
-        // assertTrue(assert_equal(Vector3(pose.AdjointMap().transpose() * xi),
-        // Vector3(pose.AdjointTranspose(xi))));
-
-        // Matrix33 actualH1, actualH2;
-        // auto proxy = [](const Pose2& g, const Vector3& x) {
-        // return Vector3(g.AdjointTranspose(x));
-        // };
-        // pose.AdjointTranspose(xi, actualH1, actualH2);
-        // assertTrue(assert_equal(numericalDerivative21(proxy, pose, xi), actualH1,
-        // 1e-8));
-        // assertTrue(assert_equal(numericalDerivative22(proxy, pose, xi), actualH2));
-    }
-
-    @Test
-    void testadjointTranspose() throws Throwable {
-        final Vector3 xi = new Vector3(0.2, -0.4, 0.7);
-        final Vector3 y = new Vector3(-0.3, 0.5, 0.9);
-
-        // Matrix33 Hxi, Hy;
-        // const Vector3 actual = Pose2::adjointTranspose(xi, y, Hxi, Hy);
-        // auto f = [](const Vector3& x, const Vector3& v) {
-        // return Pose2::adjointTranspose(x, v);
-        // };
-        // assertTrue(assert_equal(f(xi, y), actual));
-        // assertTrue(assert_equal(numericalDerivative21(f, xi, y, 1e-5), Hxi, 1e-5));
-        // assertTrue(assert_equal(numericalDerivative22(f, xi, y, 1e-5), Hy, 1e-5));
-    }
-
 }

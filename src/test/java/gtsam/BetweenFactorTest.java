@@ -6,30 +6,11 @@ import gtsam.noiseModel.Isotropic;
 
 public class BetweenFactorTest {
 
-    // /**
-    // * @file testBetweenFactor.cpp
-    // * @brief
-    // * @author Duy-Nguyen Ta, Varun Agrawal
-    // * @date Aug 2, 2013
-    // */
 
-    // #include <CppUnitLite/TestHarness.h>
-    // #include <gtsam/base/TestableAssertions.h>
-    // #include <gtsam/base/numericalDerivative.h>
-    // #include <gtsam/geometry/Pose3.h>
-    // #include <gtsam/geometry/Rot3.h>
-    // #include <gtsam/inference/Symbol.h>
-    // #include <gtsam/nonlinear/factorTesting.h>
-    // #include <gtsam/slam/BetweenFactor.h>
 
-    // using namespace std::placeholders;
-    // using namespace gtsam;
-    // using namespace gtsam::symbol_shorthand;
-    // using namespace gtsam::noiseModel;
-
-    // /**
-    // * This TEST should fail. If you want it to pass, change noise to 0.
-    // */
+    /**
+    * This TEST should fail. If you want it to pass, change noise to 0.
+    */
     @Test
     void testRot3() {
         // Rot3 R1 = Rot3::Rodrigues(0.1, 0.2, 0.3);

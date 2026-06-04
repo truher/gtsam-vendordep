@@ -1,3 +1,4 @@
+#include <gtsam/base/VectorSpace.h>
 #include <gtsam/geometry/Point3.h>
 
 extern "C" {
@@ -7,11 +8,12 @@ gtsam::Point3* Point3(double x, double y, double z) {
 void Point3_delete(gtsam::Point3* obj) {
     delete obj;
 }
-gtsam::Point3* Point3_plus(const gtsam::Point3* v, const gtsam::Point3* other) {
+gtsam::Point3* Point3_plus(const gtsam::Point3* v,        //
+                           const gtsam::Point3* other) {  //
     return new gtsam::Point3((*v) + (*other));
 }
-gtsam::Point3* Point3_minus(const gtsam::Point3* v,
-                            const gtsam::Point3* other) {
+gtsam::Point3* Point3_minus(const gtsam::Point3* v,        //
+                            const gtsam::Point3* other) {  //
     return new gtsam::Point3((*v) - (*other));
 }
 gtsam::Point3* Point3_times(const gtsam::Point3* p, double a) {
@@ -31,6 +33,12 @@ gtsam::Point3* Point3_crossPoint3Point3(  //
     const gtsam::Point3* q) {
     return new gtsam::Point3(gtsam::cross(*p, *q));
 }
+gtsam::Point3* Point3_crossPoint3Point3H(const gtsam::Point3* p,  //
+                                         const gtsam::Point3* q,  //
+                                         gtsam::Matrix* H1,       //
+                                         gtsam::Matrix* H2) {     //
+    return new gtsam::Point3(gtsam::cross(*p, *q, *H1, *H2));
+}
 gtsam::Point3* Point3_cross(const gtsam::Point3* p,    //
                             const gtsam::Point3* q) {  //
     return new gtsam::Point3(p->cross(*q));
@@ -44,15 +52,134 @@ bool Point3_check_manifold_invariants(const gtsam::Point3* a,    //
     return gtsam::check_manifold_invariants(*a, *b);
 }
 gtsam::Vector3* Point3_Logmap(const gtsam::Point3* p) {
-    return new gtsam::Vector3(traits<gtsam::Point3>::Logmap(*p))
+    return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p));
 }
 gtsam::Point3* Point3_Expmap(const gtsam::Vector3* v) {
-    return new gtsam::Point3(traits<gtsam::Point3>::Expmap(*v))
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Expmap(*v));
 }
-gtsam::Vector3* Point3_LogmapH(const gtsam::Point3* p, gtsam::Matrix* H) {
-    return new gtsam::Vector3(traits<gtsam::Point3>::Logmap(*p, *H))
+gtsam::Vector3* Point3_LogmapH(const gtsam::Point3* p,  //
+                               gtsam::Matrix* H) {      //
+    return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p, *H));
 }
-gtsam::Point3* Point3_ExpmapH(const gtsam::Vector3* v, gtsam::Matrix* H) {
-    return new gtsam::Point3(traits<gtsam::Point3>::Expmap(*v, *H))
+gtsam::Point3* Point3_ExpmapH(const gtsam::Vector3* v,  //
+                              gtsam::Matrix* H) {       //
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Expmap(*v, *H));
+}
+gtsam::Point3* Point3_compose(const gtsam::Point3* a,  //
+                              const gtsam::Point3* b) {
+    return new gtsam::Point3((*a) * (*b));
+}
+gtsam::Point3* Point3_composeH(const gtsam::Point3* a,  //
+                               const gtsam::Point3* b,  //
+                               gtsam::Matrix* H1,       //
+                               gtsam::Matrix* H2) {     //
+    return new gtsam::Point3(a->compose(*b, *H1, *H2));
+}
+gtsam::Point3* Point3_between(const gtsam::Point3* r,    //
+                              const gtsam::Point3* g) {  //
+    return new gtsam::Point3(r->between(*g));
+}
+gtsam::Point3* Point3_betweenH(const gtsam::Point3* r,  //
+                               const gtsam::Point3* g,  //
+                               gtsam::Matrix* H1,       //
+                               gtsam::Matrix* H2) {     //
+    return new gtsam::Point3(r->between(*g, *H1, *H2));
+}
+gtsam::Point3* Point3_inverse(const gtsam::Point3* r) {
+    return new gtsam::Point3(r->inverse());
+}
+gtsam::Point3* Point3_inverseH(const gtsam::Point3* p,  //
+                               gtsam::Matrix* H) {      //
+    return new gtsam::Point3(p->inverse(*H));
+}
+gtsam::Matrix* Point3_AdjointMap(const gtsam::Point3* r) {
+    return new gtsam::Matrix(r->AdjointMap());
+}
+gtsam::Point3* Point3_expmapH(const gtsam::Point3* r,   //
+                              const gtsam::Vector3* v,  //
+                              gtsam::Matrix* H1,        //
+                              gtsam::Matrix* H2) {      //
+    return new gtsam::Point3(r->expmap(*v, *H1, *H2));
+}
+gtsam::Vector3* Point3_logmapH(const gtsam::Point3* r,  //
+                               const gtsam::Point3* g,  //
+                               gtsam::Matrix* H1,       //
+                               gtsam::Matrix* H2) {     //
+    return new gtsam::Vector3(r->logmap(*g, *H1, *H2));
+}
+gtsam::Point3* Point3_retract(const gtsam::Point3* r,     //
+                              const gtsam::Vector3* v) {  //
+    return new gtsam::Point3(r->retract(*v));
+}
+gtsam::Point3* Point3_retractH(const gtsam::Point3* r,   //
+                               const gtsam::Vector3* v,  //
+                               gtsam::Matrix* H1,        //
+                               gtsam::Matrix* H2) {      //
+    return new gtsam::Point3(r->retract(*v, *H1, *H2));
+}
+gtsam::Point3* Point3_OriginRetract(const gtsam::Vector3* v) {
+    return new gtsam::Point3(gtsam::Point3::Retract(*v));
+}
+gtsam::Vector3* Point3_OriginLocalCoordinates(const gtsam::Point3* g) {
+    return new gtsam::Vector3(gtsam::Point3::LocalCoordinates(*g));
+}
+gtsam::Point3* Point3_OriginRetractH(const gtsam::Vector3* v,  //
+                                     gtsam::Matrix* H) {       //
+    return new gtsam::Point3(gtsam::Point3::Retract(*v, *H));
+}
+gtsam::Vector3* Point3_OriginLocalCoordinatesH(const gtsam::Point3* g,  //
+                                               gtsam::Matrix* H) {      //
+    return new gtsam::Vector3(gtsam::Point3::LocalCoordinates(*g, *H));
+}
+gtsam::Vector3* Point3_localCoordinates(const gtsam::Point3* r,    //
+                                        const gtsam::Point3* g) {  //
+    return new gtsam::Vector3(r->localCoordinates(*g));
+}
+gtsam::Vector3* Point3_localCoordinatesH(const gtsam::Point3* r,  //
+                                         const gtsam::Point3* g,  //
+                                         gtsam::Matrix* H1,       //
+                                         gtsam::Matrix* H2) {     //
+    return new gtsam::Vector3(r->localCoordinates(*g, *H1, *H2));
+}
+double Point3_dot(const gtsam::Point3* r,    //
+                  const gtsam::Point3* g) {  //
+    return r->dot(*g);
+}
+double Point3_dotPoint3Point3(const gtsam::Point3* p,    //
+                              const gtsam::Point3* q) {  //
+    return gtsam::dot(*p, *q);
+}
+double Point3_dotPoint3Point3H(const gtsam::Point3* p,  //
+                               const gtsam::Point3* q,
+                               gtsam::Matrix* H1,    //
+                               gtsam::Matrix* H2) {  //
+    return gtsam::dot(*p, *q, *H1, *H2);
+}
+gtsam::Point3* Point3_normalize(const gtsam::Point3* p) {
+    return new gtsam::Point3(gtsam::normalize(*p));
+}
+gtsam::Point3* Point3_normalizeH(const gtsam::Point3* p,  //
+                                 gtsam::Matrix* H) {
+    return new gtsam::Point3(gtsam::normalize(*p, *H));
+}
+double Point3_norm3(const gtsam::Point3* p) {
+    return gtsam::norm3(*p);
+}
+double Point3_norm3H(const gtsam::Point3* p,  //
+                     gtsam::Matrix* H) {      //
+    return gtsam::norm3(*p, *H);
+}
+double Point3_norm(const gtsam::Point3* p) {
+    return p->norm();
+}
+double Point3_distance3(const gtsam::Point3* p,    //
+                        const gtsam::Point3* q) {  //
+    return gtsam::distance3(*p, *q);
+}
+double Point3_distance3H(const gtsam::Point3* p,  //
+                         const gtsam::Point3* q,  //
+                         gtsam::Matrix* H1,       //
+                         gtsam::Matrix* H2) {     //
+    return gtsam::distance3(*p, *q, *H1, *H2);
 }
 }

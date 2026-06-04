@@ -2,6 +2,7 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -13,6 +14,7 @@ import org.team100.foreign.Lib;
 public class BatchFixedLagSmoother extends ForeignObject {
     public enum FF {
         BatchFixedLagSmoother(ADDRESS, JAVA_DOUBLE),
+        BatchFixedLagSmoother2(ADDRESS, JAVA_DOUBLE, ADDRESS, JAVA_BOOLEAN),
         BatchFixedLagSmoother_delete(null, ADDRESS),
         BatchFixedLagSmoother_update(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         BatchFixedLagSmoother_calculateEstimate(ADDRESS, ADDRESS),
@@ -31,6 +33,13 @@ public class BatchFixedLagSmoother extends ForeignObject {
 
     public BatchFixedLagSmoother(double lag) throws Throwable {
         this((MemorySegment) FF.BatchFixedLagSmoother.h.invokeExact(lag));
+    }
+
+    public BatchFixedLagSmoother(double lag,
+            LevenbergMarquardtParams params,
+            boolean consistent) throws Throwable {
+        this((MemorySegment) FF.BatchFixedLagSmoother2.h.invokeExact(
+                lag, params.ptr, consistent));
     }
 
     public FixedLagSmoother.Result update(

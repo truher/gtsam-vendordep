@@ -46,38 +46,35 @@ public class Point2Test {
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
 
-        // assertTrue(assert_equal(Point2(5,7), traits<Point2>::Compose(p1, p2, H1,
-        // H2)));
-        // assertTrue(assert_equal(I_2x2, H1));
-        // assertTrue(assert_equal(I_2x2, H2));
+        assertTrue(assert_equal(new Point2(5, 7), Point2.traits.Compose(p1, p2, H1, H2)));
+        assertTrue(assert_equal(Matrix.I_2x2(), H1));
+        assertTrue(assert_equal(Matrix.I_2x2(), H2));
 
-        // assertTrue(assert_equal(Point2(3,3), traits<Point2>::Between(p1, p2, H1,
-        // H2)));
-        // assertTrue(assert_equal(-I_2x2, H1));
-        // assertTrue(assert_equal(I_2x2, H2));
+        assertTrue(assert_equal(new Point2(3, 3), Point2.traits.Between(p1, p2, H1, H2)));
+        assertTrue(assert_equal(Matrix.I_2x2().times(-1), H1));
+        assertTrue(assert_equal(Matrix.I_2x2(), H2));
 
-        // assertTrue(assert_equal(Point2(5,7), traits<Point2>::Retract(p1, Vector2(4.,
-        // 5.))));
-        // assertTrue(assert_equal(Vector2(3.,3.), traits<Point2>::Local(p1,p2)));
+        assertTrue(assert_equal(new Point2(5, 7), Point2.traits.Retract(p1, new Vector2(4., 5.))));
+        assertTrue(assert_equal(new Vector2(3., 3.), Point2.traits.Local(p1, p2)));
     }
 
     @Test
-    void testexpmap() {
-        // Vector d(2);
-        // d(0) = 1;
-        // d(1) = -1;
-        // Point2 a(4, 5), b = traits<Point2>::Retract(a,d), c(5, 4);
-        // assertTrue(assert_equal(b,c));
+    void testexpmap() throws Throwable {
+        Vector2 d = new Vector2(1, -1);
+        Point2 a = new Point2(4, 5);
+        Point2 b = Point2.traits.Retract(a, d);
+        Point2 c = new Point2(5, 4);
+        assertTrue(assert_equal(b, c));
     }
 
     @Test
-    void testarithmetic() {
-        // assertTrue(assert_equal<Point2>(Point2(-5, -6), -Point2(5, 6)));
-        // assertTrue(assert_equal<Point2>(Point2(5, 6), Point2(4, 5) + Point2(1, 1)));
-        // assertTrue(assert_equal<Point2>(Point2(3, 4), Point2(4, 5) - Point2(1, 1)));
-        // assertTrue(assert_equal<Point2>(Point2(8, 6), Point2(4, 3) * 2));
-        // assertTrue(assert_equal<Point2>(Point2(4, 6), 2.0 * Point2(2, 3)));
-        // assertTrue(assert_equal<Point2>(Point2(2, 3), Point2(4, 6) / 2));
+    void testarithmetic() throws Throwable {
+        assertTrue(assert_equal(new Point2(-5, -6), new Point2(5, 6).times(-1)));
+        assertTrue(assert_equal(new Point2(5, 6), new Point2(4, 5).plus(new Point2(1, 1))));
+        assertTrue(assert_equal(new Point2(3, 4), new Point2(4, 5).minus(new Point2(1, 1))));
+        assertTrue(assert_equal(new Point2(8, 6), new Point2(4, 3).times(2)));
+        assertTrue(assert_equal(new Point2(4, 6), new Point2(2, 3).times(2.0)));
+        assertTrue(assert_equal(new Point2(2, 3), new Point2(4, 6).times(1.0 / 2)));
     }
 
     @Test
@@ -85,10 +82,9 @@ public class Point2Test {
         Point2 p0 = new Point2(10, 0);
         Point2 p1 = new Point2(0, -10);
         Point2 p2 = new Point2(10, 10);
-        // assertTrue(assert_equal(Point2(1, 0), Point2(p0.normalized()), 1e-6));
-        // assertTrue(assert_equal(Point2(0,-1), Point2(p1.normalized()), 1e-6));
-        // assertTrue(assert_equal(Point2(sqrt(2.0)/2.0, sqrt(2.0)/2.0),
-        // Point2(p2.normalized()), 1e-6));
+        assertTrue(assert_equal(new Point2(1, 0), p0.normalized(), 1e-6));
+        assertTrue(assert_equal(new Point2(0, -1), p1.normalized(), 1e-6));
+        assertTrue(assert_equal(new Point2(Math.sqrt(2.0) / 2.0, Math.sqrt(2.0) / 2.0), p2.normalized(), 1e-6));
     }
 
     // some shared test values
@@ -114,8 +110,8 @@ public class Point2Test {
         }
     }
 
-    double norm_proxy(Point2 point) throws Throwable {
-        return point.norm();
+    Vector1 norm_proxy(Point2 point) throws Throwable {
+        return new Vector1(point.norm());
     }
 
     @Test
@@ -125,32 +121,33 @@ public class Point2Test {
         Point2 p1 = new Point2(4, 5);
         Point2 p2 = new Point2(1, 1);
         assertEquals(5, Point2.distance2(p1, p2), 1e-6);
-        // assertEquals( 5, (p2-p1).norm(), 1e-6);
+        assertEquals(5, (p2.minus(p1)).norm(), 1e-6);
 
-        // Matrix expectedH, actualH;
-        // double actual;
+        Matrix expectedH = new Matrix();
+        Matrix actualH = new Matrix();
 
-        // // exception, for (0,0) derivative is [Inf,Inf] but we return [1,1]
-        // actual = norm2(x1, actualH);
-        // assertEquals(0, actual, 1e-9);
-        // expectedH = (Matrix(1, 2) << 1.0, 1.0).finished();
-        // assertTrue(assert_equal(expectedH,actualH));
+        // exception, for (0,0) derivative is [Inf,Inf] but we return [1,1]
+        double actual = Point2.norm2(x1, actualH);
+        assertEquals(0, actual, 1e-9);
+        expectedH = new Matrix(new double[][] { { 1.0, 1.0 } });
+        assertTrue(assert_equal(expectedH, actualH));
 
-        // actual = norm2(x2, actualH);
-        // assertEquals(sqrt(2.0), actual, 1e-9);
-        // expectedH = numericalDerivative11(norm_proxy, x2);
-        // assertTrue(assert_equal(expectedH,actualH));
+        actual = Point2.norm2(x2, actualH);
+        assertEquals(Math.sqrt(2.0), actual, 1e-9);
+        expectedH = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Point2, Vector2>numericalDerivative11(this::norm_proxy, x2, 1e-5);
+        assertTrue(assert_equal(expectedH, actualH));
 
-        // // analytical
-        // expectedH = (Matrix(1, 2) << x2.x()/actual, x2.y()/actual).finished();
-        // assertTrue(assert_equal(expectedH,actualH));
+        // analytical
+        expectedH = new Matrix(new double[][] { { x2.x() / actual, x2.y() / actual } });
+        assertTrue(assert_equal(expectedH, actualH));
     }
 
-    // namespace {
-    // double distance_proxy(const Point2& location, const Point2& point) {
-    // return distance2(location, point);
-    // }
-    // }
+    Vector1 distance_proxy(Point2 location, Point2 point) throws Throwable {
+        return new Vector1(Point2.distance2(location, point));
+    }
+
     @Test
     void testdistance() throws Throwable {
         Matrix expectedH1 = new Matrix();
@@ -168,71 +165,32 @@ public class Point2Test {
         double actual23 = Point2.distance2(x2, l3, actualH1, actualH2);
         assertEquals(Math.sqrt(2.0), actual23, 1e-9);
 
-        // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(distance_proxy, x2, l3);
-        // expectedH2 = numericalDerivative22(distance_proxy, x2, l3);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        // Check numerical derivatives
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Point2, Vector2, //
+                Point2, Vector2>numericalDerivative21(this::distance_proxy, x2, l3, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Point2, Vector2, //
+                Point2, Vector2>numericalDerivative22(this::distance_proxy, x2, l3, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
 
-        // // Another test
-        // double actual34 = distance2(x3, l4, actualH1, actualH2);
-        // assertEquals(2, actual34, 1e-9);
+        // Another test
+        double actual34 = Point2.distance2(x3, l4, actualH1, actualH2);
+        assertEquals(2, actual34, 1e-9);
 
-        // // Check numerical derivatives
-        // expectedH1 = numericalDerivative21(distance_proxy, x3, l4);
-        // expectedH2 = numericalDerivative22(distance_proxy, x3, l4);
-        // assertTrue(assert_equal(expectedH1,actualH1));
-        // assertTrue(assert_equal(expectedH2,actualH2));
+        // Check numerical derivatives
+        expectedH1 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Point2, Vector2, //
+                Point2, Vector2>numericalDerivative21(this::distance_proxy, x3, l4, 1e-5);
+        expectedH2 = NumericalDerivative.<//
+                Vector1, Vector1, //
+                Point2, Vector2, //
+                Point2, Vector2>numericalDerivative22(this::distance_proxy, x3, l4, 1e-5);
+        assertTrue(assert_equal(expectedH1, actualH1));
+        assertTrue(assert_equal(expectedH2, actualH2));
     }
-
-    @Test
-    void testcircleCircleIntersection() {
-
-        double offset = 0.994987;
-        // Test intersections of circle moving from inside to outside
-
-        // list<Point2> inside = circleCircleIntersection(Point2(0,0),5,Point2(0,0),1);
-        // EXPECT_LONGS_EQUAL(0,inside.size());
-
-        // list<Point2> touching1 =
-        // circleCircleIntersection(Point2(0,0),5,Point2(4,0),1);
-        // EXPECT_LONGS_EQUAL(1,touching1.size());
-        // assertTrue(assert_equal(Point2(5,0), touching1.front()));
-
-        // list<Point2> common = circleCircleIntersection(Point2(0,0),5,Point2(5,0),1);
-        // EXPECT_LONGS_EQUAL(2,common.size());
-        // assertTrue(assert_equal(Point2(4.9, offset), common.front(), 1e-6));
-        // assertTrue(assert_equal(Point2(4.9, -offset), common.back(), 1e-6));
-
-        // list<Point2> touching2 =
-        // circleCircleIntersection(Point2(0,0),5,Point2(6,0),1);
-        // EXPECT_LONGS_EQUAL(1,touching2.size());
-        // assertTrue(assert_equal(Point2(5,0), touching2.front()));
-
-        // // test rotated case
-        // list<Point2> rotated = circleCircleIntersection(Point2(0,0),5,Point2(0,5),1);
-        // EXPECT_LONGS_EQUAL(2,rotated.size());
-        // assertTrue(assert_equal(Point2(-offset, 4.9), rotated.front(), 1e-6));
-        // assertTrue(assert_equal(Point2( offset, 4.9), rotated.back(), 1e-6));
-
-        // // test r1<r2
-        // list<Point2> smaller = circleCircleIntersection(Point2(0,0),1,Point2(5,0),5);
-        // EXPECT_LONGS_EQUAL(2,smaller.size());
-        // assertTrue(assert_equal(Point2(0.1, offset), smaller.front(), 1e-6));
-        // assertTrue(assert_equal(Point2(0.1, -offset), smaller.back(), 1e-6));
-
-        // // test offset case, r1>r2
-        // list<Point2> offset1 = circleCircleIntersection(Point2(1,1),5,Point2(6,1),1);
-        // EXPECT_LONGS_EQUAL(2,offset1.size());
-        // assertTrue(assert_equal(Point2(5.9, 1+offset), offset1.front(), 1e-6));
-        // assertTrue(assert_equal(Point2(5.9, 1-offset), offset1.back(), 1e-6));
-
-        // // test offset case, r1<r2
-        // list<Point2> offset2 = circleCircleIntersection(Point2(6,1),1,Point2(1,1),5);
-        // EXPECT_LONGS_EQUAL(2,offset2.size());
-        // assertTrue(assert_equal(Point2(5.9, 1-offset), offset2.front(), 1e-6));
-        // assertTrue(assert_equal(Point2(5.9, 1+offset), offset2.back(), 1e-6));
-
-    }
-
 }

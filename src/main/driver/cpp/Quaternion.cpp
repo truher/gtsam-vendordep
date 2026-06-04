@@ -1,3 +1,4 @@
+#include <gtsam/geometry/Point3.h>
 #include <gtsam/geometry/Quaternion.h>
 
 extern "C" {
