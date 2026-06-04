@@ -16,20 +16,21 @@ public class Testable {
         Testable_assert_equal_Cal3DS2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Double(JAVA_BOOLEAN, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Testable_assert_equal_Gaussian(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Rot2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Rot3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Point2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Pose2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Testable_assert_equal_Pose3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Matrix(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Matrix2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Matrix3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Point2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Point3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Pose2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Pose3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Rot2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Rot3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Unit3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector1(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Vector4(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector6(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector9(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
@@ -168,6 +169,14 @@ public class Testable {
 
     public static boolean assert_equal(Vector3 expected, Vector3 actual) throws Throwable {
         return (boolean) FF.Testable_assert_equal_Vector3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    }
+
+    public static boolean assert_equal(Vector4 expected, Vector4 actual, double tol) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector4.h.invokeExact(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Vector4 expected, Vector4 actual) throws Throwable {
+        return (boolean) FF.Testable_assert_equal_Vector4.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
     }
 
     public static boolean assert_equal(Vector6 expected, Vector6 actual, double tol) throws Throwable {

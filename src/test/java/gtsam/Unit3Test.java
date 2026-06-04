@@ -373,7 +373,7 @@ public class Unit3Test {
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
-    // /// Check the basis derivatives of a bunch of random Unit3s.
+    // Check the basis derivatives of a bunch of random Unit3s.
     @Test
     void testBasisDerivatives() throws Throwable {
         int num_tests = 100;

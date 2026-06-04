@@ -26,6 +26,7 @@ Pose2*
 Pose3*
 PoseRotationPrior*
 PriorFactor*
+Quaternion*
 Result*
 Rot2*
 Rot3*

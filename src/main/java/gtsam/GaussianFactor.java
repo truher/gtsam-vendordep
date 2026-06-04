@@ -2,26 +2,18 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 
-import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SegmentAllocator;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
 
 import org.team100.foreign.Lib;
+import org.team100.foreign.Pairs;
 
 public class GaussianFactor {
-    private static final StructLayout PtrPair = MemoryLayout.structLayout(
-            ValueLayout.ADDRESS.withName("first"),
-            ValueLayout.ADDRESS.withName("second"));
-    private static final VarHandle first = PtrPair.varHandle(MemoryLayout.PathElement.groupElement("first"));
-    private static final VarHandle second = PtrPair.varHandle(MemoryLayout.PathElement.groupElement("second"));
-
     public enum FF {
-
-        GaussianFactor_jacobian(PtrPair, ADDRESS);
+        GaussianFactor_jacobian(Pairs.PtrPair, ADDRESS);
 
         public final MethodHandle h;
 
@@ -43,8 +35,8 @@ public class GaussianFactor {
     public Pair<Matrix, Vector> jacobian() throws Throwable {
         MemorySegment resultStruct = (MemorySegment) FF.GaussianFactor_jacobian.h.invokeExact(
                 (SegmentAllocator) Lib.arena, sharedPtrPtr);
-        MemorySegment firstPtr = (MemorySegment) first.get(resultStruct, 0);
-        MemorySegment secondPtr = (MemorySegment) second.get(resultStruct, 0);
+        MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultStruct, 0);
+        MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultStruct, 0);
         return new Pair<>(new Matrix(firstPtr), new Vector(secondPtr));
     }
 

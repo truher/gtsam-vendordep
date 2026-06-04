@@ -18,6 +18,12 @@ gtsam::Rot3* Rot3(                       //
 gtsam::Rot3* Rot3Matrix3(const gtsam::Matrix3* R) {
     return new gtsam::Rot3(*R);
 }
+gtsam::Rot3* Rot3Quaternion(const gtsam::Quaternion* q) {
+    return new gtsam::Rot3(*q);
+}
+gtsam::Rot3* Rot3_Quaternion(double w, double x, double y, double z) {
+    return new gtsam::Rot3(gtsam::Rot3::Quaternion(w, x, y, z));
+}
 void Rot3_delete(gtsam::Rot3* p) {
     delete p;
 }
@@ -267,5 +273,16 @@ gtsam::Vector3* Rot3_yprH(const gtsam::Rot3* r, gtsam::Matrix* H) {
 }
 gtsam::Vector3* Rot3_rpyH(const gtsam::Rot3* r, gtsam::Matrix* H) {
     return new gtsam::Vector3(r->rpy(*H));
+}
+PtrPair Rot3_RQ(const gtsam::Matrix3* A) {
+    std::pair<Matrix3, Vector3> p = gtsam::RQ(*A);
+    return {new gtsam::Matrix3(p.first), new gtsam::Vector3(p.second)};
+}
+PtrPair Rot3_RQH(const gtsam::Matrix3* A, gtsam::Matrix* H) {
+    std::pair<Matrix3, Vector3> p = gtsam::RQ(*A, *H);
+    return {new gtsam::Matrix3(p.first), new gtsam::Vector3(p.second)};
+}
+gtsam::Quaternion* Rot3_toQuaternion(const gtsam::Rot3* r) {
+    return new gtsam::Quaternion(r->toQuaternion());
 }
 }

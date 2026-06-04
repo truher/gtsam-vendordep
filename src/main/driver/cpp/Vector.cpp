@@ -139,6 +139,13 @@ double Vector3_dot(const gtsam::Vector3* p,    //
                    const gtsam::Vector3* q) {  //
     return p->dot(*q);
 }
+gtsam::Vector3* Vector3_normalized(const gtsam::Vector3* v) {
+    return new gtsam::Vector3(v->normalized());
+}
+gtsam::Vector3* Vector3_cross(const gtsam::Vector3* a,
+                              const gtsam::Vector3* b) {
+    return new gtwsam::Vector3(a->cross(*b));
+}
 
 //////////////////////////
 // Vector4

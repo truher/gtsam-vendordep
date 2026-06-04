@@ -22,7 +22,9 @@ public class Vector3 extends ForeignObject
         Vector3_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Vector3_norm(JAVA_DOUBLE, ADDRESS),
-        Vector3_dot(JAVA_DOUBLE, ADDRESS, ADDRESS);
+        Vector3_dot(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Vector3_normalized(ADDRESS, ADDRESS),
+        Vector3_cross(ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -134,5 +136,13 @@ public class Vector3 extends ForeignObject
 
     public double dot(Vector3 other) throws Throwable {
         return (double) FF.Vector3_dot.h.invokeExact(ptr, other.ptr);
+    }
+
+    public Vector3 normalized() throws Throwable {
+        return new Vector3((MemorySegment) FF.Vector3_normalized.h.invokeExact(ptr));
+    }
+
+    public Vector3 cross(Vector3 other) throws Throwable {
+        return new Vector3((MemorySegment) FF.Vector3_cross.h.invokeExact(ptr, other.ptr));
     }
 }

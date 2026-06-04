@@ -14,6 +14,7 @@ import java.lang.invoke.VarHandle;
 
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
+import org.team100.foreign.Pairs;
 
 public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
     private static final StructLayout AxisAngle = MemoryLayout.structLayout(
@@ -31,6 +32,8 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3Matrix3(ADDRESS, ADDRESS),
+        Rot3Quaternion(ADDRESS, ADDRESS),
+        Rot3_Quaternion(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot3_delete((ValueLayout) null, ADDRESS),
         Rot3_Yaw(ADDRESS, JAVA_DOUBLE),
         Rot3_Pitch(ADDRESS, JAVA_DOUBLE),
@@ -97,7 +100,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_rpy(ADDRESS, ADDRESS),
         Rot3_xyzH(ADDRESS, ADDRESS, ADDRESS),
         Rot3_yprH(ADDRESS, ADDRESS, ADDRESS),
-        Rot3_rpyH(ADDRESS, ADDRESS, ADDRESS);
+        Rot3_rpyH(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_RQ(Pairs.PtrPair, ADDRESS),
+        Rot3_RQH(Pairs.PtrPair, ADDRESS, ADDRESS),
+        Rot3_toQuaternion(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -228,6 +234,14 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public Rot3(Matrix3 R) throws Throwable {
         this((MemorySegment) FF.Rot3Matrix3.h.invokeExact(R.ptr));
+    }
+
+    public Rot3(Quaternion q) throws Throwable {
+        this((MemorySegment) FF.Rot3Quaternion.h.invokeExact(q.ptr));
+    }
+
+    public static Rot3 Quaternion(double w, double x, double y, double z) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_Quaternion.h.invokeExact(w, x, y, z));
     }
 
     public static Rot3 Yaw(double t) throws Throwable {
@@ -494,5 +508,25 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public Vector3 rpy(Matrix H) throws Throwable {
         return new Vector3((MemorySegment) FF.Rot3_rpyH.h.invokeExact(ptr, H.ptr));
+    }
+
+    public static Pair<Matrix3, Vector3> RQ(Matrix3 A) throws Throwable {
+        MemorySegment resultPair = (MemorySegment) FF.Rot3_RQ.h.invokeExact(
+                (SegmentAllocator) Lib.arena, A.ptr);
+        MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultPair, 0);
+        MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultPair, 0);
+        return new Pair<>(new Matrix3(firstPtr), new Vector3(secondPtr));
+    }
+
+    public static Pair<Matrix3, Vector3> RQ(Matrix3 A, Matrix H) throws Throwable {
+        MemorySegment resultPair = (MemorySegment) FF.Rot3_RQH.h.invokeExact(
+                (SegmentAllocator) Lib.arena, A.ptr, H.ptr);
+        MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultPair, 0);
+        MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultPair, 0);
+        return new Pair<>(new Matrix3(firstPtr), new Vector3(secondPtr));
+    }
+
+    public Quaternion toQuaternion() throws Throwable {
+        return new Quaternion((MemorySegment) FF.Rot3_toQuaternion.h.invokeExact(ptr));
     }
 }
