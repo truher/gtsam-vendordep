@@ -160,15 +160,6 @@ gtsam::Point2* Pose2_transformTo(const gtsam::Pose2* p,         //
                                  const gtsam::Point2* point) {  //
     return new gtsam::Point2(p->transformTo(*point));
 }
-// the actual type here is OptionalJacobian which "ururps"
-// (coercing) the supplied dynamic or fixed matrix .  so I could
-// use the real OptionalJacobian type.  In the unit test,
-// the universal pattern is to supply a dynamic array, and
-// that's also what the python wrapper does: it occasionally
-// uses fixed matrices, e.g. Matrix3 for expmap derivative,
-// but otherwise uses dynamic matrices for everything. so I
-// could do that.  Or I could make a bunch of fixed Matrix
-// types, which seems like a lot of work for almost no reason?
 gtsam::Point2* Pose2_transformToH(const gtsam::Pose2* p,       //
                                   const gtsam::Point2* point,  //
                                   gtsam::Matrix* Dpose,        //

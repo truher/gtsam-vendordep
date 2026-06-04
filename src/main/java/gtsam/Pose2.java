@@ -328,14 +328,12 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         return new Matrix3((MemorySegment) FF.Pose2_matrix.h.invokeExact(ptr));
     }
 
-    // TODO: maybe make this static?
-    public Vector3 logmap_default(Pose2 p) throws Throwable {
-        return new Vector3((MemorySegment) FF.Pose2_logmap_default.h.invokeExact(ptr, p.ptr));
+    public static Vector3 logmap_default(Pose2 p, Pose2 q) throws Throwable {
+        return new Vector3((MemorySegment) FF.Pose2_logmap_default.h.invokeExact(p.ptr, q.ptr));
     }
 
-    // TODO: maybe make this static?
-    public Pose2 expmap_default(Vector3 d) throws Throwable {
-        return new Pose2((MemorySegment) FF.Pose2_expmap_default.h.invokeExact(ptr, d.ptr));
+    public static Pose2 expmap_default(Pose2 p, Vector3 d) throws Throwable {
+        return new Pose2((MemorySegment) FF.Pose2_expmap_default.h.invokeExact(p.ptr, d.ptr));
     }
 
     public Point2 transformTo(Point2 point) throws Throwable {
@@ -417,7 +415,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     }
 
     public Rot2 rotation(Matrix H) throws Throwable {
-        return new Rot2((MemorySegment) FF.Pose2_rotation.h.invokeExact(ptr, H.ptr));
+        return new Rot2((MemorySegment) FF.Pose2_rotationH.h.invokeExact(ptr, H.ptr));
     }
 
 }

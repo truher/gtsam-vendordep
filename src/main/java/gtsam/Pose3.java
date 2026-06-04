@@ -47,7 +47,21 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_rangePose3(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Pose3_rangePose3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
-        Pose3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        Pose3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Pose3_logmap_default(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_expmap_default(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_Adjoint(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_AdjointH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_rotation(ADDRESS, ADDRESS),
+        Pose3_rotationH(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_translation(ADDRESS, ADDRESS),
+        Pose3_translationH(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformTo(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformToH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformFrom(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformFromH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_interpolate(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Pose3_interpolateRt(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -287,4 +301,69 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         return (boolean) FF.Pose3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
+    public static Vector6 logmap_default(Pose3 p, Pose3 q) throws Throwable {
+        return new Vector6((MemorySegment) FF.Pose3_logmap_default.h.invokeExact(p.ptr, q.ptr));
+    }
+
+    public static Pose3 expmap_default(Pose3 p, Vector6 d) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_expmap_default.h.invokeExact(p.ptr, d.ptr));
+    }
+
+    public Vector6 Adjoint(Vector6 v) throws Throwable {
+        return new Vector6((MemorySegment) FF.Pose3_Adjoint.h.invokeExact(ptr, v.ptr));
+    }
+
+    public Vector6 Adjoint(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
+        return new Vector6((MemorySegment) FF.Pose3_AdjointH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Rot3 rotation() throws Throwable {
+        return new Rot3((MemorySegment) FF.Pose3_rotation.h.invokeExact(ptr));
+    }
+
+    public Rot3 rotation(Matrix H) throws Throwable {
+        return new Rot3((MemorySegment) FF.Pose3_rotationH.h.invokeExact(ptr, H.ptr));
+    }
+
+    public Point3 translation() throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_translation.h.invokeExact(ptr));
+    }
+
+    public Point3 translation(Matrix H) throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_translation.h.invokeExact(ptr, H.ptr));
+    }
+
+    public Point3 transformTo(Point3 point) throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_transformTo.h.invokeExact(
+                ptr, point.ptr));
+    }
+
+    public Point3 transformTo(//
+            Point3 point, //
+            Matrix Dpose, //
+            Matrix Dpoint) throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_transformToH.h.invokeExact(
+                ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
+    }
+
+    public Point3 transformFrom(Point3 point) throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_transformFrom.h.invokeExact(
+                ptr, point.ptr));
+    }
+
+    public Point3 transformFrom(//
+            Point3 point, //
+            Matrix Dpose, //
+            Matrix Dpoint) throws Throwable {
+        return new Point3((MemorySegment) FF.Pose3_transformFromH.h.invokeExact(
+                ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
+    }
+
+    public static Pose3 interpolate(Pose3 X, Pose3 Y, double t) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
+    }
+
+    public Pose3 interpolateRt(Pose3 Y, double t) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateRt.h.invokeExact(ptr, Y.ptr, t));
+    }
 }

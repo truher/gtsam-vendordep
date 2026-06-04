@@ -162,5 +162,4 @@ public interface LieGroup<//
     T retract(V v, Matrix H1, Matrix H2) throws Throwable;
 
     V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
-
 }

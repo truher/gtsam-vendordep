@@ -143,7 +143,8 @@ double Pose3_rangePoint3H(const gtsam::Pose3* p,  //
                           gtsam::Matrix* H2) {    //
     return p->range(*pt, *H1, *H2);
 }
-double Pose3_rangePose3(const gtsam::Pose3* p, gtsam::Pose3* p2) {
+double Pose3_rangePose3(const gtsam::Pose3* p,  //
+                        gtsam::Pose3* p2) {     //
     return p->range(*p2);
 }
 double Pose3_rangePose3H(const gtsam::Pose3* p,  //
@@ -151,5 +152,67 @@ double Pose3_rangePose3H(const gtsam::Pose3* p,  //
                          gtsam::Matrix* H1,      //
                          gtsam::Matrix* H2) {    //
     return p->range(*p2, *H1, *H2);
+}
+gtsam::Vector6* Pose3_logmap_default(const gtsam::Pose3* a,    //
+                                     const gtsam::Pose3* b) {  //
+    return new gtsam::Vector6(gtsam::logmap_default(*a, *b));
+}
+gtsam::Pose3* Pose3_expmap_default(const gtsam::Pose3* p,      //
+                                   const gtsam::Vector6* d) {  //
+    return new gtsam::Pose3(gtsam::expmap_default(*p, *d));
+}
+gtsam::Vector6* Pose3_Adjoint(const gtsam::Pose3* p,       //
+                              const gtsam::Vector6* xi) {  //
+    return new gtsam::Vector6(p->Adjoint(*xi));
+}
+gtsam::Vector6* Pose3_AdjointH(const gtsam::Pose3* p,     //
+                               const gtsam::Vector6* xi,  //
+                               gtsam::Matrix* H1,         //
+                               gtsam::Matrix* H2) {       //
+    return new gtsam::Vector6(p->Adjoint(*xi, *H1, *H2));
+}
+gtsam::Rot3* Pose3_rotation(const gtsam::Pose3* p) {
+    return new gtsam::Rot3(p->rotation());
+}
+gtsam::Rot3* Pose3_rotationH(const gtsam::Pose3* p,  //
+                             gtsam::Matrix* H) {     //
+    return new gtsam::Rot3(p->rotation(*H));
+}
+gtsam::Point3* Pose3_translation(const gtsam::Pose3* p) {
+    return new gtsam::Point3(p->translation());
+}
+gtsam::Point3* Pose3_translationH(const gtsam::Pose3* p,  //
+                                  gtsam::Matrix* H) {     //
+    return new gtsam::Point3(p->translation(*H));
+}
+gtsam::Point3* Pose2_transformTo(const gtsam::Pose3* p,         //
+                                 const gtsam::Point3* point) {  //
+    return new gtsam::Point3(p->transformTo(*point));
+}
+gtsam::Point3* Pose2_transformToH(const gtsam::Pose3* p,       //
+                                  const gtsam::Point3* point,  //
+                                  gtsam::Matrix* Dpose,        //
+                                  gtsam::Matrix* Dpoint) {     //
+    return new gtsam::Point3(p->transformTo(*point, *Dpose, *Dpoint));
+}
+gtsam::Point3* Pose3_transformFrom(const gtsam::Pose3* p,
+                                   const gtsam::Point3* point) {
+    return new gtsam::Point3(p->transformFrom(*point));
+}
+gtsam::Point3* Pose3_transformFromH(const gtsam::Pose3* p,       //
+                                    const gtsam::Point3* point,  //
+                                    gtsam::Matrix* Dpose,        //
+                                    gtsam::Matrix* Dpoint) {     //
+    return new gtsam::Point3(p->transformFrom(*point, *Dpose, *Dpoint));
+}
+gtsam::Pose3* Pose3_interpolate(const gtsam::Pose3* X,  //
+                                const gtsam::Pose3* Y,  //
+                                double t) {
+    return new gtsam::Pose3(gtsam::interpolate(*X, *Y, t));
+}
+gtsam::Pose3* Pose3_interpolateRt(const gtsam::Pose3* X,  //
+                                  const gtsam::Pose3* Y,  //
+                                  double t) {
+    return new gtsam::Pose3(X->interpolateRt(*Y, t));
 }
 }

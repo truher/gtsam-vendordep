@@ -68,7 +68,7 @@ public class Pose2Test {
     void testExpmap() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        Pose2 actual = pose.expmap_default(new Vector3(0.01, -0.015, 0.99));
+        Pose2 actual = Pose2.expmap_default(pose, new Vector3(0.01, -0.015, 0.99));
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
 
@@ -76,7 +76,7 @@ public class Pose2Test {
     void testExpmap2() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        Pose2 actual = pose.expmap_default(new Vector3(0.01, -0.015, 0.99));
+        Pose2 actual = Pose2.expmap_default(pose, new Vector3(0.01, -0.015, 0.99));
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
 
@@ -208,7 +208,7 @@ public class Pose2Test {
         Pose2 pose0 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 pose = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
         Vector3 expected = new Vector3(0.00986473, -0.0150896, 0.018);
-        Vector3 actual = pose0.logmap_default(pose);
+        Vector3 actual = Pose2.logmap_default(pose0, pose);
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
 
