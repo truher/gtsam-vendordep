@@ -31,6 +31,8 @@ public class Point2 extends ForeignObject
         Point2_normalized(ADDRESS, ADDRESS),
         Point2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point2_Local(ADDRESS, ADDRESS, ADDRESS),
+        Point2_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point2_Logmap(ADDRESS, ADDRESS),
         Point2_Expmap(ADDRESS, ADDRESS),
         Point2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
@@ -54,6 +56,16 @@ public class Point2 extends ForeignObject
         @Override
         public Point2 Identity() throws Throwable {
             return statics.Identity();
+        }
+
+        @Override
+        public Vector2 Local(Point2 origin, Point2 other) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_Local.h.invokeExact(origin.ptr, other.ptr));
+        }
+
+        @Override
+        public Point2 Retract(Point2 origin, Vector2 v) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_Retract.h.invokeExact(origin.ptr, v.ptr));
         }
 
         @Override

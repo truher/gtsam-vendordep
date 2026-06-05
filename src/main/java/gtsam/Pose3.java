@@ -330,7 +330,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     }
 
     public Point3 translation(Matrix H) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_translation.h.invokeExact(ptr, H.ptr));
+        return new Point3((MemorySegment) FF.Pose3_translationH.h.invokeExact(ptr, H.ptr));
     }
 
     public Point3 transformTo(Point3 point) throws Throwable {

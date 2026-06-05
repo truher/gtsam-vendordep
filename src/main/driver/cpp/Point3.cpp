@@ -52,6 +52,17 @@ bool Point3_check_manifold_invariants(const gtsam::Point3* a,    //
                                       const gtsam::Point3* b) {  //
     return gtsam::check_manifold_invariants(*a, *b);
 }
+
+gtsam::Vector3* Point3_Local(const gtsam::Point3* origin,  //
+                             const gtsam::Point3* v) {     //
+    return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Local(*origin, *v));
+}
+gtsam::Point3* Point3_Retract(const gtsam::Point3* origin,  //
+                              const gtsam::Vector3* v) {    //
+    return new gtsam::Point3(
+        gtsam::traits<gtsam::Point3>::Retract(*origin, *v));
+}
+
 gtsam::Vector3* Point3_Logmap(const gtsam::Point3* p) {
     return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p));
 }

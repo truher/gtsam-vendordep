@@ -31,6 +31,8 @@ public class Point3 extends ForeignObject
         Point3_crossPoint3Point3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Point3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Point3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point3_Local(ADDRESS, ADDRESS, ADDRESS),
+        Point3_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point3_Logmap(ADDRESS, ADDRESS),
         Point3_Expmap(ADDRESS, ADDRESS),
         Point3_LogmapH(ADDRESS, ADDRESS, ADDRESS),
@@ -109,6 +111,16 @@ public class Point3 extends ForeignObject
         @Override
         public Point3 Identity() throws Throwable {
             return statics.Identity();
+        }
+
+        @Override
+        public Vector3 Local(Point3 origin, Point3 other) throws Throwable {
+            return new Vector3((MemorySegment) FF.Point3_Local.h.invokeExact(origin.ptr, other.ptr));
+        }
+
+        @Override
+        public Point3 Retract(Point3 origin, Vector3 v) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_Retract.h.invokeExact(origin.ptr, v.ptr));
         }
 
         @Override

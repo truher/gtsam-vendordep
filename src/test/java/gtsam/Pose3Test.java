@@ -210,7 +210,7 @@ public class Pose3Test {
         Matrix actualH = new Matrix();
         assertTrue(assert_equal(new Point3(3.5, -8.2, 4.2), T.translation(actualH), 1e-8));
 
-        ThrowingFunction<Pose3, Point3> f = (TT) -> T.translation();
+        ThrowingFunction<Pose3, Point3> f = (TT) -> TT.translation();
         Matrix numericalH = NumericalDerivative.<//
                 Point3, Vector3, //
                 Pose3, Vector6>numericalDerivative11(f, T, 1e-5);
@@ -223,7 +223,7 @@ public class Pose3Test {
         Matrix actualH = new Matrix();
         assertTrue(assert_equal(R, T.rotation(actualH), 1e-8));
 
-        ThrowingFunction<Pose3, Rot3> f = (TT) -> T.rotation();
+        ThrowingFunction<Pose3, Rot3> f = (TT) -> TT.rotation();
         Matrix numericalH = NumericalDerivative.<//
                 Rot3, Vector3, //
                 Pose3, Vector6>numericalDerivative11(f, T, 1e-5);
