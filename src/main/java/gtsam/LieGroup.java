@@ -59,6 +59,9 @@ public interface LieGroup<//
         /** Implement as statics.Expmap() */
         T Expmap(V v, Matrix Hv) throws Throwable;
 
+        //
+        // TODO: remove all the defaults below.
+        //
         default T Compose(T m1, T m2) throws Throwable {
             return m1.compose(m2);
         }
@@ -114,12 +117,16 @@ public interface LieGroup<//
         // and GTSAM_POSE3_EXPMAP
         // so these should be implemented by subclasses.
 
+        // TODO: delete
         T Retract(V v) throws Throwable;
 
+        // TODO: delete
         V LocalCoordinates(T g) throws Throwable;
 
+        // TODO: delete
         T Retract(V v, Matrix H) throws Throwable;
 
+        // TODO: delete
         V LocalCoordinates(T g, Matrix H) throws Throwable;
     }
 
@@ -127,6 +134,7 @@ public interface LieGroup<//
 
     Statics<T, V> statics();
 
+    // these are from the CRTP helper, LieGroup
     T compose(T h) throws Throwable;
 
     T compose(T h, Matrix H1, Matrix H2) throws Throwable;
@@ -139,27 +147,35 @@ public interface LieGroup<//
 
     Matrix AdjointMap() throws Throwable;
 
+    // TODO: delete this
     default T expmap(V v) throws Throwable {
         return compose(statics().Expmap(v));
     }
 
+    // TODO: delete this
     default V logmap(T g) throws Throwable {
         return statics().Logmap(between(g));
     }
 
+    // TODO: delete this
     T expmap(V v, Matrix H1, Matrix H2) throws Throwable;
 
+    // TODO: delete this
     V logmap(T g, Matrix H1, Matrix H2) throws Throwable;
 
+    // TODO: delete this
     default T retract(V v) throws Throwable {
         return compose(statics().Retract(v));
     }
 
+    // TODO: delete this
     default V localCoordinates(T g) throws Throwable {
         return statics().LocalCoordinates(between(g));
     }
 
+    // TODO: delete this
     T retract(V v, Matrix H1, Matrix H2) throws Throwable;
 
+    // TODO: delete this
     V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
 }

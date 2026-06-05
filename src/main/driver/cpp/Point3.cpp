@@ -1,3 +1,4 @@
+#include <gtsam/base/Lie.h>
 #include <gtsam/base/VectorSpace.h>
 #include <gtsam/geometry/Point3.h>
 
@@ -65,81 +66,37 @@ gtsam::Point3* Point3_ExpmapH(const gtsam::Vector3* v,  //
                               gtsam::Matrix* H) {       //
     return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Expmap(*v, *H));
 }
-gtsam::Point3* Point3_compose(const gtsam::Point3* a,  //
+gtsam::Point3* Point3_Compose(const gtsam::Point3* a,  //
                               const gtsam::Point3* b) {
-    return new gtsam::Point3((*a) * (*b));
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Compose(*a, *b));
 }
-gtsam::Point3* Point3_composeH(const gtsam::Point3* a,  //
+gtsam::Point3* Point3_ComposeH(const gtsam::Point3* a,  //
                                const gtsam::Point3* b,  //
                                gtsam::Matrix* H1,       //
                                gtsam::Matrix* H2) {     //
-    return new gtsam::Point3(a->compose(*b, *H1, *H2));
+    return new gtsam::Point3(
+        gtsam::traits<gtsam::Point3>::Compose(*a, *b, *H1, *H2));
 }
-gtsam::Point3* Point3_between(const gtsam::Point3* r,    //
+gtsam::Point3* Point3_Between(const gtsam::Point3* r,    //
                               const gtsam::Point3* g) {  //
-    return new gtsam::Point3(r->between(*g));
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Between(*r, *g));
 }
-gtsam::Point3* Point3_betweenH(const gtsam::Point3* r,  //
+gtsam::Point3* Point3_BetweenH(const gtsam::Point3* r,  //
                                const gtsam::Point3* g,  //
                                gtsam::Matrix* H1,       //
                                gtsam::Matrix* H2) {     //
-    return new gtsam::Point3(r->between(*g, *H1, *H2));
+    return new gtsam::Point3(
+        gtsam::traits<gtsam::Point3>::Between(*r, *g, *H1, *H2));
 }
-gtsam::Point3* Point3_inverse(const gtsam::Point3* r) {
-    return new gtsam::Point3(r->inverse());
+gtsam::Point3* Point3_Inverse(const gtsam::Point3* r) {
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Inverse(*r));
 }
-gtsam::Point3* Point3_inverseH(const gtsam::Point3* p,  //
+gtsam::Point3* Point3_InverseH(const gtsam::Point3* p,  //
                                gtsam::Matrix* H) {      //
-    return new gtsam::Point3(p->inverse(*H));
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Inverse(*p, *H));
 }
 gtsam::Matrix* Point3_AdjointMap(const gtsam::Point3* r) {
-    return new gtsam::Matrix(r->AdjointMap());
-}
-gtsam::Point3* Point3_expmapH(const gtsam::Point3* r,   //
-                              const gtsam::Vector3* v,  //
-                              gtsam::Matrix* H1,        //
-                              gtsam::Matrix* H2) {      //
-    return new gtsam::Point3(r->expmap(*v, *H1, *H2));
-}
-gtsam::Vector3* Point3_logmapH(const gtsam::Point3* r,  //
-                               const gtsam::Point3* g,  //
-                               gtsam::Matrix* H1,       //
-                               gtsam::Matrix* H2) {     //
-    return new gtsam::Vector3(r->logmap(*g, *H1, *H2));
-}
-gtsam::Point3* Point3_retract(const gtsam::Point3* r,     //
-                              const gtsam::Vector3* v) {  //
-    return new gtsam::Point3(r->retract(*v));
-}
-gtsam::Point3* Point3_retractH(const gtsam::Point3* r,   //
-                               const gtsam::Vector3* v,  //
-                               gtsam::Matrix* H1,        //
-                               gtsam::Matrix* H2) {      //
-    return new gtsam::Point3(r->retract(*v, *H1, *H2));
-}
-gtsam::Point3* Point3_OriginRetract(const gtsam::Vector3* v) {
-    return new gtsam::Point3(gtsam::Point3::Retract(*v));
-}
-gtsam::Vector3* Point3_OriginLocalCoordinates(const gtsam::Point3* g) {
-    return new gtsam::Vector3(gtsam::Point3::LocalCoordinates(*g));
-}
-gtsam::Point3* Point3_OriginRetractH(const gtsam::Vector3* v,  //
-                                     gtsam::Matrix* H) {       //
-    return new gtsam::Point3(gtsam::Point3::Retract(*v, *H));
-}
-gtsam::Vector3* Point3_OriginLocalCoordinatesH(const gtsam::Point3* g,  //
-                                               gtsam::Matrix* H) {      //
-    return new gtsam::Vector3(gtsam::Point3::LocalCoordinates(*g, *H));
-}
-gtsam::Vector3* Point3_localCoordinates(const gtsam::Point3* r,    //
-                                        const gtsam::Point3* g) {  //
-    return new gtsam::Vector3(r->localCoordinates(*g));
-}
-gtsam::Vector3* Point3_localCoordinatesH(const gtsam::Point3* r,  //
-                                         const gtsam::Point3* g,  //
-                                         gtsam::Matrix* H1,       //
-                                         gtsam::Matrix* H2) {     //
-    return new gtsam::Vector3(r->localCoordinates(*g, *H1, *H2));
+    return new gtsam::Matrix(gtsam::traits<gtsam::Point3>::AdjointMap(*r));
 }
 double Point3_dot(const gtsam::Point3* r,    //
                   const gtsam::Point3* g) {  //

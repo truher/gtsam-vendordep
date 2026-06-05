@@ -9,7 +9,7 @@ void Result_delete(gtsam::FixedLagSmoother::Result* p) {
 gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother(double lag) {
     return new gtsam::BatchFixedLagSmoother(lag);
 }
-gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother(
+gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother2(
     double lag,                               //
     gtsam::LevenbergMarquardtParams* params,  //
     bool consistent) {

@@ -185,11 +185,11 @@ gtsam::Point3* Pose3_translationH(const gtsam::Pose3* p,  //
                                   gtsam::Matrix* H) {     //
     return new gtsam::Point3(p->translation(*H));
 }
-gtsam::Point3* Pose2_transformTo(const gtsam::Pose3* p,         //
+gtsam::Point3* Pose3_transformTo(const gtsam::Pose3* p,         //
                                  const gtsam::Point3* point) {  //
     return new gtsam::Point3(p->transformTo(*point));
 }
-gtsam::Point3* Pose2_transformToH(const gtsam::Pose3* p,       //
+gtsam::Point3* Pose3_transformToH(const gtsam::Pose3* p,       //
                                   const gtsam::Point3* point,  //
                                   gtsam::Matrix* Dpose,        //
                                   gtsam::Matrix* Dpoint) {     //

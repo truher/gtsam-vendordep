@@ -35,23 +35,13 @@ public class Point3 extends ForeignObject
         Point3_Expmap(ADDRESS, ADDRESS),
         Point3_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Point3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
-        Point3_compose(ADDRESS, ADDRESS, ADDRESS),
-        Point3_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Point3_between(ADDRESS, ADDRESS, ADDRESS),
-        Point3_betweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Point3_inverse(ADDRESS, ADDRESS),
-        Point3_inverseH(ADDRESS, ADDRESS, ADDRESS),
+        Point3_Compose(ADDRESS, ADDRESS, ADDRESS),
+        Point3_ComposeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_Between(ADDRESS, ADDRESS, ADDRESS),
+        Point3_BetweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_Inverse(ADDRESS, ADDRESS),
+        Point3_InverseH(ADDRESS, ADDRESS, ADDRESS),
         Point3_AdjointMap(ADDRESS, ADDRESS),
-        Point3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Point3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Point3_retract(ADDRESS, ADDRESS, ADDRESS),
-        Point3_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Point3_OriginRetract(ADDRESS, ADDRESS),
-        Point3_OriginLocalCoordinates(ADDRESS, ADDRESS),
-        Point3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
-        Point3_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
-        Point3_localCoordinates(ADDRESS, ADDRESS, ADDRESS),
-        Point3_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Point3_dot(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Point3_dotPoint3Point3(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Point3_dotPoint3Point3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
@@ -141,6 +131,44 @@ public class Point3 extends ForeignObject
             return statics.Expmap(v, H);
         }
 
+        @Override
+        public Point3 Compose(Point3 m1, Point3 m2) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_Compose.h.invokeExact(m1.ptr, m2.ptr));
+        }
+
+        @Override
+        public Point3 Compose(Point3 m1, Point3 m2, Matrix H1, Matrix H2) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_ComposeH.h.invokeExact(
+                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
+        }
+
+        @Override
+        public Point3 Between(Point3 m1, Point3 m2) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_Between.h.invokeExact(m1.ptr, m2.ptr));
+        }
+
+        @Override
+        public Point3 Between(Point3 m1, Point3 m2, Matrix H1, Matrix H2) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_BetweenH.h.invokeExact(
+                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
+        }
+
+        @Override
+        public Point3 Inverse(Point3 m1) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_Inverse.h.invokeExact(m1.ptr));
+        }
+
+        @Override
+        public Point3 Inverse(Point3 m1, Matrix H) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_InverseH.h.invokeExact(
+                    m1.ptr, H.ptr));
+        }
+
+        @Override
+        public Matrix AdjointMap(Point3 m) throws Throwable {
+            return new Matrix((MemorySegment) FF.Point3_AdjointMap.h.invokeExact(m.ptr));
+        }
+
     }
 
     public static final Traits traits = new Traits();
@@ -209,22 +237,22 @@ public class Point3 extends ForeignObject
 
         @Override
         public Point3 Retract(Vector3 v) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_OriginRetract.h.invokeExact(v.ptr));
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Vector3 LocalCoordinates(Point3 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_OriginLocalCoordinates.h.invokeExact(g.ptr));
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Point3 Retract(Vector3 v, Matrix H) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Vector3 LocalCoordinates(Point3 g, Matrix H) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -237,73 +265,67 @@ public class Point3 extends ForeignObject
 
     @Override
     public Point3 compose(Point3 h) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_compose.h.invokeExact(ptr, h.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 compose(Point3 h, Matrix H1, Matrix H2) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_composeH.h.invokeExact(
-                ptr, h.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 between(Point3 h) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_between.h.invokeExact(ptr, h.ptr));
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 between(Point3 h, Matrix H1, Matrix H2) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_betweenH.h.invokeExact(
-                ptr, h.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 inverse() throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_inverse.h.invokeExact(ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 inverse(Matrix H) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_inverseH.h.invokeExact(ptr, H.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Matrix AdjointMap() throws Throwable {
-        return new Matrix((MemorySegment) FF.Point3_AdjointMap.h.invokeExact(ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Vector3 logmap(Point3 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector3((MemorySegment) FF.Point3_logmapH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 retract(Vector3 v) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_retract.h.invokeExact(ptr, v.ptr()));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Point3 retract(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Point3((MemorySegment) FF.Point3_retractH.h.invokeExact(
-                ptr, v.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Vector3 localCoordinates(Point3 g) throws Throwable {
-        return new Vector3(
-                (MemorySegment) FF.Point3_localCoordinates.h.invokeExact(ptr, g.ptr));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Vector3 localCoordinates(Point3 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector3(
-                (MemorySegment) FF.Point3_localCoordinatesH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+        throw new UnsupportedOperationException();
     }
 
     public double dot(Point3 g) throws Throwable {
