@@ -3,7 +3,9 @@ package gtsam;
 import static gtsam.Testable.assert_equal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testconstructor() throws Throwable {
+    void testfinalructor() throws Throwable {
         Rot3 expected = new Rot3(Matrix3.identity());
         Point3 r1 = new Point3(1, 0, 0);
         Point3 r2 = new Point3(0, 1, 0);
@@ -52,7 +54,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testconstructor2() throws Throwable {
+    void testfinalructor2() throws Throwable {
         Matrix3 R = new Matrix3(//
                 0, 1, 0, //
                 1, 0, 0, //
@@ -66,7 +68,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testconstructor3() throws Throwable {
+    void testfinalructor3() throws Throwable {
         Rot3 expected = new Rot3(//
                 0, 1, 0, //
                 1, 0, 0, //
@@ -98,7 +100,8 @@ public class Rot3Test {
 
     @Test
     void testAxisAngle() throws Throwable {
-        Point3 axis = new Point3(0., 1., 0.); // rotation around Y
+        // rotation around Y
+        Point3 axis = new Point3(0., 1., 0.);
         double angle = 3.14 / 4.0;
         Rot3 expected = new Rot3(//
                 0.707388, 0, 0.706825, //
@@ -116,7 +119,7 @@ public class Rot3Test {
 
     @Test
     void testAxisAngle2() throws Throwable {
-        // constructor from a rotation matrix, as doubles in *row-major* order.
+        // finalructor from a rotation matrix, as doubles in *row-major* order.
         Rot3 R1 = new Rot3(//
                 -0.999957, 0.00922903, 0.00203116, //
                 0.00926964, 0.999739, 0.0208927, //
@@ -152,7 +155,8 @@ public class Rot3Test {
 
     @Test
     void testRodrigues2() throws Throwable {
-        Point3 axis = new Point3(0., 1., 0.); // rotation around Y
+        // rotation around Y
+        Point3 axis = new Point3(0., 1., 0.);
         double angle = 3.14 / 4.0;
         Rot3 expected = new Rot3(//
                 0.707388, 0, 0.706825, //
@@ -174,7 +178,8 @@ public class Rot3Test {
 
     @Test
     void testRodrigues4() throws Throwable {
-        Point3 axis = new Point3(0., 0., 1.); // rotation around Z
+        // rotation around Z
+        Point3 axis = new Point3(0., 0., 1.);
         double angle = Math.PI / 2.0;
         Rot3 actual = Rot3.AxisAngle(axis, angle);
         double c = Math.cos(angle);
@@ -193,24 +198,23 @@ public class Rot3Test {
         assertTrue(assert_equal(R, R.retract(v)));
     }
 
-    // namespace {
+    record RetractNormalizationMetrics(
+            double quaternionNormError,
+            double orthogonalityError,
+            double determinantError) {
+    }
 
-    // struct RetractNormalizationMetrics {
-    // double quaternionNormError;
-    // double orthogonalityError;
-    // double determinantError;
-    // };
-
-    // RetractNormalizationMetrics measureRetractNormalization(
-    // const Rot3& base, const Vector3& omega) {
-    // const Rot3 retracted = base.retract(omega);
-    // const Matrix3 matrix = retracted.matrix();
-    // return {std::abs(retracted.toQuaternion().norm() - 1.0),
-    // (matrix.transpose() * matrix - I_3x3).norm(),
-    // std::abs(matrix.determinant() - 1.0)};
-    // }
-
-    // } // namespace
+    RetractNormalizationMetrics measureRetractNormalization(
+            final Rot3 base,
+            final Vector3 omega) throws Throwable {
+        final Rot3 retracted = base.retract(omega);
+        final Matrix3 matrix = retracted.matrix();
+        return new RetractNormalizationMetrics(
+                Math.abs(retracted.toQuaternion().norm() - 1.0),
+                (matrix.transpose().compose(matrix)
+                        .plus(Matrix3.identity().times(-1))).norm(),
+                Math.abs(matrix.determinant() - 1.0));
+    }
 
     @Test
     void testretractNormalizationAcrossMagnitudes() throws Throwable {
@@ -221,30 +225,32 @@ public class Rot3Test {
         List<Double> magnitudes = List.of(
                 0.0, 1e-16, 1e-14, 1e-12, 1e-10, 1e-8, 1e-6, 1e-4, 1e-2,
                 1.0, 1e2, 1e4, 1e6, 1e8, 1e10, 1e12, 1e14);
-        final double quaternionNormTolerance = 1e-12;
-        final double orthogonalityTolerance = 1e-10;
-        final double determinantTolerance = 1e-10;
+        double quaternionNormTolerance = 1e-12;
+        double orthogonalityTolerance = 1e-10;
+        double determinantTolerance = 1e-10;
 
         for (int baseIndex = 0; baseIndex < bases.size(); ++baseIndex) {
-            for (final double magnitude : magnitudes) {
-                // const auto metrics =
-                // measureRetractNormalization(bases[baseIndex], direction * magnitude);
-                // const bool quaternionOk =
-                // metrics.quaternionNormError <= quaternionNormTolerance;
-                // const bool orthogonalityOk =
-                // metrics.orthogonalityError <= orthogonalityTolerance;
-                // const bool determinantOk =
-                // metrics.determinantError <= determinantTolerance;
-                // if (quaternionOk && orthogonalityOk && determinantOk) continue;
+            for (double magnitude : magnitudes) {
+                var metrics = measureRetractNormalization(
+                        bases.get(baseIndex), direction.times(magnitude));
+                boolean quaternionOk = metrics.quaternionNormError <= quaternionNormTolerance;
+                boolean orthogonalityOk = metrics.orthogonalityError <= orthogonalityTolerance;
+                boolean determinantOk = metrics.determinantError <= determinantTolerance;
+                if (quaternionOk && orthogonalityOk && determinantOk)
+                    continue;
 
-                // std::ostringstream os;
-                // os << std::scientific << std::setprecision(3)
-                // << "Retract normalization broke down for base[" << baseIndex
-                // << "] at |omega|=" << magnitude
-                // << " with quaternion norm error=" << metrics.quaternionNormError
-                // << ", orthogonality error=" << metrics.orthogonalityError
-                // << ", determinant error=" << metrics.determinantError;
-                // FAIL(os.str());
+                StringBuilder b = new StringBuilder();
+                b.append("Retract normalization broke down for base[");
+                b.append(baseIndex);
+                b.append("] at |omega|=");
+                b.append(magnitude);
+                b.append(" with quaternion norm error=");
+                b.append(metrics.quaternionNormError);
+                b.append(", orthogonality error=");
+                b.append(metrics.orthogonalityError);
+                b.append(", determinant error=");
+                b.append(metrics.determinantError);
+                fail(b.toString());
             }
         }
     }
@@ -688,29 +694,30 @@ public class Rot3Test {
         assertEquals(4, R.toQuaternion().z(), 1e-9);
     }
 
-    // Matrix Cayley(const Matrix& A) {
-    // Matrix::Index n = A.cols();
-    // const Matrix I = Matrix::Identity(n,n);
-    // return (I-A)*(I+A).inverse();
-    // }
+    Matrix3 Cayley(final Matrix3 A) throws Throwable {
+        Matrix3 I = Matrix3.identity();
+        return I.minus(A).compose(I.plus(A).inverse());
+    }
 
     @Test
     void testCayley() throws Throwable {
         Matrix3 A = Matrix3.skewSymmetric(new Vector3(1, 2, -3));
-        // Matrix Q = Cayley(A);
-        // assertTrue(assert_equal((Matrix)I_3x3, trans(Q)*Q));
-        // assertTrue(assert_equal(A, Cayley(Q)));
+        Matrix3 Q = Cayley(A);
+        assertTrue(assert_equal(Matrix3.identity(), Q.transpose().compose(Q)));
+        assertTrue(assert_equal(A, Cayley(Q)));
     }
 
     @Test
     void testslerp() throws Throwable {
-        // // A first simple test
-        // Rot3 R1 = Rot3::Rz(1), R2 = Rot3::Rz(2), R3 = Rot3::Rz(1.5);
-        // assertTrue(assert_equal(R1, R1.slerp(0.0,R2)));
-        // assertTrue(assert_equal(R2, R1.slerp(1.0,R2)));
-        // assertTrue(assert_equal(R3, R1.slerp(0.5,R2)));
-        // // Make sure other can be *this
-        // assertTrue(assert_equal(R1, R1.slerp(0.5,R1)));
+        // A first simple test
+        Rot3 R1 = Rot3.Rz(1);
+        Rot3 R2 = Rot3.Rz(2);
+        Rot3 R3 = Rot3.Rz(1.5);
+        assertTrue(assert_equal(R1, R1.slerp(0.0, R2)));
+        assertTrue(assert_equal(R2, R1.slerp(1.0, R2)));
+        assertTrue(assert_equal(R3, R1.slerp(0.5, R2)));
+        // Make sure other can be *this
+        assertTrue(assert_equal(R1, R1.slerp(0.5, R1)));
     }
 
     static Rot3 id;
@@ -748,12 +755,10 @@ public class Rot3Test {
                 0.79067393, 0.6051136, -0.0930814, //
                 0.4155925, -0.64214347, -0.64324489, //
                 -0.44948549, 0.47046326, -0.75917576);
-
         Matrix3 expected = new Matrix3(
                 0.790687, 0.605096, -0.0931312, //
                 0.415746, -0.642355, -0.643844, //
                 -0.449411, 0.47036, -0.759468);
-
         Rot3 actual = Rot3.ClosestTo(M.times(3.0));
         assertTrue(assert_equal(expected, actual.matrix(), 1e-6));
     }
@@ -841,12 +846,10 @@ public class Rot3Test {
                 Vector1, Vector1, //
                 Vector1, Vector1, //
                 Vector1, Vector1>numericalDerivative33(this::RzRyRx_proxy, x, y, z, 1e-5);
-
         Matrix act_x = new Matrix();
         Matrix act_y = new Matrix();
         Matrix act_z = new Matrix();
         Rot3.RzRyRx(x.at(0), y.at(0), z.at(0), act_x, act_y, act_z);
-
         assertTrue(assert_equal(num_x, act_x));
         assertTrue(assert_equal(num_y, act_y));
         assertTrue(assert_equal(num_z, act_z));
@@ -892,53 +895,13 @@ public class Rot3Test {
                 Vector1, Vector1, //
                 Vector1, Vector1, //
                 Vector1, Vector1>numericalDerivative33(this::Ypr_proxy, y, p, r, 1e-5);
-
         Matrix act_y = new Matrix();
         Matrix act_p = new Matrix();
         Matrix act_r = new Matrix();
         Rot3.Ypr(y.at(0), p.at(0), r.at(0), act_y, act_p, act_r);
-
         assertTrue(assert_equal(num_y, act_y));
         assertTrue(assert_equal(num_p, act_p));
         assertTrue(assert_equal(num_r, act_r));
-    }
-
-    // Vector3 RQ_proxy(Matrix3 const& R) {
-    // const auto RQ_ypr = RQ(R);
-    // return RQ_ypr.second;
-    // }
-
-    @Test
-    void testRQ_derivative() throws Throwable {
-        // using VecAndErr = std::pair<Vector3, double>;
-        // std::vector<VecAndErr> test_xyz;
-        // // Test zeros and a couple of random values
-        // test_xyz.push_back(VecAndErr{{0, 0, 0}, error});
-        // test_xyz.push_back(VecAndErr{{0, 0.5, -0.5}, error});
-        // test_xyz.push_back(VecAndErr{{0.3, 0, 0.2}, error});
-        // test_xyz.push_back(VecAndErr{{-0.6, 1.3, 0}, 1e-8});
-        // test_xyz.push_back(VecAndErr{{1.0, 0.7, 0.8}, error});
-        // test_xyz.push_back(VecAndErr{{3.0, 0.7, -0.6}, error});
-        // test_xyz.push_back(VecAndErr{{M_PI / 2, 0, 0}, error});
-        // test_xyz.push_back(VecAndErr{{0, 0, M_PI / 2}, error});
-
-        // // Test close to singularity
-        // test_xyz.push_back(VecAndErr{{0, M_PI / 2 - 1e-1, 0}, 1e-7});
-        // test_xyz.push_back(VecAndErr{{0, 3 * M_PI / 2 + 1e-1, 0}, 1e-7});
-        // test_xyz.push_back(VecAndErr{{0, M_PI / 2 - 1.1e-2, 0}, 1e-4});
-        // test_xyz.push_back(VecAndErr{{0, 3 * M_PI / 2 + 1.1e-2, 0}, 1e-4});
-
-        // for (auto const& vec_err : test_xyz) {
-        // auto const& xyz = vec_err.first;
-
-        // const auto R = Rot3::RzRyRx(xyz).matrix();
-        // const auto num = numericalDerivative11(RQ_proxy, R);
-        // Matrix39 calc;
-        // RQ(R, calc);
-
-        // const auto err = vec_err.second;
-        // assertTrue(assert_equal(num, calc, err));
-        // }
     }
 
     Vector3 xyz_proxy(Rot3 R) throws Throwable {
@@ -953,7 +916,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::xyz_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.xyz(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -969,7 +931,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::ypr_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.ypr(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -985,7 +946,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::rpy_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.rpy(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -1001,7 +961,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::roll_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.roll(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -1017,7 +976,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::pitch_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.pitch(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -1033,7 +991,6 @@ public class Rot3Test {
                 Rot3, Vector3>numericalDerivative11(this::yaw_proxy, R, 1e-5);
         Matrix calc = new Matrix();
         R.yaw(calc);
-
         assertTrue(assert_equal(num, calc));
     }
 
@@ -1042,19 +999,16 @@ public class Rot3Test {
         int degree = 1;
         Rot3 R_w0 = new Rot3(); // Zero rotation
         Rot3 R_w1 = Rot3.Ry(degree * Math.PI / 180);
-
         Rot3 R_01 = new Rot3();
         Rot3 R_w2 = new Rot3();
         double actual = 0;
         double expected = 1.0;
-
         for (int i = 2; i < 360; ++i) {
             R_01 = R_w0.between(R_w1);
             R_w2 = R_w1.compose(R_01);
             R_w0 = R_w1;
             R_w1 = R_w2.normalized();
             actual = R_w2.matrix().determinant();
-
             assertEquals(expected, actual, 1e-7);
         }
     }

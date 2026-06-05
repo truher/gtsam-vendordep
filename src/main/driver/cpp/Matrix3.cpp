@@ -47,4 +47,13 @@ gtsam::Matrix3* Matrix3_skewSymmetric(const gtsam::Vector3* v) {
 double Matrix3_determinant(const gtsam::Matrix3* M) {
     return M->determinant();
 }
+gtsam::Matrix3* Matrix3_transpose(const gtsam::Matrix3* m) {
+    return new gtsam::Matrix3(m->transpose());
+}
+double Matrix3_norm(const gtsam::Matrix3* m) {
+    return m->norm();
+}
+gtsam::Matrix3* Matrix3_inverse(const gtsam::Matrix3* m) {
+    return new gtsam::Matrix3(m->inverse());
+}
 }

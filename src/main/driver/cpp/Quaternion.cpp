@@ -26,4 +26,7 @@ gtsam::Vector4* Quaternion_coeffs(gtsam::Quaternion* q) {
 gtsam::Point3* Quaternion_rotate(gtsam::Quaternion* q, gtsam::Point3* p) {
     return new gtsam::Point3((*q) * (*p));
 }
+double Quaternion_norm(gtsam::Quaternion* q) {
+    return q->norm();
+}
 }

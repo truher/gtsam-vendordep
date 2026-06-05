@@ -27,7 +27,10 @@ public class Matrix3 extends ForeignObject {
         Matrix3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Matrix3_timesVector3(ADDRESS, ADDRESS, ADDRESS),
         Matrix3_skewSymmetric(ADDRESS, ADDRESS),
-        Matrix3_determinant(JAVA_DOUBLE, ADDRESS);
+        Matrix3_determinant(JAVA_DOUBLE, ADDRESS),
+        Matrix3_transpose(ADDRESS, ADDRESS),
+        Matrix3_norm(JAVA_DOUBLE, ADDRESS),
+        Matrix3_inverse(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -75,6 +78,10 @@ public class Matrix3 extends ForeignObject {
         return new Matrix3((MemorySegment) FF.Matrix3_plus.h.invokeExact(ptr, other.ptr));
     }
 
+    public Matrix3 minus(Matrix3 other) throws Throwable {
+        return plus(other.times(-1));
+    }
+
     public Matrix3 times(double a) throws Throwable {
         return new Matrix3((MemorySegment) FF.Matrix3_times.h.invokeExact(ptr, a));
     }
@@ -89,5 +96,17 @@ public class Matrix3 extends ForeignObject {
 
     public double determinant() throws Throwable {
         return (double) FF.Matrix3_determinant.h.invokeExact(ptr);
+    }
+
+    public Matrix3 transpose() throws Throwable {
+        return new Matrix3((MemorySegment) FF.Matrix3_transpose.h.invokeExact(ptr));
+    }
+
+    public double norm() throws Throwable {
+        return (double) FF.Matrix3_norm.h.invokeExact(ptr);
+    }
+
+    public Matrix3 inverse() throws Throwable {
+        return new Matrix3((MemorySegment) FF.Matrix3_inverse.h.invokeExact(ptr));
     }
 }

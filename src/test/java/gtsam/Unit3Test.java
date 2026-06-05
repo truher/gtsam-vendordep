@@ -44,6 +44,7 @@ public class Unit3Test {
         Unit3 expected = new Unit3(R.matrix().col(0));
         Unit3 actual = R.rotate(p);
         assertTrue(assert_equal(expected, actual, 1e-5));
+
         Matrix actualH = new Matrix();
         Matrix expectedH = new Matrix();
         ThrowingFunction2<Rot3, Unit3, Unit3> f = (RR, pp) -> RR.rotate(pp);
@@ -346,12 +347,10 @@ public class Unit3Test {
     @Test
     void testbasis() throws Throwable {
         Unit3 p = new Unit3(0.1, -0.2, 0.9);
-
         Matrix expected = new Matrix(new double[][] {
                 { 0.0, -0.994169047 },
                 { 0.97618706, -0.0233922129 },
                 { 0.216930458, 0.105264958 } });
-
         Matrix actualH = new Matrix();
         ThrowingFunction<Unit3, Vector6> f = (pp) -> BasisTest(pp, new Matrix());
         Matrix expectedH = NumericalDerivative.<//
@@ -380,10 +379,8 @@ public class Unit3Test {
         Random rng = new Random(42);
         for (int i = 0; i < num_tests; i++) {
             Unit3 p = Unit3.Random(rng);
-
             Matrix actualH = new Matrix();
             p.basis(actualH);
-
             ThrowingFunction<Unit3, Vector6> f = (pp) -> BasisTest(pp, new Matrix());
             Matrix expectedH = NumericalDerivative.<//
                     Vector6, Vector6, //
@@ -482,9 +479,11 @@ public class Unit3Test {
     @Test
     void testFromPoint3v() throws Throwable {
         Matrix actualH = new Matrix();
-        Point3 point = new Point3(1, -2, 3); // arbitrary point
+        // arbitrary point
+        Point3 point = new Point3(1, -2, 3); 
         Unit3 expected = new Unit3(point);
         assertTrue(assert_equal(expected, Unit3.FromPoint3(point, actualH), 1e-5));
+        
         ThrowingFunction<Point3, Unit3> f = (p) -> Unit3.FromPoint3(p);
         Matrix expectedH = NumericalDerivative.<//
                 Unit3, Vector2, //
@@ -495,9 +494,7 @@ public class Unit3Test {
     @Test
     void testCopyAssign() throws Throwable {
         Unit3 p = new Unit3(1, 0.2, 0.3);
-
         assertTrue(assert_equal(new Vector2(0, 0), p.errorVector(p), 1e-6));
-
         p = new Unit3(-1, 2, 8);
         assertTrue(assert_equal(new Vector2(0, 0), p.errorVector(p), 1e-6));
     }

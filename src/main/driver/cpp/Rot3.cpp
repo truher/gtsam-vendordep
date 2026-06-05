@@ -1,4 +1,5 @@
 #include <gtsam/geometry/Rot3.h>
+
 #include "pairs.h"
 
 extern "C" {
@@ -285,5 +286,10 @@ PtrPair Rot3_RQH(const gtsam::Matrix3* A, gtsam::Matrix* H) {
 }
 gtsam::Quaternion* Rot3_toQuaternion(const gtsam::Rot3* r) {
     return new gtsam::Quaternion(r->toQuaternion());
+}
+gtsam::Rot3* Rot3_slerp(const gtsam::Rot3* a,  //
+                        double t,              //
+                        const gtsam::Rot3* b) {//
+    return new gtsam::Rot3(a->slerp(t, *b));
 }
 }

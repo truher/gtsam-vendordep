@@ -20,7 +20,8 @@ public class Quaternion extends ForeignObject {
         Quaternion_y(JAVA_DOUBLE, ADDRESS),
         Quaternion_z(JAVA_DOUBLE, ADDRESS),
         Quaternion_coeffs(ADDRESS, ADDRESS),
-        Quaternion_rotate(ADDRESS, ADDRESS, ADDRESS);
+        Quaternion_rotate(ADDRESS, ADDRESS, ADDRESS),
+        Quaternion_norm(JAVA_DOUBLE, ADDRESS);
 
         public final MethodHandle h;
 
@@ -59,5 +60,9 @@ public class Quaternion extends ForeignObject {
 
     public Point3 rotate(Point3 p) throws Throwable {
         return new Point3((MemorySegment) FF.Quaternion_rotate.h.invokeExact(ptr, p.ptr));
+    }
+
+    public double norm() throws Throwable {
+        return (double) FF.Quaternion_norm.h.invokeExact(ptr);
     }
 }
