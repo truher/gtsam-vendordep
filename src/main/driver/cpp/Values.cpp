@@ -17,44 +17,75 @@ void Values_delete(gtsam::Values* p) {
 void Values_print(gtsam::Values* v) {
     v->print();
 }
-/** Clones val. */
+void Values_insertCal3DS2(gtsam::Values* v,             //
+                          const gtsam::Key j,           //
+                          const gtsam::Cal3DS2* val) {  //
+    v->insert(j, *val);
+}
 void Values_insertDouble(gtsam::Values* v,    //
                          const gtsam::Key j,  //
-                         double val) {
+                         double val) {        //
     v->insert(j, val);
 }
-void Values_insertPose2(gtsam::Values* v,    //
-                        const gtsam::Key j,  //
-                        const gtsam::Pose2* val) {
+void Values_insertPoint2(gtsam::Values* v,            //
+                         const gtsam::Key j,          //
+                         const gtsam::Point2* val) {  //
     v->insert(j, *val);
 }
-void Values_insertPose3(gtsam::Values* v,    //
-                        const gtsam::Key j,  //
-                        const gtsam::Pose3* val) {
+void Values_insertPoint3(gtsam::Values* v,            //
+                         const gtsam::Key j,          //
+                         const gtsam::Point3* val) {  //
     v->insert(j, *val);
 }
-void Values_insertCal3DS2(gtsam::Values* v,    //
-                          const gtsam::Key j,  //
-                          const gtsam::Cal3DS2* val) {
+void Values_insertPose2(gtsam::Values* v,           //
+                        const gtsam::Key j,         //
+                        const gtsam::Pose2* val) {  //
     v->insert(j, *val);
 }
-const double Values_atDouble(const gtsam::Values* v,  //
-                             const gtsam::Key j) {
+void Values_insertPose3(gtsam::Values* v,           //
+                        const gtsam::Key j,         //
+                        const gtsam::Pose3* val) {  //
+    v->insert(j, *val);
+}
+void Values_insertRot2(gtsam::Values* v,          //
+                       const gtsam::Key j,        //
+                       const gtsam::Rot2* val) {  //
+    v->insert(j, *val);
+}
+void Values_insertRot3(gtsam::Values* v,          //
+                       const gtsam::Key j,        //
+                       const gtsam::Rot3* val) {  //
+    v->insert(j, *val);
+}
+//
+//
+//
+double Values_atDouble(const gtsam::Values* v,  //
+                       const gtsam::Key j) {    //
     return v->at<double>(j);
 }
-const gtsam::Pose2* Values_atPose2(const gtsam::Values* v,  //
-                                   const gtsam::Key j) {
+gtsam::Point2* Values_atPoint2(const gtsam::Values* v,  //
+                               const gtsam::Key j) {    //
+    return new gtsam::Point2(v->at<gtsam::Point2>(j));
+}
+gtsam::Point3* Values_atPoint3(const gtsam::Values* v,  //
+                               const gtsam::Key j) {    //
+    return new gtsam::Point3(v->at<gtsam::Point3>(j));
+}
+gtsam::Pose2* Values_atPose2(const gtsam::Values* v,  //
+                             const gtsam::Key j) {    //
     return new gtsam::Pose2(v->at<gtsam::Pose2>(j));
 }
-const gtsam::Pose3* Values_atPose3(const gtsam::Values* v,  //
-                                   const gtsam::Key j) {
+gtsam::Pose3* Values_atPose3(const gtsam::Values* v,  //
+                             const gtsam::Key j) {    //
     return new gtsam::Pose3(v->at<gtsam::Pose3>(j));
 }
-const gtsam::Cal3DS2* Values_atCal3DS2(const gtsam::Values* v,  //
-                                       const gtsam::Key j) {
+gtsam::Cal3DS2* Values_atCal3DS2(const gtsam::Values* v,  //
+                                 const gtsam::Key j) {    //
     return new gtsam::Cal3DS2(v->at<gtsam::Cal3DS2>(j));
 }
-bool Values_exists(const gtsam::Values* v, const gtsam::Key j) {
+bool Values_exists(const gtsam::Values* v,  //
+                   const gtsam::Key j) {    //
     return v->exists(j);
 }
 void Values_clear(gtsam::Values* v) {

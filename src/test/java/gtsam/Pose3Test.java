@@ -1242,8 +1242,8 @@ public class Pose3Test {
         Pose3 Y = new Pose3(Rot3.Ypr(1.1, -2.2, -0.3), new Point3(-5, 1, 1));
         double t = 0.3;
         Values vals = new Values();
-        vals.insert(0, X);
-        vals.insert(1, Y);
+        vals.insert(new Key(0), X);
+        vals.insert(new Key(1), Y);
         // vals.insert(2,t);
 
         {

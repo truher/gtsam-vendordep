@@ -6,6 +6,7 @@
 
 /**
  * prior is copied, ok to delete
+ * TODO: make separate files for each type (like BetweenFactor)
  */
 extern "C" {
 std::shared_ptr<gtsam::PriorFactor<double>>* PriorFactorDouble(  //

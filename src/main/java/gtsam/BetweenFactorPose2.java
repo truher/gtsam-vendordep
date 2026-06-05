@@ -10,9 +10,7 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
-// TODO: make this generic
-// TODO: make a superclass, NoiseModelFactor, for error().
-public class BetweenFactorPose2 extends NonlinearFactor {
+public class BetweenFactorPose2 extends NoiseModelFactor {
 
     public enum FF {
         BetweenFactorPose2(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS),

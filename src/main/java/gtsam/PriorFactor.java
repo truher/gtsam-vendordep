@@ -10,7 +10,12 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
-public class PriorFactor<T> extends NonlinearFactor {
+/**
+ * The generic works here because there are no methods; this
+ * only exists to add things to the graph.
+ * TODO: add methods, make separate classes.
+ */
+public class PriorFactor<T> extends NoiseModelFactor {
     public enum FF {
         PriorFactorDouble(ADDRESS, JAVA_LONG, JAVA_DOUBLE, ADDRESS),
         PriorFactorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),

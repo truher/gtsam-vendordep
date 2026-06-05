@@ -15,16 +15,25 @@ import org.team100.foreign.Lib;
 /**
  * Note that sometimes "Values" should be owned and sometimes
  * only observed, e.g. inside the CustomFactor error function.
+ * 
+ * All the things "inserted" here are copied; it's ok to delete them after
+ * insertion.
  */
 public class Values extends ForeignObject {
     public enum FF {
         Values(ADDRESS),
         Values_delete(null, ADDRESS),
         Values_insertDouble(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
+        Values_insertPoint2(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertPoint3(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertPose2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertPose3(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertRot2(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertRot3(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertCal3DS2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_atDouble(JAVA_DOUBLE, ADDRESS, JAVA_LONG),
+        Values_atPoint2(ADDRESS, ADDRESS, JAVA_LONG),
+        Values_atPoint3(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPose2(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPose3(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atCal3DS2(ADDRESS, ADDRESS, JAVA_LONG),
@@ -79,7 +88,14 @@ public class Values extends ForeignObject {
         FF.Values_insertDouble.h.invokeExact(ptr, j.j, p);
     }
 
-    /** Clones p, ok to delete after this. */
+    public void insert(Key j, Point2 p) throws Throwable {
+        FF.Values_insertPoint2.h.invokeExact(ptr, j.j, p.ptr);
+    }
+
+    public void insert(Key j, Point3 p) throws Throwable {
+        FF.Values_insertPoint3.h.invokeExact(ptr, j.j, p.ptr);
+    }
+
     public void insert(Key j, Pose2 p) throws Throwable {
         FF.Values_insertPose2.h.invokeExact(ptr, j.j, p.ptr);
     }
@@ -88,8 +104,12 @@ public class Values extends ForeignObject {
         FF.Values_insertPose3.h.invokeExact(ptr, j.j, p.ptr);
     }
 
-    public void insert(long key, Pose3 p) throws Throwable {
-        FF.Values_insertPose3.h.invokeExact(ptr, key, p.ptr);
+    public void insert(Key j, Rot2 p) throws Throwable {
+        FF.Values_insertRot2.h.invokeExact(ptr, j.j, p.ptr);
+    }
+
+    public void insert(Key j, Rot3 p) throws Throwable {
+        FF.Values_insertRot3.h.invokeExact(ptr, j.j, p.ptr);
     }
 
     public void insert(Key j, Cal3DS2 p) throws Throwable {

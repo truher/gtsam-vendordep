@@ -1,111 +1,118 @@
 package gtsam;
 
+import static gtsam.Testable.assert_equal;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
+import gtsam.NumericalDerivative.ThrowingFunction2;
 import gtsam.noiseModel.Isotropic;
 
+/**
+ * I removed the actual jacobian testing since it was kinda complicated.
+ */
 public class BetweenFactorTest {
 
-
-
     /**
-    * This TEST should fail. If you want it to pass, change noise to 0.
-    */
+     * This TEST should fail. If you want it to pass, change noise to 0.
+     */
     @Test
-    void testRot3() {
-        // Rot3 R1 = Rot3::Rodrigues(0.1, 0.2, 0.3);
-        // Rot3 R2 = Rot3::Rodrigues(0.4, 0.5, 0.6);
-        // Rot3 noise = Rot3(); // Rot3::Rodrigues(0.01, 0.01, 0.01); // Uncomment to
-        // make unit test fail
-        // Rot3 measured = R1.between(R2)*noise ;
+    void testRot3() throws Throwable {
+        Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
+        Rot3 R2 = Rot3.Rodrigues(0.4, 0.5, 0.6);
+        Rot3 noise = new Rot3();
+        // Uncomment to make unit test fail:
+        // Rot3::Rodrigues(0.01, 0.01, 0.01);
+        Rot3 measured = R1.between(R2).compose(noise);
 
-        // BetweenFactor<Rot3> factor(R(1), R(2), measured, Isotropic::Sigma(3, 0.05));
-        // Matrix actualH1, actualH2;
-        // Vector actual = factor.evaluateError(R1, R2, actualH1, actualH2);
+        shared_ptr<BetweenFactorRot3> factor = BetweenFactorRot3.newBetweenFactorRot3(
+                Key.R(1), Key.R(2), measured, Isotropic.Sigma(3, 0.05, true));
+        Matrix actualH1 = new Matrix();
+        Matrix actualH2 = new Matrix();
+        Vector3 actual = factor.get().evaluateError(R1, R2, actualH1, actualH2);
 
-        // Vector expected = Rot3::Logmap(measured.inverse() * R1.between(R2));
-        // EXPECT(assert_equal(expected,actual/*, 1e-100*/)); // Uncomment to make unit
-        // test fail
+        Vector3 expected = Rot3.traits.Logmap(measured.inverse().compose(R1.between(R2)));
+        // Uncomment to make unit test fail
+        assertTrue(assert_equal(expected, actual/* , 1e-100 */));
 
-        // Matrix numericalH1 = numericalDerivative21<Vector3, Rot3, Rot3>(
-        // [&factor](const Rot3& r1, const Rot3& r2) {return factor.evaluateError(r1,
-        // r2);},
-        // R1, R2, 1e-5);
-        // EXPECT(assert_equal(numericalH1,actualH1, 1E-5));
+        ThrowingFunction2<Rot3, Rot3, Vector3> f = (a, b) -> factor.get().evaluateError(a, b);
+        Matrix numericalH1 = NumericalDerivative.<//
+                Vector3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative21(f, R1, R2, 1e-5);
+        assertTrue(assert_equal(numericalH1, actualH1, 1E-5));
 
-        // Matrix numericalH2 = numericalDerivative22<Vector3,Rot3,Rot3>(
-        // [&factor](const Rot3& r1, const Rot3& r2) {return factor.evaluateError(r1,
-        // r2);},
-        // R1, R2, 1e-5);
-        // EXPECT(assert_equal(numericalH2,actualH2, 1E-5));
+        Matrix numericalH2 = NumericalDerivative.<//
+                Vector3, Vector3, //
+                Rot3, Vector3, //
+                Rot3, Vector3>numericalDerivative22(f, R1, R2, 1e-5);
+        assertTrue(assert_equal(numericalH2, actualH2, 1E-5));
     }
 
-    // Constructor scalar
     @Test
-    void testConstructorScalar() {
-        // SharedNoiseModel model;
+    void testScalar() throws Throwable {
+        shared_ptr<Isotropic> model = Isotropic.Sigma(1, 1, true);
         double measured = 0.0;
-        // BetweenFactor<double> factor(1, 2, measured, model);
+        shared_ptr<BetweenFactorDouble> factor = BetweenFactorDouble.newBetweenFactorDouble(
+                new Key(1), new Key(2), measured, model);
+        Vector1 error = factor.get().evaluateError(0, 1);
+        assertTrue(assert_equal(new Vector1(1), error, 1e-9));
     }
 
-    // Constructor vector3
     @Test
-    void testConstructorVector3() throws Throwable {
+    void testVector3() throws Throwable {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Vector3 measured = new Vector3(1, 2, 3);
-        // BetweenFactor<Vector3> factor(1, 2, measured, model);
+        shared_ptr<BetweenFactorVector3> factor = BetweenFactorVector3.newBetweenFactorVector3(
+                new Key(1), new Key(2), measured, model);
+        Vector3 error = factor.get().evaluateError(
+                new Vector3(0, 0, 0), new Vector3(1, 2, 3));
+        assertTrue(assert_equal(new Vector3(0, 0, 0), error, 1e-9));
     }
 
-    // Constructor dynamic sized vector
+    /** Note this throws in C++ if the sizes are wrong, so be careful. */
     @Test
-    void testConstructorDynamicSizeVector() throws Throwable {
+    void testDynamicSizeVector() throws Throwable {
         shared_ptr<Isotropic> model = Isotropic.Sigma(5, 1.0, true);
-        // Vector measured(5); measured << 1, 2, 3, 4, 5;
-        // BetweenFactor<Vector> factor(1, 2, measured, model);
+        Vector measured = new Vector(new double[] { 1, 2, 3, 4, 5 });
+        shared_ptr<BetweenFactorVector> factor = BetweenFactorVector.newBetweenFactorVector(
+                new Key(1), new Key(2), measured, model);
+        Vector error = factor.get().evaluateError(
+                new Vector(new double[] { 0, 0, 0, 0, 0 }), new Vector(new double[] { 1, 2, 3, 4, 5 }));
+        assertTrue(assert_equal(new Vector(new double[] { 0, 0, 0, 0, 0 }), error, 1e-9));
     }
 
     @Test
-    void testPoint3Jacobians() throws Throwable {
+    void testPoint3() throws Throwable {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Point3 measured = new Point3(1, 2, 3);
-        // BetweenFactor<Point3> factor(1, 2, measured, model);
-
-        // Values values;
-        // values.insert(1, Point3(0, 0, 0));
-        // values.insert(2, Point3(1, 2, 3));
-        // Vector3 error = factor.evaluateError(Point3(0, 0, 0), Point3(1, 2, 3));
-        // EXPECT(assert_equal<Vector3>(Vector3::Zero(), error, 1e-9));
-        // EXPECT_CORRECT_FACTOR_JACOBIANS(factor, values, 1e-7, 1e-5);
+        shared_ptr<BetweenFactorPoint3> factor = BetweenFactorPoint3.newBetweenFactorPoint3(//
+                new Key(1), new Key(2), measured, model);
+        Vector3 error = factor.get().evaluateError(
+                new Point3(0, 0, 0), new Point3(1, 2, 3));
+        assertTrue(assert_equal(new Vector3(0, 0, 0), error, 1e-9));
     }
 
     @Test
-    void testRot3Jacobians() throws Throwable {
+    void testRot3Again() throws Throwable {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Rot3 measured = Rot3.Ry(Math.PI / 2);
-        // BetweenFactor<Rot3> factor(1, 2, measured, model);
-
-        Values values = new Values();
-        // values.insert(1, new Rot3());
-        // values.insert(2, Rot3::Ry(M_PI_2));
-        // Vector3 error = factor.evaluateError(Rot3(), Rot3::Ry(M_PI_2));
-        // EXPECT(assert_equal<Vector3>(Vector3::Zero(), error, 1e-9));
-        // EXPECT_CORRECT_FACTOR_JACOBIANS(factor, values, 1e-7, 1e-5);
+        shared_ptr<BetweenFactorRot3> factor = BetweenFactorRot3.newBetweenFactorRot3(
+                new Key(1), new Key(2), measured, model);
+        Vector3 error = factor.get().evaluateError(
+                new Rot3(), Rot3.Ry(Math.PI / 2));
+        assertTrue(assert_equal(new Vector3(0, 0, 0), error, 1e-9));
     }
 
     @Test
-    void testPose3Jacobians() throws Throwable {
+    void testPose3() throws Throwable {
         shared_ptr<Isotropic> model = Isotropic.Sigma(6, 1.0, true);
         Pose3 measured = new Pose3(new Rot3(), new Point3(1, 2, 3));
-        // BetweenFactor<Pose3> factor(1, 2, measured, model);
-
-        Pose3 pose1 = new Pose3();
-        Pose3 pose2 = new Pose3(new Rot3(), new Point3(1, 2, 3));
-        Values values = new Values();
-        values.insert(1, pose1);
-        values.insert(2, pose2);
-        // Vector6 error = factor.evaluateError(pose1, pose2);
-        // EXPECT(assert_equal<Vector6>(Vector6::Zero(), error, 1e-9));
-        // EXPECT_CORRECT_FACTOR_JACOBIANS(factor, values, 1e-7, 1e-5);
+        shared_ptr<BetweenFactorPose3> factor = BetweenFactorPose3.newBetweenFactorPose3(
+                new Key(1), new Key(2), measured, model);
+        Vector6 error = factor.get().evaluateError(
+                new Pose3(), new Pose3(new Rot3(), new Point3(1, 2, 3)));
+        assertTrue(assert_equal(new Vector6(0, 0, 0, 0, 0, 0), error, 1e-9));
     }
 
 }

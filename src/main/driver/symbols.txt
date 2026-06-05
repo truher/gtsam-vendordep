@@ -1,5 +1,5 @@
 BatchFixedLagSmoother*
-BetweenFactorPose2*
+BetweenFactor*
 Cal3DS2*
 CustomFactor*
 GaussianFactor*
