@@ -17,6 +17,10 @@ void Values_delete(gtsam::Values* p) {
 void Values_print(gtsam::Values* v) {
     v->print();
 }
+void Values_insertValues(gtsam::Values* v, const gtsam::Values* u) {
+    v->insert(*u);
+}
+
 void Values_insertCal3DS2(gtsam::Values* v,             //
                           const gtsam::Key j,           //
                           const gtsam::Cal3DS2* val) {  //

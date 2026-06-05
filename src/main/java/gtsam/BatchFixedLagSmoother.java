@@ -36,6 +36,12 @@ public class BatchFixedLagSmoother extends ForeignObject {
     }
 
     public BatchFixedLagSmoother(double lag,
+            LevenbergMarquardtParams params) throws Throwable {
+        this((MemorySegment) FF.BatchFixedLagSmoother2.h.invokeExact(
+                lag, params.ptr, true));
+    }
+
+    public BatchFixedLagSmoother(double lag,
             LevenbergMarquardtParams params,
             boolean consistent) throws Throwable {
         this((MemorySegment) FF.BatchFixedLagSmoother2.h.invokeExact(

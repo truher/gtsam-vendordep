@@ -18,7 +18,9 @@ public class NonlinearFactorGraph extends ForeignObject {
         NonlinearFactorGraph(ADDRESS),
         /** Expects shared_ptr<T extends NonlinearFactor>* */
         NonlinearFactorGraph_add(null, ADDRESS, ADDRESS),
-        NonlinearFactorGraph_resize(null, ADDRESS, JAVA_LONG);
+        NonlinearFactorGraph_addNonlinearFactorGraph(null, ADDRESS, ADDRESS),
+        NonlinearFactorGraph_resize(null, ADDRESS, JAVA_LONG),
+        NonlinearFactorGraph_addPriorPoint2(null, ADDRESS, JAVA_LONG, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -43,7 +45,20 @@ public class NonlinearFactorGraph extends ForeignObject {
         FF.NonlinearFactorGraph_add.h.invokeExact(ptr, f.ptr);
     }
 
+    public void add(NonlinearFactorGraph g) throws Throwable {
+        FF.NonlinearFactorGraph_addNonlinearFactorGraph.h.invokeExact(ptr, g.ptr);
+    }
+
     public void resize(long size) throws Throwable {
         FF.NonlinearFactorGraph_resize.h.invokeExact(ptr, size);
+    }
+
+    public void addPrior(
+            Key key,
+            Point2 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model)
+            throws Throwable {
+        FF.NonlinearFactorGraph_addPriorPoint2.h.invokeExact(
+                ptr, key.j, prior.ptr, model.ptr);
     }
 }

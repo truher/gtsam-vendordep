@@ -23,6 +23,7 @@ public class Values extends ForeignObject {
     public enum FF {
         Values(ADDRESS),
         Values_delete(null, ADDRESS),
+        Values_insertValues(null, ADDRESS, ADDRESS),
         Values_insertDouble(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
         Values_insertPoint2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertPoint3(null, ADDRESS, JAVA_LONG, ADDRESS),
@@ -82,6 +83,10 @@ public class Values extends ForeignObject {
 
     public void print() throws Throwable {
         FF.Values_print.h.invokeExact(ptr);
+    }
+
+    public void insert(Values v) throws Throwable {
+        FF.Values_insertValues.h.invokeExact(ptr, v.ptr);
     }
 
     public void insert(Key j, double p) throws Throwable {

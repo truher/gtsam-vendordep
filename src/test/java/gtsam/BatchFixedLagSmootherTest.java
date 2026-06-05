@@ -1,10 +1,13 @@
 package gtsam;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.FixedLagSmoother.KeyTimestampMap;
 import gtsam.noiseModel.Diagonal;
 import gtsam.noiseModel.Isotropic;
 
@@ -48,8 +51,8 @@ public class BatchFixedLagSmootherTest {
         shared_ptr<Diagonal> loopNoise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
 
         // Create a Fixed-Lag Smoother
-        // typedef BatchFixedLagSmoother::KeyTimestampMap Timestamps;
-        // BatchFixedLagSmoother smoother(7.0, LevenbergMarquardtParams());
+        BatchFixedLagSmoother smoother = new BatchFixedLagSmoother(
+                7.0, new LevenbergMarquardtParams());
 
         // // Create containers to keep the full graph
         Values fullinit = new Values();
@@ -64,20 +67,20 @@ public class BatchFixedLagSmootherTest {
 
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            // newFactors.addPrior(key0, Point2(0.0, 0.0), odometerNoise);
-            // newValues.insert(key0, Point2(0.01, 0.01));
-            // newTimestamps[key0] = 0.0;
+            newFactors.addPrior(key0, new Point2(0.0, 0.0), odometerNoise);
+            newValues.insert(key0, new Point2(0.01, 0.01));
+            newKeyTimestampMap.put(key0, 0.0);
 
-            // fullgraph.push_back(newFactors);
-            // fullinit.insert(newValues);
+            fullgraph.add(newFactors);
+            fullinit.insert(newValues);
 
-            // // Update the smoother
-            // smoother.update(newFactors, newValues, newTimestamps);
+            // Update the smoother
+            smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-            // // Check
-            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
+            // Check
+            assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
             ++i;
         }
@@ -89,18 +92,18 @@ public class BatchFixedLagSmootherTest {
 
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
             // odometerNoise));
             // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newTimestamps[key2] = double(i);
+            // newKeyTimestampMap[key2] = double(i);
 
             // fullgraph.push_back(newFactors);
             // fullinit.insert(newValues);
 
             // // Update the smoother
-            // smoother.update(newFactors, newValues, newTimestamps);
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // // Check
             // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
@@ -117,20 +120,20 @@ public class BatchFixedLagSmootherTest {
 
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
             // odometerNoise));
             // newFactors.push_back(BetweenFactor<Point2>(Key(2), Key(5), Point2(3.5, 0.0),
             // loopNoise));
             // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newTimestamps[key2] = double(i);
+            // newKeyTimestampMap[key2] = double(i);
 
             // fullgraph.push_back(newFactors);
             // fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newTimestamps);
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
             // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
@@ -145,18 +148,18 @@ public class BatchFixedLagSmootherTest {
 
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
             // odometerNoise));
             // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newTimestamps[key2] = double(i);
+            // newKeyTimestampMap[key2] = double(i);
 
             // fullgraph.push_back(newFactors);
             // fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newTimestamps);
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
             // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
@@ -171,7 +174,7 @@ public class BatchFixedLagSmootherTest {
 
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // add 2 odometry factors
             // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
@@ -179,13 +182,13 @@ public class BatchFixedLagSmootherTest {
             // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
             // odometerNoise));
             // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newTimestamps[key2] = double(i);
+            // newKeyTimestampMap[key2] = double(i);
 
             // fullgraph.push_back(newFactors);
             // fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newTimestamps);
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
             // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
@@ -202,7 +205,7 @@ public class BatchFixedLagSmootherTest {
             // empty values and new factors for fake update in which we only remove factors
             NonlinearFactorGraph emptyNewFactors = new NonlinearFactorGraph();
             Values emptyNewValues = new Values();
-            // Timestamps emptyNewTimestamps;
+            KeyTimestampMap emptyNewKeyTimestampMap = new KeyTimestampMap();
 
             int factorIndex = 6; // any index that does not break connectivity of the graph
             // FactorIndices factorToRemove;
@@ -213,7 +216,7 @@ public class BatchFixedLagSmootherTest {
 
             // remove factor
             // smoother.update(emptyNewFactors, emptyNewValues,
-            // emptyNewTimestamps,factorToRemove);
+            // emptyNewKeyTimestampMap,factorToRemove);
 
             // // check that the factors in the smoother are right
             // NonlinearFactorGraph actual = smoother.getFactors();
@@ -239,8 +242,6 @@ public class BatchFixedLagSmootherTest {
 
         shared_ptr<Isotropic> noise = Isotropic.Sigma(2, 0.1, true);
 
-        // typedef BatchFixedLagSmoother::KeyTimestampMap Timestamps;
-
         // Create two smoothers: one with consistency enforcement, one without
         LevenbergMarquardtParams params = new LevenbergMarquardtParams();
         // enforceConsistency = true
@@ -253,7 +254,7 @@ public class BatchFixedLagSmootherTest {
         for (int i = 0; i <= 7; ++i) {
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // Key key_i(i);
             if (i == 0) {
@@ -266,10 +267,10 @@ public class BatchFixedLagSmootherTest {
 
             // Use a deliberately poor initial estimate to create nonlinearity
             // newValues.insert(key_i, Point2(double(i) + 0.5, 0.5));
-            // newTimestamps[key_i] = double(i);
+            // newKeyTimestampMap[key_i] = double(i);
 
-            // smootherOn.update(newFactors, newValues, newTimestamps);
-            // smootherOff.update(newFactors, newValues, newTimestamps);
+            // smootherOn.update(newFactors, newValues, newKeyTimestampMap);
+            // smootherOff.update(newFactors, newValues, newKeyTimestampMap);
         }
 
         // After enough steps, marginalization has occurred (lag=3, at step 7 keys
@@ -322,7 +323,6 @@ public class BatchFixedLagSmootherTest {
         // normal_distribution<double> rotDist(0.0, rotSigma);
 
         // for (int trial = 0; trial < numTrials; ++trial) {
-        // typedef BatchFixedLagSmoother::KeyTimestampMap Timestamps;
         // LevenbergMarquardtParams params;
         // BatchFixedLagSmoother smootherOn(lag, params, true);
         // BatchFixedLagSmoother smootherOff(lag, params, false);
@@ -330,7 +330,7 @@ public class BatchFixedLagSmootherTest {
         for (int i = 0; i <= numSteps; ++i) {
             NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
             Values newValues = new Values();
-            // Timestamps newTimestamps;
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             Key key_i = new Key(i);
 
@@ -354,10 +354,10 @@ public class BatchFixedLagSmootherTest {
                 // groundTruth[i].theta() + rotDist(rng) * 2);
                 // newValues.insert(key_i, initEst);
             }
-            // newTimestamps[key_i] = double(i);
+            // newKeyTimestampMap[key_i] = double(i);
 
-            // smootherOn.update(newFactors, newValues, newTimestamps);
-            // smootherOff.update(newFactors, newValues, newTimestamps);
+            // smootherOn.update(newFactors, newValues, newKeyTimestampMap);
+            // smootherOff.update(newFactors, newValues, newKeyTimestampMap);
         }
 
         // // Compute NEES at the last key

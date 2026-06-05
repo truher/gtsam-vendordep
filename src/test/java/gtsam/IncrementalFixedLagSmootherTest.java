@@ -2,6 +2,7 @@ package gtsam;
 
 import org.junit.jupiter.api.Test;
 
+import gtsam.FixedLagSmoother.KeyTimestampMap;
 import gtsam.noiseModel.Diagonal;
 
 /**
@@ -65,134 +66,133 @@ public class IncrementalFixedLagSmootherTest {
         shared_ptr<Diagonal> loopNoise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
 
         // Create a Fixed-Lag Smoother
-        // typedef IncrementalFixedLagSmoother::KeyTimestampMap Timestamps;
         // IncrementalFixedLagSmoother smoother(12.0, ISAM2Params());
 
         // Create containers to keep the full graph
         Values fullinit = new Values();
         NonlinearFactorGraph fullgraph = new NonlinearFactorGraph();
 
-        // // i keeps track of the time step
-        // int i = 0;
+        // i keeps track of the time step
+        int i = 0;
 
-        // // Add a prior at time 0 and update the HMF
-        // {
-        // Key key0 = X(0);
+        // Add a prior at time 0 and update the HMF
+        {
+            Key key0 = Key.X(0);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+            NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+            Values newValues= new Values();
+            KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
-        // newFactors.addPrior(key0, Point2(0.0, 0.0), odoNoise);
-        // newValues.insert(key0, Point2(0.01, 0.01));
-        // newTimestamps[key0] = 0.0;
+            // newFactors.addPrior(key0, Point2(0.0, 0.0), odoNoise);
+            // newValues.insert(key0, Point2(0.01, 0.01));
+            // newKeyTimestampMap[key0] = 0.0;
 
-        // fullgraph.push_back(newFactors);
-        // fullinit.insert(newValues);
+            // fullgraph.push_back(newFactors);
+            // fullinit.insert(newValues);
 
-        // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+            // // Update the smoother
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-        // // Check
-        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
+            // // Check
+            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
-        // ++i;
-        // }
+            ++i;
+        }
 
-        // // Add odometry from time 0 to time 5
-        // while (i <= 5) {
-        // Key key1 = X(i - 1);
-        // Key key2 = X(i);
+        // Add odometry from time 0 to time 5
+        while (i <= 5) {
+            // Key key1 = X(i - 1);
+            // Key key2 = X(i);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+            NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+            Values newValues= new Values();
+            KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
-        // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
-        // odoNoise);
-        // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key2] = double(i);
+            // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
+            // odoNoise);
+            // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
+            // newKeyTimestampMap[key2] = double(i);
 
-        // fullgraph.push_back(newFactors);
-        // fullinit.insert(newValues);
+            // fullgraph.push_back(newFactors);
+            // fullinit.insert(newValues);
 
-        // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+            // // Update the smoother
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-        // // Check
-        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            // // Check
+            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
-        // ++i;
-        // }
+            ++i;
+        }
 
         // // Add odometry from time 5 to 6 to the HMF and a loop closure at time 5 to
         // // the TSM
-        // {
-        // // Add the odometry factor to the HMF
-        // Key key1 = X(i - 1);
-        // Key key2 = X(i);
+        {
+            // // Add the odometry factor to the HMF
+            // Key key1 = X(i - 1);
+            // Key key2 = X(i);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+            NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+            Values newValues= new Values();
+            KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
-        // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
-        // odoNoise);
-        // newFactors.emplace_shared<BetweenPoint2>(X(2), X(5), Point2(3.5, 0.0),
-        // loopNoise);
-        // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key2] = double(i);
+            // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
+            // odoNoise);
+            // newFactors.emplace_shared<BetweenPoint2>(X(2), X(5), Point2(3.5, 0.0),
+            // loopNoise);
+            // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
+            // newKeyTimestampMap[key2] = double(i);
 
-        // fullgraph.push_back(newFactors);
-        // fullinit.insert(newValues);
+            // fullgraph.push_back(newFactors);
+            // fullinit.insert(newValues);
 
-        // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+            // // Update the smoother
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-        // // Check
-        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            // // Check
+            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
-        // ++i;
-        // }
+            ++i;
+        }
 
         // // Add odometry from time 6 to time 15
-        // while (i <= 15) {
-        // Key key1 = X(i - 1);
-        // Key key2 = X(i);
+        while (i <= 15) {
+            Key key1 = Key.X(i - 1);
+            Key key2 = Key.X(i);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+            NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
+            Values newValues = new Values();
+            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-        // // Add the odometry factor twice to ensure the removeFactor test below
-        // // works, where we need to keep the connectivity of the graph.
-        // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
-        // odoNoise);
-        // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
-        // odoNoise);
-        // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key2] = double(i);
+            // // Add the odometry factor twice to ensure the removeFactor test below
+            // // works, where we need to keep the connectivity of the graph.
+            // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
+            // odoNoise);
+            // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
+            // odoNoise);
+            // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
+            // newKeyTimestampMap[key2] = double(i);
 
-        // fullgraph.push_back(newFactors);
-        // fullinit.insert(newValues);
+            // fullgraph.push_back(newFactors);
+            // fullinit.insert(newValues);
 
-        // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+            // // Update the smoother
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-        // // Check
-        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            // // Check
+            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
-        // ++i;
-        // }
+            ++i;
+        }
 
         // // add/remove an extra factor
         // {
         // Key key1 = X(i - 1);
         // Key key2 = X(i);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+        NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+        Values newValues= new Values();
+        KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
         // // add 2 odometry factors
         // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
@@ -200,14 +200,14 @@ public class IncrementalFixedLagSmootherTest {
         // newFactors.emplace_shared<BetweenPoint2>(key1, key2, Point2(1.0, 0.0),
         // odoNoise);
         // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key2] = double(i);
+        // newKeyTimestampMap[key2] = double(i);
         // ++i;
 
         // fullgraph.push_back(newFactors);
         // fullinit.insert(newValues);
 
         // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+        // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
         // // Check
         // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
@@ -215,9 +215,9 @@ public class IncrementalFixedLagSmootherTest {
         // // now remove one of the two and try again
         // // empty values and new factors for fake update in which we only remove
         // // factors
-        // NonlinearFactorGraph emptyNewFactors;
-        // Values emptyNewValues;
-        // Timestamps emptyNewTimestamps;
+        NonlinearFactorGraph emptyNewFactors= new NonlinearFactorGraph();
+        Values emptyNewValues= new Values();
+        KeyTimestampMap emptyNewKeyTimestampMap= new KeyTimestampMap();
 
         // int factorIndex =
         // 25; // any index that does not break connectivity of the graph
@@ -232,7 +232,7 @@ public class IncrementalFixedLagSmootherTest {
         // << smootherFactorsBeforeRemove.size() << std::endl;
 
         // // remove factor
-        // smoother.update(emptyNewFactors, emptyNewValues, emptyNewTimestamps,
+        // smoother.update(emptyNewFactors, emptyNewValues, emptyNewKeyTimestampMap,
         // factorToRemove);
 
         // // Note: the following test (checking that the number of factor is reduced
@@ -274,9 +274,9 @@ public class IncrementalFixedLagSmootherTest {
         // Key key_9 = X(i - 9);
         // Key key_10 = X(i - 10);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+        NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+        Values newValues= new Values();
+        KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
         // // To make a complex graph
         // const Point2 z(1.0, 0.0);
@@ -301,13 +301,13 @@ public class IncrementalFixedLagSmootherTest {
         // newFactors.emplace_shared<BetweenPoint2>(key_10, key_9, z, odoNoise);
 
         // newValues.insert(key_0, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key_0] = double(i);
+        // newKeyTimestampMap[key_0] = double(i);
 
         // fullgraph.push_back(newFactors);
         // fullinit.insert(newValues);
 
         // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+        // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
         // // Check
         // assertTrue(check_smoother(fullgraph, fullinit, smoother, key_0));
@@ -332,7 +332,6 @@ public class IncrementalFixedLagSmootherTest {
         shared_ptr<Diagonal> noise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
 
         // Create a Fixed-Lag Smoother
-        // typedef IncrementalFixedLagSmoother::KeyTimestampMap Timestamps;
         // IncrementalFixedLagSmoother smoother(5.0, ISAM2Params());
 
         // Create containers to keep the full graph
@@ -344,26 +343,26 @@ public class IncrementalFixedLagSmootherTest {
 
         // Add a prior at time 0 and update the HMF
         {
-        Key key0 = Key.X(0);
+            Key key0 = Key.X(0);
 
-        // NonlinearFactorGraph newFactors;
-        // Values newValues;
-        // Timestamps newTimestamps;
+            NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
+            Values newValues= new Values();
+            KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
-        // newFactors.addPrior(key0, Point2(0.0, 0.0), noise);
-        // newValues.insert(key0, Point2(0.01, 0.01));
-        // newTimestamps[key0] = 0.0;
+            // newFactors.addPrior(key0, Point2(0.0, 0.0), noise);
+            // newValues.insert(key0, Point2(0.01, 0.01));
+            // newKeyTimestampMap[key0] = 0.0;
 
-        // fullgraph.push_back(newFactors);
-        // fullinit.insert(newValues);
+            // fullgraph.push_back(newFactors);
+            // fullinit.insert(newValues);
 
-        // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps);
+            // // Update the smoother
+            // smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-        // // Check
-        // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
+            // // Check
+            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
-        ++i;
+            ++i;
         }
 
         // FactorIndices factorsToRemove;
@@ -385,19 +384,19 @@ public class IncrementalFixedLagSmootherTest {
 
         NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
         Values newValues = new Values();
-        // Timestamps newTimestamps;
+        KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
 
         // newFactors.push_back(
         // BetweenFactor<Point2>(key1, key2, Point2(i - ref_i, 0.0), noise));
         // newFactors.addPrior(key2, Point2(double(i), 0.0), noise);
         // newValues.insert(key2, Point2(double(i) + 0.1, -0.1));
-        // newTimestamps[key2] = double(i);
+        // newKeyTimestampMap[key2] = double(i);
 
         // auto fullNewFactorIndices = fullgraph.add_factors(newFactors);
         // fullinit.insert(newValues);
 
         // // Update the smoother
-        // smoother.update(newFactors, newValues, newTimestamps, factorsToRemove);
+        // smoother.update(newFactors, newValues, newKeyTimestampMap, factorsToRemove);
 
         // // Check that removed factors are not there.
         // //
