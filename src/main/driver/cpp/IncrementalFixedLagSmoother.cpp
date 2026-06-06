@@ -1,7 +1,7 @@
 #include <gtsam/nonlinear/IncrementalFixedLagSmoother.h>
 
 extern "C" {
-gtsam::IncrementalFixedLagSmoother* IncrementalFixedLagSmoother2(
+gtsam::IncrementalFixedLagSmoother* IncrementalFixedLagSmoother(
     double lag,  //
     gtsam::ISAM2Params* params) {
     return new gtsam::IncrementalFixedLagSmoother(lag, *params);

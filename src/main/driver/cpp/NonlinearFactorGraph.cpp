@@ -70,7 +70,7 @@ std::shared_ptr<gtsam::NonlinearFactor>* NonlinearFactorGraph_at(
 int NonlinearFactorGraph_size(const gtsam::NonlinearFactorGraph* g) {
     return g->size();
 }
-void NonlinearFactorGraph_print(conste gtsam::NonlinearFactorGraph* g) {
+void NonlinearFactorGraph_print(const gtsam::NonlinearFactorGraph* g) {
     g->print();
 }
 }

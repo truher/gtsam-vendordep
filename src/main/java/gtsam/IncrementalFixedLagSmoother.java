@@ -38,7 +38,7 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
     public IncrementalFixedLagSmoother(double lag,
             ISAM2Params params) throws Throwable {
         this((MemorySegment) FF.IncrementalFixedLagSmoother.h.invokeExact(
-                lag, params.ptr, true));
+                lag, params.ptr));
     }
 
     public FixedLagSmoother.Result update(

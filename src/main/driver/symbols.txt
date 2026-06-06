@@ -5,6 +5,7 @@ CustomFactor*
 FactorIndices*
 GaussianFactor*
 IncrementalFixedLagSmoother*
+ISAM2*
 JacobianVector*
 KeyTimestampMap*
 KeyVector*
