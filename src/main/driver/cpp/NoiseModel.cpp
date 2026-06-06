@@ -225,18 +225,23 @@ std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllInt(
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::All(dim));
 }
-std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllIntDouble(
-    int dim, double mu) {
+std::shared_ptr<gtsam::noiseModel::Constrained>*
+noiseModel_Constrained_AllIntDouble(int dim, double mu) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::All(dim, mu));
 }
-std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllIntVector(
-    int dim, gtsam::Vector* mu) {
+std::shared_ptr<gtsam::noiseModel::Constrained>*
+noiseModel_Constrained_AllIntVector(int dim, gtsam::Vector* mu) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::All(dim, *mu));
 }
-gtsam::Vector* noiseModel_Constrained_mu(gtsam::noiseModel::Constrained* m) {
+gtsam::Vector* noiseModel_Constrained_mu(
+    const gtsam::noiseModel::Constrained* m) {
     return new gtsam::Vector(m->mu());
+}
+gtsam::Matrix* noiseModel_Constrained_informationFromA(
+    const gtsam::noiseModel::Constrained* m, gtsam::Matrix* A) {
+    return new gtsam::Matrix(m->informationFromA(*A));
 }
 //
 // ROBUST

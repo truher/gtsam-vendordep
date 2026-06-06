@@ -10,6 +10,7 @@ import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.Lib;
 
+import gtsam.Matrix;
 import gtsam.Vector;
 import gtsam.shared_ptr;
 
@@ -21,7 +22,8 @@ public class Constrained extends Diagonal {
         noiseModel_Constrained_AllInt(ADDRESS, JAVA_INT),
         noiseModel_Constrained_AllIntDouble(ADDRESS, JAVA_INT, JAVA_DOUBLE),
         noiseModel_Constrained_AllIntVector(ADDRESS, JAVA_INT, ADDRESS),
-        noiseModel_Constrained_mu(ADDRESS, ADDRESS);
+        noiseModel_Constrained_mu(ADDRESS, ADDRESS),
+        noiseModel_Constrained_informationFromA(ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -72,6 +74,10 @@ public class Constrained extends Diagonal {
 
     public Vector mu() throws Throwable {
         return new Vector((MemorySegment) FF.noiseModel_Constrained_mu.h.invokeExact(ptr));
+    }
+
+    public Matrix informationFromA(Matrix A) throws Throwable {
+        return new Matrix((MemorySegment) FF.noiseModel_Constrained_informationFromA.h.invokeExact(ptr, A.ptr));
     }
 
 }

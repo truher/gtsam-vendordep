@@ -203,13 +203,13 @@ public class NoiseModelTest {
 
     @Test
     void testConstrainedMixed() throws Throwable {
-        Vector3 feasible = new Vector3(1.0, 0.0, 1.0);
-        Vector3 infeasible = new Vector3(1.0, 1.0, 1.0);
+        Vector feasible = new Vector(new double[] { 1.0, 0.0, 1.0 });
+        Vector infeasible = new Vector(new double[] { 1.0, 1.0, 1.0 });
         shared_ptr<? extends Diagonal> d = Constrained.MixedSigmas(
                 new Vector(new double[] { kSigma, 0.0, kSigma }));
         // NOTE: we catch constrained variables elsewhere, so whitening does nothing
-        assertTrue(assert_equal(new Vector3(0.5, 1.0, 0.5), d.get().whiten(infeasible)));
-        assertTrue(assert_equal(new Vector3(0.5, 0.0, 0.5), d.get().whiten(feasible)));
+        assertTrue(assert_equal(new Vector(new double[] { 0.5, 1.0, 0.5 }), d.get().whiten(infeasible)));
+        assertTrue(assert_equal(new Vector(new double[] { 0.5, 0.0, 0.5 }), d.get().whiten(feasible)));
 
         assertEquals(0.5 * (1000.0 + 0.25 +
                 0.25), d.get().loss(d.get().squaredMahalanobisDistance(infeasible)), 1e-9);
@@ -244,7 +244,7 @@ public class NoiseModelTest {
 
         Matrix info = model.get().informationFromA(A);
 
-        assertTrue(Double.isInfinite(info(0, 0)));
+        assertTrue(Double.isInfinite(info.at(0, 0)));
         assertEquals(0.0, info.at(0, 1), 1e-12);
         assertEquals(0.0, info.at(1, 0), 1e-12);
         assertEquals(1.0, info.at(1, 1), 1e-12);
@@ -254,10 +254,10 @@ public class NoiseModelTest {
 
         Matrix info_dense = model.get().informationFromA(A_dense);
 
-        assertTrue(Double.isInfinite(info_dense(0, 0)));
-        assertTrue(Double.isInfinite(info_dense(0, 1)));
-        assertTrue(Double.isInfinite(info_dense(1, 0)));
-        assertTrue(Double.isInfinite(info_dense(1, 1)));
+        assertTrue(Double.isInfinite(info_dense.at(0, 0)));
+        assertTrue(Double.isInfinite(info_dense.at(0, 1)));
+        assertTrue(Double.isInfinite(info_dense.at(1, 0)));
+        assertTrue(Double.isInfinite(info_dense.at(1, 1)));
     }
 
     static class exampleQR {
@@ -321,73 +321,92 @@ public class NoiseModelTest {
 
     @Test
     void testOverdeterminedQR() {
-        // Matrix Ab1(9, 4);
-        // Ab1 << 0, 1, 0, 0, //
-        // 0, 0, 1, 0, //
-        // Matrix74::Ones();
-        // Matrix Ab2 = Ab1; // otherwise overwritten !
+        Matrix Ab1 = new Matrix(new double[][] {
+                { 0, 1, 0, 0 },
+                { 0, 0, 1, 0 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 },
+                { 1, 1, 1, 1 } });
+
+        Matrix Ab2 = Ab1.times(1.0); // otherwise overwritten !
 
         // Call Gaussian version
-        // Vector9 sigmas = Vector9::Ones() ;
-        // shared_ptr<Diagonal> diagonal = noiseModel::Diagonal::Sigmas(sigmas);
-        // shared_ptr<Diagonal> actual1 = diagonal.get().QR(Ab1);
-        // assertTrue(actual1.get().isUnit());
-        // Matrix expectedRd(9,4);
-        // expectedRd << -2.64575131, -2.64575131, -2.64575131, -2.64575131, //
-        // 0.0, -1, 0, 0, //
-        // 0.0, 0.0, -1, 0, //
-        // Matrix64::Zero();
-        // assertTrue(assert_equal(expectedRd, Ab1, 1e-4)); // Ab was modified in place
-        // !!!
+        Vector sigmas = new Vector(new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1 });
+        shared_ptr<Diagonal> diagonal = Diagonal.Sigmas(sigmas);
+        shared_ptr<Diagonal> actual1 = diagonal.get().QR(Ab1);
+        assertTrue(actual1.get().isUnit());
+        Matrix expectedRd = new Matrix(new double[][] {
+                { -2.64575131, -2.64575131, -2.64575131, -2.64575131 }, //
+                { 0.0, -1, 0, 0 }, //
+                { 0.0, 0.0, -1, 0 }, //
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 } });
+        assertTrue(assert_equal(expectedRd, Ab1, 1e-4));
+        // Ab was modified in place !!!
 
-        // // Expected result for constrained version
-        // Vector3 expectedSigmas(0.377964473, 1, 1);
-        // shared_ptr<Diagonal> expectedModel =
-        // noiseModel::Diagonal::Sigmas(expectedSigmas);
+        // Expected result for constrained version
+        Vector expectedSigmas = new Vector(new double[] { 0.377964473, 1, 1 });
+        shared_ptr<Diagonal> expectedModel = Diagonal.Sigmas(expectedSigmas);
 
-        // // Call Constrained version
-        // shared_ptr<Diagonal> constrained =
-        // noiseModel::Constrained::MixedSigmas(sigmas);
-        // shared_ptr<Diagonal> actual2 = constrained.get().QR(Ab2);
-        // assertTrue(assert_equal(*expectedModel, *actual2, 1e-6));
-        // expectedRd.row(0) *= 0.377964473; // not divided by sigma!
-        // assertTrue(assert_equal(-expectedRd, Ab2, 1e-6)); // Ab was modified in place
-        // !!!
+        // Call Constrained version
+        shared_ptr<? extends Diagonal> constrained = Constrained.MixedSigmas(sigmas);
+        shared_ptr<Diagonal> actual2 = constrained.get().QR(Ab2);
+        assertTrue(assert_equal(expectedModel.get(), actual2.get(), 1e-6));
+        expectedRd.row(0) *= 0.377964473; // not divided by sigma!
+
+        expectedRd = new Matrix(new double[][] {
+                { 1.0, 1.0, 1.0, 1.0 }, //
+                { 0.0, 1.0, 0.0, 0.0 }, //
+                { 0.0, 0.0, 1.0, 0.0 }, //
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 },
+                { 0.0, 0.0, 0.0, 0.0 } });
+        assertTrue(assert_equal(expectedRd, Ab2, 1e-6));
+        // Ab was modified in place !!!
     }
 
     @Test
-    void testMixedQR() {
-        // // Call Constrained version, with first and third row treated as constraints
-        // // Naming the 6 variables u,v,w,x,y,z, we have
-        // // u = -z
-        // // w = -x
-        // // And let's have simple priors on variables
-        // Matrix Ab(5,6+1);
-        // Ab <<
-        // 1,0,0,0,0,1, 0, // u+z = 0
-        // 0,0,0,0,1,0, 0, // y^2
-        // 0,0,1,1,0,0, 0, // w+x = 0
-        // 0,1,0,0,0,0, 0, // v^2
-        // 0,0,0,0,0,1, 0; // z^2
-        // Vector mixed_sigmas = (Vector(5) << 0, 1, 0, 1, 1).finished();
-        // shared_ptr<Diagonal> constrained =
-        // noiseModel::Constrained::MixedSigmas(mixed_sigmas);
+    void testMixedQR() throws Throwable {
+        // Call Constrained version, with first and third row treated as constraints
+        // Naming the 6 variables u,v,w,x,y,z, we have
+        // u = -z
+        // w = -x
+        // And let's have simple priors on variables
+        Matrix Ab = new Matrix(new double[][] {
+                { 1.0, 0, 0, 0, 0, 1, 0 }, // u+z = 0
+                { 0, 0, 0, 0, 1, 0, 0 }, // y^2
+                { 0, 0, 1, 1, 0, 0, 0 }, // w+x = 0
+                { 0, 1, 0, 0, 0, 0, 0 }, // v^2
+                { 0, 0, 0, 0, 0, 1, 0 } }); // z^2
+        Vector mixed_sigmas = new Vector(new double[] { 0, 1, 0, 1, 1 });
+        shared_ptr<? extends Diagonal> constrained = Constrained.MixedSigmas(mixed_sigmas);
 
-        // // Expected result
-        // Vector expectedSigmas = (Vector(5) << 0, 1, 0, 1, 1).finished();
-        // shared_ptr<Diagonal> expectedModel =
-        // noiseModel::Diagonal::Sigmas(expectedSigmas);
-        // Matrix expectedRd(5, 6+1);
-        // expectedRd << 1, 0, 0, 0, 0, 1, 0, //
-        // 0, 1, 0, 0, 0, 0, 0, //
-        // 0, 0, 1, 1, 0, 0, 0, //
-        // 0, 0, 0, 0, 1, 0, 0, //
-        // 0, 0, 0, 0, 0, 1, 0; //
+        // Expected result
+        Vector expectedSigmas = new Vector(new double[] { 0, 1, 0, 1, 1 });
+        shared_ptr<Diagonal> expectedModel = Diagonal.Sigmas(expectedSigmas);
 
-        // shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
-        // assertTrue(assert_equal(*expectedModel,*actual,1e-6));
-        // assertTrue(linear_dependent(expectedRd,Ab,1e-6)); // Ab was modified in place
-        // !!!
+        Matrix expectedRd = new Matrix(new double[][] {
+                { 1, 0, 0, 0, 0, 1, 0 }, //
+                { 0, 1, 0, 0, 0, 0, 0 }, //
+                { 0, 0, 1, 1, 0, 0, 0 }, //
+                { 0, 0, 0, 0, 1, 0, 0 }, //
+                { 0, 0, 0, 0, 0, 1, 0 } }); //
+
+        shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
+        assertTrue(assert_equal(expectedModel.get(), actual.get(), 1e-6));
+        assertTrue(Matrix.linear_dependent(expectedRd, Ab, 1e-6));
+        // Ab was modified in place!!!
     }
 
     @Test
