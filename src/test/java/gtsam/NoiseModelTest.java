@@ -18,9 +18,23 @@ import gtsam.noiseModel.Isotropic;
 import gtsam.noiseModel.Robust;
 import gtsam.noiseModel.Unit;
 import gtsam.noiseModel.Util;
+import gtsam.noiseModel.mEstimator.AsymmetricCauchy;
+import gtsam.noiseModel.mEstimator.AsymmetricTukey;
+import gtsam.noiseModel.mEstimator.Cauchy;
+import gtsam.noiseModel.mEstimator.DCS;
+import gtsam.noiseModel.mEstimator.Fair;
+import gtsam.noiseModel.mEstimator.GemanMcClure;
 import gtsam.noiseModel.mEstimator.Huber;
+import gtsam.noiseModel.mEstimator.L2WithDeadZone;
+import gtsam.noiseModel.mEstimator.TruncatedLeastSquares;
+import gtsam.noiseModel.mEstimator.Tukey;
+import gtsam.noiseModel.mEstimator.Welsch;
 
-/** See gtsam/linear/tests/testNoiseModel.cpp */
+/**
+ * See gtsam/linear/tests/testNoiseModel.cpp
+ * 
+ * I skipped the custom loss function.
+ */
 public class NoiseModelTest {
 
     static final double kSigma;
@@ -122,7 +136,6 @@ public class NoiseModelTest {
 
         Matrix dynamic = new Matrix(new double[][] { { 0, 0, 0 }, { 0, 0, 0 } });
         assertEquals(6, Unit.Create(dynamic).get().dim());
-
         assertEquals(2, Unit.Create(new Vector(new double[] { 1.0, 2.0 })).get().dim());
         assertEquals(1, Unit.Create(1).get().dim());
     }
@@ -135,9 +148,7 @@ public class NoiseModelTest {
 
         Matrix dynamic = new Matrix(new double[][] { { 0, 0, 0 }, { 0, 0, 0 } });
         assertTrue(Util.matchesDimension(Unit.Create(6).get(), dynamic));
-
         assertTrue(Util.matchesDimension(Unit.Create(2).get(), new Vector(new double[] { 1.0, 2.0 })));
-        // TODO: figure out why the scalar doesn't work
         assertTrue(Util.matchesDimension(Unit.Create(1).get(), 1));
     }
 
@@ -162,50 +173,48 @@ public class NoiseModelTest {
 
     @Test
     void testConstrainedConstructors() throws Throwable {
-        // shared_ptr<Constrained> actual;
         int d = 3;
         double m = 100.0;
-        // const double kInfinity = std::numeric_limits<double>::infinity();
+        final double kInfinity = Double.POSITIVE_INFINITY;
         Vector3 sigmas = new Vector3(kSigma, 0.0, 0.0);
         Vector3 mu = new Vector3(200.0, 300.0, 400.0);
-        // actual = Constrained::All(d);
-        // // TODO: why should this be a thousand ??? Dummy variable?
-        // assertTrue(assert_equal(Vector::Constant(d, 1000.0), actual.get().mu()));
-        // assertTrue(assert_equal(Vector::Constant(d, 0), actual.get().sigmas()));
-        // assertTrue(assert_equal(Vector::Constant(d, 0), actual.get().invsigmas()));
-        // //
-        // Actually zero as dummy value
-        // assertTrue(assert_equal(Vector::Constant(d, kInfinity),
-        // actual.get().precisions()));
-        // // Infinite precision for hard constraints
+        shared_ptr<Constrained> actual = Constrained.All(d);
+        // TODO: why should this be a thousand ??? Dummy variable?
+        assertTrue(assert_equal(Vector.Constant(d, 1000.0), actual.get().mu()));
+        assertTrue(assert_equal(Vector.Constant(d, 0), actual.get().sigmas()));
+        assertTrue(assert_equal(Vector.Constant(d, 0), actual.get().invsigmas()));
+        //        Actually zero as dummy value
+        assertTrue(assert_equal(Vector.Constant(d, kInfinity),
+        actual.get().precisions()));
+        // Infinite precision for hard constraints
 
-        // actual = Constrained::All(d, m);
-        // assertTrue(assert_equal(Vector::Constant(d, m), actual.get().mu()));
+        actual = Constrained.All(d, m);
+        assertTrue(assert_equal(Vector.Constant(d, m), actual.get().mu()));
 
-        // actual = Constrained::All(d, mu);
-        // assertTrue(assert_equal(mu, actual.get().mu()));
+        actual = Constrained.All(d, mu);
+        assertTrue(assert_equal(mu, actual.get().mu()));
 
-        // actual = Constrained::MixedSigmas(mu, sigmas);
-        // assertTrue(assert_equal(mu, actual.get().mu()));
+        actual = Constrained.MixedSigmas(mu, sigmas);
+        assertTrue(assert_equal(mu, actual.get().mu()));
 
-        // actual = Constrained::MixedSigmas(m, sigmas);
-        // assertTrue(assert_equal(Vector::Constant(d, m), actual.get().mu()));
+        actual = Constrained.MixedSigmas(m, sigmas);
+        assertTrue(assert_equal(Vector::Constant(d, m), actual.get().mu()));
     }
 
     @Test
     void testConstrainedMixed() throws Throwable {
         Vector3 feasible = new Vector3(1.0, 0.0, 1.0);
         Vector3 infeasible = new Vector3(1.0, 1.0, 1.0);
-        // shared_ptr<Diagonal> d = Constrained::MixedSigmas(Vector3(kSigma, 0.0,
-        // kSigma));
-        // // NOTE: we catch constrained variables elsewhere, so whitening does nothing
-        // assertTrue(assert_equal(Vector3(0.5, 1.0, 0.5),d.get().whiten(infeasible)));
-        // assertTrue(assert_equal(Vector3(0.5, 0.0, 0.5),d.get().whiten(feasible)));
+        shared_ptr<Diagonal> d = Constrained.MixedSigmas(Vector3(kSigma, 0.0,
+                kSigma));
+        // NOTE: we catch constrained variables elsewhere, so whitening does nothing
+        assertTrue(assert_equal(new Vector3(0.5, 1.0, 0.5), d.get().whiten(infeasible)));
+        assertTrue(assert_equal(new Vector3(0.5, 0.0, 0.5), d.get().whiten(feasible)));
 
-        // assertEquals(0.5 * (1000.0 + 0.25 +
-        // 0.25),d.get().loss(d.get().squaredMahalanobisDistance(infeasible)),1e-9);
-        // assertEquals(0.5, d.get().squaredMahalanobisDistance(feasible),1e-9);
-        // assertEquals(0.5 * 0.5, d.get().loss(0.5),1e-9);
+        assertEquals(0.5 * (1000.0 + 0.25 +
+                0.25), d.get().loss(d.get().squaredMahalanobisDistance(infeasible)), 1e-9);
+        assertEquals(0.5, d.get().squaredMahalanobisDistance(feasible), 1e-9);
+        assertEquals(0.5 * 0.5, d.get().loss(0.5), 1e-9);
     }
 
     @Test
@@ -233,22 +242,22 @@ public class NoiseModelTest {
 
         Matrix A = new Matrix(new double[][] { { 1.0, 0.0 }, { 0.0, 2.0 } });
 
-        // Matrix info = model.get().informationFromA(A);
+        Matrix info = model.get().informationFromA(A);
 
-        // assertTrue(std::isinf(info(0, 0)));
-        // assertEquals(0.0, info(0, 1), 1e-12);
-        // assertEquals(0.0, info(1, 0), 1e-12);
-        // assertEquals(1.0, info(1, 1), 1e-12);
+        assertTrue(Double.isInfinite(info(0, 0)));
+        assertEquals(0.0, info.at(0, 1), 1e-12);
+        assertEquals(0.0, info.at(1, 0), 1e-12);
+        assertEquals(1.0, info.at(1, 1), 1e-12);
 
         // Constrained row with support in multiple columns should mark cross-terms.
         Matrix A_dense = new Matrix(new double[][] { { 1.0, 1.0 }, { 0.0, 2.0 } });
 
-        // Matrix info_dense = model.get().informationFromA(A_dense);
+        Matrix info_dense = model.get().informationFromA(A_dense);
 
-        // assertTrue(std::isinf(info_dense(0, 0)));
-        // assertTrue(std::isinf(info_dense(0, 1)));
-        // assertTrue(std::isinf(info_dense(1, 0)));
-        // assertTrue(std::isinf(info_dense(1, 1)));
+        assertTrue(Double.isInfinite(info_dense(0, 0)));
+        assertTrue(Double.isInfinite(info_dense(0, 1)));
+        assertTrue(Double.isInfinite(info_dense(1, 0)));
+        assertTrue(Double.isInfinite(info_dense(1, 1)));
     }
 
     static class exampleQR {
@@ -284,7 +293,7 @@ public class NoiseModelTest {
     void testQR() throws Throwable {
         Matrix Ab1 = exampleQR.Ab;
         // make a copy. otherwise overwritten !
-        Matrix Ab2 = exampleQR.Ab.times(1.0); 
+        Matrix Ab2 = exampleQR.Ab.times(1.0);
 
         // Call Gaussian version
         shared_ptr<Diagonal> actual1 = exampleQR.diagonal.get().QR(Ab1);
@@ -428,7 +437,7 @@ public class NoiseModelTest {
         // 1,0,0,0,0,1, 2, // u+z = 2
         // 0,0,1,1,0,0, 4, // w+x = 4
         // 0,1,0,1,1,1, 8; // v+x+y+z=8
-        // shared_ptr<Diagonal> constrained = noiseModel::Constrained::All(3);
+        shared_ptr<? extends Diagonal> constrained = Constrained.All(3);
 
         // // Expected result
         // shared_ptr<Diagonal> expectedModel = noiseModel::Diagonal::Sigmas(Vector3
@@ -438,10 +447,10 @@ public class NoiseModelTest {
         // 0, 1, 0, 1, 1, 1, 8, //
         // 0, 0, 1, 1, 0, 0, 4; //
 
-        // shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
-        // assertTrue(assert_equal(*expectedModel,*actual,1e-6));
-        // assertTrue(linear_dependent(expectedRd,Ab,1e-6)); // Ab was modified in place
-        // !!!
+        shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
+        assertTrue(assert_equal(*expectedModel,*actual,1e-6));
+        assertTrue(linear_dependent(expectedRd,Ab,1e-6));
+         // Ab was modified in place !!!
     }
 
     // This matches constraint_eliminate2 in testJacobianFactor
@@ -572,35 +581,35 @@ public class NoiseModelTest {
         shared_ptr<Constrained> constrained = Constrained.MixedSigmas(
                 new Vector(new double[] { kSigma, 0.0, kSigma }));
 
-        // Vector v = Vector::LinSpaced(5, 1.0, 5.0);
-        // Eigen::Block<Vector> block(v, 1, 0, 3, 1);
-        // Vector expected = diagonal.get().whiten(Vector(block));
-        // diagonal.get().whitenInPlace(block);
-        // assertTrue(assert_equal(expected, Vector(block)));
+        Vector v = Vector.LinSpaced(5, 1.0, 5.0);
+        Eigen::Block<Vector> block(v, 1, 0, 3, 1);
+        Vector expected = diagonal.get().whiten(Vector(block));
+        diagonal.get().whitenInPlace(block);
+        assertTrue(assert_equal(expected, Vector(block)));
 
-        // v = Vector::LinSpaced(5, 1.0, 5.0);
-        // Eigen::Block<Vector> block_unwhiten(v, 1, 0, 3, 1);
-        // expected = diagonal.get().unwhiten(Vector(block_unwhiten));
-        // diagonal.get().unwhitenInPlace(block_unwhiten);
-        // assertTrue(assert_equal(expected, Vector(block_unwhiten)));
+        v = Vector.LinSpaced(5, 1.0, 5.0);
+        Eigen::Block<Vector> block_unwhiten(v, 1, 0, 3, 1);
+        expected = diagonal.get().unwhiten(Vector(block_unwhiten));
+        diagonal.get().unwhitenInPlace(block_unwhiten);
+        assertTrue(assert_equal(expected, Vector(block_unwhiten)));
 
-        // v = Vector::LinSpaced(5, 1.0, 5.0);
-        // Eigen::Block<Vector> block_constrained(v, 1, 0, 3, 1);
-        // expected = constrained.get().whiten(Vector(block_constrained));
-        // constrained.get().whitenInPlace(block_constrained);
-        // assertTrue(assert_equal(expected, Vector(block_constrained)));
+        v = Vector.LinSpaced(5, 1.0, 5.0);
+        Eigen::Block<Vector> block_constrained(v, 1, 0, 3, 1);
+        expected = constrained.get().whiten(Vector(block_constrained));
+        constrained.get().whitenInPlace(block_constrained);
+        assertTrue(assert_equal(expected, Vector(block_constrained)));
 
-        // v = Vector::LinSpaced(5, 1.0, 5.0);
-        // Eigen::Block<Vector> block_iso(v, 1, 0, 3, 1);
-        // expected = isotropic.get().unwhiten(Vector(block_iso));
-        // isotropic.get().unwhitenInPlace(block_iso);
-        // assertTrue(assert_equal(expected, Vector(block_iso)));
+        v = Vector.LinSpaced(5, 1.0, 5.0);
+        Eigen::Block<Vector> block_iso(v, 1, 0, 3, 1);
+        expected = isotropic.get().unwhiten(Vector(block_iso));
+        isotropic.get().unwhitenInPlace(block_iso);
+        assertTrue(assert_equal(expected, Vector(block_iso)));
 
-        // v = Vector::LinSpaced(5, 1.0, 5.0);
-        // Eigen::Block<Vector> block_gauss(v, 1, 0, 3, 1);
-        // expected = gaussian.get().unwhiten(Vector(block_gauss));
-        // gaussian.get().unwhitenInPlace(block_gauss);
-        // assertTrue(assert_equal(expected, Vector(block_gauss)));
+        v = Vector.LinSpaced(5, 1.0, 5.0);
+        Eigen::Block<Vector> block_gauss(v, 1, 0, 3, 1);
+        expected = gaussian.get().unwhiten(Vector(block_gauss));
+        gaussian.get().unwhitenInPlace(block_gauss);
+        assertTrue(assert_equal(expected, Vector(block_gauss)));
     }
 
     // /*
@@ -622,17 +631,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::Fair::shared_ptr fair = mEstimator::Fair::Create(k);
-        // assertEquals(0.8333333333333333, fair.get().weight(error1), 1e-8);
-        // assertEquals(0.3333333333333333, fair.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(0.3333333333333333, fair.get().weight(error3), 1e-8);
-        // assertEquals(0.8333333333333333, fair.get().weight(error4), 1e-8);
+        final shared_ptr<Fair> fair = Fair.Create(k);
+        assertEquals(0.8333333333333333, fair.get().weight(error1), 1e-8);
+        assertEquals(0.3333333333333333, fair.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(0.3333333333333333, fair.get().weight(error3), 1e-8);
+        assertEquals(0.8333333333333333, fair.get().weight(error4), 1e-8);
 
-        // assertEquals(0.441961080151135, fair.get().loss(error1), 1e-8);
-        // assertEquals(22.534692783297260, fair.get().loss(error2), 1e-8);
-        // assertEquals(22.534692783297260, fair.get().loss(error3), 1e-8);
-        // assertEquals(0.441961080151135, fair.get().loss(error4), 1e-8);
+        assertEquals(0.441961080151135, fair.get().loss(error1), 1e-8);
+        assertEquals(22.534692783297260, fair.get().loss(error2), 1e-8);
+        assertEquals(22.534692783297260, fair.get().loss(error3), 1e-8);
+        assertEquals(0.441961080151135, fair.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -642,17 +651,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::Huber::shared_ptr huber = mEstimator::Huber::Create(k);
-        // assertEquals(1.0, huber.get().weight(error1), 1e-8);
-        // assertEquals(0.5, huber.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(0.5, huber.get().weight(error3), 1e-8);
-        // assertEquals(1.0, huber.get().weight(error4), 1e-8);
+        final shared_ptr<Huber> huber = Huber.Create(k);
+        assertEquals(1.0, huber.get().weight(error1), 1e-8);
+        assertEquals(0.5, huber.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(0.5, huber.get().weight(error3), 1e-8);
+        assertEquals(1.0, huber.get().weight(error4), 1e-8);
 
-        // assertEquals(0.5000, huber.get().loss(error1), 1e-8);
-        // assertEquals(37.5000, huber.get().loss(error2), 1e-8);
-        // assertEquals(37.5000, huber.get().loss(error3), 1e-8);
-        // assertEquals(0.5000, huber.get().loss(error4), 1e-8);
+        assertEquals(0.5000, huber.get().loss(error1), 1e-8);
+        assertEquals(37.5000, huber.get().loss(error2), 1e-8);
+        assertEquals(37.5000, huber.get().loss(error3), 1e-8);
+        assertEquals(0.5000, huber.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -662,17 +671,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::Cauchy::shared_ptr cauchy = mEstimator::Cauchy::Create(k);
-        // assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
-        // assertEquals(0.2000, cauchy.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(0.2000, cauchy.get().weight(error3), 1e-8);
-        // assertEquals(0.961538461538461, cauchy.get().weight(error4), 1e-8);
+        final shared_ptr<Cauchy> cauchy = Cauchy.Create(k);
+        assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
+        assertEquals(0.2000, cauchy.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(0.2000, cauchy.get().weight(error3), 1e-8);
+        assertEquals(0.961538461538461, cauchy.get().weight(error4), 1e-8);
 
-        // assertEquals(0.490258914416017, cauchy.get().loss(error1), 1e-8);
-        // assertEquals(20.117973905426254, cauchy.get().loss(error2), 1e-8);
-        // assertEquals(20.117973905426254, cauchy.get().loss(error3), 1e-8);
-        // assertEquals(0.490258914416017, cauchy.get().loss(error4), 1e-8);
+        assertEquals(0.490258914416017, cauchy.get().loss(error1), 1e-8);
+        assertEquals(20.117973905426254, cauchy.get().loss(error2), 1e-8);
+        assertEquals(20.117973905426254, cauchy.get().loss(error3), 1e-8);
+        assertEquals(0.490258914416017, cauchy.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -682,18 +691,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::AsymmetricCauchy::shared_ptr cauchy =
-        // mEstimator::AsymmetricCauchy::Create(k);
-        // assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
-        // assertEquals(0.2000, cauchy.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(1.0, cauchy.get().weight(error3), 1e-8);
-        // assertEquals(1.0, cauchy.get().weight(error4), 1e-8);
+        final shared_ptr<AsymmetricCauchy> cauchy = AsymmetricCauchy.Create(k);
+        assertEquals(0.961538461538461, cauchy.get().weight(error1), 1e-8);
+        assertEquals(0.2000, cauchy.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(1.0, cauchy.get().weight(error3), 1e-8);
+        assertEquals(1.0, cauchy.get().weight(error4), 1e-8);
 
-        // assertEquals(0.490258914416017, cauchy.get().loss(error1), 1e-8);
-        // assertEquals(20.117973905426254, cauchy.get().loss(error2), 1e-8);
-        // assertEquals(50.0, cauchy.get().loss(error3), 1e-8);
-        // assertEquals(0.5, cauchy.get().loss(error4), 1e-8);
+        assertEquals(0.490258914416017, cauchy.get().loss(error1), 1e-8);
+        assertEquals(20.117973905426254, cauchy.get().loss(error2), 1e-8);
+        assertEquals(50.0, cauchy.get().loss(error3), 1e-8);
+        assertEquals(0.5, cauchy.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -703,17 +711,16 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::GemanMcClure::shared_ptr gmc =
-        // mEstimator::GemanMcClure::Create(k);
-        // assertEquals(0.25 , gmc.get().weight(error1), 1e-8);
-        // assertEquals(9.80296e-5, gmc.get().weight(error2), 1e-8);
-        // assertEquals(9.80296e-5, gmc.get().weight(error3), 1e-8);
-        // assertEquals(0.25 , gmc.get().weight(error4), 1e-8);
+        final shared_ptr<GemanMcClure> gmc = GemanMcClure.Create(k);
+        assertEquals(0.25, gmc.get().weight(error1), 1e-8);
+        assertEquals(9.80296e-5, gmc.get().weight(error2), 1e-8);
+        assertEquals(9.80296e-5, gmc.get().weight(error3), 1e-8);
+        assertEquals(0.25, gmc.get().weight(error4), 1e-8);
 
-        // assertEquals(0.2500, gmc.get().loss(error1), 1e-8);
-        // assertEquals(0.495049504950495, gmc.get().loss(error2), 1e-8);
-        // assertEquals(0.495049504950495, gmc.get().loss(error3), 1e-8);
-        // assertEquals(0.2500, gmc.get().loss(error4), 1e-8);
+        assertEquals(0.2500, gmc.get().loss(error1), 1e-8);
+        assertEquals(0.495049504950495, gmc.get().loss(error2), 1e-8);
+        assertEquals(0.495049504950495, gmc.get().loss(error3), 1e-8);
+        assertEquals(0.2500, gmc.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -723,17 +730,16 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -0.5;
-        // const mEstimator::TruncatedLeastSquares::shared_ptr tls =
-        // mEstimator::TruncatedLeastSquares::Create(k);
-        // assertEquals(1.0, tls.get().weight(error1), 1e-8);
-        // assertEquals(0.0, tls.get().weight(error2), 1e-8);
-        // assertEquals(0.0, tls.get().weight(error3), 1e-8);
-        // assertEquals(1.0, tls.get().weight(error4), 1e-8);
+        final shared_ptr<TruncatedLeastSquares> tls = TruncatedLeastSquares.Create(k);
+        assertEquals(1.0, tls.get().weight(error1), 1e-8);
+        assertEquals(0.0, tls.get().weight(error2), 1e-8);
+        assertEquals(0.0, tls.get().weight(error3), 1e-8);
+        assertEquals(1.0, tls.get().weight(error4), 1e-8);
 
-        // assertEquals(0.1250, tls.get().loss(error1), 1e-8);
-        // assertEquals(8.0, tls.get().loss(error2), 1e-8);
-        // assertEquals(8.0, tls.get().loss(error3), 1e-8);
-        // assertEquals(0.1250, tls.get().loss(error4), 1e-8);
+        assertEquals(0.1250, tls.get().loss(error1), 1e-8);
+        assertEquals(8.0, tls.get().loss(error2), 1e-8);
+        assertEquals(8.0, tls.get().loss(error3), 1e-8);
+        assertEquals(0.1250, tls.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -743,17 +749,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::Welsch::shared_ptr welsch = mEstimator::Welsch::Create(k);
-        // assertEquals(0.960789439152323, welsch.get().weight(error1), 1e-8);
-        // assertEquals(0.018315638888734, welsch.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(0.018315638888734, welsch.get().weight(error3), 1e-8);
-        // assertEquals(0.960789439152323, welsch.get().weight(error4), 1e-8);
+        final shared_ptr<Welsch> welsch = Welsch.Create(k);
+        assertEquals(0.960789439152323, welsch.get().weight(error1), 1e-8);
+        assertEquals(0.018315638888734, welsch.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(0.018315638888734, welsch.get().weight(error3), 1e-8);
+        assertEquals(0.960789439152323, welsch.get().weight(error4), 1e-8);
 
-        // assertEquals(0.490132010595960, welsch.get().loss(error1), 1e-8);
-        // assertEquals(12.271054513890823, welsch.get().loss(error2), 1e-8);
-        // assertEquals(12.271054513890823, welsch.get().loss(error3), 1e-8);
-        // assertEquals(0.490132010595960, welsch.get().loss(error4), 1e-8);
+        assertEquals(0.490132010595960, welsch.get().loss(error1), 1e-8);
+        assertEquals(12.271054513890823, welsch.get().loss(error2), 1e-8);
+        assertEquals(12.271054513890823, welsch.get().loss(error3), 1e-8);
+        assertEquals(0.490132010595960, welsch.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -763,17 +769,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::Tukey::shared_ptr tukey = mEstimator::Tukey::Create(k);
-        // assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
-        // assertEquals(0.0, tukey.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(0.0, tukey.get().weight(error3), 1e-8);
-        // assertEquals(0.9216, tukey.get().weight(error4), 1e-8);
+        final shared_ptr<Tukey> tukey = Tukey.Create(k);
+        assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
+        assertEquals(0.0, tukey.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(0.0, tukey.get().weight(error3), 1e-8);
+        assertEquals(0.9216, tukey.get().weight(error4), 1e-8);
 
-        // assertEquals(0.480266666666667, tukey.get().loss(error1), 1e-8);
-        // assertEquals(4.166666666666667, tukey.get().loss(error2), 1e-8);
-        // assertEquals(4.166666666666667, tukey.get().loss(error3), 1e-8);
-        // assertEquals(0.480266666666667, tukey.get().loss(error4), 1e-8);
+        assertEquals(0.480266666666667, tukey.get().loss(error1), 1e-8);
+        assertEquals(4.166666666666667, tukey.get().loss(error2), 1e-8);
+        assertEquals(4.166666666666667, tukey.get().loss(error3), 1e-8);
+        assertEquals(0.480266666666667, tukey.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -783,18 +789,17 @@ public class NoiseModelTest {
         final double error2 = 10.0;
         final double error3 = -10.0;
         final double error4 = -1.0;
-        // const mEstimator::AsymmetricTukey::shared_ptr tukey =
-        // mEstimator::AsymmetricTukey::Create(k);
-        // assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
-        // assertEquals(0.0, tukey.get().weight(error2), 1e-8);
-        // // Test negative value to ensure we take absolute value of error.
-        // assertEquals(1.0, tukey.get().weight(error3), 1e-8);
-        // assertEquals(1.0, tukey.get().weight(error4), 1e-8);
+        final shared_ptr<AsymmetricTukey> tukey = AsymmetricTukey.Create(k);
+        assertEquals(0.9216, tukey.get().weight(error1), 1e-8);
+        assertEquals(0.0, tukey.get().weight(error2), 1e-8);
+        // Test negative value to ensure we take absolute value of error.
+        assertEquals(1.0, tukey.get().weight(error3), 1e-8);
+        assertEquals(1.0, tukey.get().weight(error4), 1e-8);
 
-        // assertEquals(0.480266666666667, tukey.get().loss(error1), 1e-8);
-        // assertEquals(4.166666666666667, tukey.get().loss(error2), 1e-8);
-        // assertEquals(50.0, tukey.get().loss(error3), 1e-8);
-        // assertEquals(0.5, tukey.get().loss(error4), 1e-8);
+        assertEquals(0.480266666666667, tukey.get().loss(error1), 1e-8);
+        assertEquals(4.166666666666667, tukey.get().loss(error2), 1e-8);
+        assertEquals(50.0, tukey.get().loss(error3), 1e-8);
+        assertEquals(0.5, tukey.get().loss(error4), 1e-8);
     }
 
     @Test
@@ -802,13 +807,13 @@ public class NoiseModelTest {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
-        // const mEstimator::DCS::shared_ptr dcs = mEstimator::DCS::Create(k);
+        final shared_ptr<DCS> dcs = DCS.Create(k);
 
-        // assertEquals(1.0 , dcs.get().weight(error1), 1e-8);
-        // assertEquals(0.00039211, dcs.get().weight(error2), 1e-8);
+        assertEquals(1.0, dcs.get().weight(error1), 1e-8);
+        assertEquals(0.00039211, dcs.get().weight(error2), 1e-8);
 
-        // assertEquals(0.5 , dcs.get().loss(error1), 1e-8);
-        // assertEquals(0.9900990099, dcs.get().loss(error2), 1e-8);
+        assertEquals(0.5, dcs.get().loss(error1), 1e-8);
+        assertEquals(0.9900990099, dcs.get().loss(error2), 1e-8);
     }
 
     @Test
@@ -820,22 +825,21 @@ public class NoiseModelTest {
         final double e3 = 0.99;
         final double e4 = 1.01;
         final double e5 = 10.0;
-        // const mEstimator::L2WithDeadZone::shared_ptr lsdz =
-        // mEstimator::L2WithDeadZone::Create(k);
+        final shared_ptr<L2WithDeadZone> lsdz = L2WithDeadZone.Create(k);
 
-        // assertEquals(0.9, lsdz.get().weight(e0), 1e-8);
-        // assertEquals(0.00990099009, lsdz.get().weight(e1), 1e-8);
-        // assertEquals(0.0, lsdz.get().weight(e2), 1e-8);
-        // assertEquals(0.0, lsdz.get().weight(e3), 1e-8);
-        // assertEquals(0.00990099009, lsdz.get().weight(e4), 1e-8);
-        // assertEquals(0.9, lsdz.get().weight(e5), 1e-8);
+        assertEquals(0.9, lsdz.get().weight(e0), 1e-8);
+        assertEquals(0.00990099009, lsdz.get().weight(e1), 1e-8);
+        assertEquals(0.0, lsdz.get().weight(e2), 1e-8);
+        assertEquals(0.0, lsdz.get().weight(e3), 1e-8);
+        assertEquals(0.00990099009, lsdz.get().weight(e4), 1e-8);
+        assertEquals(0.9, lsdz.get().weight(e5), 1e-8);
 
-        // assertEquals(40.5, lsdz.get().loss(e0), 1e-8);
-        // assertEquals(0.00005, lsdz.get().loss(e1), 1e-8);
-        // assertEquals(0.0, lsdz.get().loss(e2), 1e-8);
-        // assertEquals(0.0, lsdz.get().loss(e3), 1e-8);
-        // assertEquals(0.00005, lsdz.get().loss(e4), 1e-8);
-        // assertEquals(40.5, lsdz.get().loss(e5), 1e-8);
+        assertEquals(40.5, lsdz.get().loss(e0), 1e-8);
+        assertEquals(0.00005, lsdz.get().loss(e1), 1e-8);
+        assertEquals(0.0, lsdz.get().loss(e2), 1e-8);
+        assertEquals(0.0, lsdz.get().loss(e3), 1e-8);
+        assertEquals(0.00005, lsdz.get().loss(e4), 1e-8);
+        assertEquals(40.5, lsdz.get().loss(e5), 1e-8);
     }
 
     @Test
@@ -844,20 +848,20 @@ public class NoiseModelTest {
         final double error1 = 1.0;
         final double error2 = 100.0;
         Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
-        // Vector b = Vector2(error1, error2);
-        // const Robust::shared_ptr robust = Robust::Create(
-        // mEstimator::Huber::Create(k, mEstimator::Huber::Scalar),
-        // Unit::Create(2));
+        Vector b = Vector2(error1, error2);
+        final shared_ptr<Robust> robust = Robust.Create(
+        Huber.Create(k, mEstimator::Huber::Scalar),
+        Unit::Create(2));
 
-        // robust.get().WhitenSystem(A, b);
+        robust.get().WhitenSystem(A, b);
 
-        // assertEquals(error1, b(0), 1e-8);
-        // assertEquals(sqrt(k*error2), b(1), 1e-8);
+        assertEquals(error1, b(0), 1e-8);
+        assertEquals(sqrt(k*error2), b(1), 1e-8);
 
-        // assertEquals(1.0, A(0,0), 1e-8);
-        // assertEquals(10.0, A(0,1), 1e-8);
-        // assertEquals(sqrt(k*100.0), A(1,0), 1e-8);
-        // assertEquals(sqrt(k/100.0)*1000.0, A(1,1), 1e-8);
+        assertEquals(1.0, A(0,0), 1e-8);
+        assertEquals(10.0, A(0,1), 1e-8);
+        assertEquals(sqrt(k*100.0), A(1,0), 1e-8);
+        assertEquals(sqrt(k/100.0)*1000.0, A(1,1), 1e-8);
     }
 
     @Test
@@ -871,26 +875,26 @@ public class NoiseModelTest {
         final double a11 = 1000.0;
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
-        // const Robust::shared_ptr robust = Robust::Create(
-        // mEstimator::GemanMcClure::Create(k, mEstimator::GemanMcClure::Scalar),
-        // Unit::Create(2));
+        final shared_ptr<Robust> robust = Robust.Create(
+        GemanMcClure.Create(k, GemanMcClure::Scalar),
+        Unit::Create(2));
 
-        // robust.get().WhitenSystem(A, b);
+        robust.get().WhitenSystem(A, b);
 
-        // const double k2 = k*k;
-        // const double k4 = k2*k2;
-        // const double k2error = k2 + error2*error2;
+        final double k2 = k*k;
+        final double k4 = k2*k2;
+        final double k2error = k2 + error2*error2;
 
-        // const double sqrt_weight_error1 = sqrt(0.25);
-        // const double sqrt_weight_error2 = sqrt(k4/(k2error*k2error));
+        final double sqrt_weight_error1 = sqrt(0.25);
+        final double sqrt_weight_error2 = sqrt(k4/(k2error*k2error));
 
-        // assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
-        // assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
+        assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
+        assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
 
-        // assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
-        // assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
-        // assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
-        // assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
+        assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
+        assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
+        assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
     }
 
     @Test
@@ -904,23 +908,23 @@ public class NoiseModelTest {
         final double a11 = 1000.0;
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
-        // const Robust::shared_ptr robust = Robust::Create(
-        // mEstimator::TruncatedLeastSquares::Create(k,
-        // mEstimator::TruncatedLeastSquares::Scalar),
-        // Unit::Create(2));
+        final shared_ptr<Robust> robust = Robust.Create(
+        TruncatedLeastSquares::Create(k,
+        TruncatedLeastSquares::Scalar),
+        Unit::Create(2));
 
-        // robust.get().WhitenSystem(A, b);
+        robust.get().WhitenSystem(A, b);
 
-        // const double sqrt_weight_error1 = 1.0;
-        // const double sqrt_weight_error2 = 0.0;
+        final double sqrt_weight_error1 = 1.0;
+        final double sqrt_weight_error2 = 0.0;
 
-        // assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
-        // assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
+        assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
+        assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
 
-        // assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
-        // assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
-        // assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
-        // assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
+        assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
+        assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
+        assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
     }
 
     @Test
@@ -934,102 +938,71 @@ public class NoiseModelTest {
         final double a11 = 1000.0;
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
-        // const Robust::shared_ptr robust = Robust::Create(
-        // mEstimator::DCS::Create(k, mEstimator::DCS::Scalar),
-        // Unit::Create(2));
+        final shared_ptr<Robust> robust = Robust.Create(
+                DCS.Create(k, DCS::Scalar),
+                Unit.Create(2));
 
-        // robust.get().WhitenSystem(A, b);
+        robust.get().WhitenSystem(A, b);
 
-        // const double sqrt_weight = 2.0*k/(k + error2*error2);
+        final double sqrt_weight = 2.0 * k / (k + error2 * error2);
 
-        // assertEquals(error1, b(0), 1e-8);
-        // assertEquals(sqrt_weight*error2, b(1), 1e-8);
+        assertEquals(error1, b(0), 1e-8);
+        assertEquals(sqrt_weight * error2, b(1), 1e-8);
 
-        // assertEquals(a00, A(0,0), 1e-8);
-        // assertEquals(a01, A(0,1), 1e-8);
-        // assertEquals(sqrt_weight*a10, A(1,0), 1e-8);
-        // assertEquals(sqrt_weight*a11, A(1,1), 1e-8);
+        assertEquals(a00, A(0, 0), 1e-8);
+        assertEquals(a01, A(0, 1), 1e-8);
+        assertEquals(sqrt_weight * a10, A(1, 0), 1e-8);
+        assertEquals(sqrt_weight * a11, A(1, 1), 1e-8);
     }
 
     @Test
     void testrobustNoiseL2WithDeadZone() {
         double dead_zone_size = 1.0;
-        // var robust = noiseModel::Robust::Create(
-        // noiseModel::mEstimator::L2WithDeadZone::Create(dead_zone_size),
-        // Unit::Create(3));
+        var robust = Robust.Create(
+        L2WithDeadZone.Create(dead_zone_size),
+        Unit::Create(3));
 
         for (int i = 0; i < 5; i++) {
-            // Vector error = Vector3(i, 0, 0);
-            // robust.get().WhitenSystem(error);
-            // assertEquals(std::fmax(0, i - dead_zone_size) * i,
-            // robust.get().squaredMahalanobisDistance(error), 1e-8);
+            Vector error = Vector3(i, 0, 0);
+            robust.get().WhitenSystem(error);
+            assertEquals(std::fmax(0, i - dead_zone_size) * i,
+            robust.get().squaredMahalanobisDistance(error), 1e-8);
         }
-    }
-
-    @Test
-    void testrobustNoiseCustomHuber() throws Throwable {
-        final double k = 10.0;
-        final double error1 = 1.0;
-        final double error2 = 100.0;
-        Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
-        Vector b = new Vector(new double[] { error1, error2 });
-        // const Robust::shared_ptr robust =
-        // Robust::Create(mEstimator::Custom::Create(
-        // [k](double e) {
-        // const var abs_e = std::abs(e);
-        // return abs_e <= k ? 1.0 : k / abs_e;
-        // },
-        // [k](double e) {
-        // const var abs_e = std::abs(e);
-        // return abs_e <= k ? abs_e * abs_e / 2.0 : k * abs_e - k * k / 2.0;
-        // },
-        // noiseModel::mEstimator::Custom::Scalar, "Huber"),
-        // Unit::Create(2));
-
-        // robust.get().WhitenSystem(A, b);
-
-        // assertEquals(error1, b(0), 1e-8);
-        // assertEquals(sqrt(k * error2), b(1), 1e-8);
-
-        // assertEquals(1.0, A(0, 0), 1e-8);
-        // assertEquals(10.0, A(0, 1), 1e-8);
-        // assertEquals(sqrt(k * 100.0), A(1, 0), 1e-8);
-        // assertEquals(sqrt(k / 100.0) * 1000.0, A(1, 1), 1e-8);
     }
 
     @Test
     void testlossFunctionAtZero() {
         final double k = 5.0;
-        // var fair = mEstimator::Fair::Create(k);
-        // assertEquals(fair.get().loss(0), 0, 1e-8);
-        // assertEquals(fair.get().weight(0), 1, 1e-8);
-        // var huber = mEstimator::Huber::Create(k);
-        // assertEquals(huber.get().loss(0), 0, 1e-8);
-        // assertEquals(huber.get().weight(0), 1, 1e-8);
-        // var cauchy = mEstimator::Cauchy::Create(k);
-        // assertEquals(cauchy.get().loss(0), 0, 1e-8);
-        // assertEquals(cauchy.get().weight(0), 1, 1e-8);
-        // var gmc = mEstimator::GemanMcClure::Create(k);
-        // assertEquals(gmc.get().loss(0), 0, 1e-8);
-        // assertEquals(gmc.get().weight(0), 1, 1e-8);
-        // var welsch = mEstimator::Welsch::Create(k);
-        // assertEquals(welsch.get().loss(0), 0, 1e-8);
-        // assertEquals(welsch.get().weight(0), 1, 1e-8);
-        // var tukey = mEstimator::Tukey::Create(k);
-        // assertEquals(tukey.get().loss(0), 0, 1e-8);
-        // assertEquals(tukey.get().weight(0), 1, 1e-8);
-        // var dcs = mEstimator::DCS::Create(k);
-        // assertEquals(dcs.get().loss(0), 0, 1e-8);
-        // assertEquals(dcs.get().weight(0), 1, 1e-8);
-        // var lsdz = mEstimator::L2WithDeadZone::Create(k);
-        // assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        // assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        // var assy_cauchy = mEstimator::AsymmetricCauchy::Create(k);
-        // assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        // assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        // var assy_tukey = mEstimator::AsymmetricTukey::Create(k);
-        // assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        // assertEquals(lsdz.get().weight(0), 0, 1e-8);
+        var fair = mEstimator::Fair::Create(k);
+        assertEquals(fair.get().loss(0), 0, 1e-8);
+        assertEquals(fair.get().weight(0), 1, 1e-8);
+        var huber = mEstimator::Huber::Create(k);
+        assertEquals(huber.get().loss(0), 0, 1e-8);
+        assertEquals(huber.get().weight(0), 1, 1e-8);
+        var cauchy = mEstimator::Cauchy::Create(k);
+        assertEquals(cauchy.get().loss(0), 0, 1e-8);
+        assertEquals(cauchy.get().weight(0), 1, 1e-8);
+        var gmc = mEstimator::GemanMcClure::Create(k);
+        assertEquals(gmc.get().loss(0), 0, 1e-8);
+        assertEquals(gmc.get().weight(0), 1, 1e-8);
+        var welsch = mEstimator::Welsch::Create(k);
+        assertEquals(welsch.get().loss(0), 0, 1e-8);
+        assertEquals(welsch.get().weight(0), 1, 1e-8);
+        var tukey = mEstimator::Tukey::Create(k);
+        assertEquals(tukey.get().loss(0), 0, 1e-8);
+        assertEquals(tukey.get().weight(0), 1, 1e-8);
+        var dcs = mEstimator::DCS::Create(k);
+        assertEquals(dcs.get().loss(0), 0, 1e-8);
+        assertEquals(dcs.get().weight(0), 1, 1e-8);
+        var lsdz = mEstimator::L2WithDeadZone::Create(k);
+        assertEquals(lsdz.get().loss(0), 0, 1e-8);
+        assertEquals(lsdz.get().weight(0), 0, 1e-8);
+        var assy_cauchy = mEstimator::AsymmetricCauchy::Create(k);
+        assertEquals(lsdz.get().loss(0), 0, 1e-8);
+        assertEquals(lsdz.get().weight(0), 0, 1e-8);
+        var assy_tukey = mEstimator::AsymmetricTukey::Create(k);
+        assertEquals(lsdz.get().loss(0), 0, 1e-8);
+        assertEquals(lsdz.get().weight(0), 0, 1e-8);
     }
 
     static void TEST_GAUSSIAN(shared_ptr<Gaussian> gaussian) throws Throwable {

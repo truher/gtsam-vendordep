@@ -14,6 +14,8 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
 
 /**
  * See gtsam/geometry/tests/testRot3.cpp
+ * 
+ * I skipped the SO3 parts.
  */
 public class Rot3Test {
 
@@ -1027,15 +1029,6 @@ public class Rot3Test {
                 Vector3, Vector3>numericalDerivative11(g, new Vector3(0, 0, 0), 1e-5);
         // SO3::ExpmapDerivative(Z_3x1) is identity
         assertTrue(assert_equal(expected, new Matrix(M), 1e-5));
-
-        // Test the derivatives at another value
-        final Vector3 delta = new Vector3(0.1, 0.2, 0.3);
-        final Matrix expected2 = NumericalDerivative.<//
-                Rot3, Vector3, //
-                Vector3, Vector3>numericalDerivative11(g, delta, 1e-5);
-        // TODO: implement SO3
-        // assertTrue(assert_equal(expected2,
-        // SO3::ExpmapDerivative(M*delta) * M, 1e-5));
     }
 
     @Test
@@ -1055,15 +1048,6 @@ public class Rot3Test {
                 Rot3, Vector3, //
                 Vector3, Vector3>numericalDerivative11(g, new Vector3(), 1e-5);
         assertTrue(assert_equal(expected, new Matrix(M), 1e-5));
-
-        // // Test the derivatives at another value
-        final Vector3 delta = new Vector3(0.1, 0.2, 0.3);
-        Matrix expected2 = NumericalDerivative.<//
-                Rot3, Vector3, //
-                Vector3, Vector3>numericalDerivative11(g, delta, 1e-5);
-        // TODO: implement SO3
-        // assertTrue(assert_equal<Matrix3>(expected2, SO3::ExpmapDerivative(M*delta) *
-        // M, 1e-5));
     }
 
 }

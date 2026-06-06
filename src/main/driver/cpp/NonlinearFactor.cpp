@@ -19,4 +19,8 @@ bool NonlinearFactor_equals(const gtsam::NonlinearFactor* f,  //
                             const gtsam::NonlinearFactor* g) {
     return f->equals(*g);
 }
+double NonlinearFactor_weight(const gtsam::NonlinearFactor* f,
+                              const gtsam::Values* v) {
+    return f->weight(*v);
+}
 }

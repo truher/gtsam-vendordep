@@ -565,8 +565,6 @@ public class Pose2Test {
                 Pose2, Vector3>numericalDerivative21((a, b) -> a.between(b), gT1, gT2, 1e-5);
         assertTrue(assert_equal(expectedH1, actualH1));
         assertTrue(assert_equal(numericalH1, actualH1));
-        // Assert H1 = -AdjointMap(between(p2,p1)) as in doc/math.lyx
-        // assertTrue(assert_equal(-gT2.between(gT1).AdjointMap(),actualH1));
 
         Matrix expectedH2 = new Matrix(new double[][] {
                 { 1.0, 0.0, 0.0 },
@@ -578,7 +576,6 @@ public class Pose2Test {
                 Pose2, Vector3>numericalDerivative22((a, b) -> a.between(b), gT1, gT2, 1e-5);
         assertTrue(assert_equal(expectedH2, actualH2));
         assertTrue(assert_equal(numericalH2, actualH2));
-
     }
 
     // reverse situation for extra test
@@ -748,7 +745,7 @@ public class Pose2Test {
         Rot2 actual34 = x3.bearing(xl4, actualH1, actualH2);
         assertTrue(assert_equal(Rot2.fromAngle(Math.PI / 4.0), actual34));
 
-        // // Check numerical derivatives
+        // Check numerical derivatives
         expectedH1 = NumericalDerivative.<//
                 Rot2, Vector1, //
                 Pose2, Vector3, //
@@ -799,7 +796,7 @@ public class Pose2Test {
         double actual34 = x3.range(l4, actualH1, actualH2);
         assertEquals(2, actual34, 1e-9);
 
-        // // Check numerical derivatives
+        // Check numerical derivatives
         expectedH1 = NumericalDerivative.<//
                 Vector1, Vector1, //
                 Pose2, Vector3, //
@@ -851,7 +848,7 @@ public class Pose2Test {
         assertTrue(assert_equal(expectedH1, actualH1));
         assertTrue(assert_equal(expectedH2, actualH2));
 
-        // // Another test
+        // Another test
         double actual34 = x3.range(xl4, actualH1, actualH2);
         assertEquals(2, actual34, 1e-9);
 

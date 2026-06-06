@@ -7,12 +7,14 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Base extends ForeignObject {
+import gtsam.shared_ptr;
+
+public class GemanMcClure extends Base {
+
     public enum FF {
-        noiseModel_mEstimator_Base_weight(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE);
+        noiseModel_mEstimator_GemanMcClure_Create(ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -21,12 +23,13 @@ public class Base extends ForeignObject {
         }
     }
 
-    public Base(MemorySegment pointer) {
-        super(pointer, null);
+    public GemanMcClure(MemorySegment p) {
+        super(p);
     }
 
-    public double weight(double distance) throws Throwable {
-        return (double) FF.noiseModel_mEstimator_Base_weight.h.invokeExact(ptr, distance);
+    public static shared_ptr<GemanMcClure> Create(double k) throws Throwable {
+        return new shared_ptr<GemanMcClure>(
+                (MemorySegment) FF.noiseModel_mEstimator_GemanMcClure_Create.h.invokeExact(k),
+                GemanMcClure::new);
     }
-
 }

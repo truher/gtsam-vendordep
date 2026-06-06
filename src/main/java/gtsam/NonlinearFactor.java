@@ -2,6 +2,7 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -18,7 +19,8 @@ public class NonlinearFactor extends ForeignObject {
     public enum FF {
         NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS),
         NonlinearFactor_print(null, ADDRESS),
-        NonlinearFactor_equals(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        NonlinearFactor_equals(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        NonlinearFactor_weight(JAVA_DOUBLE, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -48,6 +50,10 @@ public class NonlinearFactor extends ForeignObject {
 
     public boolean equals(NonlinearFactor g) throws Throwable {
         return (boolean) FF.NonlinearFactor_equals.h.invokeExact(ptr, g.ptr);
+    }
+
+    public double weight(Values v) throws Throwable {
+        return (double) FF.NonlinearFactor_weight.h.invokeExact(ptr, v.ptr);
     }
 
 }

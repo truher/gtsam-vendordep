@@ -16,6 +16,20 @@ std::shared_ptr<gtsam::PriorFactor<double>>* PriorFactorDouble(  //
     return new std::shared_ptr<gtsam::PriorFactor<double>>(
         new gtsam::PriorFactor<double>(key, prior, *model));
 }
+std::shared_ptr<gtsam::PriorFactor<gtsam::Point2>>* PriorFactorPoint2(  //
+    const gtsam::Key key,                                             //
+    const gtsam::Point2* prior,                                        //
+    const gtsam::SharedNoiseModel* model) {                           //
+    return new std::shared_ptr<gtsam::PriorFactor<gtsam::Point2>>(
+        new gtsam::PriorFactor<gtsam::Point2>(key, *prior, *model));
+}
+std::shared_ptr<gtsam::PriorFactor<gtsam::Point3>>* PriorFactorPoint3(  //
+    const gtsam::Key key,                                             //
+    const gtsam::Point3* prior,                                        //
+    const gtsam::SharedNoiseModel* model) {                           //
+    return new std::shared_ptr<gtsam::PriorFactor<gtsam::Point3>>(
+        new gtsam::PriorFactor<gtsam::Point3>(key, *prior, *model));
+}
 std::shared_ptr<gtsam::PriorFactor<gtsam::Pose2>>* PriorFactorPose2(  //
     const gtsam::Key key,                                             //
     const gtsam::Pose2* prior,                                        //

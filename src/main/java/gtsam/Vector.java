@@ -34,7 +34,9 @@ public class Vector extends ForeignObject
         Vector_fromVector6(ADDRESS, ADDRESS),
         Vector_Local(ADDRESS, ADDRESS, ADDRESS),
         Vector_rows(JAVA_INT, ADDRESS),
-        Vector_at(JAVA_DOUBLE, ADDRESS, JAVA_INT);
+        Vector_at(JAVA_DOUBLE, ADDRESS, JAVA_INT),
+        Vector_Constant(ADDRESS, JAVA_INT, JAVA_DOUBLE),
+        Vector_LinSpaced(ADDRESS, JAVA_INT, JAVA_DOUBLE, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -84,6 +86,14 @@ public class Vector extends ForeignObject
         for (int i = 0; i < vals.length; ++i) {
             set(i, vals[i]);
         }
+    }
+
+    public static Vector Constant(int size, double value) throws Throwable {
+        return new Vector((MemorySegment) FF.Vector_Constant.h.invokeExact(size, value));
+    }
+
+    public static Vector LinSpaced(int size, double low, double high) throws Throwable {
+        return new Vector((MemorySegment) FF.Vector_LinSpaced.h.invokeExact(size, low, high));
     }
 
     public Vector localCoordinates(Vector other) throws Throwable {

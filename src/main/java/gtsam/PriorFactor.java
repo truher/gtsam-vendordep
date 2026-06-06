@@ -18,6 +18,8 @@ import org.team100.foreign.Lib;
 public class PriorFactor<T> extends NoiseModelFactor {
     public enum FF {
         PriorFactorDouble(ADDRESS, JAVA_LONG, JAVA_DOUBLE, ADDRESS),
+        PriorFactorPoint2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
+        PriorFactorPoint3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorPose3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorVector(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
@@ -46,6 +48,26 @@ public class PriorFactor<T> extends NoiseModelFactor {
     }
 
     /** @param prior is copied, ok to delete. */
+    public static shared_ptr<PriorFactor<Point2>> PriorFactorPoint2(
+            Key poseKey,
+            Point2 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorPoint2.h.invokeExact(poseKey.j, prior.ptr, model.ptr),
+                PriorFactor::new);
+    }
+
+    /** @param prior is copied, ok to delete. */
+    public static shared_ptr<PriorFactor<Point3>> PriorFactorPoint3(
+            Key key,
+            Point3 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorPoint3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                PriorFactor::new);
+    }
+
+    /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Pose2>> PriorFactorPose2(
             Key poseKey,
             Pose2 prior,
@@ -65,7 +87,7 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-        public static shared_ptr<PriorFactor<Vector>> PriorFactorVector(
+    public static shared_ptr<PriorFactor<Vector>> PriorFactorVector(
             Key key,
             Vector prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {

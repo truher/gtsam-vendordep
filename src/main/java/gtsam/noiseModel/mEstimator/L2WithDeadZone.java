@@ -7,12 +7,14 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Base extends ForeignObject {
+import gtsam.shared_ptr;
+
+public class L2WithDeadZone extends Base {
+
     public enum FF {
-        noiseModel_mEstimator_Base_weight(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE);
+        noiseModel_mEstimator_L2WithDeadZone_Create(ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -21,12 +23,13 @@ public class Base extends ForeignObject {
         }
     }
 
-    public Base(MemorySegment pointer) {
-        super(pointer, null);
+    public L2WithDeadZone(MemorySegment p) {
+        super(p);
     }
 
-    public double weight(double distance) throws Throwable {
-        return (double) FF.noiseModel_mEstimator_Base_weight.h.invokeExact(ptr, distance);
+    public static shared_ptr<L2WithDeadZone> Create(double k) throws Throwable {
+        return new shared_ptr<L2WithDeadZone>(
+                (MemorySegment) FF.noiseModel_mEstimator_L2WithDeadZone_Create.h.invokeExact(k),
+                L2WithDeadZone::new);
     }
-
 }

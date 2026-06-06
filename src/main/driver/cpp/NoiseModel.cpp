@@ -206,8 +206,8 @@ noiseModel_Constrained_MixedSigmasVector(gtsam::Vector* sigmas) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::MixedSigmas(*sigmas));
 }
-std::shared_ptr<gtsam::noiseModel::Constrained>*
-noiseModel_Constrained_AllInt(int dim) {
+std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllInt(
+    int dim) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::All(dim));
 }
@@ -236,12 +236,72 @@ gtsam::Vector* noiseModel_Robust_unwhiten(
     const gtsam::noiseModel::Robust* model, const gtsam::Vector* v) {
     return new gtsam::Vector(model->unwhiten(*v));
 }
+std::shared_ptr<gtsam::noiseModel::mEstimator::Base> noiseModel_Robust_robust(
+    const gtsam::noiseModel::Robust* r) {
+    return new shared_ptr<gtsam::noiseModel::mEstimator::Base>(r->robust());
+}
 //
 // mEstimator
 //
+double noiseModel_mEstimator_Base_weight(          //
+    const gtsam::noiseModel::mEstimator::Base* b,  //
+    double distance) {                             //
+    return b->weight(distance);
+}
 std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>*
 noiseModel_mEstimator_Huber_Create(double k) {
     return new std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>(
         gtsam::noiseModel::mEstimator::Huber::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::Fair>*
+noiseModel_mEstimator_Fair_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Fair>(
+        gtsam::noiseModel::mEstimator::Fair::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::Cauchy>*
+noiseModel_mEstimator_Cauchy_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Cauchy>(
+        gtsam::noiseModel::mEstimator::Cauchy::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::AsymmetricCauchy>*
+noiseModel_mEstimator_AsymmetricCauchy_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::AsymmetricCauchy>(
+        gtsam::noiseModel::mEstimator::AsymmetricCauchy::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::Tukey>*
+noiseModel_mEstimator_Tukey_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Tukey>(
+        gtsam::noiseModel::mEstimator::Tukey::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::AsymmetricTukey>*
+noiseModel_mEstimator_AsymmetricTukey_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::AsymmetricTukey>(
+        gtsam::noiseModel::mEstimator::AsymmetricTukey::Create(k));
+}
+
+std::shared_ptr<gtsam::noiseModel::mEstimator::Welsch>*
+noiseModel_mEstimator_Welsch_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Welsch>(
+        gtsam::noiseModel::mEstimator::Welsch::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::GemanMcClure>*
+noiseModel_mEstimator_GemanMcClure_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::GemanMcClure>(
+        gtsam::noiseModel::mEstimator::GemanMcClure::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>*
+noiseModel_mEstimator_DCS_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>(
+        gtsam::noiseModel::mEstimator::DCS::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::L2WithDeadZone>*
+noiseModel_mEstimator_L2WithDeadZone_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::L2WithDeadZone>(
+        gtsam::noiseModel::mEstimator::L2WithDeadZone::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::TruncatedLeastSquares>*
+noiseModel_mEstimator_TruncatedLeastSquares_Create(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::TruncatedLeastSquares>(
+        gtsam::noiseModel::mEstimator::TruncatedLeastSquares::Create(k));
 }
 }

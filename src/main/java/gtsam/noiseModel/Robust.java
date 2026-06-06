@@ -18,7 +18,8 @@ public class Robust extends Base {
         noiseModel_Robust_sigmas(ADDRESS, ADDRESS),
         noiseModel_Robust_whiten(ADDRESS, ADDRESS, ADDRESS),
         noiseModel_Robust_Whiten(ADDRESS, ADDRESS, ADDRESS),
-        noiseModel_Robust_unwhiten(ADDRESS, ADDRESS, ADDRESS);
+        noiseModel_Robust_unwhiten(ADDRESS, ADDRESS, ADDRESS),
+        noiseModel_Robust_robust(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -57,6 +58,12 @@ public class Robust extends Base {
     @Override
     public Vector unwhiten(Vector v) throws Throwable {
         return new Vector((MemorySegment) FF.noiseModel_Robust_unwhiten.h.invokeExact(ptr, v.ptr));
+    }
+
+    public shared_ptr<gtsam.noiseModel.mEstimator.Base> robust() throws Throwable {
+        return new shared_ptr<gtsam.noiseModel.mEstimator.Base>(
+                (MemorySegment) FF.noiseModel_Robust_robust.h.invokeExact(ptr),
+                gtsam.noiseModel.mEstimator.Base::new);
     }
 
 }
