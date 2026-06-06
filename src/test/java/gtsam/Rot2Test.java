@@ -112,14 +112,12 @@ public class Rot2Test {
         Matrix numerical1 = NumericalDerivative.<//
                 Point2, Vector2, //
                 Rot2, Vector1, //
-                Point2, Vector2//
-        >numericalDerivative21(rotate_, R, P, 1e-3);
+                Point2, Vector2>numericalDerivative21(rotate_, R, P, 1e-3);
         assertTrue(assert_equal(numerical1, H1, 1e-6));
         Matrix numerical2 = NumericalDerivative.<//
                 Point2, Vector2, //
                 Rot2, Vector1, //
-                Point2, Vector2//
-        >numericalDerivative22(rotate_, R, P, 1e-3);
+                Point2, Vector2>numericalDerivative22(rotate_, R, P, 1e-3);
         assertTrue(assert_equal(numerical2, H2, 1e-6));
     }
 
@@ -138,14 +136,12 @@ public class Rot2Test {
         Matrix numerical1 = NumericalDerivative.<//
                 Point2, Vector2, //
                 Rot2, Vector1, //
-                Point2, Vector2//
-        >numericalDerivative21(unrotate_, R, w, 1e-3);
+                Point2, Vector2>numericalDerivative21(unrotate_, R, w, 1e-3);
         assertTrue(assert_equal(numerical1, H1, 1e-6));
         Matrix numerical2 = NumericalDerivative.<//
                 Point2, Vector2, //
                 Rot2, Vector1, //
-                Point2, Vector2//
-        >numericalDerivative22(unrotate_, R, w, 1e-3);
+                Point2, Vector2>numericalDerivative22(unrotate_, R, w, 1e-3);
         assertTrue(assert_equal(numerical2, H2, 1e-6));
     }
 

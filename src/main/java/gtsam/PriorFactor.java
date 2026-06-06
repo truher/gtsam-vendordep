@@ -20,6 +20,8 @@ public class PriorFactor<T> extends NoiseModelFactor {
         PriorFactorDouble(ADDRESS, JAVA_LONG, JAVA_DOUBLE, ADDRESS),
         PriorFactorPose2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorPose3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
+        PriorFactorVector(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
+        PriorFactorVector3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorCal3DS2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
@@ -61,7 +63,24 @@ public class PriorFactor<T> extends NoiseModelFactor {
         return new shared_ptr<>(
                 (MemorySegment) FF.PriorFactorPose3.h.invokeExact(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
+    }
 
+        public static shared_ptr<PriorFactor<Vector>> PriorFactorVector(
+            Key key,
+            Vector prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorVector.h.invokeExact(key.j, prior.ptr, model.ptr),
+                PriorFactor::new);
+    }
+
+    public static shared_ptr<PriorFactor<Vector3>> PriorFactorVector3(
+            Key key,
+            Vector3 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.PriorFactorVector3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                PriorFactor::new);
     }
 
     /** @param prior is copied, ok to delete. */

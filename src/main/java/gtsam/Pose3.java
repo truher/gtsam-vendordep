@@ -61,7 +61,15 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_transformFrom(ADDRESS, ADDRESS, ADDRESS),
         Pose3_transformFromH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_interpolate(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Pose3_interpolateRt(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Pose3_interpolateH(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_interpolateRt(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Pose3_interpolateRtH(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformPoseFrom(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformPoseFromH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformPoseTo(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_transformPoseToH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Pose3_Create(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_CreateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -78,22 +86,22 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
 
         @Override
         public Vector6 Logmap(Pose3 g) throws Throwable {
-            return traits.Logmap(g);
+            return statics.Logmap(g);
         }
 
         @Override
         public Vector6 Logmap(Pose3 g, Matrix H) throws Throwable {
-            return traits.Logmap(g, H);
+            return statics.Logmap(g, H);
         }
 
         @Override
         public Pose3 Expmap(Vector6 xi) throws Throwable {
-            return traits.Expmap(xi);
+            return statics.Expmap(xi);
         }
 
         @Override
         public Pose3 Expmap(Vector6 xi, Matrix H) throws Throwable {
-            return traits.Expmap(xi, H);
+            return statics.Expmap(xi, H);
         }
     }
 
@@ -363,7 +371,43 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         return new Pose3((MemorySegment) FF.Pose3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
     }
 
+    public static Pose3 interpolate(
+            Pose3 X, Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateH.h.invokeExact(X.ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
+    }
+
     public Pose3 interpolateRt(Pose3 Y, double t) throws Throwable {
         return new Pose3((MemorySegment) FF.Pose3_interpolateRt.h.invokeExact(ptr, Y.ptr, t));
     }
+
+    public Pose3 interpolateRt(Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateRtH.h.invokeExact(ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
+    }
+
+    public Pose3 transformPoseFrom(Pose3 p) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseFrom.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Pose3 transformPoseFrom(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseFromH.h.invokeExact(
+                ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Pose3 transformPoseTo(Pose3 p) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseTo.h.invokeExact(ptr, p.ptr));
+    }
+
+    public Pose3 transformPoseTo(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseToH.h.invokeExact(
+                ptr, p.ptr, H1.ptr, H2.ptr));
+    }
+
+    public static Pose3 Create(Rot3 R, Point3 t) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_Create.h.invokeExact(R.ptr, t.ptr));
+    }
+
+    public static Pose3 Create(Rot3 R, Point3 t, Matrix H1, Matrix H2) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_CreateH.h.invokeExact(R.ptr, t.ptr, H1.ptr, H2.ptr));
+    }
+
 }

@@ -53,7 +53,8 @@ public class Point3 extends ForeignObject
         Point3_norm3H(JAVA_DOUBLE, ADDRESS, ADDRESS),
         Point3_norm(JAVA_DOUBLE, ADDRESS),
         Point3_distance3(JAVA_DOUBLE, ADDRESS, ADDRESS),
-        Point3_distance3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+        Point3_distance3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_interpolate(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -371,5 +372,9 @@ public class Point3 extends ForeignObject
 
     public static double distance3(Point3 p, Point3 q, Matrix H1, Matrix H2) throws Throwable {
         return (double) FF.Point3_distance3H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
+    }
+
+    public static Point3 interpolate(Point3 X, Point3 Y, double t) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
     }
 }

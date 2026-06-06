@@ -339,26 +339,26 @@ public class PlanarProjectionFactorTest {
                     .evaluateError(
                             p, o, c, new Matrix(), new Matrix(), new Matrix());
 
-            Matrix expectedH1 = NumericalDerivative
-                    .<Vector, Vector, //
-                            Pose2, Vector3, //
-                            Pose3, Vector6, //
-                            Cal3DS2, Vector9>numericalDerivative31(
-                                    h, pose, offset, calib, 1e-5);
+            Matrix expectedH1 = NumericalDerivative.<//
+                    Vector, Vector, //
+                    Pose2, Vector3, //
+                    Pose3, Vector6, //
+                    Cal3DS2, Vector9>numericalDerivative31(
+                            h, pose, offset, calib, 1e-5);
 
-            Matrix expectedH2 = NumericalDerivative
-                    .<Vector, Vector, //
-                            Pose2, Vector3, //
-                            Pose3, Vector6, //
-                            Cal3DS2, Vector9>numericalDerivative32(
-                                    h, pose, offset, calib, 1e-5);
+            Matrix expectedH2 = NumericalDerivative.<//
+                    Vector, Vector, //
+                    Pose2, Vector3, //
+                    Pose3, Vector6, //
+                    Cal3DS2, Vector9>numericalDerivative32(
+                            h, pose, offset, calib, 1e-5);
 
-            Matrix expectedH3 = NumericalDerivative
-                    .<Vector, Vector, //
-                            Pose2, Vector3, //
-                            Pose3, Vector6, //
-                            Cal3DS2, Vector9>numericalDerivative33(
-                                    h, pose, offset, calib, 1e-5);
+            Matrix expectedH3 = NumericalDerivative.<//
+                    Vector, Vector, //
+                    Pose2, Vector3, //
+                    Pose3, Vector6, //
+                    Cal3DS2, Vector9>numericalDerivative33(
+                            h, pose, offset, calib, 1e-5);
 
             assertTrue(assert_equal(expectedH1, H1, 1e-6));
             assertTrue(assert_equal(expectedH2, H2, 1e-6));

@@ -40,11 +40,11 @@ public class Pose2Test {
     @Test
     void testRetract() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
-        // #ifdef GTSAM_SLOW_BUT_CORRECT_EXPMAP
+        // expected if GTSAM_SLOW_BUT_CORRECT_EXPMAP is set
         // Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        // #else // this is what we actually do, apparently.
+        // what we actually do,
         Pose2 expected = new Pose2(Math.PI / 2.0 + 0.99, new Point2(1.015, 2.01));
-        // #endif
+
         Pose2 actual = pose.retract(new Vector3(0.01, -0.015, 0.99));
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
@@ -194,11 +194,10 @@ public class Pose2Test {
     void testlogmap() throws Throwable {
         Pose2 pose0 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 pose = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
-        // #ifdef GTSAM_SLOW_BUT_CORRECT_EXPMAP
+        // expected if GTSAM_SLOW_BUT_CORRECT_EXPMAP is set
         // Vector3 expected(0.00986473, -0.0150896, 0.018);
-        // #else
+        // What we actually do
         Vector3 expected = new Vector3(0.01, -0.015, 0.018);
-        // #endif
         Vector3 actual = pose0.localCoordinates(pose);
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
@@ -226,7 +225,8 @@ public class Pose2Test {
     @Test
     void testExpmapDerivative2() throws Throwable {
         Matrix actualH = new Matrix(3, 3);
-        Vector3 w0 = new Vector3(0.1, 0.27, 0.0); // alpha = 0
+        // alpha = 0
+        Vector3 w0 = new Vector3(0.1, 0.27, 0.0);
         Pose2.Expmap(w0, actualH);
         ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
         Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
@@ -259,8 +259,10 @@ public class Pose2Test {
 
     @Test
     void testtransformTo() throws Throwable {
-        Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
-        Point2 point = new Point2(-1, 4); // landmark at (-1,4)
+        // robot at (1,2) looking towards y
+        Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
+        // landmark at (-1,4)
+        Point2 point = new Point2(-1, 4);
 
         Point2 expected = new Point2(2, 2);
         Matrix expectedH1 = new Matrix(new double[][] { //
@@ -424,7 +426,8 @@ public class Pose2Test {
     @Test
     void testinverse() throws Throwable {
         Point2 t = new Point2(1, 2);
-        Pose2 gTl = new Pose2(Math.PI / 2.0, t); // robot at (1,2) looking towards y
+        // robot at (1,2) looking towards y
+        Pose2 gTl = new Pose2(Math.PI / 2.0, t);
 
         Pose2 identity = new Pose2();
         Pose2 lTg = gTl.inverse();
@@ -462,7 +465,8 @@ public class Pose2Test {
     void testmatrix() throws Throwable {
         Point2 origin = new Point2(0, 0);
         Point2 t = new Point2(1, 2);
-        Pose2 gTl = new Pose2(Math.PI / 2.0, t); // robot at (1,2) looking towards y
+        // robot at (1,2) looking towards y
+        Pose2 gTl = new Pose2(Math.PI / 2.0, t);
         Matrix gMl = matrix(gTl);
         assertTrue(assert_equal(new Matrix(new double[][] {
                 { 0.0, -1.0, 1.0 },
@@ -490,12 +494,14 @@ public class Pose2Test {
 
     @Test
     void testcompose_matrix() throws Throwable {
-        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) facing +y
-        Pose2 _1T2 = new Pose2(Math.PI, new Point2(-1, 4)); // local robot at (-1,4) facing -x
+        // robot at (1,2) facing +y
+        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
+        // local robot at (-1,4) facing -x
+        Pose2 _1T2 = new Pose2(Math.PI, new Point2(-1, 4));
         Matrix gM1 = matrix(gT1);
         Matrix _1M2 = matrix(_1T2);
         assertTrue(assert_equal(gM1.compose(_1M2),
-                matrix(gT1.compose(_1T2)), 1e-6)); // RIGHT DOES NOT
+                matrix(gT1.compose(_1T2)), 1e-6));
     }
 
     @Test
@@ -536,9 +542,10 @@ public class Pose2Test {
      */
     @Test
     void testbetween() throws Throwable {
-
-        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
-        Pose2 gT2 = new Pose2(Math.PI, new Point2(-1, 4)); // robot at (-1,4) looking at negative x
+        // robot at (1,2) looking towards y
+        Pose2 gT1 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
+        // robot at (-1,4) looking at negative x
+        Pose2 gT2 = new Pose2(Math.PI, new Point2(-1, 4));
 
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();
@@ -574,11 +581,13 @@ public class Pose2Test {
 
     }
 
+    // reverse situation for extra test
     @Test
     void testbetween2() throws Throwable {
-        // reverse situation for extra test
-        Pose2 p2 = new Pose2(Math.PI / 2.0, new Point2(1, 2)); // robot at (1,2) looking towards y
-        Pose2 p1 = new Pose2(Math.PI, new Point2(-1, 4)); // robot at (-1,4) loooking at negative x
+        // robot at (1,2) looking towards y
+        Pose2 p2 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
+        // robot at (-1,4) loooking at negative x
+        Pose2 p1 = new Pose2(Math.PI, new Point2(-1, 4));
 
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();

@@ -13,16 +13,12 @@ import gtsam.noiseModel.Isotropic;
  */
 public class BetweenFactorTest {
 
-    /**
-     * This TEST should fail. If you want it to pass, change noise to 0.
-     */
+
     @Test
     void testRot3() throws Throwable {
         Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
         Rot3 R2 = Rot3.Rodrigues(0.4, 0.5, 0.6);
         Rot3 noise = new Rot3();
-        // Uncomment to make unit test fail:
-        // Rot3::Rodrigues(0.01, 0.01, 0.01);
         Rot3 measured = R1.between(R2).compose(noise);
 
         shared_ptr<BetweenFactorRot3> factor = BetweenFactorRot3.newBetweenFactorRot3(

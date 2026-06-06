@@ -150,4 +150,9 @@ double Point3_distance3H(const gtsam::Point3* p,  //
                          gtsam::Matrix* H2) {     //
     return gtsam::distance3(*p, *q, *H1, *H2);
 }
+gtsam::Point3* Point3_interpolate(const gtsam::Point3* X,  //
+                                  const gtsam::Point3* Y,  //
+                                  double t) {              //
+    return new gtsam::Point3(gtsam::interpolate(*X, *Y, t));
+}
 }

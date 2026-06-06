@@ -104,7 +104,8 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_RQ(Pairs.PtrPair, ADDRESS),
         Rot3_RQH(Pairs.PtrPair, ADDRESS, ADDRESS),
         Rot3_toQuaternion(ADDRESS, ADDRESS),
-        Rot3_slerp(ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS);
+        Rot3_slerp(ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS),
+        Rot3_interpolate(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -533,5 +534,9 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
     public Rot3 slerp(double t, Rot3 other) throws Throwable {
         return new Rot3((MemorySegment) FF.Rot3_slerp.h.invokeExact(ptr, t, other.ptr));
+    }
+
+    public static Rot3 interpolate(Rot3 X, Rot3 Y, double t) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
     }
 }

@@ -287,9 +287,14 @@ PtrPair Rot3_RQH(const gtsam::Matrix3* A, gtsam::Matrix* H) {
 gtsam::Quaternion* Rot3_toQuaternion(const gtsam::Rot3* r) {
     return new gtsam::Quaternion(r->toQuaternion());
 }
-gtsam::Rot3* Rot3_slerp(const gtsam::Rot3* a,  //
-                        double t,              //
-                        const gtsam::Rot3* b) {//
+gtsam::Rot3* Rot3_slerp(const gtsam::Rot3* a,    //
+                        double t,                //
+                        const gtsam::Rot3* b) {  //
     return new gtsam::Rot3(a->slerp(t, *b));
+}
+gtsam::Rot3* Rot3_interpolate(const gtsam::Rot3* X,  //
+                              const gtsam::Rot3* Y,  //
+                              double t) {            //
+    return new gtsam::Rot3(gtsam::interpolate(*X, *Y, t));
 }
 }
