@@ -281,7 +281,7 @@ public class PlanarGyroFactorTest {
         assertTrue(assert_equal(1.0, result.atDouble(Key.B(3)), 1e-6));
         assertTrue(assert_equal(1.0, result.atDouble(Key.B(4)), 1e-6));
 
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
 
         // Look at std dev because it's not so tiny.
         assertTrue(assert_equal(

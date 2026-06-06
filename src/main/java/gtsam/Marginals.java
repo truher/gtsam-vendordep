@@ -13,7 +13,8 @@ import org.team100.foreign.Lib;
 /** https://en.wikipedia.org/wiki/Marginal_distribution */
 public class Marginals extends ForeignObject {
     public enum FF {
-        Marginals(ADDRESS, ADDRESS, ADDRESS),
+        MarginalsCholesky(ADDRESS, ADDRESS, ADDRESS),
+        MarginalsQR(ADDRESS, ADDRESS, ADDRESS),
         Marginals_delete(null, ADDRESS),
         Marginals_marginalCovariance(ADDRESS, ADDRESS, JAVA_LONG);
 
@@ -28,8 +29,12 @@ public class Marginals extends ForeignObject {
         super(p, FF.Marginals_delete.h);
     }
 
-    public Marginals(NonlinearFactorGraph graph, Values result) throws Throwable {
-        this((MemorySegment) FF.Marginals.h.invokeExact(graph.ptr, result.ptr));
+    public static Marginals Cholesky(NonlinearFactorGraph graph, Values result) throws Throwable {
+        return new Marginals((MemorySegment) FF.MarginalsCholesky.h.invokeExact(graph.ptr, result.ptr));
+    }
+
+    public static Marginals QR(NonlinearFactorGraph graph, Values result) throws Throwable {
+        return new Marginals((MemorySegment) FF.MarginalsQR.h.invokeExact(graph.ptr, result.ptr));
     }
 
     public Matrix marginalCovariance(Key key) throws Throwable {

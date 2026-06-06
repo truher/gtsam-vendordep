@@ -180,7 +180,7 @@ public class PlanarProjectionFactorTest {
         assertEquals(0, xhat.theta(), 2e-3);
 
         // covariance
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
         Matrix cov = marginals.marginalCovariance(Key.X(0));
 
         assertTrue(assert_equal(cov, new Matrix(new double[][] { //
@@ -431,7 +431,7 @@ public class PlanarProjectionFactorTest {
         // verify the calibration
         assertTrue(assert_equal(calib, result.atCal3DS2(Key.K(0)), 2e-3));
 
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
         Matrix x0cov = marginals.marginalCovariance(Key.X(0));
 
         // narrow prior => ~zero cov

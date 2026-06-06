@@ -12,4 +12,10 @@ void FactorIndices_add(gtsam::FactorIndices* p,  //
                        gtsam::Key i) {
     p->push_back(i);
 }
+int FactorIndices_size(gtsam::FactorIndices* p) {
+    return p->size();
+}
+int FactorIndices_at(gtsam::FactorIndices* p, int i) {
+    return p->at(i);
+}
 }

@@ -28,6 +28,7 @@ public class Vector extends ForeignObject
         Vector_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector_plus(ADDRESS, ADDRESS, ADDRESS),
         Vector_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Vector_transpose(ADDRESS, ADDRESS),
         Vector_fromVector2(ADDRESS, ADDRESS),
         Vector_fromVector3(ADDRESS, ADDRESS),
         Vector_fromVector6(ADDRESS, ADDRESS),
@@ -107,6 +108,14 @@ public class Vector extends ForeignObject
     @Override
     public Vector times(double a) throws Throwable {
         return new Vector((MemorySegment) FF.Vector_times.h.invokeExact(ptr, a));
+    }
+
+    /**
+     * makes a row vector, represented as a matrix (since there is no row vector
+     * object)
+     */
+    public Matrix transpose() throws Throwable {
+        return new Matrix((MemorySegment) FF.Vector_transpose.h.invokeExact(ptr));
     }
 
     public int rows() throws Throwable {

@@ -4,6 +4,7 @@ Cal3DS2*
 CustomFactor*
 FactorIndices*
 GaussianFactor*
+IncrementalFixedLagSmoother*
 JacobianVector*
 KeyTimestampMap*
 KeyVector*

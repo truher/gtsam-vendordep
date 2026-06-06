@@ -3,8 +3,8 @@ package gtsam;
 import static gtsam.Testable.assert_equal;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
+import java.util.function.DoubleSupplier;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,16 +36,8 @@ public class BatchFixedLagSmootherTest {
     @Test
     void testExample() throws Throwable {
         // Test the BatchFixedLagSmoother in a pure linear environment. Thus, full
-        // optimization and
-        // the BatchFixedLagSmoother should be identical (even with the linearized
-        // approximations at
-        // the end of the smoothing lag)
-
-        // SETDEBUG("BatchFixedLagSmoother update", true);
-        // SETDEBUG("BatchFixedLagSmoother reorder", true);
-        // SETDEBUG("BatchFixedLagSmoother optimize", true);
-        // SETDEBUG("BatchFixedLagSmoother marginalize", true);
-        // SETDEBUG("BatchFixedLagSmoother calculateMarginalFactors", true);
+        // optimization and the BatchFixedLagSmoother should be identical (even with the
+        // linearized approximations at the end of the smoothing lag)
 
         // Set up parameters
         shared_ptr<Diagonal> odometerNoise = Diagonal.Sigmas(new Vector2(0.1, 0.1));
@@ -258,21 +250,21 @@ public class BatchFixedLagSmootherTest {
             Values newValues = new Values();
             KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            // Key key_i(i);
+            Key key_i = new Key(i);
             if (i == 0) {
-                // newFactors.addPrior(key_i, Point2(0.0, 0.0), noise);
+                newFactors.addPrior(key_i, new Point2(0.0, 0.0), noise);
             } else {
-                // Key key_prev(i - 1);
-                // newFactors.add(BetweenFactor<Point2>(key_prev, key_i, Point2(1.0, 0.0),
-                // noise));
+                Key key_prev = new Key(i - 1);
+                newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(
+                        key_prev, key_i, new Point2(1.0, 0.0), noise));
             }
 
             // Use a deliberately poor initial estimate to create nonlinearity
-            // newValues.insert(key_i, Point2(double(i) + 0.5, 0.5));
-            // newKeyTimestampMap[key_i] = double(i);
+            newValues.insert(key_i, new Point2(i + 0.5, 0.5));
+            newKeyTimestampMap.put(key_i, i);
 
-            // smootherOn.update(newFactors, newValues, newKeyTimestampMap);
-            // smootherOff.update(newFactors, newValues, newKeyTimestampMap);
+            smootherOn.update(newFactors, newValues, newKeyTimestampMap);
+            smootherOff.update(newFactors, newValues, newKeyTimestampMap);
         }
 
         // After enough steps, marginalization has occurred (lag=3, at step 7 keys
@@ -281,14 +273,14 @@ public class BatchFixedLagSmootherTest {
         // The key test: the enforceConsistency=true smoother should not crash and
         // should produce a reasonable estimate.
         Key lastKey = new Key(7);
-        // Point2 estimateOn = smootherOn.calculateEstimate<Point2>(lastKey);
-        // Point2 estimateOff = smootherOff.calculateEstimate<Point2>(lastKey);
+        Point2 estimateOn = smootherOn.calculateEstimatePoint2(lastKey);
+        Point2 estimateOff = smootherOff.calculateEstimatePoint2(lastKey);
 
-        // // Both should be close to the ground truth (7.0, 0.0) -- the chain of
-        // // unit between-factors from the origin.
+        // Both should be close to the ground truth (7.0, 0.0) -- the chain of
+        // unit between-factors from the origin.
         Point2 expected = new Point2(7.0, 0.0);
-        // assertTrue(assert_equal(expected, estimateOn, 0.5));
-        // assertTrue(assert_equal(expected, estimateOff, 0.5));
+        assertTrue(assert_equal(expected, estimateOn, 0.5));
+        assertTrue(assert_equal(expected, estimateOff, 0.5));
     }
 
     @Test
@@ -300,107 +292,108 @@ public class BatchFixedLagSmootherTest {
 
         final double transSigma = 0.5;
         final double rotSigma = 0.3; // radians (~17 degrees)
-        // auto noise = noiseModel::Diagonal::Sigmas(
-        // (Vector(3) << rotSigma, transSigma, transSigma).finished());
+        shared_ptr<Diagonal> noise = Diagonal.Sigmas(new Vector3(rotSigma, transSigma, transSigma));
 
         final int numTrials = 100;
         final int numSteps = 30;
         final double lag = 3.0; // short lag forces more marginalization
         final int stateDim = 3; // Pose2: (theta, x, y)
 
-        // // Ground truth: a curved trajectory with significant turns
-        List<Pose2> groundTruth = new ArrayList<>(numSteps + 1);
-        // groundTruth[0] = Pose2(0, 0, 0);
-        // final Pose2 odomGT(1.0, 0.0, 0.4); // 1m forward, 0.4 rad turn (~23 deg)
+        // Ground truth: a curved trajectory with significant turns
+        Pose2[] groundTruth = new Pose2[numSteps + 1];
+        groundTruth[0] = new Pose2(0, 0, 0);
+        final Pose2 odomGT = new Pose2(1.0, 0.0, 0.4); // 1m forward, 0.4 rad turn (~23 deg)
         for (int i = 1; i <= numSteps; ++i) {
-            // groundTruth[i] = groundTruth[i-1] * odomGT;
+            groundTruth[i] = groundTruth[i - 1].compose(odomGT);
         }
 
         double neesSum_on = 0.0;
         double neesSum_off = 0.0;
         int neesCount = 0;
 
+        Random rng = new Random(42);
         // mt19937 rng(42);
+        DoubleSupplier transDist = () -> rng.nextGaussian(0.0, transSigma);
         // normal_distribution<double> transDist(0.0, transSigma);
+        DoubleSupplier rotDist = () -> rng.nextGaussian(0.0, rotSigma);
         // normal_distribution<double> rotDist(0.0, rotSigma);
 
-        // for (int trial = 0; trial < numTrials; ++trial) {
-        // LevenbergMarquardtParams params;
-        // BatchFixedLagSmoother smootherOn(lag, params, true);
-        // BatchFixedLagSmoother smootherOff(lag, params, false);
+        for (int trial = 0; trial < numTrials; ++trial) {
+            LevenbergMarquardtParams params = new LevenbergMarquardtParams();
+            BatchFixedLagSmoother smootherOn = new BatchFixedLagSmoother(lag, params, true);
+            BatchFixedLagSmoother smootherOff = new BatchFixedLagSmoother(lag, params, false);
 
-        for (int i = 0; i <= numSteps; ++i) {
-            NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
-            Values newValues = new Values();
-            KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
+            for (int i = 0; i <= numSteps; ++i) {
+                NonlinearFactorGraph newFactors = new NonlinearFactorGraph();
+                Values newValues = new Values();
+                KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            Key key_i = new Key(i);
+                Key key_i = new Key(i);
 
-            if (i == 0) {
-                // newFactors.addPrior(key_i, groundTruth[0], noise);
-                // Pose2 initEst(groundTruth[0].x() + transDist(rng),
-                // groundTruth[0].y() + transDist(rng),
-                // groundTruth[0].theta() + rotDist(rng));
-                // newValues.insert(key_i, initEst);
-            } else {
-                // // Noisy odometry measurement
-                // Pose2 noisyOdom(odomGT.x() + transDist(rng),
-                // odomGT.y() + transDist(rng),
-                // odomGT.theta() + rotDist(rng));
-                // newFactors.add(BetweenFactor<Pose2>(Key(i-1), key_i, noisyOdom,
-                // noise));
+                if (i == 0) {
+                    newFactors.addPrior(key_i, groundTruth[0], noise);
+                    Pose2 initEst = new Pose2(
+                            groundTruth[0].x() + transDist.getAsDouble(),
+                            groundTruth[0].y() + transDist.getAsDouble(),
+                            groundTruth[0].theta() + rotDist.getAsDouble());
+                    newValues.insert(key_i, initEst);
+                } else {
+                    // Noisy odometry measurement
+                    Pose2 noisyOdom = new Pose2(
+                            odomGT.x() + transDist.getAsDouble(),
+                            odomGT.y() + transDist.getAsDouble(),
+                            odomGT.theta() + rotDist.getAsDouble());
+                    newFactors.add(BetweenFactorPose2.newBetweenFactorPose2(
+                            new Key(i - 1), key_i, noisyOdom, noise));
 
-                // // Initial estimate: perturbed ground truth
-                // Pose2 initEst(groundTruth[i].x() + transDist(rng) * 2,
-                // groundTruth[i].y() + transDist(rng) * 2,
-                // groundTruth[i].theta() + rotDist(rng) * 2);
-                // newValues.insert(key_i, initEst);
+                    // Initial estimate: perturbed ground truth
+                    Pose2 initEst = new Pose2(
+                            groundTruth[i].x() + transDist.getAsDouble() * 2,
+                            groundTruth[i].y() + transDist.getAsDouble() * 2,
+                            groundTruth[i].theta() + rotDist.getAsDouble() * 2);
+                    newValues.insert(key_i, initEst);
+                }
+                newKeyTimestampMap.put(key_i, i);
+
+                smootherOn.update(newFactors, newValues, newKeyTimestampMap);
+                smootherOff.update(newFactors, newValues, newKeyTimestampMap);
             }
-            // newKeyTimestampMap[key_i] = double(i);
 
-            // smootherOn.update(newFactors, newValues, newKeyTimestampMap);
-            // smootherOff.update(newFactors, newValues, newKeyTimestampMap);
+            // Compute NEES at the last key
+            Key lastKey = new Key(numSteps);
+
+            // TODO: this try will not work.
+            try {
+                // enforceConsistency = true
+                Values estOn = smootherOn.calculateEstimate();
+                Marginals marginalsOn = Marginals.QR(smootherOn.getFactors(), estOn);
+                Matrix covOn = marginalsOn.marginalCovariance(lastKey);
+                Vector errOn = new Vector(groundTruth[numSteps].localCoordinates(estOn.atPose2(lastKey)));
+                neesSum_on += errOn.transpose().compose(covOn.inverse()).times(errOn).at(0);
+
+                // enforceConsistency = false
+                Values estOff = smootherOff.calculateEstimate();
+                Marginals marginalsOff = Marginals.QR(smootherOff.getFactors(), estOff);
+                Matrix covOff = marginalsOff.marginalCovariance(lastKey);
+                Vector errOff = new Vector(groundTruth[numSteps].localCoordinates(estOff.atPose2(lastKey)));
+                neesSum_off += errOff.transpose().compose(covOff.inverse()).times(errOff).at(0);
+
+                neesCount++;
+            } catch (Throwable t) {
+                continue;
+            }
         }
 
-        // // Compute NEES at the last key
-        Key lastKey = new Key(numSteps);
+        double avgNees_on = neesSum_on / neesCount;
+        double avgNees_off = neesSum_off / neesCount;
 
-        // try {
-        // // enforceConsistency = true
-        // Values estOn = smootherOn.calculateEstimate();
-        // Marginals marginalsOn(smootherOn.getFactors(), estOn, Marginals::QR);
-        // Matrix covOn = marginalsOn.marginalCovariance(lastKey);
-        // Vector errOn =
-        // groundTruth[numSteps].localCoordinates(estOn.at<Pose2>(lastKey));
-        // neesSum_on += errOn.transpose() * covOn.inverse() * errOn;
+        System.out.printf("NEES Evaluation (%d/%d trials, Pose2):\n", neesCount, numTrials);
+        System.out.printf(" enforceConsistency=true (FEJ): avg NEES = %f (expected: %d)\n", avgNees_on, stateDim);
+        System.out.printf(" enforceConsistency=false : avg NEES = %f (expected: %d)\n", avgNees_off, stateDim);
 
-        // // enforceConsistency = false
-        // Values estOff = smootherOff.calculateEstimate();
-        // Marginals marginalsOff(smootherOff.getFactors(), estOff, Marginals::QR);
-        // Matrix covOff = marginalsOff.marginalCovariance(lastKey);
-        // Vector errOff =
-        // groundTruth[numSteps].localCoordinates(estOff.at<Pose2>(lastKey));
-        // neesSum_off += errOff.transpose() * covOff.inverse() * errOff;
-
-        // neesCount++;
-        // } catch (...) {
-        // continue;
-        // }
-        // }
-
-        // double avgNees_on = neesSum_on / neesCount;
-        // double avgNees_off = neesSum_off / neesCount;
-
-        // cout << "NEES Evaluation (" << neesCount << "/" << numTrials << " trials,
-        // Pose2):" << endl;
-        // cout << " enforceConsistency=true (FEJ): avg NEES = " << avgNees_on
-        // << " (expected: " << stateDim << ")" << endl;
-        // cout << " enforceConsistency=false : avg NEES = " << avgNees_off
-        // << " (expected: " << stateDim << ")" << endl;
-
-        // assertTrue(neesCount > 0);
-        // assertTrue(avgNees_on > 0.0);
-        // assertTrue(avgNees_off > 0.0);
+        assertTrue(neesCount > 0);
+        assertTrue(avgNees_on > 0.0);
+        assertTrue(avgNees_off > 0.0);
     }
 
 }

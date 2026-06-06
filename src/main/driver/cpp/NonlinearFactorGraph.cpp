@@ -9,6 +9,9 @@ extern "C" {
 gtsam::NonlinearFactorGraph* NonlinearFactorGraph() {
     return new gtsam::NonlinearFactorGraph();
 }
+void NonlinearFactorGraph_delete(gtsam::NonlinearFactorGraph* g) {
+    delete g;
+}
 /**
  * NonlinearFactorGraph.add makes a new shared_ptr which shares ownership of the
  * underlying factor, so it's ok to delete p.
@@ -17,11 +20,12 @@ gtsam::NonlinearFactorGraph* NonlinearFactorGraph() {
  *          since it's not covariant in its parameter, I use void*.
  */
 void NonlinearFactorGraph_add(gtsam::NonlinearFactorGraph* g,  //
-                              void* p) {
+                              void* p) {                       //
     g->add(*static_cast<std::shared_ptr<gtsam::NonlinearFactor>*>(p));
 }
-void NonlinearFactorGraph_addNonlinearFactorGraph(
-    gtsam::NonlinearFactorGraph* f, const gtsam::NonlinearFactorGraph* g) {
+void NonlinearFactorGraph_addNonlinearFactorGraph(  //
+    gtsam::NonlinearFactorGraph* f,                 //
+    const gtsam::NonlinearFactorGraph* g) {         //
     f->add(*g);
 }
 void NonlinearFactorGraph_resize(gtsam::NonlinearFactorGraph* g,
@@ -34,7 +38,12 @@ void NonlinearFactorGraph_addPriorPoint2(gtsam::NonlinearFactorGraph* g,  //
                                          const gtsam::SharedNoiseModel* model) {
     g->addPrior(key, *prior, *model);
 }
-
+void NonlinearFactorGraph_addPriorPose2(gtsam::NonlinearFactorGraph* g,  //
+                                        gtsam::Key key,                  //
+                                        const gtsam::Pose2* prior,       //
+                                        const gtsam::SharedNoiseModel* model) {
+    g->addPrior(key, *prior, *model);
+}
 std::shared_ptr<gtsam::GaussianFactorGraph>* NonlinearFactorGraph_linearize(  //
     const gtsam::NonlinearFactorGraph* g,                                     //
     const gtsam::Values* init) {

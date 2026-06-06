@@ -9,10 +9,11 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class LevenbergMarquardtParams extends ForeignObject {
+public class ISAM2Params extends ForeignObject {
+
     public enum FF {
-        LevenbergMarquardtParams(ADDRESS),
-        LevenbergMarquardtParams_delete(null, ADDRESS);
+        ISAM2Params(ADDRESS),
+        ISAM2Params_delete(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -20,13 +21,13 @@ public class LevenbergMarquardtParams extends ForeignObject {
             h = Lib.ff(this, returnType, parameterTypes);
         }
     }
-    LevenbergMarquardtParams(MemorySegment p) {
-        super(p, FF.LevenbergMarquardtParams_delete.h);
-    }
-    public LevenbergMarquardtParams() throws Throwable {
-        this((MemorySegment) FF.LevenbergMarquardtParams.h.invokeExact());
+
+    ISAM2Params(MemorySegment pointer) {
+        super(pointer, FF.ISAM2Params_delete.h);
     }
 
-
+    public ISAM2Params() throws Throwable {
+        this((MemorySegment) FF.ISAM2Params.h.invokeExact());
+    }
 
 }

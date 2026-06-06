@@ -35,18 +35,25 @@ gtsam::Vector* Vector_minus(const gtsam::Vector* v,
     return new gtsam::Vector((*v) - (*other));
 }
 
-gtsam::Vector* Vector_plus(const gtsam::Vector* v, const gtsam::Vector* other) {
+gtsam::Vector* Vector_plus(const gtsam::Vector* v,  //
+                           const gtsam::Vector* other) {
     return new gtsam::Vector((*v) + (*other));
 }
 
-gtsam::Vector* Vector_times(const gtsam::Vector* v, double a) {
+gtsam::Vector* Vector_times(const gtsam::Vector* v,  //
+                            double a) {
     return new gtsam::Vector((*v) * a);
 }
-double Vector_at(const gtsam::Vector* v, int i) {
+double Vector_at(const gtsam::Vector* v,  //
+                 int i) {
     return (*v)(i);
 }
 int Vector_rows(const gtsam::Vector* v) {
     return v->rows();
+}
+gtsam::Matrix* Vector_transpose(const gtsam::Vector* v) {
+    // this makes a row vector (the usual vector is a column vector)
+    return new gtsam::Matrix(v->transpose());
 }
 //////////////////////////
 // Vector1
