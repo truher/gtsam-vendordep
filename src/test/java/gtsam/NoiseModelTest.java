@@ -33,7 +33,7 @@ import gtsam.noiseModel.mEstimator.Welsch;
 /**
  * See gtsam/linear/tests/testNoiseModel.cpp
  * 
- * I skipped the custom loss function.
+ * I skipped the custom loss function, and the block operations.
  */
 public class NoiseModelTest {
 
@@ -320,7 +320,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testOverdeterminedQR() {
+    void testOverdeterminedQR() throws Throwable {
         Matrix Ab1 = new Matrix(new double[][] {
                 { 0, 1, 0, 0 },
                 { 0, 0, 1, 0 },
@@ -360,7 +360,6 @@ public class NoiseModelTest {
         shared_ptr<? extends Diagonal> constrained = Constrained.MixedSigmas(sigmas);
         shared_ptr<Diagonal> actual2 = constrained.get().QR(Ab2);
         assertTrue(assert_equal(expectedModel.get(), actual2.get(), 1e-6));
-        expectedRd.row(0) *= 0.377964473; // not divided by sigma!
 
         expectedRd = new Matrix(new double[][] {
                 { 1.0, 1.0, 1.0, 1.0 }, //
@@ -410,66 +409,66 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testMixedQR2() {
+    void testMixedQR2() throws Throwable {
         // Let's have three variables x,y,z, but x=z and y=z
         // Hence, all non-constraints are really measurements on z
-        // Matrix Ab(11,3+1);
-        // Ab <<
-        // 1,0,0, 0, //
-        // 0,1,0, 0, //
-        // 0,0,1, 0, //
-        // -1,0,1, 0, // x=z
-        // 1,0,0, 0, //
-        // 0,1,0, 0, //
-        // 0,0,1, 0, //
-        // 0,-1,1, 0, // y=z
-        // 1,0,0, 0, //
-        // 0,1,0, 0, //
-        // 0,0,1, 0; //
+        Matrix Ab = new Matrix(new double[][] {
+                { 1, 0, 0, 0 }, //
+                { 0, 1, 0, 0 }, //
+                { 0, 0, 1, 0 }, //
+                { -1, 0, 1, 0 }, // x=z
+                { 1, 0, 0, 0 }, //
+                { 0, 1, 0, 0 }, //
+                { 0, 0, 1, 0 }, //
+                { 0, -1, 1, 0 }, // y=z
+                { 1, 0, 0, 0 }, //
+                { 0, 1, 0, 0 }, //
+                { 0, 0, 1, 0 } }); //
 
-        // Vector sigmas(11);
-        // sigmas.setOnes();
-        // sigmas[3] = 0;
-        // sigmas[7] = 0;
-        // shared_ptr<Diagonal> constrained =
-        // noiseModel::Constrained::MixedSigmas(sigmas);
+        Vector sigmas = new Vector(new double[] { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 });
+        shared_ptr<? extends Diagonal> constrained = Constrained.MixedSigmas(sigmas);
 
-        // // Expected result
-        // Vector3 expectedSigmas(0,0,1.0/3);
-        // shared_ptr<Diagonal> expectedModel =
-        // noiseModel::Constrained::MixedSigmas(expectedSigmas);
-        // Matrix expectedRd(11, 3+1);
-        // expectedRd.setZero();
-        // expectedRd.row(0) << -1, 0, 1, 0; // x=z
-        // expectedRd.row(1) << 0, -1, 1, 0; // y=z
-        // expectedRd.row(2) << 0, 0, 1, 0; // z=0 +/- 1/3
+        // Expected result
+        Vector expectedSigmas = new Vector(new double[] { 0, 0, 1.0 / 3 });
+        shared_ptr<? extends Diagonal> expectedModel = Constrained.MixedSigmas(expectedSigmas);
+        Matrix expectedRd = new Matrix(new double[][] {
+                { -1, 0, 1, 0 }, // x=z
+                { 0, -1, 1, 0 }, // y=z
+                { 0, 0, 1, 0 }, // z=0 +/- 1/3
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 }
+        });
 
-        // shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
-        // assertTrue(assert_equal(*expectedModel,*actual,1e-6));
-        // assertTrue(assert_equal(expectedRd,Ab,1e-6)); // Ab was modified in place !!!
+        shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
+        assertTrue(assert_equal(expectedModel.get(), actual.get(), 1e-6));
+        assertTrue(assert_equal(expectedRd, Ab, 1e-6)); // Ab was modified in place !!!
     }
 
     @Test
-    void testFullyConstrained() {
-        // Matrix Ab(3,7);
-        // Ab <<
-        // 1,0,0,0,0,1, 2, // u+z = 2
-        // 0,0,1,1,0,0, 4, // w+x = 4
-        // 0,1,0,1,1,1, 8; // v+x+y+z=8
+    void testFullyConstrained() throws Throwable {
+        Matrix Ab = new Matrix(new double[][] {
+                { 1, 0, 0, 0, 0, 1, 2 }, // u+z = 2
+                { 0, 0, 1, 1, 0, 0, 4 }, // w+x = 4
+                { 0, 1, 0, 1, 1, 1, 8 } }); // v+x+y+z=8
         shared_ptr<? extends Diagonal> constrained = Constrained.All(3);
 
-        // // Expected result
-        // shared_ptr<Diagonal> expectedModel = noiseModel::Diagonal::Sigmas(Vector3
-        // (0,0,0));
-        // Matrix expectedRd(3, 7);
-        // expectedRd << 1, 0, 0, 0, 0, 1, 2, //
-        // 0, 1, 0, 1, 1, 1, 8, //
-        // 0, 0, 1, 1, 0, 0, 4; //
+        // Expected result
+        shared_ptr<? extends Diagonal> expectedModel = Diagonal.Sigmas(new Vector(new double[] { 0, 0, 0 }));
+        Matrix expectedRd = new Matrix(new double[][] {
+                { 1, 0, 0, 0, 0, 1, 2 }, //
+                { 0, 1, 0, 1, 1, 1, 8 }, //
+                { 0, 0, 1, 1, 0, 0, 4 } });
 
         shared_ptr<Diagonal> actual = constrained.get().QR(Ab);
-        assertTrue(assert_equal(*expectedModel,*actual,1e-6));
-        assertTrue(linear_dependent(expectedRd,Ab,1e-6));
-         // Ab was modified in place !!!
+        assertTrue(assert_equal(expectedModel.get(), actual.get(), 1e-6));
+        assertTrue(Matrix.linear_dependent(expectedRd, Ab, 1e-6));
+        // Ab was modified in place !!!
     }
 
     // This matches constraint_eliminate2 in testJacobianFactor
@@ -592,59 +591,20 @@ public class NoiseModelTest {
         assertTrue(assert_equal(expected, actual));
     }
 
-    @Test
-    void testInPlaceVectorBlockOperations() throws Throwable {
-        shared_ptr<Gaussian> gaussian = Gaussian.SqrtInformation(R, false);
-        shared_ptr<Diagonal> diagonal = Diagonal.Sigmas(kSigmas, false);
-        shared_ptr<Isotropic> isotropic = Isotropic.Sigma(3, kSigma, false);
-        shared_ptr<Constrained> constrained = Constrained.MixedSigmas(
-                new Vector(new double[] { kSigma, 0.0, kSigma }));
-
-        Vector v = Vector.LinSpaced(5, 1.0, 5.0);
-        Eigen::Block<Vector> block(v, 1, 0, 3, 1);
-        Vector expected = diagonal.get().whiten(Vector(block));
-        diagonal.get().whitenInPlace(block);
-        assertTrue(assert_equal(expected, Vector(block)));
-
-        v = Vector.LinSpaced(5, 1.0, 5.0);
-        Eigen::Block<Vector> block_unwhiten(v, 1, 0, 3, 1);
-        expected = diagonal.get().unwhiten(Vector(block_unwhiten));
-        diagonal.get().unwhitenInPlace(block_unwhiten);
-        assertTrue(assert_equal(expected, Vector(block_unwhiten)));
-
-        v = Vector.LinSpaced(5, 1.0, 5.0);
-        Eigen::Block<Vector> block_constrained(v, 1, 0, 3, 1);
-        expected = constrained.get().whiten(Vector(block_constrained));
-        constrained.get().whitenInPlace(block_constrained);
-        assertTrue(assert_equal(expected, Vector(block_constrained)));
-
-        v = Vector.LinSpaced(5, 1.0, 5.0);
-        Eigen::Block<Vector> block_iso(v, 1, 0, 3, 1);
-        expected = isotropic.get().unwhiten(Vector(block_iso));
-        isotropic.get().unwhitenInPlace(block_iso);
-        assertTrue(assert_equal(expected, Vector(block_iso)));
-
-        v = Vector.LinSpaced(5, 1.0, 5.0);
-        Eigen::Block<Vector> block_gauss(v, 1, 0, 3, 1);
-        expected = gaussian.get().unwhiten(Vector(block_gauss));
-        gaussian.get().unwhitenInPlace(block_gauss);
-        assertTrue(assert_equal(expected, Vector(block_gauss)));
-    }
-
-    // /*
-    // * These tests are responsible for testing the weight functions for the
-    // m-estimators in GTSAM.
-    // * The weight function is related to the analytic derivative of the loss
-    // function. See
-    // *
-    // https://members.loria.fr/MOBerger/Enseignement/Master2/Documents/ZhangIVC-97-01.pdf
-    // * for details. This weight function is required when optimizing cost
-    // functions with robust
-    // * penalties using iteratively re-weighted least squares.
-    // */
+    /*
+     * These tests are responsible for testing the weight functions for the
+     * m-estimators in GTSAM.
+     * The weight function is related to the analytic derivative of the loss
+     * function. See
+     *
+     * https://members.loria.fr/MOBerger/Enseignement/Master2/Documents/ZhangIVC-97-
+     * 01.pdf
+     * for details. This weight function is required when optimizing cost
+     * functions with robust penalties using iteratively re-weighted least squares.
+     */
 
     @Test
-    void testrobustFunctionFair() {
+    void testrobustFunctionFair() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -664,7 +624,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionHuber() {
+    void testrobustFunctionHuber() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -684,7 +644,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionCauchy() {
+    void testrobustFunctionCauchy()throws Throwable  {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -704,7 +664,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionAsymmetricCauchy() {
+    void testrobustFunctionAsymmetricCauchy() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -724,7 +684,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionGemanMcClure() {
+    void testrobustFunctionGemanMcClure() throws Throwable {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -743,7 +703,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionTLS() {
+    void testrobustFunctionTLS() throws Throwable {
         final double k = 4.0;
         final double error1 = 0.5;
         final double error2 = 10.0;
@@ -762,7 +722,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionWelsch() {
+    void testrobustFunctionWelsch() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -782,7 +742,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionTukey() {
+    void testrobustFunctionTukey() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -802,7 +762,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionAsymmetricTukey() {
+    void testrobustFunctionAsymmetricTukey() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -822,7 +782,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionDCS() {
+    void testrobustFunctionDCS() throws Throwable {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -836,7 +796,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionL2WithDeadZone() {
+    void testrobustFunctionL2WithDeadZone() throws Throwable {
         final double k = 1.0;
         final double e0 = -10.0;
         final double e1 = -1.01;
@@ -867,20 +827,20 @@ public class NoiseModelTest {
         final double error1 = 1.0;
         final double error2 = 100.0;
         Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
-        Vector b = Vector2(error1, error2);
+        Vector b = new Vector(new double[]{error1, error2});
         final shared_ptr<Robust> robust = Robust.Create(
         Huber.Create(k, mEstimator::Huber::Scalar),
-        Unit::Create(2));
+        Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
-        assertEquals(error1, b(0), 1e-8);
-        assertEquals(sqrt(k*error2), b(1), 1e-8);
+        assertEquals(error1, b.at(0), 1e-8);
+        assertEquals(Math.sqrt(k*error2), b.at(1), 1e-8);
 
-        assertEquals(1.0, A(0,0), 1e-8);
-        assertEquals(10.0, A(0,1), 1e-8);
-        assertEquals(sqrt(k*100.0), A(1,0), 1e-8);
-        assertEquals(sqrt(k/100.0)*1000.0, A(1,1), 1e-8);
+        assertEquals(1.0, A.at(0,0), 1e-8);
+        assertEquals(10.0, A.at(0,1), 1e-8);
+        assertEquals(Math.sqrt(k*100.0), A.at(1,0), 1e-8);
+        assertEquals(Math.sqrt(k/100.0)*1000.0, A.at(1,1), 1e-8);
     }
 
     @Test
@@ -896,7 +856,7 @@ public class NoiseModelTest {
         Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
         GemanMcClure.Create(k, GemanMcClure::Scalar),
-        Unit::Create(2));
+        Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
@@ -904,16 +864,16 @@ public class NoiseModelTest {
         final double k4 = k2*k2;
         final double k2error = k2 + error2*error2;
 
-        final double sqrt_weight_error1 = sqrt(0.25);
-        final double sqrt_weight_error2 = sqrt(k4/(k2error*k2error));
+        final double sqrt_weight_error1 = Math.sqrt(0.25);
+        final double sqrt_weight_error2 = Math.sqrt(k4/(k2error*k2error));
 
-        assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
-        assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
+        assertEquals(sqrt_weight_error1*error1, b.at(0), 1e-8);
+        assertEquals(sqrt_weight_error2*error2, b.at(1), 1e-8);
 
-        assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
-        assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
-        assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
-        assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1*a00, A.at(0,0), 1e-8);
+        assertEquals(sqrt_weight_error1*a01, A.at(0,1), 1e-8);
+        assertEquals(sqrt_weight_error2*a10, A.at(1,0), 1e-8);
+        assertEquals(sqrt_weight_error2*a11, A.at(1,1), 1e-8);
     }
 
     @Test
@@ -928,22 +888,22 @@ public class NoiseModelTest {
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
-        TruncatedLeastSquares::Create(k,
+        TruncatedLeastSquares.Create(k,
         TruncatedLeastSquares::Scalar),
-        Unit::Create(2));
+        Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
         final double sqrt_weight_error1 = 1.0;
         final double sqrt_weight_error2 = 0.0;
 
-        assertEquals(sqrt_weight_error1*error1, b(0), 1e-8);
-        assertEquals(sqrt_weight_error2*error2, b(1), 1e-8);
+        assertEquals(sqrt_weight_error1*error1, b.at(0), 1e-8);
+        assertEquals(sqrt_weight_error2*error2, b.at(1), 1e-8);
 
-        assertEquals(sqrt_weight_error1*a00, A(0,0), 1e-8);
-        assertEquals(sqrt_weight_error1*a01, A(0,1), 1e-8);
-        assertEquals(sqrt_weight_error2*a10, A(1,0), 1e-8);
-        assertEquals(sqrt_weight_error2*a11, A(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1*a00, A.at(0,0), 1e-8);
+        assertEquals(sqrt_weight_error1*a01, A.at(0,1), 1e-8);
+        assertEquals(sqrt_weight_error2*a10, A.at(1,0), 1e-8);
+        assertEquals(sqrt_weight_error2*a11, A.at(1,1), 1e-8);
     }
 
     @Test
@@ -965,24 +925,24 @@ public class NoiseModelTest {
 
         final double sqrt_weight = 2.0 * k / (k + error2 * error2);
 
-        assertEquals(error1, b(0), 1e-8);
-        assertEquals(sqrt_weight * error2, b(1), 1e-8);
+        assertEquals(error1, b.at(0), 1e-8);
+        assertEquals(sqrt_weight * error2, b.at(1), 1e-8);
 
-        assertEquals(a00, A(0, 0), 1e-8);
-        assertEquals(a01, A(0, 1), 1e-8);
-        assertEquals(sqrt_weight * a10, A(1, 0), 1e-8);
-        assertEquals(sqrt_weight * a11, A(1, 1), 1e-8);
+        assertEquals(a00, A.at(0, 0), 1e-8);
+        assertEquals(a01, A.at(0, 1), 1e-8);
+        assertEquals(sqrt_weight * a10, A.at(1, 0), 1e-8);
+        assertEquals(sqrt_weight * a11, A.at(1, 1), 1e-8);
     }
 
     @Test
-    void testrobustNoiseL2WithDeadZone() {
+    void testrobustNoiseL2WithDeadZone() throws Throwable {
         double dead_zone_size = 1.0;
         var robust = Robust.Create(
         L2WithDeadZone.Create(dead_zone_size),
-        Unit::Create(3));
+        Unit.Create(3));
 
         for (int i = 0; i < 5; i++) {
-            Vector error = Vector3(i, 0, 0);
+            Vector error = new Vector(new double[]{i, 0, 0});
             robust.get().WhitenSystem(error);
             assertEquals(std::fmax(0, i - dead_zone_size) * i,
             robust.get().squaredMahalanobisDistance(error), 1e-8);
@@ -990,36 +950,36 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testlossFunctionAtZero() {
+    void testlossFunctionAtZero() throws Throwable {
         final double k = 5.0;
-        var fair = mEstimator::Fair::Create(k);
+        var fair = Fair.Create(k);
         assertEquals(fair.get().loss(0), 0, 1e-8);
         assertEquals(fair.get().weight(0), 1, 1e-8);
-        var huber = mEstimator::Huber::Create(k);
+        var huber = Huber.Create(k);
         assertEquals(huber.get().loss(0), 0, 1e-8);
         assertEquals(huber.get().weight(0), 1, 1e-8);
-        var cauchy = mEstimator::Cauchy::Create(k);
+        var cauchy = Cauchy.Create(k);
         assertEquals(cauchy.get().loss(0), 0, 1e-8);
         assertEquals(cauchy.get().weight(0), 1, 1e-8);
-        var gmc = mEstimator::GemanMcClure::Create(k);
+        var gmc = GemanMcClure.Create(k);
         assertEquals(gmc.get().loss(0), 0, 1e-8);
         assertEquals(gmc.get().weight(0), 1, 1e-8);
-        var welsch = mEstimator::Welsch::Create(k);
+        var welsch = Welsch.Create(k);
         assertEquals(welsch.get().loss(0), 0, 1e-8);
         assertEquals(welsch.get().weight(0), 1, 1e-8);
-        var tukey = mEstimator::Tukey::Create(k);
+        var tukey = Tukey.Create(k);
         assertEquals(tukey.get().loss(0), 0, 1e-8);
         assertEquals(tukey.get().weight(0), 1, 1e-8);
-        var dcs = mEstimator::DCS::Create(k);
+        var dcs = DCS.Create(k);
         assertEquals(dcs.get().loss(0), 0, 1e-8);
         assertEquals(dcs.get().weight(0), 1, 1e-8);
-        var lsdz = mEstimator::L2WithDeadZone::Create(k);
+        var lsdz = L2WithDeadZone.Create(k);
         assertEquals(lsdz.get().loss(0), 0, 1e-8);
         assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        var assy_cauchy = mEstimator::AsymmetricCauchy::Create(k);
+        var assy_cauchy = AsymmetricCauchy.Create(k);
         assertEquals(lsdz.get().loss(0), 0, 1e-8);
         assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        var assy_tukey = mEstimator::AsymmetricTukey::Create(k);
+        var assy_tukey = AsymmetricTukey.Create(k);
         assertEquals(lsdz.get().loss(0), 0, 1e-8);
         assertEquals(lsdz.get().weight(0), 0, 1e-8);
     }

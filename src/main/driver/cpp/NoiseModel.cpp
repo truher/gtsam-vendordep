@@ -280,6 +280,11 @@ double noiseModel_mEstimator_Base_weight(          //
     double distance) {                             //
     return b->weight(distance);
 }
+double noiseModel_mEstimator_Base_loss(          //
+    const gtsam::noiseModel::mEstimator::Base* b,  //
+    double distance) {                             //
+    return b->loss(distance);
+}
 std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>*
 noiseModel_mEstimator_Huber_Create(double k) {
     return new std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>(
