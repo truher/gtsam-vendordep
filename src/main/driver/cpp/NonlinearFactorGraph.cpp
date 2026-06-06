@@ -44,6 +44,12 @@ void NonlinearFactorGraph_addPriorPose2(gtsam::NonlinearFactorGraph* g,  //
                                         const gtsam::SharedNoiseModel* model) {
     g->addPrior(key, *prior, *model);
 }
+void NonlinearFactorGraph_addPriorRot2(gtsam::NonlinearFactorGraph* g,  //
+                                       gtsam::Key key,                  //
+                                       const gtsam::Rot2* prior,        //
+                                       const gtsam::SharedNoiseModel* model) {
+    g->addPrior(key, *prior, *model);
+}
 std::shared_ptr<gtsam::GaussianFactorGraph>* NonlinearFactorGraph_linearize(  //
     const gtsam::NonlinearFactorGraph* g,                                     //
     const gtsam::Values* init) {
@@ -63,5 +69,8 @@ std::shared_ptr<gtsam::NonlinearFactor>* NonlinearFactorGraph_at(
 }
 int NonlinearFactorGraph_size(const gtsam::NonlinearFactorGraph* g) {
     return g->size();
+}
+void NonlinearFactorGraph_print(conste gtsam::NonlinearFactorGraph* g) {
+    g->print();
 }
 }

@@ -151,4 +151,7 @@ bool Rot2_check_manifold_invariants(const gtsam::Rot2* a,
                                     const gtsam::Rot2* b) {
     return gtsam::check_manifold_invariants(*a, *b);
 }
+void Rot2_print(const gtsam::Rot2* r) {
+    r->print();
+}
 }

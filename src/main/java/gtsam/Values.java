@@ -82,7 +82,8 @@ public class Values extends ForeignObject {
         return new Values(p, FF.Values_delete.h);
     }
 
-    public void print() throws Throwable {
+    public void print(String label) throws Throwable {
+        System.out.println(label);
         FF.Values_print.h.invokeExact(ptr);
     }
 

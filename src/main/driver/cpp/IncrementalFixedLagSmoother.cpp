@@ -44,7 +44,6 @@ gtsam::ISAM2Result* IncrementalFixedLagSmoother_getISAM2Result(
     const gtsam::IncrementalFixedLagSmoother* p) {
     return new gtsam::ISAM2Result(p->getISAM2Result());
 }
-)
 gtsam::Values* IncrementalFixedLagSmoother_getLinearizationPoint(
     const gtsam::IncrementalFixedLagSmoother* p) {
     return new gtsam::Values(p->getLinearizationPoint());

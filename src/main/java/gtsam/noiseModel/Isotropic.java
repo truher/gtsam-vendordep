@@ -37,6 +37,13 @@ public class Isotropic extends Diagonal {
         return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
+    public static shared_ptr<Isotropic> Sigma(int dim, double sigma) throws Throwable {
+        MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Sigma.h.invokeExact(dim, sigma, true);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<Isotropic>(p, Isotropic::new);
+    }
+
     public static shared_ptr<Isotropic> Variance(int dim, double variance, boolean smart) throws Throwable {
         MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Variance.h.invokeExact(dim, variance, smart);
         if (p.equals(MemorySegment.NULL))

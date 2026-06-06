@@ -8,7 +8,6 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
@@ -25,9 +24,11 @@ public class NonlinearFactorGraph extends FactorGraph {
         NonlinearFactorGraph_resize(null, ADDRESS, JAVA_LONG),
         NonlinearFactorGraph_addPriorPoint2(null, ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         NonlinearFactorGraph_addPriorPose2(null, ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
+        NonlinearFactorGraph_addPriorRot2(null, ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         NonlinearFactorGraph_linearize(ADDRESS, ADDRESS, ADDRESS),
         NonlinearFactorGraph_at(ADDRESS, ADDRESS, JAVA_INT),
-        NonlinearFactorGraph_size(JAVA_INT, ADDRESS);
+        NonlinearFactorGraph_size(JAVA_INT, ADDRESS),
+        NonlinearFactorGraph_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -78,6 +79,15 @@ public class NonlinearFactorGraph extends FactorGraph {
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
+    public void addPrior(
+            Key key,
+            Rot2 prior,
+            shared_ptr<? extends gtsam.noiseModel.Base> model)
+            throws Throwable {
+        FF.NonlinearFactorGraph_addPriorRot2.h.invokeExact(
+                ptr, key.j, prior.ptr, model.ptr);
+    }
+
     public shared_ptr<GaussianFactorGraph> linearize(Values init) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.NonlinearFactorGraph_linearize.h.invokeExact(ptr, init.ptr);
         return new shared_ptr<>(sharedPtrPtr, GaussianFactorGraph::new);
@@ -92,5 +102,10 @@ public class NonlinearFactorGraph extends FactorGraph {
 
     public int size() throws Throwable {
         return (int) FF.NonlinearFactorGraph_size.h.invokeExact(ptr);
+    }
+
+    public void print(String label) throws Throwable {
+        System.out.println(label);
+        FF.NonlinearFactorGraph_print.h.invokeExact(ptr);
     }
 }

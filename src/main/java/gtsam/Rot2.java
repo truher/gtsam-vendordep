@@ -53,7 +53,8 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_Logmap(ADDRESS, ADDRESS),
         Rot2_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
-        Rot2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS);
+        Rot2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Rot2_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -323,5 +324,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
 
     public static boolean check_manifold_invariants(Rot2 a, Rot2 b) throws Throwable {
         return (boolean) FF.Rot2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public void print(String label) throws Throwable {
+        System.out.println(label);
+        FF.Rot2_print.h.invokeExact(ptr);
     }
 }
