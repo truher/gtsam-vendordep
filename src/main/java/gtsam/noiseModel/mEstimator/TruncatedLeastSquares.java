@@ -14,7 +14,8 @@ import gtsam.shared_ptr;
 public class TruncatedLeastSquares extends Base {
 
     public enum FF {
-        noiseModel_mEstimator_TruncatedLeastSquares_Create(ADDRESS, JAVA_DOUBLE);
+        noiseModel_mEstimator_TruncatedLeastSquares_Create(ADDRESS, JAVA_DOUBLE),
+        noiseModel_mEstimator_TruncatedLeastSquares_CreateScalar(ADDRESS, JAVA_DOUBLE);
 
         public final MethodHandle h;
 
@@ -30,6 +31,11 @@ public class TruncatedLeastSquares extends Base {
     public static shared_ptr<TruncatedLeastSquares> Create(double k) throws Throwable {
         return new shared_ptr<TruncatedLeastSquares>(
                 (MemorySegment) FF.noiseModel_mEstimator_TruncatedLeastSquares_Create.h.invokeExact(k),
+                TruncatedLeastSquares::new);
+    }
+        public static shared_ptr<TruncatedLeastSquares> CreateScalar(double k) throws Throwable {
+        return new shared_ptr<TruncatedLeastSquares>(
+                (MemorySegment) FF.noiseModel_mEstimator_TruncatedLeastSquares_CreateScalar.h.invokeExact(k),
                 TruncatedLeastSquares::new);
     }
 }

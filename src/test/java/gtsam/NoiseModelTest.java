@@ -644,7 +644,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionCauchy()throws Throwable  {
+    void testrobustFunctionCauchy() throws Throwable {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -827,20 +827,19 @@ public class NoiseModelTest {
         final double error1 = 1.0;
         final double error2 = 100.0;
         Matrix A = new Matrix(new double[][] { { 1.0, 10.0 }, { 100.0, 1000.0 } });
-        Vector b = new Vector(new double[]{error1, error2});
+        Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
-        Huber.Create(k, mEstimator::Huber::Scalar),
-        Unit.Create(2));
+                Huber.CreateScalar(k), Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
         assertEquals(error1, b.at(0), 1e-8);
-        assertEquals(Math.sqrt(k*error2), b.at(1), 1e-8);
+        assertEquals(Math.sqrt(k * error2), b.at(1), 1e-8);
 
-        assertEquals(1.0, A.at(0,0), 1e-8);
-        assertEquals(10.0, A.at(0,1), 1e-8);
-        assertEquals(Math.sqrt(k*100.0), A.at(1,0), 1e-8);
-        assertEquals(Math.sqrt(k/100.0)*1000.0, A.at(1,1), 1e-8);
+        assertEquals(1.0, A.at(0, 0), 1e-8);
+        assertEquals(10.0, A.at(0, 1), 1e-8);
+        assertEquals(Math.sqrt(k * 100.0), A.at(1, 0), 1e-8);
+        assertEquals(Math.sqrt(k / 100.0) * 1000.0, A.at(1, 1), 1e-8);
     }
 
     @Test
@@ -855,25 +854,24 @@ public class NoiseModelTest {
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
-        GemanMcClure.Create(k, GemanMcClure::Scalar),
-        Unit.Create(2));
+                GemanMcClure.CreateScalar(k), Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
-        final double k2 = k*k;
-        final double k4 = k2*k2;
-        final double k2error = k2 + error2*error2;
+        final double k2 = k * k;
+        final double k4 = k2 * k2;
+        final double k2error = k2 + error2 * error2;
 
         final double sqrt_weight_error1 = Math.sqrt(0.25);
-        final double sqrt_weight_error2 = Math.sqrt(k4/(k2error*k2error));
+        final double sqrt_weight_error2 = Math.sqrt(k4 / (k2error * k2error));
 
-        assertEquals(sqrt_weight_error1*error1, b.at(0), 1e-8);
-        assertEquals(sqrt_weight_error2*error2, b.at(1), 1e-8);
+        assertEquals(sqrt_weight_error1 * error1, b.at(0), 1e-8);
+        assertEquals(sqrt_weight_error2 * error2, b.at(1), 1e-8);
 
-        assertEquals(sqrt_weight_error1*a00, A.at(0,0), 1e-8);
-        assertEquals(sqrt_weight_error1*a01, A.at(0,1), 1e-8);
-        assertEquals(sqrt_weight_error2*a10, A.at(1,0), 1e-8);
-        assertEquals(sqrt_weight_error2*a11, A.at(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1 * a00, A.at(0, 0), 1e-8);
+        assertEquals(sqrt_weight_error1 * a01, A.at(0, 1), 1e-8);
+        assertEquals(sqrt_weight_error2 * a10, A.at(1, 0), 1e-8);
+        assertEquals(sqrt_weight_error2 * a11, A.at(1, 1), 1e-8);
     }
 
     @Test
@@ -888,22 +886,20 @@ public class NoiseModelTest {
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
-        TruncatedLeastSquares.Create(k,
-        TruncatedLeastSquares::Scalar),
-        Unit.Create(2));
+                TruncatedLeastSquares.CreateScalar(k), Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
         final double sqrt_weight_error1 = 1.0;
         final double sqrt_weight_error2 = 0.0;
 
-        assertEquals(sqrt_weight_error1*error1, b.at(0), 1e-8);
-        assertEquals(sqrt_weight_error2*error2, b.at(1), 1e-8);
+        assertEquals(sqrt_weight_error1 * error1, b.at(0), 1e-8);
+        assertEquals(sqrt_weight_error2 * error2, b.at(1), 1e-8);
 
-        assertEquals(sqrt_weight_error1*a00, A.at(0,0), 1e-8);
-        assertEquals(sqrt_weight_error1*a01, A.at(0,1), 1e-8);
-        assertEquals(sqrt_weight_error2*a10, A.at(1,0), 1e-8);
-        assertEquals(sqrt_weight_error2*a11, A.at(1,1), 1e-8);
+        assertEquals(sqrt_weight_error1 * a00, A.at(0, 0), 1e-8);
+        assertEquals(sqrt_weight_error1 * a01, A.at(0, 1), 1e-8);
+        assertEquals(sqrt_weight_error2 * a10, A.at(1, 0), 1e-8);
+        assertEquals(sqrt_weight_error2 * a11, A.at(1, 1), 1e-8);
     }
 
     @Test
@@ -918,8 +914,7 @@ public class NoiseModelTest {
         Matrix A = new Matrix(new double[][] { { a00, a01 }, { a10, a11 } });
         Vector b = new Vector(new double[] { error1, error2 });
         final shared_ptr<Robust> robust = Robust.Create(
-                DCS.Create(k, DCS::Scalar),
-                Unit.Create(2));
+                DCS.CreateScalar(k), Unit.Create(2));
 
         robust.get().WhitenSystem(A, b);
 
@@ -938,14 +933,14 @@ public class NoiseModelTest {
     void testrobustNoiseL2WithDeadZone() throws Throwable {
         double dead_zone_size = 1.0;
         var robust = Robust.Create(
-        L2WithDeadZone.Create(dead_zone_size),
-        Unit.Create(3));
+                L2WithDeadZone.Create(dead_zone_size),
+                Unit.Create(3));
 
         for (int i = 0; i < 5; i++) {
-            Vector error = new Vector(new double[]{i, 0, 0});
+            Vector error = new Vector(new double[] { i, 0, 0 });
             robust.get().WhitenSystem(error);
-            assertEquals(std::fmax(0, i - dead_zone_size) * i,
-            robust.get().squaredMahalanobisDistance(error), 1e-8);
+            assertEquals(Math.max(0, i - dead_zone_size) * i,
+                    robust.get().squaredMahalanobisDistance(error), 1e-8);
         }
     }
 

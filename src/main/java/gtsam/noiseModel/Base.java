@@ -23,6 +23,7 @@ public abstract class Base extends ForeignObject {
         noiseModel_Base_squaredMahalanobisDistance(JAVA_DOUBLE, ADDRESS, ADDRESS),
         noiseModel_Base_loss(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE),
         noiseModel_Base_WhitenSystem(null, ADDRESS, ADDRESS, ADDRESS),
+        noiseModel_Base_WhitenSystemVector(null, ADDRESS, ADDRESS),
         noiseModel_Base_whitenInPlace(null, ADDRESS, ADDRESS),
         noiseModel_Base_unwhitenInPlace(null, ADDRESS, ADDRESS);
 
@@ -64,7 +65,9 @@ public abstract class Base extends ForeignObject {
     public void WhitenSystem(Matrix A, Vector b) throws Throwable {
         FF.noiseModel_Base_WhitenSystem.h.invokeExact(ptr, A.ptr, b.ptr);
     }
-
+    public void WhitenSystem(Vector b) throws Throwable {
+        FF.noiseModel_Base_WhitenSystemVector.h.invokeExact(ptr, b.ptr);
+    }
     public void whitenInPlace(Vector v) throws Throwable {
         FF.noiseModel_Base_whitenInPlace.h.invokeExact(ptr, v.ptr);
     }

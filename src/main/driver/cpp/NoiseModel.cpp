@@ -41,6 +41,10 @@ void noiseModel_Base_WhitenSystem(const gtsam::noiseModel::Base* model,
                                   gtsam::Matrix* A, gtsam::Vector* b) {
     return model->WhitenSystem(*A, *b);
 }
+void noiseModel_Base_WhitenSystemVector(const gtsam::noiseModel::Base* model,
+                                        gtsam::Vector* b) {
+    return model->WhitenSystem(*b);
+}
 void noiseModel_Base_whitenInPlace(const gtsam::noiseModel::Base* model,
                                    gtsam::Vector* v) {
     model->whitenInPlace(*v);
@@ -280,7 +284,7 @@ double noiseModel_mEstimator_Base_weight(          //
     double distance) {                             //
     return b->weight(distance);
 }
-double noiseModel_mEstimator_Base_loss(          //
+double noiseModel_mEstimator_Base_loss(            //
     const gtsam::noiseModel::mEstimator::Base* b,  //
     double distance) {                             //
     return b->loss(distance);
@@ -289,6 +293,12 @@ std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>*
 noiseModel_mEstimator_Huber_Create(double k) {
     return new std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>(
         gtsam::noiseModel::mEstimator::Huber::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>*
+noiseModel_mEstimator_Huber_CreateScalar(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Huber>(
+        gtsam::noiseModel::mEstimator::Huber::Create(
+            k, gtsam::noiseModel::mEstimator::Huber::Scalar));
 }
 std::shared_ptr<gtsam::noiseModel::mEstimator::Fair>*
 noiseModel_mEstimator_Fair_Create(double k) {
@@ -326,10 +336,22 @@ noiseModel_mEstimator_GemanMcClure_Create(double k) {
     return new std::shared_ptr<gtsam::noiseModel::mEstimator::GemanMcClure>(
         gtsam::noiseModel::mEstimator::GemanMcClure::Create(k));
 }
+std::shared_ptr<gtsam::noiseModel::mEstimator::GemanMcClure>*
+noiseModel_mEstimator_GemanMcClure_CreateScalar(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::GemanMcClure>(
+        gtsam::noiseModel::mEstimator::GemanMcClure::Create(
+            k, gtsam::noiseModel::mEstimator::GemanMcClure::Scalar));
+}
 std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>*
 noiseModel_mEstimator_DCS_Create(double k) {
     return new std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>(
         gtsam::noiseModel::mEstimator::DCS::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>*
+noiseModel_mEstimator_DCS_CreateScalar(double k) {
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::DCS>(
+        gtsam::noiseModel::mEstimator::DCS::Create(
+            k, gtsam::noiseModel::mEstimator::DCS::Scalar));
 }
 std::shared_ptr<gtsam::noiseModel::mEstimator::L2WithDeadZone>*
 noiseModel_mEstimator_L2WithDeadZone_Create(double k) {
@@ -341,5 +363,12 @@ noiseModel_mEstimator_TruncatedLeastSquares_Create(double k) {
     return new std::shared_ptr<
         gtsam::noiseModel::mEstimator::TruncatedLeastSquares>(
         gtsam::noiseModel::mEstimator::TruncatedLeastSquares::Create(k));
+}
+std::shared_ptr<gtsam::noiseModel::mEstimator::TruncatedLeastSquares>*
+noiseModel_mEstimator_TruncatedLeastSquares_CreateScalar(double k) {
+    return new std::shared_ptr<
+        gtsam::noiseModel::mEstimator::TruncatedLeastSquares>(
+        gtsam::noiseModel::mEstimator::TruncatedLeastSquares::Create(
+            k, gtsam::noiseModel::mEstimator::TruncatedLeastSquares::Scalar));
 }
 }
