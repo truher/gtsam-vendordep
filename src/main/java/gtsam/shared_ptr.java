@@ -49,8 +49,15 @@ public class shared_ptr<T> extends ForeignObject {
      * shared_ptr.get().
      * 
      * TODO: the pointer here must not be owned.
+     * 
+     * NULLABLE
      */
     public T get() throws Throwable {
-        return construct.apply((MemorySegment) FF.shared_ptr_get.h.invokeExact(ptr));
+        MemorySegment p = (MemorySegment) FF.shared_ptr_get.h.invokeExact(ptr);
+        // transmute C++ nullptr to Java null.
+        if (p.equals(MemorySegment.NULL))
+            return null;
+        return construct.apply(p);
     }
+
 }

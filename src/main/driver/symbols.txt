@@ -2,6 +2,7 @@ BatchFixedLagSmoother*
 BetweenFactor*
 Cal3DS2*
 CustomFactor*
+FactorIndices*
 GaussianFactor*
 JacobianVector*
 KeyTimestampMap*

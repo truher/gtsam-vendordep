@@ -12,4 +12,11 @@ gtsam::GaussianFactor::shared_ptr* NonlinearFactor_linearize(
     gtsam::GaussianFactor::shared_ptr gf = p->linearize(*v);
     return new gtsam::GaussianFactor::shared_ptr(gf);
 }
+void NonlinearFactor_print(const gtsam::NonlinearFactor* f) {
+    f->print();
+}
+bool NonlinearFactor_equals(const gtsam::NonlinearFactor* f,  //
+                            const gtsam::NonlinearFactor* g) {
+    return f->equals(*g);
+}
 }

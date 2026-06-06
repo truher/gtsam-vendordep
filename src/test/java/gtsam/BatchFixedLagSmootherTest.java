@@ -1,5 +1,6 @@
 package gtsam;
 
+import static gtsam.Testable.assert_equal;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -16,20 +17,20 @@ import gtsam.noiseModel.Isotropic;
  */
 public class BatchFixedLagSmootherTest {
 
-    boolean check_smoother(final NonlinearFactorGraph fullgraph, final Values fullinit,
-            final BatchFixedLagSmoother smoother, final Key key) {
+    boolean check_smoother(
+            final NonlinearFactorGraph fullgraph,
+            final Values fullinit,
+            final BatchFixedLagSmoother smoother,
+            final Key key) throws Throwable {
 
-        // GaussianFactorGraph linearized = *fullgraph.linearize(fullinit);
-        // VectorValues delta = linearized.optimize();
-        // Values fullfinal = fullinit.retract(delta);
+        shared_ptr<GaussianFactorGraph> linearized = fullgraph.linearize(fullinit);
+        VectorValues delta = linearized.get().optimize();
+        Values fullfinal = fullinit.retract(delta);
 
-        // Point2 expected = fullfinal.at<Point2>(key);
-        // Point2 actual = smoother.calculateEstimate<Point2>(key);
+        Point2 expected = fullfinal.atPoint2(key);
+        Point2 actual = smoother.calculateEstimatePoint2(key);
 
-        // return assert_equal(expected, actual);
-
-        // REMOVE
-        return false;
+        return assert_equal(expected, actual);
     }
 
     @Test
@@ -94,19 +95,19 @@ public class BatchFixedLagSmootherTest {
             Values newValues = new Values();
             KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
-            // odometerNoise));
-            // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newKeyTimestampMap[key2] = double(i);
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(
+                    key1, key2, new Point2(1.0, 0.0), odometerNoise));
+            newValues.insert(key2, new Point2(i + 0.1, -0.1));
+            newKeyTimestampMap.put(key2, i);
 
-            // fullgraph.push_back(newFactors);
-            // fullinit.insert(newValues);
+            fullgraph.add(newFactors);
+            fullinit.insert(newValues);
 
-            // // Update the smoother
-            // smoother.update(newFactors, newValues, newKeyTimestampMap);
+            // Update the smoother
+            smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-            // // Check
-            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            // Check
+            assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
             ++i;
         }
@@ -122,21 +123,21 @@ public class BatchFixedLagSmootherTest {
             Values newValues = new Values();
             KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
-            // odometerNoise));
-            // newFactors.push_back(BetweenFactor<Point2>(Key(2), Key(5), Point2(3.5, 0.0),
-            // loopNoise));
-            // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newKeyTimestampMap[key2] = double(i);
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(
+                    key1, key2, new Point2(1.0, 0.0), odometerNoise));
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(
+                    new Key(2), new Key(5), new Point2(3.5, 0.0), loopNoise));
+            newValues.insert(key2, new Point2(i + 0.1, -0.1));
+            newKeyTimestampMap.put(key2, i);
 
-            // fullgraph.push_back(newFactors);
-            // fullinit.insert(newValues);
+            fullgraph.add(newFactors);
+            fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newKeyTimestampMap);
+            smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
-            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
             ++i;
         }
@@ -150,19 +151,19 @@ public class BatchFixedLagSmootherTest {
             Values newValues = new Values();
             KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
-            // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
-            // odometerNoise));
-            // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newKeyTimestampMap[key2] = double(i);
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(
+                    key1, key2, new Point2(1.0, 0.0), odometerNoise));
+            newValues.insert(key2, new Point2(i + 0.1, -0.1));
+            newKeyTimestampMap.put(key2, i);
 
-            // fullgraph.push_back(newFactors);
-            // fullinit.insert(newValues);
+            fullgraph.add(newFactors);
+            fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newKeyTimestampMap);
+            smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
-            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
             ++i;
         }
@@ -177,29 +178,29 @@ public class BatchFixedLagSmootherTest {
             KeyTimestampMap newKeyTimestampMap = new KeyTimestampMap();
 
             // add 2 odometry factors
-            // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
-            // odometerNoise));
-            // newFactors.push_back(BetweenFactor<Point2>(key1, key2, Point2(1.0, 0.0),
-            // odometerNoise));
-            // newValues.insert(key2, Point2(double(i)+0.1, -0.1));
-            // newKeyTimestampMap[key2] = double(i);
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(key1, key2, new Point2(1.0, 0.0),
+                    odometerNoise));
+            newFactors.add(BetweenFactorPoint2.newBetweenFactorPoint2(key1, key2, new Point2(1.0, 0.0),
+                    odometerNoise));
+            newValues.insert(key2, new Point2(i + 0.1, -0.1));
+            newKeyTimestampMap.put(key2, i);
 
-            // fullgraph.push_back(newFactors);
-            // fullinit.insert(newValues);
+            fullgraph.add(newFactors);
+            fullinit.insert(newValues);
 
             // Update the smoother
-            // smoother.update(newFactors, newValues, newKeyTimestampMap);
+            smoother.update(newFactors, newValues, newKeyTimestampMap);
 
             // Check
-            // assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
+            assertTrue(check_smoother(fullgraph, fullinit, smoother, key2));
 
-            // NonlinearFactorGraph smootherGraph = smoother.getFactors();
-            // for(int i=0; i<smootherGraph.size(); i++){
-            // if(smootherGraph[i]){
-            // std::cout << "i:" << i << std::endl;
-            // smootherGraph[i]->print();
-            // }
-            // }
+            NonlinearFactorGraph smootherGraph = smoother.getFactors();
+            for (int ii = 0; ii < smootherGraph.size(); ii++) {
+                if (smootherGraph.at(ii).get() != null) {
+                    System.out.printf("ii 2: %d\n", ii);
+                    smootherGraph.at(ii).get().print();
+                }
+            }
 
             // now remove one of the two and try again
             // empty values and new factors for fake update in which we only remove factors
@@ -208,28 +209,29 @@ public class BatchFixedLagSmootherTest {
             KeyTimestampMap emptyNewKeyTimestampMap = new KeyTimestampMap();
 
             int factorIndex = 6; // any index that does not break connectivity of the graph
-            // FactorIndices factorToRemove;
-            // factorToRemove.push_back(factorIndex);
+            FactorIndices factorToRemove = new FactorIndices();
+            factorToRemove.add(new Key(factorIndex));
 
-            // final NonlinearFactorGraph smootherFactorsBeforeRemove =
-            // smoother.getFactors();
+            final NonlinearFactorGraph smootherFactorsBeforeRemove = smoother.getFactors();
 
             // remove factor
-            // smoother.update(emptyNewFactors, emptyNewValues,
-            // emptyNewKeyTimestampMap,factorToRemove);
+            smoother.update(
+                    emptyNewFactors,
+                    emptyNewValues,
+                    emptyNewKeyTimestampMap,
+                    factorToRemove);
 
-            // // check that the factors in the smoother are right
-            // NonlinearFactorGraph actual = smoother.getFactors();
-            // for(int i=0; i< smootherFactorsBeforeRemove.size(); i++){
-            // // check that the factors that were not removed are there
-            // if(smootherFactorsBeforeRemove[i] && i != factorIndex){
-            // assertTrue(smootherFactorsBeforeRemove[i]->equals(*actual[i]));
-            // }
-            // else{ // while the factors that were not there or were removed are no longer
-            // there
-            // assertTrue(!actual[i]);
-            // }
-            // }
+            // check that the factors in the smoother are right
+            NonlinearFactorGraph actual = smoother.getFactors();
+            for (int ii = 0; ii < smootherFactorsBeforeRemove.size(); ii++) {
+                // check that the factors that were not removed are there
+                if (smootherFactorsBeforeRemove.at(ii).get() != null && ii != factorIndex) {
+                    assertTrue(smootherFactorsBeforeRemove.at(ii).get().equals(actual.at(ii).get()));
+                } else {
+                    // while the factors that were not there or were removed are no longer there
+                    assertTrue(actual.at(i).get() == null);
+                }
+            }
         }
     }
 
@@ -261,7 +263,7 @@ public class BatchFixedLagSmootherTest {
                 // newFactors.addPrior(key_i, Point2(0.0, 0.0), noise);
             } else {
                 // Key key_prev(i - 1);
-                // newFactors.push_back(BetweenFactor<Point2>(key_prev, key_i, Point2(1.0, 0.0),
+                // newFactors.add(BetweenFactor<Point2>(key_prev, key_i, Point2(1.0, 0.0),
                 // noise));
             }
 
@@ -345,7 +347,7 @@ public class BatchFixedLagSmootherTest {
                 // Pose2 noisyOdom(odomGT.x() + transDist(rng),
                 // odomGT.y() + transDist(rng),
                 // odomGT.theta() + rotDist(rng));
-                // newFactors.push_back(BetweenFactor<Pose2>(Key(i-1), key_i, noisyOdom,
+                // newFactors.add(BetweenFactor<Pose2>(Key(i-1), key_i, noisyOdom,
                 // noise));
 
                 // // Initial estimate: perturbed ground truth

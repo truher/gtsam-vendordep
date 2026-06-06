@@ -274,9 +274,9 @@ public class IncrementalFixedLagSmootherTest {
         // Key key_9 = X(i - 9);
         // Key key_10 = X(i - 10);
 
-        NonlinearFactorGraph newFactors= new NonlinearFactorGraph();
-        Values newValues= new Values();
-        KeyTimestampMap newKeyTimestampMap= new KeyTimestampMap();
+        NonlinearFactorGraph newFactors2= new NonlinearFactorGraph();
+        Values newValues2= new Values();
+        KeyTimestampMap newKeyTimestampMap2= new KeyTimestampMap();
 
         // // To make a complex graph
         // const Point2 z(1.0, 0.0);

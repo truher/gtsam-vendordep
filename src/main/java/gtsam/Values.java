@@ -41,7 +41,8 @@ public class Values extends ForeignObject {
         Values_exists(JAVA_BOOLEAN, ADDRESS, JAVA_LONG),
         Values_clear(null, ADDRESS),
         Values_size(JAVA_LONG, ADDRESS),
-        Values_print(null, ADDRESS);
+        Values_print(null, ADDRESS),
+        Values_retract(ADDRESS, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -125,6 +126,14 @@ public class Values extends ForeignObject {
         return (double) FF.Values_atDouble.h.invokeExact(ptr, j.j);
     }
 
+    public Point2 atPoint2(Key j) throws Throwable {
+        return new Point2((MemorySegment) FF.Values_atPoint2.h.invokeExact(ptr, j.j));
+    }
+
+    public Point3 atPoint3(Key j) throws Throwable {
+        return new Point3((MemorySegment) FF.Values_atPoint3.h.invokeExact(ptr, j.j));
+    }
+
     public Pose2 atPose2(Key j) throws Throwable {
         return new Pose2((MemorySegment) FF.Values_atPose2.h.invokeExact(ptr, j.j));
     }
@@ -147,5 +156,10 @@ public class Values extends ForeignObject {
 
     public long size() throws Throwable {
         return (long) FF.Values_size.h.invokeExact(ptr);
+    }
+
+    public Values retract(VectorValues delta) throws Throwable {
+        return Values.owned((MemorySegment) FF.Values_retract.h.invokeExact(
+                ptr, delta.ptr));
     }
 }

@@ -1,6 +1,7 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -15,7 +16,9 @@ import org.team100.foreign.Lib;
  */
 public class NonlinearFactor extends ForeignObject {
     public enum FF {
-        NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS);
+        NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS),
+        NonlinearFactor_print(null, ADDRESS),
+        NonlinearFactor_equals(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -37,6 +40,14 @@ public class NonlinearFactor extends ForeignObject {
     public GaussianFactor linearize(Values v) throws Throwable {
         return new GaussianFactor((MemorySegment) FF.NonlinearFactor_linearize.h.invokeExact(
                 ptr, v.ptr));
+    }
+
+    public void print() throws Throwable {
+        FF.NonlinearFactor_print.h.invokeExact(ptr);
+    }
+
+    public boolean equals(NonlinearFactor g) throws Throwable {
+        return (boolean) FF.NonlinearFactor_equals.h.invokeExact(ptr, g.ptr);
     }
 
 }

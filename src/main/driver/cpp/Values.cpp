@@ -98,4 +98,8 @@ void Values_clear(gtsam::Values* v) {
 uint64_t Values_size(const gtsam::Values* v) {
     return v->size();
 }
+gtsam::Values* Values_retract(const gtsam::Values* v,  //
+                              const gtsam::VectorValues* delta) {
+    return new gtsam::Values(v->retract(*delta));
+}
 }
