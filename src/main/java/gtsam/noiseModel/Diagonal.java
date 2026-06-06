@@ -26,7 +26,9 @@ public class Diagonal extends Gaussian {
         noiseModel_Diagonal_SigmasVector2(ADDRESS, ADDRESS, JAVA_BOOLEAN),
         noiseModel_Diagonal_SigmasVector3(ADDRESS, ADDRESS, JAVA_BOOLEAN),
         noiseModel_Diagonal_VariancesVector3(ADDRESS, ADDRESS, JAVA_BOOLEAN),
-        noiseModel_Diagonal_PrecisionsVector3(ADDRESS, ADDRESS, JAVA_BOOLEAN);
+        noiseModel_Diagonal_PrecisionsVector3(ADDRESS, ADDRESS, JAVA_BOOLEAN),
+        noiseModel_Diagonal_invsigmas(ADDRESS, ADDRESS),
+        noiseModel_Diagonal_precisions(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -90,5 +92,13 @@ public class Diagonal extends Gaussian {
         return new shared_ptr<>(
                 (MemorySegment) FF.noiseModel_Diagonal_PrecisionsVector3.h.invokeExact(precisions.ptr, smart),
                 Diagonal::new);
+    }
+
+    public Vector invsigmas() throws Throwable {
+        return new Vector((MemorySegment) FF.noiseModel_Diagonal_invsigmas.h.invokeExact(ptr));
+    }
+
+    public Vector precisions() throws Throwable {
+        return new Vector((MemorySegment) FF.noiseModel_Diagonal_precisions.h.invokeExact(ptr));
     }
 }

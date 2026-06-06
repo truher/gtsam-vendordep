@@ -176,16 +176,16 @@ public class NoiseModelTest {
         int d = 3;
         double m = 100.0;
         final double kInfinity = Double.POSITIVE_INFINITY;
-        Vector3 sigmas = new Vector3(kSigma, 0.0, 0.0);
-        Vector3 mu = new Vector3(200.0, 300.0, 400.0);
+        Vector sigmas = new Vector(new double[] { kSigma, 0.0, 0.0 });
+        Vector mu = new Vector(new double[] { 200.0, 300.0, 400.0 });
         shared_ptr<Constrained> actual = Constrained.All(d);
         // TODO: why should this be a thousand ??? Dummy variable?
         assertTrue(assert_equal(Vector.Constant(d, 1000.0), actual.get().mu()));
         assertTrue(assert_equal(Vector.Constant(d, 0), actual.get().sigmas()));
         assertTrue(assert_equal(Vector.Constant(d, 0), actual.get().invsigmas()));
-        //        Actually zero as dummy value
+        // Actually zero as dummy value
         assertTrue(assert_equal(Vector.Constant(d, kInfinity),
-        actual.get().precisions()));
+                actual.get().precisions()));
         // Infinite precision for hard constraints
 
         actual = Constrained.All(d, m);
@@ -198,15 +198,15 @@ public class NoiseModelTest {
         assertTrue(assert_equal(mu, actual.get().mu()));
 
         actual = Constrained.MixedSigmas(m, sigmas);
-        assertTrue(assert_equal(Vector::Constant(d, m), actual.get().mu()));
+        assertTrue(assert_equal(Vector.Constant(d, m), actual.get().mu()));
     }
 
     @Test
     void testConstrainedMixed() throws Throwable {
         Vector3 feasible = new Vector3(1.0, 0.0, 1.0);
         Vector3 infeasible = new Vector3(1.0, 1.0, 1.0);
-        shared_ptr<Diagonal> d = Constrained.MixedSigmas(Vector3(kSigma, 0.0,
-                kSigma));
+        shared_ptr<? extends Diagonal> d = Constrained.MixedSigmas(
+                new Vector(new double[] { kSigma, 0.0, kSigma }));
         // NOTE: we catch constrained variables elsewhere, so whitening does nothing
         assertTrue(assert_equal(new Vector3(0.5, 1.0, 0.5), d.get().whiten(infeasible)));
         assertTrue(assert_equal(new Vector3(0.5, 0.0, 0.5), d.get().whiten(feasible)));

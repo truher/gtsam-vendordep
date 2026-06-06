@@ -146,6 +146,14 @@ noiseModel_Diagonal_PrecisionsVector3(const gtsam::Vector3* precisions,
     return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
         gtsam::noiseModel::Diagonal::Precisions(*precisions, smart));
 }
+gtsam::Vector* noiseModel_Diagonal_invsigmas(
+    const gtsam::noiseModel::Diagonal* model) {
+    return new gtsam::Vector(model->invsigmas());
+}
+gtsam::Vector* noiseModel_Diagonal_precisions(
+    const gtsam::noiseModel::Diagonal* model) {
+    return new gtsam::Vector(model->precisions());
+}
 //
 // ISOTROPIC
 //
@@ -196,6 +204,12 @@ std::shared_ptr<gtsam::noiseModel::Unit>* noiseModel_Unit_CreateMatrix(
 // CONSTRAINED
 //
 std::shared_ptr<gtsam::noiseModel::Constrained>*
+noiseModel_Constrained_MixedSigmasDoubleVector(double mu,
+                                               gtsam::Vector* sigmas) {
+    return new std::shared_ptr<gtsam::noiseModel::Constrained>(
+        gtsam::noiseModel::Constrained::MixedSigmas(mu, *sigmas));
+}
+std::shared_ptr<gtsam::noiseModel::Constrained>*
 noiseModel_Constrained_MixedSigmasVectorVector(gtsam::Vector* mu,
                                                gtsam::Vector* sigmas) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
@@ -210,6 +224,19 @@ std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllInt(
     int dim) {
     return new std::shared_ptr<gtsam::noiseModel::Constrained>(
         gtsam::noiseModel::Constrained::All(dim));
+}
+std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllIntDouble(
+    int dim, double mu) {
+    return new std::shared_ptr<gtsam::noiseModel::Constrained>(
+        gtsam::noiseModel::Constrained::All(dim, mu));
+}
+std::shared_ptr<gtsam::noiseModel::Constrained>* noiseModel_Constrained_AllIntVector(
+    int dim, gtsam::Vector* mu) {
+    return new std::shared_ptr<gtsam::noiseModel::Constrained>(
+        gtsam::noiseModel::Constrained::All(dim, *mu));
+}
+gtsam::Vector* noiseModel_Constrained_mu(gtsam::noiseModel::Constrained* m) {
+    return new gtsam::Vector(m->mu());
 }
 //
 // ROBUST
@@ -301,7 +328,8 @@ noiseModel_mEstimator_L2WithDeadZone_Create(double k) {
 }
 std::shared_ptr<gtsam::noiseModel::mEstimator::TruncatedLeastSquares>*
 noiseModel_mEstimator_TruncatedLeastSquares_Create(double k) {
-    return new std::shared_ptr<gtsam::noiseModel::mEstimator::TruncatedLeastSquares>(
+    return new std::shared_ptr<
+        gtsam::noiseModel::mEstimator::TruncatedLeastSquares>(
         gtsam::noiseModel::mEstimator::TruncatedLeastSquares::Create(k));
 }
 }
