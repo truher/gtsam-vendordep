@@ -46,11 +46,11 @@ public class Point2Test {
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
 
-        assertTrue(assert_equal(new Point2(5, 7), Point2.companion.Compose(p1, p2, H1, H2)));
+        assertTrue(assert_equal(new Point2(5, 7), p1.compose(p2, H1, H2)));
         assertTrue(assert_equal(Matrix.I_2x2(), H1));
         assertTrue(assert_equal(Matrix.I_2x2(), H2));
 
-        assertTrue(assert_equal(new Point2(3, 3), Point2.companion.Between(p1, p2, H1, H2)));
+        assertTrue(assert_equal(new Point2(3, 3), p1.between(p2, H1, H2)));
         assertTrue(assert_equal(Matrix.I_2x2().times(-1), H1));
         assertTrue(assert_equal(Matrix.I_2x2(), H2));
 

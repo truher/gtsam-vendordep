@@ -145,45 +145,6 @@ public class Point3 extends ForeignObject
         public Point3 Expmap(Vector3 v, Matrix Hv) throws Throwable {
             return new Point3((MemorySegment) FF.Point3_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
         }
-
-        @Override
-        public Point3 Compose(Point3 m1, Point3 m2) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Compose.h.invokeExact(m1.ptr, m2.ptr));
-        }
-
-        @Override
-        public Point3 Compose(Point3 m1, Point3 m2, Matrix H1, Matrix H2) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_ComposeH.h.invokeExact(
-                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
-        }
-
-        @Override
-        public Point3 Between(Point3 m1, Point3 m2) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Between.h.invokeExact(m1.ptr, m2.ptr));
-        }
-
-        @Override
-        public Point3 Between(Point3 m1, Point3 m2, Matrix H1, Matrix H2) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_BetweenH.h.invokeExact(
-                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
-        }
-
-        @Override
-        public Point3 Inverse(Point3 m1) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Inverse.h.invokeExact(m1.ptr));
-        }
-
-        @Override
-        public Point3 Inverse(Point3 m1, Matrix H) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_InverseH.h.invokeExact(
-                    m1.ptr, H.ptr));
-        }
-
-        @Override
-        public Matrix AdjointMap(Point3 m) throws Throwable {
-            return new Matrix((MemorySegment) FF.Point3_AdjointMap.h.invokeExact(m.ptr));
-        }
-
     }
 
     public static final Companion companion = new Companion();
@@ -225,37 +186,41 @@ public class Point3 extends ForeignObject
 
     @Override
     public Point3 compose(Point3 h) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_Compose.h.invokeExact(ptr, h.ptr));
     }
 
     @Override
     public Point3 compose(Point3 h, Matrix H1, Matrix H2) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_ComposeH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
     public Point3 between(Point3 h) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_Between.h.invokeExact(ptr, h.ptr));
+
     }
 
     @Override
     public Point3 between(Point3 h, Matrix H1, Matrix H2) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_BetweenH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
     public Point3 inverse() throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_Inverse.h.invokeExact(ptr));
     }
 
     @Override
     public Point3 inverse(Matrix H) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_InverseH.h.invokeExact(
+                ptr, H.ptr));
     }
 
     @Override
     public Matrix AdjointMap() throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Matrix((MemorySegment) FF.Point3_AdjointMap.h.invokeExact(ptr));
     }
 
     @Override

@@ -89,44 +89,6 @@ public class Point2 extends ForeignObject
         public Point2 Expmap(Vector2 v, Matrix Hv) throws Throwable {
             return new Point2((MemorySegment) FF.Point2_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
         }
-
-        @Override
-        public Point2 Compose(Point2 m1, Point2 m2) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Compose.h.invokeExact(m1.ptr, m2.ptr));
-        }
-
-        @Override
-        public Point2 Compose(Point2 m1, Point2 m2, Matrix H1, Matrix H2) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_ComposeH.h.invokeExact(
-                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
-        }
-
-        @Override
-        public Point2 Between(Point2 m1, Point2 m2) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Between.h.invokeExact(m1.ptr, m2.ptr));
-        }
-
-        @Override
-        public Point2 Between(Point2 m1, Point2 m2, Matrix H1, Matrix H2) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_BetweenH.h.invokeExact(
-                    m1.ptr, m2.ptr, H1.ptr, H2.ptr));
-        }
-
-        @Override
-        public Point2 Inverse(Point2 m1) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Inverse.h.invokeExact(m1.ptr));
-        }
-
-        @Override
-        public Point2 Inverse(Point2 m1, Matrix H) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_InverseH.h.invokeExact(
-                    m1.ptr, H.ptr));
-        }
-
-        @Override
-        public Matrix AdjointMap(Point2 m) throws Throwable {
-            return new Matrix((MemorySegment) FF.Point2_AdjointMap.h.invokeExact(m.ptr));
-        }
     }
 
     public static final Companion companion = new Companion();
@@ -136,42 +98,42 @@ public class Point2 extends ForeignObject
         return companion;
     }
 
-    // Point2 seems to hvae the *trait* but not the *method* since it's just "plus"
-    // this is really at "VectorSpace" trait.
-    // TODO: implement VectorSpace as a type of LieGroup.
     @Override
     public Point2 compose(Point2 h) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_Compose.h.invokeExact(ptr, h.ptr));
     }
 
     @Override
     public Point2 compose(Point2 h, Matrix H1, Matrix H2) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_ComposeH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
     public Point2 between(Point2 h) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_Between.h.invokeExact(ptr, h.ptr));
     }
 
     @Override
     public Point2 between(Point2 h, Matrix H1, Matrix H2) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_BetweenH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
     public Point2 inverse() throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_Inverse.h.invokeExact(ptr));
     }
 
     @Override
     public Point2 inverse(Matrix H) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_InverseH.h.invokeExact(
+                ptr, H.ptr));
     }
 
     @Override
     public Matrix AdjointMap() throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Matrix((MemorySegment) FF.Point2_AdjointMap.h.invokeExact(ptr));
     }
 
     @Override

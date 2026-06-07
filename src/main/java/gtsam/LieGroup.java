@@ -38,63 +38,22 @@ public interface LieGroup<//
             return origin.retract(v, H, Hv);
         }
 
-        /** Implement as statics.Logmap() */
         V Logmap(T g) throws Throwable;
 
-        /** Implement as statics.Logmap() */
         V Logmap(T m, Matrix Hm) throws Throwable;
 
-        /** Implement as statics.Expmap() */
         T Expmap(V v) throws Throwable;
 
-        /** Implement as statics.Expmap() */
         T Expmap(V v, Matrix Hv) throws Throwable;
-
-        //
-        // TODO: remove all the defaults below.
-        //
-        default T Compose(T m1, T m2) throws Throwable {
-            return m1.compose(m2);
-        }
-
-        default T Compose(T m1, T m2, Matrix H1, Matrix H2) throws Throwable {
-            return m1.compose(m2, H1, H2);
-        }
-
-        default T Between(T m1, T m2) throws Throwable {
-            return m1.between(m2);
-        }
-
-        default T Between(T m1, T m2, Matrix H1, Matrix H2) throws Throwable {
-            return m1.between(m2, H1, H2);
-        }
-
-        default T Inverse(T m) throws Throwable {
-            return m.inverse();
-        }
-
-        default T Inverse(T m, Matrix H) throws Throwable {
-            return m.inverse(H);
-        }
-
-        default Matrix AdjointMap(T m) throws Throwable {
-            return m.AdjointMap();
-        }
-
     }
 
     Companion<T, V> companion();
 
-    // these are from the CRTP helper, LieGroup
-    T compose(T h) throws Throwable;
 
-    T compose(T h, Matrix H1, Matrix H2) throws Throwable;
 
-    T between(T h) throws Throwable;
 
-    T between(T h, Matrix H1, Matrix H2) throws Throwable;
 
-    T inverse(Matrix H) throws Throwable;
+
 
     Matrix AdjointMap() throws Throwable;
 

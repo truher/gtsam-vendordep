@@ -43,11 +43,11 @@ public class Point3Test {
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
 
-        assertTrue(assert_equal(new Point3(5, 7, 9), Point3.companion.Compose(p1, p2, H1, H2)));
+        assertTrue(assert_equal(new Point3(5, 7, 9), p1.compose(p2, H1, H2)));
         assertTrue(assert_equal(Matrix.I_3x3(), H1));
         assertTrue(assert_equal(Matrix.I_3x3(), H2));
 
-        assertTrue(assert_equal(new Point3(3, 3, 3), Point3.companion.Between(p1, p2, H1, H2)));
+        assertTrue(assert_equal(new Point3(3, 3, 3), p1.between(p2, H1, H2)));
         assertTrue(assert_equal(Matrix.I_3x3().times(-1), H1));
         assertTrue(assert_equal(Matrix.I_3x3(), H2));
 

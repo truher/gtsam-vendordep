@@ -3,45 +3,29 @@ package gtsam;
 /**
  * See gtsam/base/Group.h.
  * 
- * Traits are implemented using the companion object pattern.
+ * A group has an identity element, one associative operation, a.compose(b),
+ * and an inverse operation.
  * 
- * Note that the C++ makes a distinction between "additive" and "multiplicative"
- * groups, but we do not, it's up to the implementation. There is only one
- * additive group, "Cyclic," which we never use.
+ * GTSAM also defines a "between" operation, which is a.inverse().compose(b).
  * 
- * @param <T> the group type (note: there are no non-Lie groups here.)
+ * https://en.wikipedia.org/wiki/Group_(mathematics)
  */
 public interface Group<T extends Group<T>> {
-
-    /**
-     * See MultiplicativeGroupTraits and AdditiveGroupTraits.
-     * Group traits are all static.
-     */
     public interface Companion<T extends Group<T>> {
-        /** Required by IsGroup. */
         T Identity() throws Throwable;
-
-        /** Required by IsGroup. */
-        default T Compose(T g, T h) throws Throwable {
-            return g.compose(h);
-        }
-
-        /** Required by IsGroup. */
-        default T Between(T g, T h) throws Throwable {
-            return g.inverse().compose(h);
-        }
-
-        /** Required by IsGroup. */
-        default T Inverse(T g) throws Throwable {
-            return g.inverse();
-        }
     }
 
     Companion<T> companion();
 
-    /** Actually operator*, required by MultiplicativeGroupTraits */
     T compose(T h) throws Throwable;
 
-    /** Required by MultiplicativeGroupTraits */
+    T compose(T h, Matrix H1, Matrix H2) throws Throwable;
+
+    T between(T h) throws Throwable;
+
+    T between(T h, Matrix H1, Matrix H2) throws Throwable;
+
     T inverse() throws Throwable;
+
+    T inverse(Matrix H) throws Throwable;
 }
