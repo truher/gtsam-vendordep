@@ -42,6 +42,10 @@ public class Vector2 extends ForeignObject
         this((MemorySegment) FF.Vector2.h.invokeExact());
     }
 
+    public Vector2(Vector v) throws Throwable {
+        this(v.at(0), v.at(1));
+    }
+
     public Vector2(double v0, double v1) throws Throwable {
         this();
         set(0, v0);

@@ -36,7 +36,8 @@ public class Vector extends ForeignObject
         Vector_rows(JAVA_INT, ADDRESS),
         Vector_at(JAVA_DOUBLE, ADDRESS, JAVA_INT),
         Vector_Constant(ADDRESS, JAVA_INT, JAVA_DOUBLE),
-        Vector_LinSpaced(ADDRESS, JAVA_INT, JAVA_DOUBLE, JAVA_DOUBLE);
+        Vector_LinSpaced(ADDRESS, JAVA_INT, JAVA_DOUBLE, JAVA_DOUBLE),
+        Vector_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -162,5 +163,10 @@ public class Vector extends ForeignObject
     public Vector retract(Vector v, Matrix H1, Matrix H2) throws Throwable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'retract'");
+    }
+
+    public void print(String label) throws Throwable {
+        System.out.println(label);
+        FF.Vector_print.h.invokeExact(ptr);
     }
 }

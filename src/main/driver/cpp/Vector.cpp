@@ -61,6 +61,9 @@ gtsam::Vector* Vector_Constant(int size, double value) {
 gtsam::Vector* Vector_LinSpaced(int size, double low, double high) {
     return new gtsam::Vector(gtsam::Vector::LinSpaced(size, low, high));
 }
+void Vector_print(const gtsam::Vector* v) {
+    gtsam::print(*v);
+}
 //////////////////////////
 // Vector1
 gtsam::Vector1* Vector1(double v0) {

@@ -1,6 +1,7 @@
 #include <gtsam/base/Matrix.h>
 
 #include <iostream>
+#include <random>
 
 extern "C" {
 gtsam::Matrix* Matrix() {
@@ -73,5 +74,22 @@ bool Matrix_linear_dependent(const gtsam::Matrix* A, const gtsam::Matrix* B,
 }
 void Matrix_print(const gtsam::Matrix* A) {
     gtsam::print(*A);
+}
+// https://ricoruotongjia.medium.com/how-to-generate-gaussian-distributions-in-c-7ac880962031
+std::mt19937 rng(42);
+std::normal_distribution<double> dist(0.0, 1.0);
+gtsam::Vector* Matrix_draw(const gtsam::Matrix* covariances) {
+    Eigen::LLT<Eigen::MatrixXd> llt(*covariances);
+    gtsam::Vector vec = gtsam::Vector::Zero(covariances->rows());
+    Eigen::ComputationInfo info = llt.info();
+    if (info != Eigen::ComputationInfo::Success) {
+        std::cout << "Matrix_draw failed with info: " << info << std::endl;
+        return new gtsam::Vector(vec);
+    }
+    gtsam::Matrix L = llt.matrixL();
+    for (int i = 0; i < vec.size(); ++i) {
+        vec[i] = dist(rng);
+    }
+    return new gtsam::Vector(L * vec);
 }
 }

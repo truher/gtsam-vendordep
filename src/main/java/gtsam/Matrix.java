@@ -37,7 +37,8 @@ public class Matrix extends ForeignObject {
         Matrix_timesVector3(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE),
         Matrix_linear_dependent(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Matrix_print(null, ADDRESS);
+        Matrix_print(null, ADDRESS),
+        Matrix_draw(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -157,5 +158,14 @@ public class Matrix extends ForeignObject {
     public void print(String label) throws Throwable {
         System.out.println(label);
         FF.Matrix_print.h.invokeExact(ptr);
+    }
+
+    /**
+     * If the matrix is the covariance matrix of an estimate, then this function
+     * produces a sample from the multivariate normal distribution described by the
+     * covariance matrix.
+     */
+    public Vector draw() throws Throwable {
+        return new Vector((MemorySegment) FF.Matrix_draw.h.invokeExact(ptr));
     }
 }
