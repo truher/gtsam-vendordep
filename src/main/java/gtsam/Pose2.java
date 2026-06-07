@@ -34,6 +34,8 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_inverse(ADDRESS, ADDRESS),
         Pose2_inverseH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_AdjointMap(ADDRESS, ADDRESS),
+        Pose2_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Pose2_expmap(ADDRESS, ADDRESS, ADDRESS),
         Pose2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_Adjoint(ADDRESS, ADDRESS, ADDRESS),
@@ -41,9 +43,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_Logmap(ADDRESS, ADDRESS),
         Pose2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_logmap(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_OriginRetract(ADDRESS, ADDRESS),
-        Pose2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_compose(ADDRESS, ADDRESS, ADDRESS),
         Pose2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_matrix(ADDRESS, ADDRESS),
@@ -84,36 +83,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
         @Override
         public Vector3 Logmap(Pose2 g) throws Throwable {
-            return statics.Logmap(g);
-        }
-
-        @Override
-        public Vector3 Logmap(Pose2 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
-        }
-
-        @Override
-        public Pose2 Expmap(Vector3 xi) throws Throwable {
-            return statics.Expmap(xi);
-        }
-
-        @Override
-        public Pose2 Expmap(Vector3 xi, Matrix H) throws Throwable {
-            return statics.Expmap(xi, H);
-        }
-
-    }
-
-    public static final Pose2Traits traits = new Pose2Traits();
-
-    @Override
-    public Pose2Traits companion() {
-        return traits;
-    }
-
-    public static class Pose2Statics implements LieGroup.Statics<Pose2, Vector3> {
-        @Override
-        public Vector3 Logmap(Pose2 g) throws Throwable {
             return new Vector3((MemorySegment) FF.Pose2_Logmap.h.invokeExact(g.ptr));
         }
 
@@ -133,23 +102,13 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
             return new Pose2((MemorySegment) FF.Pose2_ExpmapH.h.invokeExact(
                     xi.ptr, H.ptr));
         }
-
-        @Override
-        public Pose2 Retract(Vector3 v) throws Throwable {
-            return new Pose2((MemorySegment) FF.Pose2_OriginRetract.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Pose2 Retract(Vector3 v, Matrix H) throws Throwable {
-            return new Pose2((MemorySegment) FF.Pose2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
     }
 
-    public static final Pose2Statics statics = new Pose2Statics();
+    public static final Pose2Traits traits = new Pose2Traits();
 
     @Override
-    public Pose2Statics statics() {
-        return statics;
+    public Pose2Traits companion() {
+        return traits;
     }
 
     @Override
@@ -258,8 +217,17 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     }
 
     @Override
+    public Pose2 expmap(Vector3 v) throws Throwable {
+        return new Pose2((MemorySegment) FF.Pose2_expmap.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
     public Pose2 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
         return new Pose2((MemorySegment) FF.Pose2_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Vector3 logmap(Pose2 g) throws Throwable {
+        return new Vector3((MemorySegment) FF.Pose2_logmap.h.invokeExact(ptr, g.ptr));
     }
 
     @Override
@@ -277,10 +245,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
     public static Vector3 Logmap(Pose2 p, Matrix H) throws Throwable {
         return new Vector3((MemorySegment) FF.Pose2_LogmapH.h.invokeExact(p.ptr, H.ptr));
-    }
-
-    public Vector3 logmap(Pose2 p) throws Throwable {
-        return new Vector3((MemorySegment) FF.Pose2_logmap.h.invokeExact(ptr, p.ptr));
     }
 
     @Override

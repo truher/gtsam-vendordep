@@ -69,31 +69,24 @@ gtsam::Rot2* Rot2_inverseH(const gtsam::Rot2* r, gtsam::Matrix* H) {
 gtsam::Matrix* Rot2_AdjointMap(const gtsam::Rot2* r) {
     return new gtsam::Matrix(r->AdjointMap());
 }
-// gtsam::Rot2* Rot2_expmap(const gtsam::Rot2* r, const gtsam::Vector1* v) {
-//     return new gtsam::Rot2(r->expmap(*v));
-// }
+gtsam::Rot2* Rot2_expmap(const gtsam::Rot2* r, const gtsam::Vector1* v) {
+    return new gtsam::Rot2(r->expmap(*v));
+}
 gtsam::Rot2* Rot2_expmapH(const gtsam::Rot2* r,     //
                           const gtsam::Vector1* v,  //
                           gtsam::Matrix* H1,        //
                           gtsam::Matrix* H2) {      //
     return new gtsam::Rot2(r->expmap(*v, *H1, *H2));
 }
-// gtsam::Vector1* Rot2_logmap(const gtsam::Rot2* r,  //
-//                             const gtsam::Rot2* g) {
-//     return new gtsam::Vector1(r->logmap(*g));
-// }
+gtsam::Vector1* Rot2_logmap(const gtsam::Rot2* r,  //
+                            const gtsam::Rot2* g) {
+    return new gtsam::Vector1(r->logmap(*g));
+}
 gtsam::Vector1* Rot2_logmapH(const gtsam::Rot2* r,  //
                              const gtsam::Rot2* g,  //
                              gtsam::Matrix* H1,     //
                              gtsam::Matrix* H2) {   //
     return new gtsam::Vector1(r->logmap(*g, *H1, *H2));
-}
-
-gtsam::Rot2* Rot2_OriginRetract(const gtsam::Vector1* v) {
-    return new gtsam::Rot2(gtsam::Rot2::Retract(*v));
-}
-gtsam::Rot2* Rot2_OriginRetractH(const gtsam::Vector1* v, gtsam::Matrix* H) {
-    return new gtsam::Rot2(gtsam::Rot2::Retract(*v, *H));
 }
 gtsam::Matrix2* Rot2_transpose(const gtsam::Rot2* r) {
     return new gtsam::Matrix2(r->transpose());

@@ -259,13 +259,13 @@ public class Rot3Test {
     void CHECK_OMEGA(double X, double Y, double Z) throws Throwable {
         Point3 w = new Point3(X, Y, Z);
         Rot3 R = Rot3.Rodrigues(w);
-        assertTrue(assert_equal(w, new Point3(Rot3.statics.Logmap(R)), 1e-12));
+        assertTrue(assert_equal(w, new Point3(Rot3.traits.Logmap(R)), 1e-12));
     }
 
     void CHECK_OMEGA_ZERO(double X, double Y, double Z) throws Throwable {
         Point3 w = new Point3(X, Y, Z);
         Rot3 R = Rot3.Rodrigues(w);
-        assertTrue(assert_equal(new Vector3(), Rot3.statics.Logmap(R)));
+        assertTrue(assert_equal(new Vector3(), Rot3.traits.Logmap(R)));
     }
 
     @Test
@@ -305,7 +305,7 @@ public class Rot3Test {
         // #if !defined(__APPLE__) && defined(GTSAM_USE_QUATERNIONS)
         Point3 w = new Point3(x * PI, y * PI, z * PI);
         Rot3 R = Rot3.Rodrigues(w);
-        assertTrue(assert_equal(new Vector3(w.times(-1)), Rot3.statics.Logmap(R), 1e-12));
+        assertTrue(assert_equal(new Vector3(w.times(-1)), Rot3.traits.Logmap(R), 1e-12));
         // #else
         // CHECK_OMEGA(x * PI, y * PI, z * PI);
         // #endif
@@ -334,7 +334,7 @@ public class Rot3Test {
         // #else
         // SO3 will be approximate because of the non-orthogonality
         assertTrue(assert_equal(new Vector3(0.264452, -0.742197708, -3.04098184),
-                Rot3.statics.Logmap(Rlund), 1e-8));
+                Rot3.traits.Logmap(Rlund), 1e-8));
         // #endif
     }
 
@@ -618,7 +618,7 @@ public class Rot3Test {
         Vector3 w = new Vector3(78e-9, 5e-8, 97e-7);
         double theta = w.norm();
         double theta2 = theta * theta;
-        Rot3 actualR = Rot3.statics.Expmap(w);
+        Rot3 actualR = Rot3.traits.Expmap(w);
         Matrix3 W = new Matrix3(//
                 0.0, -w.at(2), w.at(1), //
                 w.at(2), 0.0, -w.at(0), //
@@ -634,8 +634,8 @@ public class Rot3Test {
     @Test
     void testlogmapStability() throws Throwable {
         Vector3 w = new Vector3(1e-8, 0.0, 0.0);
-        Rot3 R = Rot3.statics.Expmap(w);
-        Vector3 actualw = Rot3.statics.Logmap(R);
+        Rot3 R = Rot3.traits.Expmap(w);
+        Vector3 actualw = Rot3.traits.Logmap(R);
         assertTrue(assert_equal(w, actualw, 1e-15));
     }
 
@@ -912,7 +912,7 @@ public class Rot3Test {
     @Test
     void testxyz_derivative() throws Throwable {
         final Vector3 aa = new Vector3(-0.6, 0.3, 0.2);
-        final Rot3 R = Rot3.statics.Expmap(aa);
+        final Rot3 R = Rot3.traits.Expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
                 Rot3, Vector3>numericalDerivative11(this::xyz_proxy, R, 1e-5);
         Matrix calc = new Matrix();
@@ -927,7 +927,7 @@ public class Rot3Test {
     @Test
     void testypr_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.1, -0.3, -0.2);
-        final Rot3 R = Rot3.statics.Expmap(aa);
+        final Rot3 R = Rot3.traits.Expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
                 Rot3, Vector3>numericalDerivative11(this::ypr_proxy, R, 1e-5);
         Matrix calc = new Matrix();
@@ -942,7 +942,7 @@ public class Rot3Test {
     @Test
     void testrpy_derivative() throws Throwable {
         final Vector3 aa = new Vector3(1.2, 0.3, -0.9);
-        final Rot3 R = Rot3.statics.Expmap(aa);
+        final Rot3 R = Rot3.traits.Expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
                 Rot3, Vector3>numericalDerivative11(this::rpy_proxy, R, 1e-5);
         Matrix calc = new Matrix();
@@ -972,7 +972,7 @@ public class Rot3Test {
     @Test
     void testpitch_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.01, 0.1, 0.0);
-        final Rot3 R = Rot3.statics.Expmap(aa);
+        final Rot3 R = Rot3.traits.Expmap(aa);
         final Matrix num = NumericalDerivative.<Vector1, Vector1, //
                 Rot3, Vector3>numericalDerivative11(this::pitch_proxy, R, 1e-5);
         Matrix calc = new Matrix();
@@ -987,7 +987,7 @@ public class Rot3Test {
     @Test
     void testyaw_derivative() throws Throwable {
         final Vector3 aa = new Vector3(0.0, 0.1, 0.6);
-        final Rot3 R = Rot3.statics.Expmap(aa);
+        final Rot3 R = Rot3.traits.Expmap(aa);
         Matrix num = NumericalDerivative.<Vector1, Vector1, //
                 Rot3, Vector3>numericalDerivative11(this::yaw_proxy, R, 1e-5);
         Matrix calc = new Matrix();
@@ -1021,7 +1021,7 @@ public class Rot3Test {
                 1, 2, 3, //
                 4, 5, 6, //
                 7, 8, 9);
-        ThrowingFunction<Vector3, Rot3> g = (omega) -> Rot3.statics.Expmap(M.times(omega));
+        ThrowingFunction<Vector3, Rot3> g = (omega) -> Rot3.traits.Expmap(M.times(omega));
 
         // Test the derivatives at zero
         final Matrix expected = NumericalDerivative.<//
@@ -1039,7 +1039,7 @@ public class Rot3Test {
                 1, 2, 3, //
                 4, 5, 6, //
                 7, 8, 9);
-        final Rot3 R = Rot3.statics.Expmap(new Vector3(1, 2, 3));
+        final Rot3 R = Rot3.traits.Expmap(new Vector3(1, 2, 3));
 
         ThrowingFunction<Vector3, Rot3> g = (omega) -> R.expmap(M.times(omega));
 

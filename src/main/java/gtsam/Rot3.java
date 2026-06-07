@@ -57,12 +57,10 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_retract(ADDRESS, ADDRESS, ADDRESS),
         Rot3_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        // Rot3_logmap(ADDRESS, ADDRESS, ADDRESS),
-        // Rot3_expmap(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Rot3_expmap(ADDRESS, ADDRESS, ADDRESS),
         Rot3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot3_OriginRetract(ADDRESS, ADDRESS),
-        Rot3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Rot3_Expmap(ADDRESS, ADDRESS),
         Rot3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_Logmap(ADDRESS, ADDRESS),
@@ -125,36 +123,6 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
 
         @Override
         public Vector3 Logmap(Rot3 g) throws Throwable {
-            return statics.Logmap(g);
-        }
-
-        @Override
-        public Vector3 Logmap(Rot3 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
-        }
-
-        @Override
-        public Rot3 Expmap(Vector3 v) throws Throwable {
-            return statics.Expmap(v);
-        }
-
-        @Override
-        public Rot3 Expmap(Vector3 v, Matrix H) throws Throwable {
-            return statics.Expmap(v, H);
-        }
-
-    }
-
-    public static final Rot3Traits traits = new Rot3Traits();
-
-    @Override
-    public Companion<Rot3, Vector3> companion() {
-        return traits;
-    }
-
-    public static class Rot3Statics implements LieGroup.Statics<Rot3, Vector3> {
-        @Override
-        public Vector3 Logmap(Rot3 g) throws Throwable {
             return new Vector3((MemorySegment) FF.Rot3_Logmap.h.invokeExact(g.ptr));
         }
 
@@ -174,23 +142,13 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
             return new Rot3((MemorySegment) FF.Rot3_ExpmapH.h.invokeExact(
                     v.ptr, H.ptr));
         }
-
-        @Override
-        public Rot3 Retract(Vector3 v) throws Throwable {
-            return new Rot3((MemorySegment) FF.Rot3_OriginRetract.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Rot3 Retract(Vector3 v, Matrix H) throws Throwable {
-            return new Rot3((MemorySegment) FF.Rot3_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
     }
 
-    public static final Rot3Statics statics = new Rot3Statics();
+    public static final Rot3Traits traits = new Rot3Traits();
 
     @Override
-    public Rot3Statics statics() {
-        return statics;
+    public Companion<Rot3, Vector3> companion() {
+        return traits;
     }
 
     public Rot3(MemorySegment p) {
@@ -297,13 +255,13 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
                 ptr, v.ptr, H1.ptr, H2.ptr));
     }
 
-    // public Vector3 logmap(Rot3 g) throws Throwable {
-    // return new Vector3((MemorySegment) FF.Rot3_logmap.h.invokeExact(ptr, g.ptr));
-    // }
+    public Vector3 logmap(Rot3 g) throws Throwable {
+        return new Vector3((MemorySegment) FF.Rot3_logmap.h.invokeExact(ptr, g.ptr));
+    }
 
-    // public Rot3 expmap(Vector3 v) throws Throwable {
-    // return new Rot3((MemorySegment) FF.Rot3_expmap.h.invokeExact(ptr, v.ptr));
-    // }
+    public Rot3 expmap(Vector3 v) throws Throwable {
+        return new Rot3((MemorySegment) FF.Rot3_expmap.h.invokeExact(ptr, v.ptr));
+    }
 
     @Override
     public Rot3 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {

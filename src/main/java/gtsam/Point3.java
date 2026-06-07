@@ -33,6 +33,8 @@ public class Point3 extends ForeignObject
         Point3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Point3_Local(ADDRESS, ADDRESS, ADDRESS),
         Point3_Retract(ADDRESS, ADDRESS, ADDRESS),
+        Point3_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Point3_expmap(ADDRESS, ADDRESS, ADDRESS),
         Point3_Logmap(ADDRESS, ADDRESS),
         Point3_Expmap(ADDRESS, ADDRESS),
         Point3_LogmapH(ADDRESS, ADDRESS, ADDRESS),
@@ -126,22 +128,22 @@ public class Point3 extends ForeignObject
 
         @Override
         public Vector3 Logmap(Point3 g) throws Throwable {
-            return statics.Logmap(g);
+            return new Vector3((MemorySegment) FF.Point3_Logmap.h.invokeExact(g.ptr));
         }
 
         @Override
-        public Vector3 Logmap(Point3 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
+        public Vector3 Logmap(Point3 m, Matrix Hm) throws Throwable {
+            return new Vector3((MemorySegment) FF.Point3_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
         }
 
         @Override
         public Point3 Expmap(Vector3 v) throws Throwable {
-            return statics.Expmap(v);
+            return new Point3((MemorySegment) FF.Point3_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override
-        public Point3 Expmap(Vector3 v, Matrix H) throws Throwable {
-            return statics.Expmap(v, H);
+        public Point3 Expmap(Vector3 v, Matrix Hv) throws Throwable {
+            return new Point3((MemorySegment) FF.Point3_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
         }
 
         @Override
@@ -221,46 +223,6 @@ public class Point3 extends ForeignObject
         return (double) FF.Point3_dotPoint3Point3H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
     }
 
-    public static class Statics implements LieGroup.Statics<Point3, Vector3> {
-
-        @Override
-        public Vector3 Logmap(Point3 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
-        public Vector3 Logmap(Point3 m, Matrix Hm) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point3 Expmap(Vector3 v) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Expmap.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Point3 Expmap(Vector3 v, Matrix Hv) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
-        }
-
-        @Override
-        public Point3 Retract(Vector3 v) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Point3 Retract(Vector3 v, Matrix H) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public static final Statics statics = new Statics();
-
-    @Override
-    public Statics statics() {
-        return statics;
-    }
-
     @Override
     public Point3 compose(Point3 h) throws Throwable {
         throw new UnsupportedOperationException();
@@ -297,8 +259,17 @@ public class Point3 extends ForeignObject
     }
 
     @Override
+    public Point3 expmap(Vector3 v) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_expmap.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
     public Point3 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
         throw new UnsupportedOperationException();
+    }
+
+    public Vector3 logmap(Point3 g) throws Throwable {
+        return new Vector3((MemorySegment) FF.Point3_logmap.h.invokeExact(ptr, g.ptr));
     }
 
     @Override

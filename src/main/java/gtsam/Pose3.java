@@ -27,10 +27,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_inverse(ADDRESS, ADDRESS),
         Pose3_inverseH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_AdjointMap(ADDRESS, ADDRESS),
+        Pose3_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Pose3_expmap(ADDRESS, ADDRESS, ADDRESS),
         Pose3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Pose3_OriginRetract(ADDRESS, ADDRESS),
-        Pose3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Expmap(ADDRESS, ADDRESS),
         Pose3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Logmap(ADDRESS, ADDRESS),
@@ -84,36 +84,6 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
 
         @Override
         public Vector6 Logmap(Pose3 g) throws Throwable {
-            return statics.Logmap(g);
-        }
-
-        @Override
-        public Vector6 Logmap(Pose3 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
-        }
-
-        @Override
-        public Pose3 Expmap(Vector6 xi) throws Throwable {
-            return statics.Expmap(xi);
-        }
-
-        @Override
-        public Pose3 Expmap(Vector6 xi, Matrix H) throws Throwable {
-            return statics.Expmap(xi, H);
-        }
-    }
-
-    public static final Traits traits = new Traits();
-
-    @Override
-    public Traits companion() {
-        return traits;
-    }
-
-    public static class Pose3Statics implements LieGroup.Statics<Pose3, Vector6> {
-
-        @Override
-        public Vector6 Logmap(Pose3 g) throws Throwable {
             return new Vector6((MemorySegment) FF.Pose3_Logmap.h.invokeExact(g.ptr));
         }
 
@@ -133,23 +103,13 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
             return new Pose3((MemorySegment) FF.Pose3_ExpmapH.h.invokeExact(
                     xi.ptr, H.ptr));
         }
-
-        @Override
-        public Pose3 Retract(Vector6 v) throws Throwable {
-            return new Pose3((MemorySegment) FF.Pose3_OriginRetract.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Pose3 Retract(Vector6 v, Matrix H) throws Throwable {
-            return new Pose3((MemorySegment) FF.Pose3_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
     }
 
-    public static final Pose3Statics statics = new Pose3Statics();
+    public static final Traits traits = new Traits();
 
     @Override
-    public Pose3Statics statics() {
-        return statics;
+    public Traits companion() {
+        return traits;
     }
 
     @Override
@@ -239,8 +199,17 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     }
 
     @Override
+    public Pose3 expmap(Vector6 v) throws Throwable {
+        return new Pose3((MemorySegment) FF.Pose3_expmap.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
     public Pose3 expmap(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
         return new Pose3((MemorySegment) FF.Pose3_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    }
+
+    public Vector6 logmap(Pose3 g) throws Throwable {
+        return new Vector6((MemorySegment) FF.Pose3_logmap.h.invokeExact(ptr, g.ptr));
     }
 
     @Override

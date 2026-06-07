@@ -75,9 +75,9 @@ public class Pose3Test {
     void testretract_expmap() throws Throwable {
         Vector6 v = new Vector6(0, 0, 0, 0, 0, 0);
         v.set(0, 0.3);
-        Pose3 pose = Pose3.statics.Expmap(v);
+        Pose3 pose = Pose3.traits.Expmap(v);
         assertTrue(assert_equal(new Pose3(R, new Point3(0, 0, 0)), pose, 1e-2));
-        assertTrue(assert_equal(v, Pose3.statics.Logmap(pose), 1e-2));
+        assertTrue(assert_equal(v, Pose3.traits.Logmap(pose), 1e-2));
     }
 
     @Test
@@ -136,17 +136,17 @@ public class Pose3Test {
     // assert that T*exp(xi)*T^-1 is equal to exp(Ad_T(xi))
     @Test
     void testAdjoint_full() throws Throwable {
-        Pose3 expected = T.compose(Pose3.statics.Expmap(screwPose3.xi)).compose(T.inverse());
+        Pose3 expected = T.compose(Pose3.traits.Expmap(screwPose3.xi)).compose(T.inverse());
         Vector6 xiprime = T.Adjoint(screwPose3.xi);
-        assertTrue(assert_equal(expected, Pose3.statics.Expmap(xiprime), 1e-6));
+        assertTrue(assert_equal(expected, Pose3.traits.Expmap(xiprime), 1e-6));
 
-        Pose3 expected2 = T2.compose(Pose3.statics.Expmap(screwPose3.xi)).compose(T2.inverse());
+        Pose3 expected2 = T2.compose(Pose3.traits.Expmap(screwPose3.xi)).compose(T2.inverse());
         Vector6 xiprime2 = T2.Adjoint(screwPose3.xi);
-        assertTrue(assert_equal(expected2, Pose3.statics.Expmap(xiprime2), 1e-6));
+        assertTrue(assert_equal(expected2, Pose3.traits.Expmap(xiprime2), 1e-6));
 
-        Pose3 expected3 = T3.compose(Pose3.statics.Expmap(screwPose3.xi)).compose(T3.inverse());
+        Pose3 expected3 = T3.compose(Pose3.traits.Expmap(screwPose3.xi)).compose(T3.inverse());
         Vector6 xiprime3 = T3.Adjoint(screwPose3.xi);
-        assertTrue(assert_equal(expected3, Pose3.statics.Expmap(xiprime3), 1e-6));
+        assertTrue(assert_equal(expected3, Pose3.traits.Expmap(xiprime3), 1e-6));
     }
 
     // Check Adjoint numerical derivatives
@@ -235,9 +235,9 @@ public class Pose3Test {
         // T1*T2*exp(Adjoint(inv(T2),x) = T1*exp(x)*T2
         Pose3 T1 = T;
         Vector6 x = new Vector6(0.1, 0.1, 0.1, 0.4, 0.2, 0.8);
-        Pose3 expected = T1.compose(Pose3.statics.Expmap(x)).compose(T2);
+        Pose3 expected = T1.compose(Pose3.traits.Expmap(x)).compose(T2);
         Vector6 y = T2.inverse().Adjoint(x);
-        Pose3 actual = T1.compose(T2).compose(Pose3.statics.Expmap(y));
+        Pose3 actual = T1.compose(T2).compose(Pose3.traits.Expmap(y));
         assertTrue(assert_equal(expected, actual, 1e-6));
     }
 
@@ -587,8 +587,8 @@ public class Pose3Test {
     void testRetract_LocalCoordinates() throws Throwable {
         Vector6 d = new Vector6(1, 2, 3, 4, 5, 6);
         d = d.times(0.1);
-        final Rot3 R = Rot3.statics.Retract(new Vector3(d.at(0), d.at(1), d.at(2)));
-        Pose3 t = Pose3.statics.Retract(d);
+        final Rot3 R = new Rot3().retract(new Vector3(d.at(0), d.at(1), d.at(2)));
+        Pose3 t = new Pose3().retract(d);
         assertTrue(assert_equal(d, new Pose3().localCoordinates(t)));
     }
 
@@ -640,11 +640,11 @@ public class Pose3Test {
         // lines in canonical coordinates correspond to Abelian subgroups in SE(3)
         Vector6 d = new Vector6(0.1, 0.2, 0.3, 0.4, 0.5, 0.6);
         // exp(-d)=inverse(exp(d))
-        assertTrue(assert_equal(Pose3.statics.Expmap(d.times(-1)), Pose3.statics.Expmap(d).inverse()));
+        assertTrue(assert_equal(Pose3.traits.Expmap(d.times(-1)), Pose3.traits.Expmap(d).inverse()));
         // exp(5d)=exp(2*d+3*d)=exp(2*d)exp(3*d)=exp(3*d)exp(2*d)
-        Pose3 T2 = Pose3.statics.Expmap(d.times(2));
-        Pose3 T3 = Pose3.statics.Expmap(d.times(3));
-        Pose3 T5 = Pose3.statics.Expmap(d.times(5));
+        Pose3 T2 = Pose3.traits.Expmap(d.times(2));
+        Pose3 T3 = Pose3.traits.Expmap(d.times(3));
+        Pose3 T5 = Pose3.traits.Expmap(d.times(5));
         assertTrue(assert_equal(T5, T2.compose(T3)));
         assertTrue(assert_equal(T5, T3.compose(T2)));
     }
@@ -901,11 +901,11 @@ public class Pose3Test {
             for (final Vector3 w : pose3_test_cases.omegas.apply(nearZero)) {
                 for (Vector3 v : pose3_test_cases.vs) {
                     final Vector6 xi = new Vector6(w, v);
-                    ThrowingFunction<Vector6, Pose3> f = (x) -> Pose3.statics.Expmap(x);
+                    ThrowingFunction<Vector6, Pose3> f = (x) -> Pose3.traits.Expmap(x);
                     Matrix expectedH = NumericalDerivative.<Pose3, Vector6, //
                             Vector6, Vector6>numericalDerivative11(f, xi, 1e-5);
                     Matrix actualH = new Matrix();
-                    Pose3.statics.Expmap(xi, actualH);
+                    Pose3.traits.Expmap(xi, actualH);
                     assertTrue(assert_equal(expectedH, actualH));
                 }
             }
@@ -919,8 +919,8 @@ public class Pose3Test {
         for (final Vector3 w : pose3_test_cases.omegas.apply(nearZero)) {
             for (Vector3 v : pose3_test_cases.vs) {
                 final Vector6 xi = new Vector6(w, v);
-                Pose3 pose = Pose3.statics.Expmap(xi);
-                assertTrue(assert_equal(xi, Pose3.statics.Logmap(pose)));
+                Pose3 pose = Pose3.traits.Expmap(xi);
+                assertTrue(assert_equal(xi, Pose3.traits.Logmap(pose)));
             }
         }
     }
@@ -1300,7 +1300,7 @@ public class Pose3Test {
                 { 7, 8, 9, 1, 2, 3 }, //
                 { 4, 5, 6, 7, 8, 9 } });
 
-        ThrowingFunction<Vector6, Pose3> g = (omega) -> Pose3.statics.Expmap(
+        ThrowingFunction<Vector6, Pose3> g = (omega) -> Pose3.traits.Expmap(
                 new Vector6(M.times(new Vector(omega))));
 
         // Test the derivatives at zero

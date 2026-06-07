@@ -33,6 +33,8 @@ public class Point2 extends ForeignObject
         Point2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Point2_Local(ADDRESS, ADDRESS, ADDRESS),
         Point2_Retract(ADDRESS, ADDRESS, ADDRESS),
+        Point2_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Point2_expmap(ADDRESS, ADDRESS, ADDRESS),
         Point2_Logmap(ADDRESS, ADDRESS),
         Point2_Expmap(ADDRESS, ADDRESS),
         Point2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
@@ -70,22 +72,22 @@ public class Point2 extends ForeignObject
 
         @Override
         public Vector2 Logmap(Point2 g) throws Throwable {
-            return statics.Logmap(g);
+            return new Vector2((MemorySegment) FF.Point2_Logmap.h.invokeExact(g.ptr));
         }
 
         @Override
-        public Vector2 Logmap(Point2 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
+        public Vector2 Logmap(Point2 m, Matrix Hm) throws Throwable {
+            return new Vector2((MemorySegment) FF.Point2_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
         }
 
         @Override
         public Point2 Expmap(Vector2 v) throws Throwable {
-            return statics.Expmap(v);
+            return new Point2((MemorySegment) FF.Point2_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override
-        public Point2 Expmap(Vector2 v, Matrix H) throws Throwable {
-            return statics.Expmap(v, H);
+        public Point2 Expmap(Vector2 v, Matrix Hv) throws Throwable {
+            return new Point2((MemorySegment) FF.Point2_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
         }
 
         @Override
@@ -134,46 +136,6 @@ public class Point2 extends ForeignObject
         return traits;
     }
 
-    public static class Statics implements LieGroup.Statics<Point2, Vector2> {
-
-        @Override
-        public Vector2 Logmap(Point2 g) throws Throwable {
-            return new Vector2((MemorySegment) FF.Point2_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
-        public Vector2 Logmap(Point2 m, Matrix Hm) throws Throwable {
-            return new Vector2((MemorySegment) FF.Point2_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point2 Expmap(Vector2 v) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Expmap.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Point2 Expmap(Vector2 v, Matrix Hv) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
-        }
-
-        @Override
-        public Point2 Retract(Vector2 v) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Point2 Retract(Vector2 v, Matrix H) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public static final Statics statics = new Statics();
-
-    @Override
-    public Statics statics() {
-        return statics;
-    }
-
     // Point2 seems to hvae the *trait* but not the *method* since it's just "plus"
     // this is really at "VectorSpace" trait.
     // TODO: implement VectorSpace as a type of LieGroup.
@@ -213,8 +175,17 @@ public class Point2 extends ForeignObject
     }
 
     @Override
+    public Point2 expmap(Vector2 v) throws Throwable {
+        return new Point2((MemorySegment) FF.Point2_expmap.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
     public Point2 expmap(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
         throw new UnsupportedOperationException();
+    }
+
+    public Vector2 logmap(Point2 g) throws Throwable {
+        return new Vector2((MemorySegment) FF.Point2_logmap.h.invokeExact(ptr, g.ptr));
     }
 
     @Override

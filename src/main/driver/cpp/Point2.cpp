@@ -55,13 +55,21 @@ gtsam::Point2* Point2_normalized(const gtsam::Point2* p) {
     return new gtsam::Point2(p->normalized());
 }
 gtsam::Vector2* Point2_Local(const gtsam::Point2* origin,  //
-                             const gtsam::Point2* v) {//
+                             const gtsam::Point2* v) {     //
     return new gtsam::Vector2(gtsam::traits<gtsam::Point2>::Local(*origin, *v));
 }
 gtsam::Point2* Point2_Retract(const gtsam::Point2* origin,  //
-                              const gtsam::Vector2* v) {//
+                              const gtsam::Vector2* v) {    //
     return new gtsam::Point2(
         gtsam::traits<gtsam::Point2>::Retract(*origin, *v));
+}
+gtsam::Vector2* Point2_logmap(const gtsam::Point2* r, const gtsam::Point2* g) {
+    return new gtsam::Vector2(gtsam::traits<gtsam::Point2>::Logmap(
+        gtsam::traits<gtsam::Point2>::Between(*r, *g)));
+}
+gtsam::Point2* Point2_expmap(const gtsam::Point2* r, const gtsam::Vector2* v) {
+    return new gtsam::Point2(gtsam::traits<gtsam::Point2>::Compose(
+        *r, gtsam::traits<gtsam::Point2>::Expmap(*v)));
 }
 gtsam::Vector2* Point2_Logmap(const gtsam::Point2* p) {
     return new gtsam::Vector2(gtsam::traits<gtsam::Point2>::Logmap(*p));

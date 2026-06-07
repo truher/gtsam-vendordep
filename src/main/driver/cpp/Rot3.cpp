@@ -112,12 +112,12 @@ gtsam::Rot3* Rot3_retractH(const gtsam::Rot3* r,     //
                            gtsam::Matrix* H2) {      //
     return new gtsam::Rot3(r->retract(*v, *H1, *H2));
 }
-// gtsam::Vector3* Rot3_logmap(const gtsam::Rot3* r, const gtsam::Rot3* g) {
-//     return new gtsam::Vector3(r->logmap(*g));
-// }
-// gtsam::Rot3* Rot3_expmap(const gtsam::Rot3* r, const gtsam::Vector3* v) {
-//     return new gtsam::Rot3(r->expmap(*v));
-// }
+gtsam::Vector3* Rot3_logmap(const gtsam::Rot3* r, const gtsam::Rot3* g) {
+    return new gtsam::Vector3(r->logmap(*g));
+}
+gtsam::Rot3* Rot3_expmap(const gtsam::Rot3* r, const gtsam::Vector3* v) {
+    return new gtsam::Rot3(r->expmap(*v));
+}
 gtsam::Rot3* Rot3_expmapH(const gtsam::Rot3* r,     //
                           const gtsam::Vector3* v,  //
                           gtsam::Matrix* H1,        //
@@ -129,13 +129,6 @@ gtsam::Vector3* Rot3_logmapH(const gtsam::Rot3* r,  //
                              gtsam::Matrix* H1,     //
                              gtsam::Matrix* H2) {   //
     return new gtsam::Vector3(r->logmap(*g, *H1, *H2));
-}
-
-gtsam::Rot3* Rot3_OriginRetract(const gtsam::Vector3* v) {
-    return new gtsam::Rot3(gtsam::Rot3::Retract(*v));
-}
-gtsam::Rot3* Rot3_OriginRetractH(const gtsam::Vector3* v, gtsam::Matrix* H) {
-    return new gtsam::Rot3(gtsam::Rot3::Retract(*v, *H));
 }
 gtsam::Vector3* Rot3_Logmap(const gtsam::Rot3* p) {
     return new gtsam::Vector3(gtsam::Rot3::Logmap(*p));

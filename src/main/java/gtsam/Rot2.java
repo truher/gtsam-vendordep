@@ -34,12 +34,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_inverse(ADDRESS, ADDRESS),
         Rot2_inverseH(ADDRESS, ADDRESS, ADDRESS),
         Rot2_AdjointMap(ADDRESS, ADDRESS),
-        // Rot2_expmap(ADDRESS, ADDRESS, ADDRESS),
+        Rot2_expmap(ADDRESS, ADDRESS, ADDRESS),
         Rot2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        // Rot2_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Rot2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Rot2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot2_OriginRetract(ADDRESS, ADDRESS),
-        Rot2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
         Rot2_transpose(ADDRESS, ADDRESS),
         Rot2_between(ADDRESS, ADDRESS, ADDRESS),
         Rot2_betweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
@@ -71,35 +69,6 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
 
         @Override
         public Vector1 Logmap(Rot2 g) throws Throwable {
-            return statics.Logmap(g);
-        }
-
-        @Override
-        public Vector1 Logmap(Rot2 g, Matrix H) throws Throwable {
-            return statics.Logmap(g, H);
-        }
-
-        @Override
-        public Rot2 Expmap(Vector1 v) throws Throwable {
-            return statics.Expmap(v);
-        }
-
-        @Override
-        public Rot2 Expmap(Vector1 v, Matrix H) throws Throwable {
-            return statics.Expmap(v, H);
-        }
-    }
-
-    public static final Rot2Traits traits = new Rot2Traits();
-
-    @Override
-    public Companion<Rot2, Vector1> companion() {
-        return traits;
-    }
-
-    public static class Rot2Statics implements LieGroup.Statics<Rot2, Vector1> {
-        @Override
-        public Vector1 Logmap(Rot2 g) throws Throwable {
             return new Vector1((MemorySegment) FF.Rot2_Logmap.h.invokeExact(g.ptr));
         }
 
@@ -119,23 +88,13 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
             return new Rot2((MemorySegment) FF.Rot2_ExpmapH.h.invokeExact(
                     v.ptr, H.ptr));
         }
-
-        @Override
-        public Rot2 Retract(Vector1 v) throws Throwable {
-            return new Rot2((MemorySegment) FF.Rot2_OriginRetract.h.invokeExact(v.ptr));
-        }
-
-        @Override
-        public Rot2 Retract(Vector1 v, Matrix H) throws Throwable {
-            return new Rot2((MemorySegment) FF.Rot2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
     }
 
-    public static final Rot2Statics statics = new Rot2Statics();
+    public static final Rot2Traits traits = new Rot2Traits();
 
     @Override
-    public Rot2Statics statics() {
-        return statics;
+    public Companion<Rot2, Vector1> companion() {
+        return traits;
     }
 
     public Rot2(MemorySegment p) {
@@ -236,10 +195,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         return new Matrix((MemorySegment) FF.Rot2_AdjointMap.h.invokeExact(ptr));
     }
 
-    // @Override
-    // public Rot2 expmap(Vector1 v) throws Throwable {
-    // return new Rot2((MemorySegment) Rot2_expmap.invokeExact(ptr, v.ptr));
-    // }
+    @Override
+    public Rot2 expmap(Vector1 v) throws Throwable {
+        return new Rot2((MemorySegment) FF.Rot2_expmap.h.invokeExact(ptr, v.ptr));
+    }
 
     @Override
     public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
@@ -247,10 +206,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
                 H2.ptr));
     }
 
-    // @Override
-    // public Vector1 logmap(Rot2 g) throws Throwable {
-    // return new Vector1((MemorySegment) Rot2_logmap.invokeExact(ptr, g.ptr));
-    // }
+    @Override
+    public Vector1 logmap(Rot2 g) throws Throwable {
+        return new Vector1((MemorySegment) FF.Rot2_logmap.h.invokeExact(ptr, g.ptr));
+    }
 
     @Override
     public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) throws Throwable {

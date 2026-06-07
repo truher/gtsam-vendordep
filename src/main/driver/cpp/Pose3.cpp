@@ -77,12 +77,11 @@ gtsam::Vector6* Pose3_logmapH(const gtsam::Pose3* p,  //
                               gtsam::Matrix* H2) {
     return new gtsam::Vector6(p->logmap(*g, *H1, *H2));
 }
-
-gtsam::Pose3* Pose3_OriginRetract(const gtsam::Vector6* v) {
-    return new gtsam::Pose3(gtsam::Pose3::Retract(*v));
+gtsam::Vector6* Pose3_logmap(const gtsam::Pose3* r, const gtsam::Pose3* g) {
+    return new gtsam::Vector6(r->logmap(*g));
 }
-gtsam::Pose3* Pose3_OriginRetractH(const gtsam::Vector6* v, gtsam::Matrix* H) {
-    return new gtsam::Pose3(gtsam::Pose3::Retract(*v, *H));
+gtsam::Pose3* Pose3_expmap(const gtsam::Pose3* r, const gtsam::Vector6* v) {
+    return new gtsam::Pose3(r->expmap(*v));
 }
 gtsam::Vector6* Pose3_Logmap(const gtsam::Pose3* p) {
     return new gtsam::Vector6(gtsam::Pose3::Logmap(*p));

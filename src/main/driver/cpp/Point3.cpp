@@ -62,7 +62,14 @@ gtsam::Point3* Point3_Retract(const gtsam::Point3* origin,  //
     return new gtsam::Point3(
         gtsam::traits<gtsam::Point3>::Retract(*origin, *v));
 }
-
+gtsam::Vector3* Point3_logmap(const gtsam::Point3* r, const gtsam::Point3* g) {
+    return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(
+        gtsam::traits<gtsam::Point3>::Between(*r, *g)));
+}
+gtsam::Point3* Point3_expmap(const gtsam::Point3* r, const gtsam::Vector3* v) {
+    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Compose(
+        *r, gtsam::traits<gtsam::Point3>::Expmap(*v)));
+}
 gtsam::Vector3* Point3_Logmap(const gtsam::Point3* p) {
     return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p));
 }
