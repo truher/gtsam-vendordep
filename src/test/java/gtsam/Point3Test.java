@@ -52,7 +52,7 @@ public class Point3Test {
         assertTrue(assert_equal(Matrix.I_3x3(), H2));
 
         assertTrue(assert_equal(new Point3(5, 7, 9), p1.retract(new Vector3(4, 5, 6))));
-        assertTrue(assert_equal(new Vector3(3, 3, 3), p1.localCoordinates(p2)));
+        assertTrue(assert_equal(new Vector3(3, 3, 3), p1.local(p2)));
     }
 
     @Test

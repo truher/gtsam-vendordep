@@ -120,12 +120,6 @@ gtsam::Vector1* Rot2_localCoordinatesH(const gtsam::Rot2* r,  //
                                        gtsam::Matrix* H2) {   //
     return new gtsam::Vector1(r->localCoordinates(*g, *H1, *H2));
 }
-gtsam::Vector1* Rot2_LogmapH(const gtsam::Rot2* p, gtsam::Matrix* H) {
-    return new gtsam::Vector1(gtsam::Rot2::Logmap(*p, *H));
-}
-gtsam::Rot2* Rot2_ExpmapH(const gtsam::Vector1* xi, gtsam::Matrix* H) {
-    return new gtsam::Rot2(gtsam::Rot2::Expmap(*xi, *H));
-}
 bool Rot2_check_group_invariants(const gtsam::Rot2* a, const gtsam::Rot2* b) {
     return gtsam::check_group_invariants(*a, *b);
 }

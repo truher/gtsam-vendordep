@@ -85,7 +85,7 @@ public class Vector extends ForeignObject
         return new Vector((MemorySegment) FF.Vector_LinSpaced.h.invokeExact(size, low, high));
     }
 
-    public Vector localCoordinates(Vector other) throws Throwable {
+    public Vector local(Vector other) throws Throwable {
         return other.minus(this);
     }
 
@@ -153,7 +153,7 @@ public class Vector extends ForeignObject
     }
 
     @Override
-    public Vector localCoordinates(Vector g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector local(Vector g, Matrix H1, Matrix H2) throws Throwable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }

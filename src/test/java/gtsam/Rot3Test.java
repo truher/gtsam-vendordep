@@ -342,7 +342,7 @@ public class Rot3Test {
     void testretract_localCoordinates() throws Throwable {
         Vector3 d12 = new Vector3(0.1, 0.1, 0.1);
         Rot3 R2 = R.retract(d12);
-        assertTrue(assert_equal(d12, R.localCoordinates(R2)));
+        assertTrue(assert_equal(d12, R.local(R2)));
     }
 
     @Test
@@ -356,9 +356,9 @@ public class Rot3Test {
     void testretract_localCoordinates2() throws Throwable {
         Rot3 t1 = R;
         Rot3 t2 = R.compose(R);
-        Vector3 d12 = t1.localCoordinates(t2);
+        Vector3 d12 = t1.local(t2);
         assertTrue(assert_equal(t2, t1.retract(d12)));
-        Vector3 d21 = t2.localCoordinates(t1);
+        Vector3 d21 = t2.local(t1);
         assertTrue(assert_equal(t1, t2.retract(d21)));
         assertTrue(assert_equal(d12, d21.times(-1.0)));
     }

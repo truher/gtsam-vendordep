@@ -365,14 +365,14 @@ public class BatchFixedLagSmootherTest {
                 Values estOn = smootherOn.calculateEstimate();
                 Marginals marginalsOn = Marginals.QR(smootherOn.getFactors(), estOn);
                 Matrix covOn = marginalsOn.marginalCovariance(lastKey);
-                Vector errOn = new Vector(groundTruth[numSteps].localCoordinates(estOn.atPose2(lastKey)));
+                Vector errOn = new Vector(groundTruth[numSteps].local(estOn.atPose2(lastKey)));
                 neesSum_on += errOn.transpose().compose(covOn.inverse()).times(errOn).at(0);
 
                 // enforceConsistency = false
                 Values estOff = smootherOff.calculateEstimate();
                 Marginals marginalsOff = Marginals.QR(smootherOff.getFactors(), estOff);
                 Matrix covOff = marginalsOff.marginalCovariance(lastKey);
-                Vector errOff = new Vector(groundTruth[numSteps].localCoordinates(estOff.atPose2(lastKey)));
+                Vector errOff = new Vector(groundTruth[numSteps].local(estOff.atPose2(lastKey)));
                 neesSum_off += errOff.transpose().compose(covOff.inverse()).times(errOff).at(0);
 
                 neesCount++;

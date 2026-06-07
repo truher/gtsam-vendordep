@@ -45,8 +45,6 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_localCoordinates(ADDRESS, ADDRESS, ADDRESS),
         Rot2_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot2_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot2_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Rot2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Rot2_print(null, ADDRESS);
@@ -56,33 +54,6 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
-    }
-
-    public static class Companion implements LieGroup.Companion<Rot2, Vector1> {
-
-        @Override
-        public Rot2 Identity() throws Throwable {
-            return new Rot2();
-        }
-
-        @Override
-        public Vector1 Logmap(Rot2 g, Matrix H) throws Throwable {
-            return new Vector1((MemorySegment) FF.Rot2_LogmapH.h.invokeExact(
-                    g.ptr, H.ptr));
-        }
-
-        @Override
-        public Rot2 Expmap(Vector1 v, Matrix H) throws Throwable {
-            return new Rot2((MemorySegment) FF.Rot2_ExpmapH.h.invokeExact(
-                    v.ptr, H.ptr));
-        }
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
     }
 
     public Rot2(MemorySegment p) {
@@ -232,12 +203,12 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     }
 
     @Override
-    public Vector1 localCoordinates(Rot2 g) throws Throwable {
+    public Vector1 local(Rot2 g) throws Throwable {
         return new Vector1((MemorySegment) FF.Rot2_localCoordinates.h.invokeExact(ptr, g.ptr));
     }
 
     @Override
-    public Vector1 localCoordinates(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector1 local(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
         return new Vector1((MemorySegment) FF.Rot2_localCoordinatesH.h.invokeExact(ptr,
                 g.ptr, H1.ptr, H2.ptr));
     }

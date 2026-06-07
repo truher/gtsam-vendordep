@@ -103,14 +103,6 @@ gtsam::Vector3* Pose2_Adjoint(const gtsam::Pose2* p,  //
                               const gtsam::Vector3* v) {
     return new gtsam::Vector3(p->Adjoint(*v));
 }
-gtsam::Pose2* Pose2_ExpmapH(const gtsam::Vector3* xi,  //
-                            gtsam::Matrix* Hv) {
-    return new gtsam::Pose2(gtsam::Pose2::Expmap(gtsam::Vector3(*xi), *Hv));
-}
-gtsam::Vector3* Pose2_LogmapH(const gtsam::Pose2* p,  //
-                              gtsam::Matrix* H) {
-    return new gtsam::Vector3(gtsam::Pose2::Logmap(*p, *H));
-}
 gtsam::Vector3* Pose2_logmap(const gtsam::Pose2* p0,  //
                              const gtsam::Pose2* p1) {
     return new gtsam::Vector3(p0->logmap(*p1));

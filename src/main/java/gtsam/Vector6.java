@@ -94,7 +94,7 @@ public class Vector6 extends ForeignObject
     }
 
     @Override
-    public Vector6 localCoordinates(Vector6 other) throws Throwable {
+    public Vector6 local(Vector6 other) throws Throwable {
         return other.minus(this);
     }
 
@@ -104,7 +104,7 @@ public class Vector6 extends ForeignObject
     }
 
     @Override
-    public Vector6 localCoordinates(Vector6 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector6 local(Vector6 g, Matrix H1, Matrix H2) throws Throwable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }

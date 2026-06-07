@@ -35,8 +35,6 @@ public class Point2 extends ForeignObject
         Point2_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Point2_expmap(ADDRESS, ADDRESS, ADDRESS),
-        Point2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
-        Point2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Point2_Compose(ADDRESS, ADDRESS, ADDRESS),
         Point2_ComposeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Point2_Between(ADDRESS, ADDRESS, ADDRESS),
@@ -50,30 +48,6 @@ public class Point2 extends ForeignObject
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
-    }
-
-    public static class Companion implements LieGroup.Companion<Point2, Vector2> {
-        @Override
-        public Point2 Identity() throws Throwable {
-            return new Point2(0, 0);
-        }
-
-        @Override
-        public Vector2 Logmap(Point2 m, Matrix Hm) throws Throwable {
-            return new Vector2((MemorySegment) FF.Point2_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point2 Expmap(Vector2 v, Matrix Hv) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
-        }
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
     }
 
     @Override
@@ -139,7 +113,7 @@ public class Point2 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Point2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 local(Point2 g, Matrix H1, Matrix H2) throws Throwable {
         throw new UnsupportedOperationException();
     }
 
@@ -150,6 +124,10 @@ public class Point2 extends ForeignObject
 
     public Point2(MemorySegment p) {
         super(p, FF.Point2_delete.h);
+    }
+
+    public Point2() throws Throwable {
+        this(0, 0);
     }
 
     public Point2(double x, double y) throws Throwable {
@@ -182,7 +160,7 @@ public class Point2 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Point2 other) throws Throwable {
+    public Vector2 local(Point2 other) throws Throwable {
         return new Vector2((MemorySegment) FF.Point2_Local.h.invokeExact(ptr, other.ptr));
     }
 

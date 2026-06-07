@@ -71,14 +71,6 @@ gtsam::Point2* Point2_expmap(const gtsam::Point2* r, const gtsam::Vector2* v) {
     return new gtsam::Point2(gtsam::traits<gtsam::Point2>::Compose(
         *r, gtsam::traits<gtsam::Point2>::Expmap(*v)));
 }
-gtsam::Vector2* Point2_LogmapH(const gtsam::Point2* p,  //
-                               gtsam::Matrix* H) {      //
-    return new gtsam::Vector2(gtsam::traits<gtsam::Point2>::Logmap(*p, *H));
-}
-gtsam::Point2* Point2_ExpmapH(const gtsam::Vector2* v,  //
-                              gtsam::Matrix* H) {       //
-    return new gtsam::Point2(gtsam::traits<gtsam::Point2>::Expmap(*v, *H));
-}
 gtsam::Point2* Point2_Compose(const gtsam::Point2* a,  //
                               const gtsam::Point2* b) {
     return new gtsam::Point2(gtsam::traits<gtsam::Point2>::Compose(*a, *b));

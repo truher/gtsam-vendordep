@@ -35,8 +35,6 @@ public class Point3 extends ForeignObject
         Point3_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point3_logmap(ADDRESS, ADDRESS, ADDRESS),
         Point3_expmap(ADDRESS, ADDRESS, ADDRESS),
-        Point3_LogmapH(ADDRESS, ADDRESS, ADDRESS),
-        Point3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Point3_Compose(ADDRESS, ADDRESS, ADDRESS),
         Point3_ComposeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Point3_Between(ADDRESS, ADDRESS, ADDRESS),
@@ -65,6 +63,10 @@ public class Point3 extends ForeignObject
 
     Point3(MemorySegment p) {
         super(p, FF.Point3_delete.h);
+    }
+
+    public Point3() throws Throwable {
+        this(0, 0, 0);
     }
 
     public Point3(double x, double y, double z) throws Throwable {
@@ -105,31 +107,6 @@ public class Point3 extends ForeignObject
 
     public static boolean check_manifold_invariants(Point3 a, Point3 b) throws Throwable {
         return (boolean) FF.Point3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
-    }
-
-    public static class Companion implements LieGroup.Companion<Point3, Vector3> {
-
-        @Override
-        public Point3 Identity() throws Throwable {
-            return new Point3(0, 0, 0);
-        }
-
-        @Override
-        public Vector3 Logmap(Point3 m, Matrix Hm) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point3 Expmap(Vector3 v, Matrix Hv) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_ExpmapH.h.invokeExact(v.ptr, Hv.ptr));
-        }
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
     }
 
     @Override
@@ -231,12 +208,12 @@ public class Point3 extends ForeignObject
     }
 
     @Override
-    public Vector3 localCoordinates(Point3 g) throws Throwable {
+    public Vector3 local(Point3 g) throws Throwable {
         return new Vector3((MemorySegment) FF.Point3_Local.h.invokeExact(ptr, g.ptr));
     }
 
     @Override
-    public Vector3 localCoordinates(Point3 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector3 local(Point3 g, Matrix H1, Matrix H2) throws Throwable {
         throw new UnsupportedOperationException();
     }
 

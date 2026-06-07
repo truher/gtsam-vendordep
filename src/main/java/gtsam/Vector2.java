@@ -78,7 +78,7 @@ public class Vector2 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Vector2 other) throws Throwable {
+    public Vector2 local(Vector2 other) throws Throwable {
         return other.minus(this);
     }
 
@@ -88,7 +88,7 @@ public class Vector2 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Vector2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 local(Vector2 g, Matrix H1, Matrix H2) throws Throwable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }

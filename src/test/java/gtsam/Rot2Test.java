@@ -94,7 +94,7 @@ public class Rot2Test {
         Rot2 rot0 = Rot2.fromAngle(Math.PI / 2.0);
         Rot2 rot = Rot2.fromAngle(Math.PI);
         Vector1 expected = new Vector1(Math.PI / 2.0);
-        Vector1 actual = rot0.localCoordinates(rot);
+        Vector1 actual = rot0.local(rot);
         assertTrue(assert_equal(expected, actual));
     }
 

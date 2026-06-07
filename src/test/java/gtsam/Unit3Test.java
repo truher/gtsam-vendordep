@@ -260,7 +260,7 @@ public class Unit3Test {
     @Test
     void testLocalCoordinates0() throws Throwable {
         Unit3 p = new Unit3();
-        Vector2 actual = p.localCoordinates(p);
+        Vector2 actual = p.local(p);
         assertTrue(assert_equal(new Vector2(0, 0), actual, 1e-5));
     }
 
@@ -270,7 +270,7 @@ public class Unit3Test {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3();
             Vector2 expected = new Vector2(0, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(new Vector2(0, 0), actual, 1e-5));
             assertTrue(assert_equal(q, p.retract(expected), 1e-5));
         }
@@ -278,7 +278,7 @@ public class Unit3Test {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3(1, 6.12385e-21, 0);
             Vector2 expected = new Vector2(0, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(new Vector2(0, 0), actual, 1e-5));
             assertTrue(assert_equal(q, p.retract(expected), 1e-5));
         }
@@ -286,7 +286,7 @@ public class Unit3Test {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3(-1, 0, 0);
             Vector2 expected = new Vector2(Math.PI, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(expected, actual, 1e-5));
             assertTrue(assert_equal(q, p.retract(expected), 1e-5));
         }
@@ -294,7 +294,7 @@ public class Unit3Test {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3(0, 1, 0);
             Vector2 expected = new Vector2(0, -Math.PI / 2);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(expected, actual, 1e-5));
             assertTrue(assert_equal(q, p.retract(expected), 1e-5));
         }
@@ -302,20 +302,20 @@ public class Unit3Test {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3(0, -1, 0);
             Vector2 expected = new Vector2(0, Math.PI / 2);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(expected, actual, 1e-5));
             assertTrue(assert_equal(q, p.retract(expected), 1e-5));
         }
         {
             Unit3 p = new Unit3(0, 1, 0);
             Unit3 q = new Unit3(0, -1, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(q, p.retract(actual), 1e-5));
         }
         {
             Unit3 p = new Unit3(0, 0, 1);
             Unit3 q = new Unit3(0, 0, -1);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(assert_equal(q, p.retract(actual), 1e-5));
         }
 
@@ -323,14 +323,14 @@ public class Unit3Test {
         {
             Unit3 p = new Unit3(0, 1, 0);
             Unit3 q = new Unit3(0 - twist, -1 + twist, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(actual.at(0) < 1e-2);
             assertTrue(actual.at(1) > Math.PI - 1e-2);
         }
         {
             Unit3 p = new Unit3(0, 1, 0);
             Unit3 q = new Unit3(0 + twist, -1 - twist, 0);
-            Vector2 actual = p.localCoordinates(q);
+            Vector2 actual = p.local(q);
             assertTrue(actual.at(0) < 1e-2);
             assertTrue(actual.at(1) < -Math.PI + 1e-2);
         }
@@ -397,14 +397,14 @@ public class Unit3Test {
             Unit3 expected = new Unit3(0.877583, 0, 0.479426);
             Unit3 actual = p.retract(v);
             assertTrue(assert_equal(expected, actual, 1e-6));
-            assertTrue(assert_equal(v, p.localCoordinates(actual), 1e-5));
+            assertTrue(assert_equal(v, p.local(actual), 1e-5));
         }
         {
             Unit3 p = new Unit3();
             Vector2 v = new Vector2(0, 0);
             Unit3 actual = p.retract(v);
             assertTrue(assert_equal(p, actual, 1e-6));
-            assertTrue(assert_equal(v, p.localCoordinates(actual), 1e-5));
+            assertTrue(assert_equal(v, p.local(actual), 1e-5));
         }
     }
 
@@ -438,7 +438,7 @@ public class Unit3Test {
         Unit3 expected = new Unit3(new Point3(0, 0, 1));
         Unit3 actual = p.retract(v);
         assertTrue(assert_equal(expected, actual, 1e-5));
-        assertTrue(assert_equal(v, p.localCoordinates(actual), 1e-5));
+        assertTrue(assert_equal(v, p.local(actual), 1e-5));
     }
 
     @Test
@@ -470,7 +470,7 @@ public class Unit3Test {
                 continue;
 
             // Check if the local coordinates and retract return consistent results.
-            Vector2 v12 = s1.localCoordinates(s2);
+            Vector2 v12 = s1.local(s2);
             Unit3 actual_s2 = s1.retract(v12);
             assertTrue(assert_equal(s2, actual_s2, 1e-5));
         }

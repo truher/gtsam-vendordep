@@ -114,7 +114,7 @@ public class Cal3SD2Test {
         Vector9 d = new Vector9(1, 2, 3, 4, 5, 6, 7, 8, 9);
         Cal3DS2 actual = K.retract(d);
         assertTrue(assert_equal(expected, actual, 1e-7));
-        assertTrue(assert_equal(d, K.localCoordinates(actual), 1e-7));
+        assertTrue(assert_equal(d, K.local(actual), 1e-7));
     }
 
 }

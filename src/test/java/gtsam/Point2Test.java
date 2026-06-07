@@ -55,7 +55,7 @@ public class Point2Test {
         assertTrue(assert_equal(Matrix.I_2x2(), H2));
 
         assertTrue(assert_equal(new Point2(5, 7), p1.retract(new Vector2(4., 5.))));
-        assertTrue(assert_equal(new Vector2(3., 3.), p1.localCoordinates(p2)));
+        assertTrue(assert_equal(new Vector2(3., 3.), p1.local(p2)));
     }
 
     @Test

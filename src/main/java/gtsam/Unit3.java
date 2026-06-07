@@ -90,7 +90,7 @@ public class Unit3 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Unit3 other) throws Throwable {
+    public Vector2 local(Unit3 other) throws Throwable {
         return new Vector2((MemorySegment) FF.Unit3_localCoordinates.h.invokeExact(ptr, other.ptr));
     }
 
@@ -191,7 +191,7 @@ public class Unit3 extends ForeignObject
     }
 
     @Override
-    public Vector2 localCoordinates(Unit3 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 local(Unit3 g, Matrix H1, Matrix H2) throws Throwable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }

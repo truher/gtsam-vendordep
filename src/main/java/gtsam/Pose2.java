@@ -39,8 +39,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_Adjoint(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_compose(ADDRESS, ADDRESS, ADDRESS),
         Pose2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_matrix(ADDRESS, ADDRESS),
@@ -70,33 +68,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
-    }
-
-    public static class Companion implements LieGroup.Companion<Pose2, Vector3> {
-
-        @Override
-        public Pose2 Identity() throws Throwable {
-            return new Pose2();
-        }
-
-        @Override
-        public Vector3 Logmap(Pose2 g, Matrix H) throws Throwable {
-            return new Vector3((MemorySegment) FF.Pose2_LogmapH.h.invokeExact(
-                    g.ptr, H.ptr));
-        }
-
-        @Override
-        public Pose2 Expmap(Vector3 xi, Matrix H) throws Throwable {
-            return new Pose2((MemorySegment) FF.Pose2_ExpmapH.h.invokeExact(
-                    xi.ptr, H.ptr));
-        }
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
     }
 
     @Override
@@ -169,13 +140,13 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
     }
 
     @Override
-    public Vector3 localCoordinates(Pose2 g) throws Throwable {
+    public Vector3 local(Pose2 g) throws Throwable {
         return new Vector3(
                 (MemorySegment) FF.Pose2_localCoordinates.h.invokeExact(ptr, g.ptr));
     }
 
     @Override
-    public Vector3 localCoordinates(Pose2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector3 local(Pose2 g, Matrix H1, Matrix H2) throws Throwable {
         return new Vector3(
                 (MemorySegment) FF.Pose2_localCoordinatesH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
     }
@@ -225,14 +196,6 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
 
     public Vector3 Adjoint(Vector3 v) throws Throwable {
         return new Vector3((MemorySegment) FF.Pose2_Adjoint.h.invokeExact(ptr, v.ptr));
-    }
-
-    public static Pose2 Expmap(Vector3 xi, Matrix Hv) throws Throwable {
-        return new Pose2((MemorySegment) FF.Pose2_ExpmapH.h.invokeExact(xi.ptr, Hv.ptr));
-    }
-
-    public static Vector3 Logmap(Pose2 p, Matrix H) throws Throwable {
-        return new Vector3((MemorySegment) FF.Pose2_LogmapH.h.invokeExact(p.ptr, H.ptr));
     }
 
     @Override
