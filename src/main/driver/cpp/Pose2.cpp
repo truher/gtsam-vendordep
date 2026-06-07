@@ -124,18 +124,10 @@ gtsam::Vector3* Pose2_logmap(const gtsam::Pose2* p0,  //
 gtsam::Pose2* Pose2_OriginRetract(const gtsam::Vector3* v) {
     return new gtsam::Pose2(gtsam::Pose2::Retract(*v));
 }
-gtsam::Vector3* Pose2_OriginLocalCoordinates(const gtsam::Pose2* g) {
-    return new gtsam::Vector3(gtsam::Pose2::LocalCoordinates(*g));
-}
 gtsam::Pose2* Pose2_OriginRetractH(const gtsam::Vector3* v,  //
                                    gtsam::Matrix* H) {
     return new gtsam::Pose2(gtsam::Pose2::Retract(*v, *H));
 }
-gtsam::Vector3* Pose2_OriginLocalCoordinatesH(const gtsam::Pose2* g,  //
-                                              gtsam::Matrix* H) {     //
-    return new gtsam::Vector3(gtsam::Pose2::LocalCoordinates(*g, *H));
-}
-
 gtsam::Pose2* Pose2_compose(const gtsam::Pose2* a, const gtsam::Pose2* b) {
     return new gtsam::Pose2((*a) * (*b));
 }

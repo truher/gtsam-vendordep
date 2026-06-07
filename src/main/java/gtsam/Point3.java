@@ -249,17 +249,7 @@ public class Point3 extends ForeignObject
         }
 
         @Override
-        public Vector3 LocalCoordinates(Point3 g) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Point3 Retract(Vector3 v, Matrix H) throws Throwable {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Vector3 LocalCoordinates(Point3 g, Matrix H) throws Throwable {
             throw new UnsupportedOperationException();
         }
     }
@@ -328,7 +318,7 @@ public class Point3 extends ForeignObject
 
     @Override
     public Vector3 localCoordinates(Point3 g) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Vector3((MemorySegment) FF.Point3_Local.h.invokeExact(ptr, g.ptr));
     }
 
     @Override

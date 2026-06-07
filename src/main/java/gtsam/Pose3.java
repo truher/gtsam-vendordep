@@ -30,9 +30,7 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose3_OriginRetract(ADDRESS, ADDRESS),
-        Pose3_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Pose3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
-        Pose3_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Expmap(ADDRESS, ADDRESS),
         Pose3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose3_Logmap(ADDRESS, ADDRESS),
@@ -142,18 +140,8 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         }
 
         @Override
-        public Vector6 LocalCoordinates(Pose3 g) throws Throwable {
-            return new Vector6((MemorySegment) FF.Pose3_OriginLocalCoordinates.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Pose3 Retract(Vector6 v, Matrix H) throws Throwable {
             return new Pose3((MemorySegment) FF.Pose3_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
-
-        @Override
-        public Vector6 LocalCoordinates(Pose3 g, Matrix H) throws Throwable {
-            return new Vector6((MemorySegment) FF.Pose3_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
         }
     }
 

@@ -39,9 +39,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         // Rot2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Rot2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_OriginRetract(ADDRESS, ADDRESS),
-        Rot2_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Rot2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
-        Rot2_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Rot2_transpose(ADDRESS, ADDRESS),
         Rot2_between(ADDRESS, ADDRESS, ADDRESS),
         Rot2_betweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
@@ -128,20 +126,9 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         }
 
         @Override
-        public Vector1 LocalCoordinates(Rot2 g) throws Throwable {
-            return new Vector1((MemorySegment) FF.Rot2_OriginLocalCoordinates.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Rot2 Retract(Vector1 v, Matrix H) throws Throwable {
             return new Rot2((MemorySegment) FF.Rot2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
         }
-
-        @Override
-        public Vector1 LocalCoordinates(Rot2 g, Matrix H) throws Throwable {
-            return new Vector1((MemorySegment) FF.Rot2_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
-        }
-
     }
 
     public static final Rot2Statics statics = new Rot2Statics();

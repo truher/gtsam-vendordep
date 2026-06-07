@@ -92,17 +92,9 @@ gtsam::Vector1* Rot2_logmapH(const gtsam::Rot2* r,  //
 gtsam::Rot2* Rot2_OriginRetract(const gtsam::Vector1* v) {
     return new gtsam::Rot2(gtsam::Rot2::Retract(*v));
 }
-gtsam::Vector1* Rot2_OriginLocalCoordinates(const gtsam::Rot2* g) {
-    return new gtsam::Vector1(gtsam::Rot2::LocalCoordinates(*g));
-}
 gtsam::Rot2* Rot2_OriginRetractH(const gtsam::Vector1* v, gtsam::Matrix* H) {
     return new gtsam::Rot2(gtsam::Rot2::Retract(*v, *H));
 }
-gtsam::Vector1* Rot2_OriginLocalCoordinatesH(const gtsam::Rot2* g,
-                                             gtsam::Matrix* H) {
-    return new gtsam::Vector1(gtsam::Rot2::LocalCoordinates(*g, *H));
-}
-
 gtsam::Matrix2* Rot2_transpose(const gtsam::Rot2* r) {
     return new gtsam::Matrix2(r->transpose());
 }

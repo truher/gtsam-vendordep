@@ -43,7 +43,7 @@ public class NumericalDerivative {
             // System.out.printf("x1 (right) %s\n", x1);
             Y hx1 = h.apply(x1);
             // System.out.printf("hx1 (right, corresponding to x1) %s\n", hx1);
-            Yvec dy1 = TraitsY.Local(hx, hx1);
+            Yvec dy1 = hx.localCoordinates(hx1);
             // System.out.printf("dy1 %s\n", dy1);
             dx.set(j, -delta);
             // System.out.printf("dx (left) %s\n", dx);
@@ -52,7 +52,7 @@ public class NumericalDerivative {
             // System.out.printf("x2 (left) %s\n", x2);
             Y hx2 = h.apply(x2);
             // System.out.printf("hx2 (left, corresponding to x2) %s\n", hx2);
-            Yvec dy2 = TraitsY.Local(hx, hx2);
+            Yvec dy2 = hx.localCoordinates(hx2);
             // System.out.printf("dy2 (y distance, left) %s\n", dy2);
             dx.set(j, 0);
             H.setCol(j, dy1.minus(dy2).times(factor));

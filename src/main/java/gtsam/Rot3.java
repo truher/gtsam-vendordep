@@ -62,9 +62,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_OriginRetract(ADDRESS, ADDRESS),
-        Rot3_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Rot3_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
-        Rot3_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Rot3_Expmap(ADDRESS, ADDRESS),
         Rot3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_Logmap(ADDRESS, ADDRESS),
@@ -183,18 +181,8 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         }
 
         @Override
-        public Vector3 LocalCoordinates(Rot3 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Rot3_OriginLocalCoordinates.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Rot3 Retract(Vector3 v, Matrix H) throws Throwable {
             return new Rot3((MemorySegment) FF.Rot3_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
-        }
-
-        @Override
-        public Vector3 LocalCoordinates(Rot3 g, Matrix H) throws Throwable {
-            return new Vector3((MemorySegment) FF.Rot3_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
         }
     }
 

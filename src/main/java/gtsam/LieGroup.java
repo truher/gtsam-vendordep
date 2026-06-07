@@ -112,13 +112,7 @@ public interface LieGroup<//
         T Retract(V v) throws Throwable;
 
         // TODO: delete
-        V LocalCoordinates(T g) throws Throwable;
-
-        // TODO: delete
         T Retract(V v, Matrix H) throws Throwable;
-
-        // TODO: delete
-        V LocalCoordinates(T g, Matrix H) throws Throwable;
     }
 
     Companion<T, V> companion();
@@ -160,9 +154,7 @@ public interface LieGroup<//
     }
 
     // TODO: delete this
-    default V localCoordinates(T g) throws Throwable {
-        return statics().LocalCoordinates(between(g));
-    }
+    V localCoordinates(T g) throws Throwable;
 
     // TODO: delete this
     T retract(V v, Matrix H1, Matrix H2) throws Throwable;

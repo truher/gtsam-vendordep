@@ -589,7 +589,7 @@ public class Pose3Test {
         d = d.times(0.1);
         final Rot3 R = Rot3.statics.Retract(new Vector3(d.at(0), d.at(1), d.at(2)));
         Pose3 t = Pose3.statics.Retract(d);
-        assertTrue(assert_equal(d, Pose3.statics.LocalCoordinates(t)));
+        assertTrue(assert_equal(d, new Pose3().localCoordinates(t)));
     }
 
     @Test

@@ -43,9 +43,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Pose2_OriginRetract(ADDRESS, ADDRESS),
-        Pose2_OriginLocalCoordinates(ADDRESS, ADDRESS),
         Pose2_OriginRetractH(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_OriginLocalCoordinatesH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_compose(ADDRESS, ADDRESS, ADDRESS),
         Pose2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_matrix(ADDRESS, ADDRESS),
@@ -142,20 +140,9 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         }
 
         @Override
-        public Vector3 LocalCoordinates(Pose2 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Pose2_OriginLocalCoordinates.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Pose2 Retract(Vector3 v, Matrix H) throws Throwable {
             return new Pose2((MemorySegment) FF.Pose2_OriginRetractH.h.invokeExact(v.ptr, H.ptr));
         }
-
-        @Override
-        public Vector3 LocalCoordinates(Pose2 g, Matrix H) throws Throwable {
-            return new Vector3((MemorySegment) FF.Pose2_OriginLocalCoordinatesH.h.invokeExact(g.ptr, H.ptr));
-        }
-
     }
 
     public static final Pose2Statics statics = new Pose2Statics();
