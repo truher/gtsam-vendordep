@@ -45,15 +45,15 @@ public class Vector extends ForeignObject
         }
     }
 
-    public static class Traits implements Manifold.Companion<Vector, Vector> {
+    public static class Companion implements Manifold.Companion<Vector, Vector> {
 
     }
 
-    public static final Traits traits = new Traits();
+    public static final Companion companion = new Companion();
 
     @Override
-    public Traits companion() {
-        return traits;
+    public Companion companion() {
+        return companion;
     }
 
     @Override

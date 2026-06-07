@@ -109,7 +109,7 @@ public class Point3 extends ForeignObject
         return (boolean) FF.Point3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
     }
 
-    public static class Traits implements LieGroup.Companion<Point3, Vector3> {
+    public static class Companion implements LieGroup.Companion<Point3, Vector3> {
 
         @Override
         public Point3 Identity() throws Throwable {
@@ -186,11 +186,11 @@ public class Point3 extends ForeignObject
 
     }
 
-    public static final Traits traits = new Traits();
+    public static final Companion companion = new Companion();
 
     @Override
-    public Traits companion() {
-        return traits;
+    public Companion companion() {
+        return companion;
     }
 
     @Override

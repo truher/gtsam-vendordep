@@ -114,7 +114,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         }
     }
 
-    public static class Rot3Traits implements LieGroup.Companion<Rot3, Vector3> {
+    public static class Companion implements LieGroup.Companion<Rot3, Vector3> {
 
         @Override
         public Rot3 Identity() throws Throwable {
@@ -144,11 +144,11 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         }
     }
 
-    public static final Rot3Traits traits = new Rot3Traits();
+    public static final Companion companion = new Companion();
 
     @Override
-    public Companion<Rot3, Vector3> companion() {
-        return traits;
+    public Companion companion() {
+        return companion;
     }
 
     public Rot3(MemorySegment p) {

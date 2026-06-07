@@ -156,10 +156,10 @@ public class Pose2Test {
 
     @Test
     void testexpmap_c() throws Throwable {
-        Pose2 actual2 = Pose2.traits.Expmap(screwPose2.xi);
+        Pose2 actual2 = Pose2.companion.Expmap(screwPose2.xi);
         assertTrue(assert_equal(screwPose2.expected, actual2, 1e-6),
                 String.format("expected %s actual %s", screwPose2.expected, actual2));
-        Vector3 actual3 = Pose2.traits.Logmap(screwPose2.expected);
+        Vector3 actual3 = Pose2.companion.Logmap(screwPose2.expected);
         assertTrue(assert_equal(screwPose2.xi, actual3, 1e-6));
     }
 
@@ -170,9 +170,9 @@ public class Pose2Test {
         Rot2 expectedR = Rot2.fromAngle(w);
         Point2 expectedT = new Point2(-0.0446635, 0.29552);
         Pose2 expected = new Pose2(expectedR, expectedT);
-        Pose2 actual2 = Pose2.traits.Expmap(xi);
+        Pose2 actual2 = Pose2.companion.Expmap(xi);
         assertTrue(assert_equal(expected, actual2, 1e-6));
-        Vector3 actual3 = Pose2.traits.Logmap(expected);
+        Vector3 actual3 = Pose2.companion.Logmap(expected);
         assertTrue(assert_equal(xi, actual3, 1e-6));
     }
 
@@ -180,14 +180,14 @@ public class Pose2Test {
     @Test
     void testAdjoint_full() throws Throwable {
         Pose2 T = new Pose2(1, 2, 3);
-        Pose2 expected = T.compose(Pose2.traits.Expmap(screwPose2.xi)).compose(T.inverse());
+        Pose2 expected = T.compose(Pose2.companion.Expmap(screwPose2.xi)).compose(T.inverse());
         Vector3 xiprime = T.Adjoint(screwPose2.xi);
-        assertTrue(assert_equal(expected, Pose2.traits.Expmap(xiprime), 1e-6));
+        assertTrue(assert_equal(expected, Pose2.companion.Expmap(xiprime), 1e-6));
 
         Vector3 xi2 = new Vector3(4, 5, 6);
-        Pose2 expected2 = T.compose(Pose2.traits.Expmap(xi2)).compose(T.inverse());
+        Pose2 expected2 = T.compose(Pose2.companion.Expmap(xi2)).compose(T.inverse());
         Vector3 xiprime2 = T.Adjoint(xi2);
-        assertTrue(assert_equal(expected2, Pose2.traits.Expmap(xiprime2), 1e-6));
+        assertTrue(assert_equal(expected2, Pose2.companion.Expmap(xiprime2), 1e-6));
     }
 
     @Test

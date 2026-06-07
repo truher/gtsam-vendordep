@@ -74,7 +74,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         }
     }
 
-    public static class Pose2Traits implements LieGroup.Companion<Pose2, Vector3> {
+    public static class Companion implements LieGroup.Companion<Pose2, Vector3> {
 
         @Override
         public Pose2 Identity() throws Throwable {
@@ -104,11 +104,11 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         }
     }
 
-    public static final Pose2Traits traits = new Pose2Traits();
+    public static final Companion companion = new Companion();
 
     @Override
-    public Pose2Traits companion() {
-        return traits;
+    public Companion companion() {
+        return companion;
     }
 
     @Override

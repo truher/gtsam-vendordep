@@ -4,14 +4,6 @@ package gtsam;
  * See gtsam/base/Lie.h.
  * 
  * Traits are implemented using the companion object pattern.
- * 
- * We implement most, but not all, of the following
- * 
- * LieGroup is a large "base class" of implementations (e.g. "compose"),
- * some of which are static (e.g. "Retract"), implemented using a "statics"
- * singleton.
- * 
- * There is also a large LieGroupTraits class, implemented as a singleton.
  *
  * @param <T> the Lie group type, e.g. Pose2.
  * @param <V> the type of its tangent vector, e.g. Vector3.

@@ -54,7 +54,7 @@ public class Point2 extends ForeignObject
         }
     }
 
-    public static class Traits implements LieGroup.Companion<Point2, Vector2> {
+    public static class Companion implements LieGroup.Companion<Point2, Vector2> {
         @Override
         public Point2 Identity() throws Throwable {
             return new Point2(0, 0);
@@ -129,11 +129,11 @@ public class Point2 extends ForeignObject
         }
     }
 
-    public static final Traits traits = new Traits();
+    public static final Companion companion = new Companion();
 
     @Override
-    public Traits companion() {
-        return traits;
+    public Companion companion() {
+        return companion;
     }
 
     // Point2 seems to hvae the *trait* but not the *method* since it's just "plus"
