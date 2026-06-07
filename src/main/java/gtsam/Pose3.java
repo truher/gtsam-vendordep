@@ -78,10 +78,10 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         }
     }
 
-    public static class Traits implements LieGroup.Traits<Pose3, Vector6> {
+    public static class Traits implements LieGroup.Companion<Pose3, Vector6> {
         @Override
         public Pose3 Identity() throws Throwable {
-            return statics.Identity();
+            return new Pose3();
         }
 
         @Override
@@ -108,15 +108,11 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     public static final Traits traits = new Traits();
 
     @Override
-    public Traits traits() {
+    public Traits companion() {
         return traits;
     }
 
     public static class Pose3Statics implements LieGroup.Statics<Pose3, Vector6> {
-        @Override
-        public Pose3 Identity() throws Throwable {
-            return new Pose3();
-        }
 
         @Override
         public Vector6 Logmap(Pose3 g) throws Throwable {

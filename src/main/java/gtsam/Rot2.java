@@ -64,11 +64,11 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         }
     }
 
-    public static class Rot2Traits implements LieGroup.Traits<Rot2, Vector1> {
+    public static class Rot2Traits implements LieGroup.Companion<Rot2, Vector1> {
 
         @Override
         public Rot2 Identity() throws Throwable {
-            return statics.Identity();
+            return new Rot2();
         }
 
         @Override
@@ -95,16 +95,11 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
     public static final Rot2Traits traits = new Rot2Traits();
 
     @Override
-    public Traits<Rot2, Vector1> traits() {
+    public Companion<Rot2, Vector1> companion() {
         return traits;
     }
 
     public static class Rot2Statics implements LieGroup.Statics<Rot2, Vector1> {
-        @Override
-        public Rot2 Identity() throws Throwable {
-            return new Rot2();
-        }
-
         @Override
         public Vector1 Logmap(Rot2 g) throws Throwable {
             return new Vector1((MemorySegment) FF.Rot2_Logmap.h.invokeExact(g.ptr));

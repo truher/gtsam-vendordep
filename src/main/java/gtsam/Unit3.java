@@ -79,14 +79,14 @@ public class Unit3 extends ForeignObject
         return new Point3((MemorySegment) FF.Unit3_point3H.h.invokeExact(ptr, H.ptr));
     }
 
-    public static class Traits implements Manifold.Traits<Unit3, Vector2> {
+    public static class Traits implements Manifold.Companion<Unit3, Vector2> {
 
     }
 
     public static final Traits traits = new Traits();
 
     @Override
-    public Traits traits() {
+    public Traits companion() {
         return traits;
     }
 

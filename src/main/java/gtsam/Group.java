@@ -3,8 +3,7 @@ package gtsam;
 /**
  * See gtsam/base/Group.h.
  * 
- * There's no "base class" for Group types, just some
- * required methods, and "traits," implemented as a singleton.
+ * Traits are implemented using the companion object pattern.
  * 
  * Note that the C++ makes a distinction between "additive" and "multiplicative"
  * groups, but we do not, it's up to the implementation. There is only one
@@ -18,7 +17,7 @@ public interface Group<T extends Group<T>> {
      * See MultiplicativeGroupTraits and AdditiveGroupTraits.
      * Group traits are all static.
      */
-    public interface Traits<T extends Group<T>> {
+    public interface Companion<T extends Group<T>> {
         /** Required by IsGroup. */
         T Identity() throws Throwable;
 
@@ -38,7 +37,7 @@ public interface Group<T extends Group<T>> {
         }
     }
 
-    Traits<T> traits();
+    Companion<T> companion();
 
     /** Actually operator*, required by MultiplicativeGroupTraits */
     T compose(T h) throws Throwable;

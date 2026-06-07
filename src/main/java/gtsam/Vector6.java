@@ -89,14 +89,14 @@ public class Vector6 extends ForeignObject
         return new Vector6((MemorySegment) FF.Vector6_times.h.invokeExact(ptr, a));
     }
 
-    public static class Traits implements Manifold.Traits<Vector6, Vector6> {
+    public static class Traits implements Manifold.Companion<Vector6, Vector6> {
 
     }
 
     public static final Traits traits = new Traits();
 
     @Override
-    public Traits traits() {
+    public Traits companion() {
         return traits;
     }
 

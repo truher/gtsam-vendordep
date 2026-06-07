@@ -52,10 +52,10 @@ public class Point2 extends ForeignObject
         }
     }
 
-    public static class Traits implements LieGroup.Traits<Point2, Vector2> {
+    public static class Traits implements LieGroup.Companion<Point2, Vector2> {
         @Override
         public Point2 Identity() throws Throwable {
-            return statics.Identity();
+            return new Point2(0, 0);
         }
 
         @Override
@@ -130,15 +130,11 @@ public class Point2 extends ForeignObject
     public static final Traits traits = new Traits();
 
     @Override
-    public Traits traits() {
+    public Traits companion() {
         return traits;
     }
 
     public static class Statics implements LieGroup.Statics<Point2, Vector2> {
-        @Override
-        public Point2 Identity() throws Throwable {
-            return new Point2(0, 0);
-        }
 
         @Override
         public Vector2 Logmap(Point2 g) throws Throwable {

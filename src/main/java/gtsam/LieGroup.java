@@ -3,6 +3,8 @@ package gtsam;
 /**
  * See gtsam/base/Lie.h.
  * 
+ * Traits are implemented using the companion object pattern.
+ * 
  * We implement most, but not all, of the following
  * 
  * LieGroup is a large "base class" of implementations (e.g. "compose"),
@@ -10,9 +12,6 @@ package gtsam;
  * singleton.
  * 
  * There is also a large LieGroupTraits class, implemented as a singleton.
- * 
- * Some of those traits imply class methods (e.g. "Expmap"), so those
- * are implemented in the "statics" singleton.
  *
  * @param <T> the Lie group type, e.g. Pose2.
  * @param <V> the type of its tangent vector, e.g. Vector3.
@@ -24,13 +23,13 @@ public interface LieGroup<//
     /**
      * See LieGroupTraits, which also restates the Group and Manifold traits.
      */
-    public interface Traits<//
+    public interface Companion<//
             T extends LieGroup<T, V>, //
             V extends VectorType<V>>
-            extends Group.Traits<T>, Manifold.Traits<T, V> {
+            extends Group.Companion<T>, Manifold.Companion<T, V> {
         /** Implement as statics.Identity(). */
         T Identity() throws Throwable;
-
+        
         default V Local(T origin, T other) throws Throwable {
             return origin.localCoordinates(other);
         }
@@ -98,9 +97,7 @@ public interface LieGroup<//
     public interface Statics<//
             T extends LieGroup<T, V>, //
             V extends VectorType<V>> {
-        // Implied
 
-        T Identity() throws Throwable;
 
         V Logmap(T g) throws Throwable;
 
@@ -110,12 +107,6 @@ public interface LieGroup<//
 
         T Expmap(V v, Matrix H) throws Throwable;
 
-        // Explicit
-
-        // Implementations depend on flags
-        // like GTSAM_SLOW_BUT_CORRECT_EXPMAP
-        // and GTSAM_POSE3_EXPMAP
-        // so these should be implemented by subclasses.
 
         // TODO: delete
         T Retract(V v) throws Throwable;
@@ -130,7 +121,7 @@ public interface LieGroup<//
         V LocalCoordinates(T g, Matrix H) throws Throwable;
     }
 
-    Traits<T, V> traits();
+    Companion<T, V> companion();
 
     Statics<T, V> statics();
 

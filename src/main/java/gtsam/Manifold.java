@@ -3,8 +3,7 @@ package gtsam;
 /**
  * See gtsam/base/Manifold.h, in particular HasManifoldPrereqs.
  * 
- * There's no "base class" for Manifold types, just some required
- * methods, and "traits," implemented as a singleton.
+ * Traits are implemented using the companion object pattern.
  * 
  * @param <T> the manifold type, e.g. Pose2.
  * @param <V> the type of its tangent vector, e.g. Vector3.
@@ -18,7 +17,7 @@ public interface Manifold<//
      * The defaults here match the C++ implementation, which is
      * never overridden.
      */
-    public interface Traits<//
+    public interface Companion<//
             T extends Manifold<T, V>, //
             V extends VectorType<V>> {
 
@@ -51,7 +50,7 @@ public interface Manifold<//
 
     }
 
-    Traits<T, V> traits();
+    Companion<T, V> companion();
 
     /** Zero tangent vector, used by numerical differentiation. */
     V dxZero() throws Throwable;

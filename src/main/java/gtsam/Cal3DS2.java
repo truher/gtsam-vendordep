@@ -35,14 +35,14 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
         }
     }
 
-    public static class Traits implements Manifold.Traits<Cal3DS2, Vector9> {
+    public static class Traits implements Manifold.Companion<Cal3DS2, Vector9> {
 
     }
 
     public static final Traits traits = new Traits();
 
     @Override
-    public Traits traits() {
+    public Traits companion() {
         return traits;
     }
 

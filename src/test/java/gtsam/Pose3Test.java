@@ -983,7 +983,7 @@ public class Pose3Test {
     @Test
     void testinterpolateJacobians() throws Throwable {
         {
-            Pose3 X = Pose3.statics.Identity();
+            Pose3 X = Pose3.traits.Identity();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
             double t = 0.5;
             Pose3 expectedPoseInterp = new Pose3(Rot3.Rz(Math.PI / 4), new Point3(0.5, -0.207107, 0)); //
@@ -1021,10 +1021,10 @@ public class Pose3Test {
             assertTrue(assert_equal(expectedJacobianT, actualJacobianT, 1e-6));
         }
         {
-            Pose3 X = Pose3.statics.Identity();
-            Pose3 Y = new Pose3(Rot3.statics.Identity(), new Point3(1, 0, 0));
+            Pose3 X = Pose3.traits.Identity();
+            Pose3 Y = new Pose3(Rot3.traits.Identity(), new Point3(1, 0, 0));
             double t = 0.3;
-            Pose3 expectedPoseInterp = new Pose3(Rot3.statics.Identity(), new Point3(0.3, 0, 0));
+            Pose3 expectedPoseInterp = new Pose3(Rot3.traits.Identity(), new Point3(0.3, 0, 0));
             Matrix actualJacobianX = new Matrix();
             Matrix actualJacobianY = new Matrix();
             Matrix actualJacobianT = new Matrix();
@@ -1058,7 +1058,7 @@ public class Pose3Test {
             assertTrue(assert_equal(expectedJacobianT, actualJacobianT, 1e-6));
         }
         {
-            Pose3 X = Pose3.statics.Identity();
+            Pose3 X = Pose3.traits.Identity();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(0, 0, 0));
             double t = 0.5;
             Pose3 expectedPoseInterp = new Pose3(Rot3.Rz(Math.PI / 4), new Point3(0, 0, 0));
@@ -1137,7 +1137,7 @@ public class Pose3Test {
     @Test
     void testinterpolateRtJacobians() throws Throwable {
         {
-            Pose3 X = Pose3.statics.Identity();
+            Pose3 X = Pose3.traits.Identity();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
             double t = 0.5;
             Matrix actualJacobianX = new Matrix();
@@ -1170,8 +1170,8 @@ public class Pose3Test {
             assertTrue(assert_equal(expectedJacobianT, actualJacobianT, 1e-6));
         }
         {
-            Pose3 X = Pose3.statics.Identity();
-            Pose3 Y = new Pose3(Rot3.statics.Identity(), new Point3(1, 0, 0));
+            Pose3 X = Pose3.traits.Identity();
+            Pose3 Y = new Pose3(Rot3.traits.Identity(), new Point3(1, 0, 0));
             double t = 0.3;
             Matrix actualJacobianX = new Matrix();
             Matrix actualJacobianY = new Matrix();
@@ -1203,7 +1203,7 @@ public class Pose3Test {
             assertTrue(assert_equal(expectedJacobianT, actualJacobianT, 1e-6));
         }
         {
-            Pose3 X = Pose3.statics.Identity();
+            Pose3 X = Pose3.traits.Identity();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(0, 0, 0));
             double t = 0.5;
             Matrix actualJacobianX = new Matrix();

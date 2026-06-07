@@ -24,9 +24,9 @@ public class NumericalDerivative {
     > Matrix numericalDerivative11(
             ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
         // System.out.println("numericalDerivative11");
-        Manifold.Traits<X, Xvec> TraitsX = x.traits();
+        Manifold.Companion<X, Xvec> TraitsX = x.companion();
         Y hx = h.apply(x);
-        Manifold.Traits<Y, Yvec> TraitsY = hx.traits();
+        Manifold.Companion<Y, Yvec> TraitsY = hx.companion();
         int m = hx.dimension();
         // using Eigen here would be a pain
         int N = x.dimension();
