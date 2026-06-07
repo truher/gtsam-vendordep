@@ -117,16 +117,6 @@ public class Point3 extends ForeignObject
         }
 
         @Override
-        public Vector3 Local(Point3 origin, Point3 other) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_Local.h.invokeExact(origin.ptr, other.ptr));
-        }
-
-        @Override
-        public Point3 Retract(Point3 origin, Vector3 v) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Retract.h.invokeExact(origin.ptr, v.ptr));
-        }
-
-        @Override
         public Vector3 Logmap(Point3 g) throws Throwable {
             return new Vector3((MemorySegment) FF.Point3_Logmap.h.invokeExact(g.ptr));
         }
@@ -244,7 +234,7 @@ public class Point3 extends ForeignObject
 
     @Override
     public Point3 retract(Vector3 v) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point3((MemorySegment) FF.Point3_Retract.h.invokeExact(ptr, v.ptr));
     }
 
     @Override

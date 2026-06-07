@@ -61,16 +61,6 @@ public class Point2 extends ForeignObject
         }
 
         @Override
-        public Vector2 Local(Point2 origin, Point2 other) throws Throwable {
-            return new Vector2((MemorySegment) FF.Point2_Local.h.invokeExact(origin.ptr, other.ptr));
-        }
-
-        @Override
-        public Point2 Retract(Point2 origin, Vector2 v) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Retract.h.invokeExact(origin.ptr, v.ptr));
-        }
-
-        @Override
         public Vector2 Logmap(Point2 g) throws Throwable {
             return new Vector2((MemorySegment) FF.Point2_Logmap.h.invokeExact(g.ptr));
         }
@@ -203,16 +193,14 @@ public class Point2 extends ForeignObject
         return 2;
     }
 
-    // TODO: use C++ here
     @Override
     public Vector2 localCoordinates(Point2 other) throws Throwable {
         return new Vector2((MemorySegment) FF.Point2_Local.h.invokeExact(ptr, other.ptr));
     }
 
-    // TODO: use C++ here
     @Override
     public Point2 retract(Vector2 v) throws Throwable {
-        throw new UnsupportedOperationException();
+        return new Point2((MemorySegment) FF.Point2_Retract.h.invokeExact(ptr, v.ptr));
     }
 
     public static double norm2(Point2 p) throws Throwable {

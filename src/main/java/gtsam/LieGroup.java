@@ -18,20 +18,12 @@ public interface LieGroup<//
     public interface Companion<//
             T extends LieGroup<T, V>, //
             V extends VectorType<V>>
-            extends Group.Companion<T>, Manifold.Companion<T, V> {
+            extends Group.Companion<T> {
         /** Implement as statics.Identity(). */
         T Identity() throws Throwable;
-        
-        default V Local(T origin, T other) throws Throwable {
-            return origin.localCoordinates(other);
-        }
 
         default V Local(T origin, T other, Matrix H1, Matrix H2) throws Throwable {
             return origin.localCoordinates(other, H1, H2);
-        }
-
-        default T Retract(T origin, V v) throws Throwable {
-            return origin.retract(v);
         }
 
         default T Retract(T origin, V v, Matrix H, Matrix Hv) throws Throwable {
@@ -49,16 +41,10 @@ public interface LieGroup<//
 
     Companion<T, V> companion();
 
-
-
-
-
-
-
     Matrix AdjointMap() throws Throwable;
 
     // TODO: delete this
-    T expmap(V v) throws Throwable ;
+    T expmap(V v) throws Throwable;
 
     // TODO: delete this
     V logmap(T g) throws Throwable;
@@ -69,15 +55,4 @@ public interface LieGroup<//
     // TODO: delete this
     V logmap(T g, Matrix H1, Matrix H2) throws Throwable;
 
-    // TODO: delete this
-    T retract(V v) throws Throwable;
-
-    // TODO: delete this
-    V localCoordinates(T g) throws Throwable;
-
-    // TODO: delete this
-    T retract(V v, Matrix H1, Matrix H2) throws Throwable;
-
-    // TODO: delete this
-    V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
 }

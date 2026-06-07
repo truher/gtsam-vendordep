@@ -54,15 +54,15 @@ public class Point2Test {
         assertTrue(assert_equal(Matrix.I_2x2().times(-1), H1));
         assertTrue(assert_equal(Matrix.I_2x2(), H2));
 
-        assertTrue(assert_equal(new Point2(5, 7), Point2.companion.Retract(p1, new Vector2(4., 5.))));
-        assertTrue(assert_equal(new Vector2(3., 3.), Point2.companion.Local(p1, p2)));
+        assertTrue(assert_equal(new Point2(5, 7), p1.retract(new Vector2(4., 5.))));
+        assertTrue(assert_equal(new Vector2(3., 3.), p1.localCoordinates(p2)));
     }
 
     @Test
     void testexpmap() throws Throwable {
         Vector2 d = new Vector2(1, -1);
         Point2 a = new Point2(4, 5);
-        Point2 b = Point2.companion.Retract(a, d);
+        Point2 b = a.retract(d);
         Point2 c = new Point2(5, 4);
         assertTrue(assert_equal(b, c));
     }

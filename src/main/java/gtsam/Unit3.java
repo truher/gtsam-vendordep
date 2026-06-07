@@ -79,17 +79,6 @@ public class Unit3 extends ForeignObject
         return new Point3((MemorySegment) FF.Unit3_point3H.h.invokeExact(ptr, H.ptr));
     }
 
-    public static class Companion implements Manifold.Companion<Unit3, Vector2> {
-
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
-    }
-
     @Override
     public Vector2 dxZero() throws Throwable {
         return new Vector2(0, 0);
@@ -199,5 +188,17 @@ public class Unit3 extends ForeignObject
 
     public Point3 cross(Point3 q) throws Throwable {
         return new Point3((MemorySegment) FF.Unit3_crossPoint3.h.invokeExact(ptr, q.ptr));
+    }
+
+    @Override
+    public Vector2 localCoordinates(Unit3 g, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+    }
+
+    @Override
+    public Unit3 retract(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }
 }

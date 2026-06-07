@@ -45,17 +45,6 @@ public class Vector extends ForeignObject
         }
     }
 
-    public static class Companion implements Manifold.Companion<Vector, Vector> {
-
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
-    }
-
     @Override
     public Vector dxZero() throws Throwable {
         return new Vector(dimension());
@@ -161,5 +150,17 @@ public class Vector extends ForeignObject
 
     public Vector retract(Vector v) throws Throwable {
         return plus(v);
+    }
+
+    @Override
+    public Vector localCoordinates(Vector g, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+    }
+
+    @Override
+    public Vector retract(Vector v, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }
 }

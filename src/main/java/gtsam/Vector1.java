@@ -12,7 +12,7 @@ import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 public class Vector1 extends ForeignObject
-        implements VectorType<Vector1>, Manifold<Vector1, Vector1>  {
+        implements VectorType<Vector1>, Manifold<Vector1, Vector1> {
     public enum FF {
         Vector1(ADDRESS, JAVA_DOUBLE),
         Vector1_delete(null, ADDRESS),
@@ -27,17 +27,6 @@ public class Vector1 extends ForeignObject
         FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
-    }
-
-        public static class Companion implements Manifold.Companion<Vector1, Vector1> {
-
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
     }
 
     @Override
@@ -83,7 +72,7 @@ public class Vector1 extends ForeignObject
         return new Vector1((MemorySegment) FF.Vector1_times.h.invokeExact(ptr, a));
     }
 
-        @Override
+    @Override
     public Vector1 localCoordinates(Vector1 other) throws Throwable {
         return other.minus(this);
     }
@@ -91,5 +80,17 @@ public class Vector1 extends ForeignObject
     @Override
     public Vector1 retract(Vector1 v) throws Throwable {
         return plus(v);
+    }
+
+    @Override
+    public Vector1 localCoordinates(Vector1 g, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+    }
+
+    @Override
+    public Vector1 retract(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }
 }

@@ -23,10 +23,7 @@ public class NumericalDerivative {
             Xvec extends VectorType<Xvec>//
     > Matrix numericalDerivative11(
             ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
-        // System.out.println("numericalDerivative11");
-        Manifold.Companion<X, Xvec> TraitsX = x.companion();
         Y hx = h.apply(x);
-        Manifold.Companion<Y, Yvec> TraitsY = hx.companion();
         int m = hx.dimension();
         // using Eigen here would be a pain
         int N = x.dimension();
@@ -38,7 +35,7 @@ public class NumericalDerivative {
             dx.set(j, delta);
             // System.out.printf("dx (right) %s\n", dx);
             // System.out.printf("hx %s\n", hx);
-            X x1 = TraitsX.Retract(x, dx);
+            X x1 = x.retract(dx);
             // System.out.printf("x (center) %s\n", x);
             // System.out.printf("x1 (right) %s\n", x1);
             Y hx1 = h.apply(x1);
@@ -47,7 +44,7 @@ public class NumericalDerivative {
             // System.out.printf("dy1 %s\n", dy1);
             dx.set(j, -delta);
             // System.out.printf("dx (left) %s\n", dx);
-            X x2 = TraitsX.Retract(x, dx);
+            X x2 = x.retract(dx);
             // System.out.printf("x (center) %s\n", x);
             // System.out.printf("x2 (left) %s\n", x2);
             Y hx2 = h.apply(x2);

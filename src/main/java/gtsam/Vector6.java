@@ -11,7 +11,6 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-// TODO: finish implementation
 public class Vector6 extends ForeignObject
         implements Manifold<Vector6, Vector6>, VectorType<Vector6> {
     public enum FF {
@@ -89,17 +88,6 @@ public class Vector6 extends ForeignObject
         return new Vector6((MemorySegment) FF.Vector6_times.h.invokeExact(ptr, a));
     }
 
-    public static class Companion implements Manifold.Companion<Vector6, Vector6> {
-
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
-    }
-
     @Override
     public Vector6 dxZero() throws Throwable {
         return new Vector6(0, 0, 0, 0, 0, 0);
@@ -113,6 +101,18 @@ public class Vector6 extends ForeignObject
     @Override
     public Vector6 retract(Vector6 v) throws Throwable {
         return plus(v);
+    }
+
+    @Override
+    public Vector6 localCoordinates(Vector6 g, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+    }
+
+    @Override
+    public Vector6 retract(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }
 
 }

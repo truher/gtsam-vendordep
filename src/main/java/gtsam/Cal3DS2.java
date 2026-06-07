@@ -35,17 +35,6 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
         }
     }
 
-    public static class Companion implements Manifold.Companion<Cal3DS2, Vector9> {
-
-    }
-
-    public static final Companion companion = new Companion();
-
-    @Override
-    public Companion companion() {
-        return companion;
-    }
-
     @Override
     public Vector9 dxZero() throws Throwable {
         return new Vector9(0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -87,6 +76,11 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
     }
 
     @Override
+    public Vector9 localCoordinates(Cal3DS2 g, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public int dimension() {
         return Cal3DS2.Dim();
     }
@@ -97,7 +91,12 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
 
     @Override
     public Cal3DS2 retract(Vector9 v) throws Throwable {
-        return new Cal3DS2((MemorySegment) FF.Cal3DS2_retract.h.invokeExact(ptr, v.ptr()));
+        return new Cal3DS2((MemorySegment) FF.Cal3DS2_retract.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
+    public Cal3DS2 retract(Vector9 v, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
     }
 
     public Point2 uncalibrate(Point2 p) throws Throwable {

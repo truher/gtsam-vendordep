@@ -1,9 +1,16 @@
 package gtsam;
 
 /**
- * See gtsam/base/Manifold.h, in particular HasManifoldPrereqs.
+ * See gtsam/base/Manifold.h.
  * 
- * Traits are implemented using the companion object pattern.
+ * A manifold is locally homeomorphic to Euclidean (vector) space.
+ * 
+ * The mapping is described by two operators:
+ * 
+ * * a.local(b): map b from manifold to vector space tangent at a
+ * * a.retract(b): map b from vector space to manifold tangent at a
+ * 
+ * https://en.wikipedia.org/wiki/Manifold
  * 
  * @param <T> the manifold type, e.g. Pose2.
  * @param <V> the type of its tangent vector, e.g. Vector3.
@@ -11,55 +18,27 @@ package gtsam;
 public interface Manifold<//
         T extends Manifold<T, V>, //
         V extends VectorType<V>> {
-    /**
-     * See ManifoldTraits.
-     * Manifold traits are all static.
-     * The defaults here match the C++ implementation, which is
-     * never overridden.
-     */
-    public interface Companion<//
-            T extends Manifold<T, V>, //
-            V extends VectorType<V>> {
-
-        /** Required by GetDimensionImpl. */
-        default int GetDimension(T m) throws Throwable {
-            return m.dimension();
-        };
-
-        /**
-         * Tangent vector from p to q.
-         * For Lie group, this is Logmap.
-         * For vector space, this is just (q - p).
-         * Required by ManifoldTraits.
-         */
-        default V Local(T p, T q) throws Throwable {
-            return p.localCoordinates(q);
-        }
-
-        /**
-         * Manifold point that is v away from p.
-         * For Lie group, this is Expmap.
-         * For vector space, this is just (p + v)
-         * Required by ManifoldTraits.
-         */
-        default T Retract(T p, V v) throws Throwable {
-            // System.out.printf("Retract %s %s\n", p, v);
-            // System.out.flush();
-            return p.retract(v);
-        }
-
-    }
-
-    Companion<T, V> companion();
 
     /** Zero tangent vector, used by numerical differentiation. */
     V dxZero() throws Throwable;
 
     int dimension() throws Throwable;
 
-    /** Required by HasManifoldPrereqs */
+    /**
+     * Tangent vector from this to q.
+     * For Lie group, this is Logmap.
+     * For vector space, this is just (q - this).
+     */
     V localCoordinates(T other) throws Throwable;
 
-    /** Required by HasManifoldPrereqs */
+    V localCoordinates(T g, Matrix H1, Matrix H2) throws Throwable;
+
+    /**
+     * Manifold point that is v away from this.
+     * For Lie group, this is Expmap.
+     * For vector space, this is just (this + v)
+     */
     T retract(V v) throws Throwable;
+
+    T retract(V v, Matrix H1, Matrix H2) throws Throwable;
 }
