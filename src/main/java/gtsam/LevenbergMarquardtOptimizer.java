@@ -6,15 +6,13 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class LevenbergMarquardtOptimizer extends ForeignObject {
+public class LevenbergMarquardtOptimizer extends NonlinearOptimizer {
     public enum FF {
         LevenbergMarquardtOptimizer(ADDRESS, ADDRESS, ADDRESS),
         LevenbergMarquardtOptimizer_delete(null, ADDRESS),
         LevenbergMarquardtOptimizer3(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        LevenbergMarquardtOptimizer_optimize(ADDRESS, ADDRESS),
         LevenbergMarquardtOptimizer_values(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
@@ -41,12 +39,6 @@ public class LevenbergMarquardtOptimizer extends ForeignObject {
             LevenbergMarquardtParams params) throws Throwable {
         this((MemorySegment) FF.LevenbergMarquardtOptimizer3.h.invokeExact(
                 graph.ptr, initialValues.ptr, params.ptr));
-    }
-
-    /** Returned Values are owned. */
-    public Values optimize() throws Throwable {
-        return Values.owned(
-                (MemorySegment) FF.LevenbergMarquardtOptimizer_optimize.h.invokeExact(ptr));
     }
 
     /** Returned Values are owned. */

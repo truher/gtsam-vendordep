@@ -67,7 +67,11 @@ gtsam::Vector3* Matrix_timesVector3(const gtsam::Matrix* m,
 gtsam::Matrix* Matrix_timesDouble(const gtsam::Matrix* m, double a) {
     return new gtsam::Matrix((*m) * a);
 }
-bool Matrix_linear_dependent(const gtsam::Matrix* A, const gtsam::Matrix* B, double tol) {
+bool Matrix_linear_dependent(const gtsam::Matrix* A, const gtsam::Matrix* B,
+                             double tol) {
     return gtsam::linear_dependent(*A, *B, tol);
+}
+void Matrix_print(const gtsam::Matrix* A) {
+    gtsam::print(*A);
 }
 }

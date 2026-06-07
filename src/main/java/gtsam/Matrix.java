@@ -36,7 +36,8 @@ public class Matrix extends ForeignObject {
         Matrix_timesVector(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesVector3(ADDRESS, ADDRESS, ADDRESS),
         Matrix_timesDouble(ADDRESS, ADDRESS, JAVA_DOUBLE),
-        Matrix_linear_dependent(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
+        Matrix_linear_dependent(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Matrix_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -151,5 +152,10 @@ public class Matrix extends ForeignObject {
 
     public static boolean linear_dependent(Matrix A, Matrix B, double tol) throws Throwable {
         return (boolean) FF.Matrix_linear_dependent.h.invokeExact(A.ptr, B.ptr, tol);
+    }
+
+    public void print(String label) throws Throwable {
+        System.out.println(label);
+        FF.Matrix_print.h.invokeExact(ptr);
     }
 }

@@ -185,7 +185,9 @@ public class Point3Test {
         Point3 expected = point.times(1.0 / Math.sqrt(14.0));
         assertTrue(assert_equal(expected, Point3.normalize(point, actualH), 1e-8));
         ThrowingFunction<Point3, Point3> fn = (pp) -> Point3.normalize(pp);
-        Matrix expectedH = NumericalDerivative.<Point3, Vector3, Point3, Vector3>numericalDerivative11(fn, point, 1e-5);
+        Matrix expectedH = NumericalDerivative.<//
+                Point3, Vector3, //
+                Point3, Vector3>numericalDerivative11(fn, point, 1e-5);
         assertTrue(assert_equal(expectedH, actualH, 1e-8));
     }
 

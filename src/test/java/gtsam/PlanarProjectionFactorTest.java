@@ -332,9 +332,6 @@ public class PlanarProjectionFactorTest {
             Matrix H3 = new Matrix();
             factor.get().evaluateError(pose, offset, calib, H1, H2, H3);
 
-            // Ugh. NoiseModelFactorN (the superclass of most of the factors we use) is a
-            // template with the "error" type filed in as a dynamic-dimension "Vector" type,
-            // not a specific length.
             ThrowingFunction3<Pose2, Pose3, Cal3DS2, Vector> h = (Pose2 p, Pose3 o, Cal3DS2 c) -> factor.get()
                     .evaluateError(
                             p, o, c, new Matrix(), new Matrix(), new Matrix());

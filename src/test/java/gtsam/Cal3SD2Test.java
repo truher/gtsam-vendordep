@@ -17,7 +17,9 @@ public class Cal3SD2Test {
     static Point2 p;
     static {
         try {
-            K = new Cal3DS2(500, 100, 0.1, 320, 240, 1e-3, 2.0 * 1e-3, 3.0 * 1e-3, 4.0 * 1e-3);
+            K = new Cal3DS2(
+                    500, 100, 0.1, 320, 240,
+                    1e-3, 2.0 * 1e-3, 3.0 * 1e-3, 4.0 * 1e-3);
             p = new Point2(2, 3);
         } catch (Throwable t) {
             throw new RuntimeException(t);
@@ -51,8 +53,10 @@ public class Cal3SD2Test {
         Matrix computed = new Matrix();
         K.uncalibrate(p, computed, new Matrix());
         ThrowingFunction2<Cal3DS2, Point2, Point2> uncal = (k, pt) -> k.uncalibrate(pt);
-        Matrix numerical = NumericalDerivative
-                .<Point2, Vector2, Cal3DS2, Vector9, Point2, Vector2>numericalDerivative21(uncal, K, p, 1e-7);
+        Matrix numerical = NumericalDerivative.<//
+                Point2, Vector2, //
+                Cal3DS2, Vector9, //
+                Point2, Vector2>numericalDerivative21(uncal, K, p, 1e-7);
         assertTrue(assert_equal(numerical, computed, 1e-5));
         Matrix separate = K.D2d_calibration(p);
         assertTrue(assert_equal(numerical, separate, 1e-5));
@@ -63,8 +67,10 @@ public class Cal3SD2Test {
         Matrix computed = new Matrix();
         K.uncalibrate(p, new Matrix(), computed);
         ThrowingFunction2<Cal3DS2, Point2, Point2> uncal = (k, pt) -> k.uncalibrate(pt);
-        Matrix numerical = NumericalDerivative
-                .<Point2, Vector2, Cal3DS2, Vector9, Point2, Vector2>numericalDerivative22(uncal, K, p, 1e-7);
+        Matrix numerical = NumericalDerivative.<//
+                Point2, Vector2, //
+                Cal3DS2, Vector9, //
+                Point2, Vector2>numericalDerivative22(uncal, K, p, 1e-7);
         assertTrue(assert_equal(numerical, computed, 1e-5));
         Matrix separate = K.D2d_intrinsic(p);
         assertTrue(assert_equal(numerical, separate, 1e-5));
@@ -78,11 +84,15 @@ public class Cal3SD2Test {
         Matrix Dp = new Matrix();
         K.calibrate(pi, Dcal, Dp);
         ThrowingFunction2<Cal3DS2, Point2, Point2> cal = (k, pt) -> k.calibrate(pt);
-        Matrix numerical1 = NumericalDerivative
-                .<Point2, Vector2, Cal3DS2, Vector9, Point2, Vector2>numericalDerivative21(cal, K, pi, 1e-7);
+        Matrix numerical1 = NumericalDerivative.<//
+                Point2, Vector2, //
+                Cal3DS2, Vector9, //
+                Point2, Vector2>numericalDerivative21(cal, K, pi, 1e-7);
         assertTrue(assert_equal(numerical1, Dcal, 1e-5));
-        Matrix numerical2 = NumericalDerivative
-                .<Point2, Vector2, Cal3DS2, Vector9, Point2, Vector2>numericalDerivative22(cal, K, pi, 1e-7);
+        Matrix numerical2 = NumericalDerivative.<//
+                Point2, Vector2, //
+                Cal3DS2, Vector9, //
+                Point2, Vector2>numericalDerivative22(cal, K, pi, 1e-7);
         assertTrue(assert_equal(numerical2, Dp, 1e-5));
     }
 
@@ -93,7 +103,9 @@ public class Cal3SD2Test {
 
     @Test
     void testRetract() throws Throwable {
-        Cal3DS2 expected = new Cal3DS2(500 + 1, 100 + 2, 0.1 + 3, 320 + 4, 240 + 5, 1e-3 + 6, 2.0 * 1e-3 + 7,
+        Cal3DS2 expected = new Cal3DS2(
+                500 + 1, 100 + 2, 0.1 + 3, 320 + 4, 240 + 5,
+                1e-3 + 6, 2.0 * 1e-3 + 7,
                 3.0 * 1e-3 + 8, 4.0 * 1e-3 + 9);
 
         assertEquals(Cal3DS2.Dim(), 9);

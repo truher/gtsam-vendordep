@@ -45,6 +45,9 @@ gtsam::Point2* Rot2_unrotateH(const gtsam::Rot2* r,    //
 gtsam::Rot2* Rot2_fromCosSin(double c, double s) {
     return new gtsam::Rot2(gtsam::Rot2::fromCosSin(c, s));
 }
+gtsam::Rot2* Rot2_fromDegrees(double degrees) {
+    return new gtsam::Rot2(gtsam::Rot2::fromDegrees(degrees));
+}
 gtsam::Rot2* Rot2_atan2(double y, double x) {
     return new gtsam::Rot2(gtsam::Rot2::atan2(y, x));
 }

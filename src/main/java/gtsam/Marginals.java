@@ -29,8 +29,13 @@ public class Marginals extends ForeignObject {
         super(p, FF.Marginals_delete.h);
     }
 
+    /** Default is Cholesky. */
+    public Marginals(NonlinearFactorGraph graph, Values result) throws Throwable {
+        this((MemorySegment) FF.MarginalsCholesky.h.invokeExact(graph.ptr, result.ptr));
+    }
+
     public static Marginals Cholesky(NonlinearFactorGraph graph, Values result) throws Throwable {
-        return new Marginals((MemorySegment) FF.MarginalsCholesky.h.invokeExact(graph.ptr, result.ptr));
+        return new Marginals(graph, result);
     }
 
     public static Marginals QR(NonlinearFactorGraph graph, Values result) throws Throwable {

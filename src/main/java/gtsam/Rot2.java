@@ -26,6 +26,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_unrotate(ADDRESS, ADDRESS, ADDRESS),
         Rot2_unrotateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_fromCosSin(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
+        Rot2_fromDegrees(ADDRESS, JAVA_DOUBLE),
         Rot2_atan2(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
         Rot2_relativeBearing(ADDRESS, ADDRESS),
         Rot2_relativeBearingH(ADDRESS, ADDRESS, ADDRESS),
@@ -215,6 +216,10 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
 
     public static Rot2 fromCosSin(double c, double s) throws Throwable {
         return new Rot2((MemorySegment) FF.Rot2_fromCosSin.h.invokeExact(c, s));
+    }
+
+    public static Rot2 fromDegrees(double degrees) throws Throwable {
+        return new Rot2((MemorySegment) FF.Rot2_fromDegrees.h.invokeExact(degrees));
     }
 
     /** Note order of arguments, y first, x second. */

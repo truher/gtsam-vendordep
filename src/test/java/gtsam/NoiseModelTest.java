@@ -932,7 +932,7 @@ public class NoiseModelTest {
     @Test
     void testrobustNoiseL2WithDeadZone() throws Throwable {
         double dead_zone_size = 1.0;
-        var robust = Robust.Create(
+        shared_ptr<Robust> robust = Robust.Create(
                 L2WithDeadZone.Create(dead_zone_size),
                 Unit.Create(3));
 
@@ -947,36 +947,36 @@ public class NoiseModelTest {
     @Test
     void testlossFunctionAtZero() throws Throwable {
         final double k = 5.0;
-        var fair = Fair.Create(k);
+        shared_ptr<Fair> fair = Fair.Create(k);
         assertEquals(fair.get().loss(0), 0, 1e-8);
         assertEquals(fair.get().weight(0), 1, 1e-8);
-        var huber = Huber.Create(k);
+        shared_ptr<Huber> huber = Huber.Create(k);
         assertEquals(huber.get().loss(0), 0, 1e-8);
         assertEquals(huber.get().weight(0), 1, 1e-8);
-        var cauchy = Cauchy.Create(k);
+        shared_ptr<Cauchy> cauchy = Cauchy.Create(k);
         assertEquals(cauchy.get().loss(0), 0, 1e-8);
         assertEquals(cauchy.get().weight(0), 1, 1e-8);
-        var gmc = GemanMcClure.Create(k);
+        shared_ptr<GemanMcClure> gmc = GemanMcClure.Create(k);
         assertEquals(gmc.get().loss(0), 0, 1e-8);
         assertEquals(gmc.get().weight(0), 1, 1e-8);
-        var welsch = Welsch.Create(k);
+        shared_ptr<Welsch> welsch = Welsch.Create(k);
         assertEquals(welsch.get().loss(0), 0, 1e-8);
         assertEquals(welsch.get().weight(0), 1, 1e-8);
-        var tukey = Tukey.Create(k);
+        shared_ptr<Tukey> tukey = Tukey.Create(k);
         assertEquals(tukey.get().loss(0), 0, 1e-8);
         assertEquals(tukey.get().weight(0), 1, 1e-8);
-        var dcs = DCS.Create(k);
+        shared_ptr<DCS> dcs = DCS.Create(k);
         assertEquals(dcs.get().loss(0), 0, 1e-8);
         assertEquals(dcs.get().weight(0), 1, 1e-8);
-        var lsdz = L2WithDeadZone.Create(k);
+        shared_ptr<L2WithDeadZone> lsdz = L2WithDeadZone.Create(k);
         assertEquals(lsdz.get().loss(0), 0, 1e-8);
         assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        var assy_cauchy = AsymmetricCauchy.Create(k);
-        assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        assertEquals(lsdz.get().weight(0), 0, 1e-8);
-        var assy_tukey = AsymmetricTukey.Create(k);
-        assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        assertEquals(lsdz.get().weight(0), 0, 1e-8);
+        shared_ptr<AsymmetricCauchy> assy_cauchy = AsymmetricCauchy.Create(k);
+        assertEquals(assy_cauchy.get().loss(0), 0, 1e-8);
+        assertEquals(assy_cauchy.get().weight(0), 0, 1e-8);
+        shared_ptr<AsymmetricTukey> assy_tukey = AsymmetricTukey.Create(k);
+        assertEquals(assy_tukey.get().loss(0), 0, 1e-8);
+        assertEquals(assy_tukey.get().weight(0), 0, 1e-8);
     }
 
     static void TEST_GAUSSIAN(shared_ptr<Gaussian> gaussian) throws Throwable {
@@ -1040,7 +1040,7 @@ public class NoiseModelTest {
         // Gaussian
         {
             Matrix R = new Matrix(new double[][] { { 1 / sigma } });
-            var noise_model = Gaussian.SqrtInformation(R, true);
+            shared_ptr<Gaussian> noise_model = Gaussian.SqrtInformation(R, true);
             double actual_value = noise_model.get().negLogConstant();
             assertEquals(expected_value, actual_value, 1e-9);
         }
@@ -1087,7 +1087,7 @@ public class NoiseModelTest {
         }
         // Diagonal
         {
-            var noise_model = Diagonal.Sigmas(new Vector3(sigma, sigma, sigma));
+            shared_ptr<Diagonal> noise_model = Diagonal.Sigmas(new Vector3(sigma, sigma, sigma));
             double actual_value = noise_model.get().negLogConstant();
             assertEquals(expected_value, actual_value, 1e-9);
         }

@@ -312,11 +312,8 @@ public class BatchFixedLagSmootherTest {
         int neesCount = 0;
 
         Random rng = new Random(42);
-        // mt19937 rng(42);
         DoubleSupplier transDist = () -> rng.nextGaussian(0.0, transSigma);
-        // normal_distribution<double> transDist(0.0, transSigma);
         DoubleSupplier rotDist = () -> rng.nextGaussian(0.0, rotSigma);
-        // normal_distribution<double> rotDist(0.0, rotSigma);
 
         for (int trial = 0; trial < numTrials; ++trial) {
             LevenbergMarquardtParams params = new LevenbergMarquardtParams();

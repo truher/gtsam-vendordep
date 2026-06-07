@@ -59,42 +59,42 @@ public class NonlinearFactorTest {
         List<shared_ptr<? extends Robust>> robust_models = new ArrayList<>();
 
         // Fair noise model
-        var fair = Robust.Create(
+        shared_ptr<Robust> fair = Robust.Create(
                 Fair.Create(1.3998), gaussian);
         robust_models.add(fair);
 
         // Huber noise model
-        var huber = Robust.Create(
+        shared_ptr<Robust> huber = Robust.Create(
                 Huber.Create(1.345), gaussian);
         robust_models.add(huber);
 
         // Cauchy noise model
-        var cauchy = Robust.Create(
+        shared_ptr<Robust> cauchy = Robust.Create(
                 Cauchy.Create(0.1), gaussian);
         robust_models.add(cauchy);
 
         // Tukey noise model
-        var tukey = Robust.Create(
+        shared_ptr<Robust> tukey = Robust.Create(
                 Tukey.Create(4.6851), gaussian);
         robust_models.add(tukey);
 
         // Welsch noise model
-        var welsch = Robust.Create(
+        shared_ptr<Robust> welsch = Robust.Create(
                 Welsch.Create(2.9846), gaussian);
         robust_models.add(welsch);
 
         // Geman-McClure noise model
-        var gm = Robust.Create(
+        shared_ptr<Robust> gm = Robust.Create(
                 GemanMcClure.Create(1.0), gaussian);
         robust_models.add(gm);
 
         // DCS noise model
-        var dcs = Robust.Create(
+        shared_ptr<Robust> dcs = Robust.Create(
                 DCS.Create(1.0), gaussian);
         robust_models.add(dcs);
 
         // L2WithDeadZone noise model
-        var l2 = Robust.Create(
+        shared_ptr<Robust> l2 = Robust.Create(
                 L2WithDeadZone.Create(1.0), gaussian);
         robust_models.add(l2);
 

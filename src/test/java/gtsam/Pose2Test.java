@@ -217,8 +217,10 @@ public class Pose2Test {
         Vector3 w = new Vector3(0.1, 0.27, -0.3);
         Pose2.Expmap(w, actualH);
         ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(
-                h, w, 1e-2);
+        Matrix expectedH = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Vector3, Vector3>numericalDerivative11(
+                        h, w, 1e-2);
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
@@ -229,7 +231,9 @@ public class Pose2Test {
         Vector3 w0 = new Vector3(0.1, 0.27, 0.0);
         Pose2.Expmap(w0, actualH);
         ThrowingFunction<Vector3, Pose2> h = (v) -> Pose2.Expmap(v, new Matrix(3, 3));
-        Matrix expectedH = NumericalDerivative.<Pose2, Vector3, Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
+        Matrix expectedH = NumericalDerivative.<//
+                Pose2, Vector3, //
+                Vector3, Vector3>numericalDerivative11(h, w0, 1e-3);
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
@@ -242,7 +246,9 @@ public class Pose2Test {
         assertTrue(assert_equal(w, other, 1e-5));
 
         ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, new Matrix(3, 3));
-        Matrix expectedH = NumericalDerivative.<Vector3, Vector3, Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
+        Matrix expectedH = NumericalDerivative.<//
+                Vector3, Vector3, //
+                Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
@@ -253,7 +259,9 @@ public class Pose2Test {
         Pose2 p = Pose2.Expmap(w0, new Matrix(3, 3));
         assertTrue(assert_equal(w0, Pose2.Logmap(p, actualH), 1e-5));
         ThrowingFunction<Pose2, Vector3> h = (pp) -> Pose2.Logmap(pp, new Matrix(3, 3));
-        Matrix expectedH = NumericalDerivative.<Vector3, Vector3, Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
+        Matrix expectedH = NumericalDerivative.<//
+                Vector3, Vector3, //
+                Pose2, Vector3>numericalDerivative11(h, p, 1e-2);
         assertTrue(assert_equal(expectedH, actualH, 1e-5));
     }
 
