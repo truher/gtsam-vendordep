@@ -69,7 +69,7 @@ public class IncrementalFixedLagSmootherTest {
             // Update the smoother
             smoother.update(newFactors, newValues, newKeyTimestampMap);
 
-            // // Check
+            // Check
             assertTrue(check_smoother(fullgraph, fullinit, smoother, key0));
 
             ++i;

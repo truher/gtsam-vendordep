@@ -9,6 +9,7 @@ import gtsam.NonlinearFactorGraph;
 import gtsam.Pose2;
 import gtsam.Values;
 import gtsam.Vector3;
+import gtsam.shared_ptr;
 import gtsam.noiseModel.Diagonal;
 
 /**
@@ -31,23 +32,24 @@ public class Pose2SLAMExample {
         // 2a. Add a prior on the first pose, setting it to the origin.
         //
         // A prior factor consists of a mean and a noise model (covariance matrix)
-        var priorNoise = Diagonal.Sigmas(new Vector3(0.3, 0.3, 0.1));
+        shared_ptr<Diagonal> priorNoise = Diagonal.Sigmas(new Vector3(0.3, 0.3, 0.1));
         graph.addPrior(new Key(1), new Pose2(0, 0, 0), priorNoise);
 
         // For simplicity, we will use the same noise model for odometry and loop
         // closures
-        var model = Diagonal.Sigmas(new Vector3(0.2, 0.2, 0.1));
+        shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector3(0.2, 0.2, 0.1));
 
         // 2b. Add odometry factors.
         //
         // Create odometry (Between) factors between consecutive poses
-        graph.add(BetweenFactorPose2.newBetweenFactorPose2(new Key(1), new Key(2), new Pose2(2, 0, 0), model));
-        graph.add(
-                BetweenFactorPose2.newBetweenFactorPose2(new Key(2), new Key(3), new Pose2(2, 0, Math.PI / 2), model));
-        graph.add(
-                BetweenFactorPose2.newBetweenFactorPose2(new Key(3), new Key(4), new Pose2(2, 0, Math.PI / 2), model));
-        graph.add(
-                BetweenFactorPose2.newBetweenFactorPose2(new Key(4), new Key(5), new Pose2(2, 0, Math.PI / 2), model));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(
+                new Key(1), new Key(2), new Pose2(2, 0, 0), model));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(
+                new Key(2), new Key(3), new Pose2(2, 0, Math.PI / 2), model));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(
+                new Key(3), new Key(4), new Pose2(2, 0, Math.PI / 2), model));
+        graph.add(BetweenFactorPose2.newBetweenFactorPose2(
+                new Key(4), new Key(5), new Pose2(2, 0, Math.PI / 2), model));
 
         // 2c. Add the loop closure constraint.
         //

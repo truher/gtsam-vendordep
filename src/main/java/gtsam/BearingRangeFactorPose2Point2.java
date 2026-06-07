@@ -32,7 +32,7 @@ public class BearingRangeFactorPose2Point2 extends NoiseModelFactor {
             double range,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         MemorySegment sharedPtrPtr = (MemorySegment) FF.BearingRangeFactorPose2Point2.h.invokeExact(
-                key1.j, key2.j, range, model.ptr);
+                key1.j, key2.j, bearing.ptr, range, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BearingRangeFactorPose2Point2::new);
     }
 

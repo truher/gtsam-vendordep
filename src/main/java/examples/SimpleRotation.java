@@ -5,6 +5,7 @@ import gtsam.LevenbergMarquardtOptimizer;
 import gtsam.NonlinearFactorGraph;
 import gtsam.Rot2;
 import gtsam.Values;
+import gtsam.shared_ptr;
 import gtsam.noiseModel.Isotropic;
 
 /**
@@ -32,7 +33,7 @@ public class SimpleRotation {
          */
         Rot2 prior = Rot2.fromAngle(30 * degree);
         prior.print("goal angle");
-        var model = Isotropic.Sigma(1, 1 * degree);
+        shared_ptr<Isotropic> model = Isotropic.Sigma(1, 1 * degree);
         Key key = Key.X(1);
 
         /**

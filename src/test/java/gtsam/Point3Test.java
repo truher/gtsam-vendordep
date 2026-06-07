@@ -149,7 +149,7 @@ public class Point3Test {
         assertTrue(assert_equal(new Point3(-0.66, 3.15, 0.1), p.cross(q), 1e-5));
         assertTrue(assert_equal(new Point3(0, 0.24, -0.16), p.cross(r), 1e-5));
 
-        // // Use numerical derivatives to calculate the expected Jacobians
+        // Use numerical derivatives to calculate the expected Jacobians
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
         ThrowingFunction2<Point3, Point3, Point3> f = (pp, qq) -> Point3.cross(pp, qq);

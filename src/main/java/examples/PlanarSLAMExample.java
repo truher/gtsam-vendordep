@@ -12,6 +12,7 @@ import gtsam.Rot2;
 import gtsam.Values;
 import gtsam.Vector2;
 import gtsam.Vector3;
+import gtsam.shared_ptr;
 import gtsam.noiseModel.Diagonal;
 
 /**
@@ -40,19 +41,19 @@ public class PlanarSLAMExample {
         // Add a prior on pose x1 at the origin. A prior factor consists of a mean and
         // a noise model (covariance matrix)
         Pose2 prior = new Pose2(0.0, 0.0, 0.0); // prior mean is at origin
-        var priorNoise = Diagonal.Sigmas(new Vector3(0.3, 0.3, 0.1)); // 30cm std on x,y, 0.1 rad on theta
+        shared_ptr<Diagonal> priorNoise = Diagonal.Sigmas(new Vector3(0.3, 0.3, 0.1)); // 30cm std on x,y, 0.1 rad on theta
         graph.addPrior(x1, prior, priorNoise); // add directly to graph
 
         // Add two odometry factors
         Pose2 odometry = new Pose2(2.0, 0.0, 0.0);
         // create a measurement for both factors (the same in this case)
-        var odometryNoise = Diagonal.Sigmas(new Vector3(0.2, 0.2, 0.1)); // 20cm std on x,y, 0.1 rad on theta
+        shared_ptr<Diagonal> odometryNoise = Diagonal.Sigmas(new Vector3(0.2, 0.2, 0.1)); // 20cm std on x,y, 0.1 rad on theta
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(x1, x2, odometry, odometryNoise));
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(x2, x3, odometry, odometryNoise));
 
         // Add Range-Bearing measurements to two different landmarks
         // create a noise model for the landmark measurements
-        var measurementNoise = Diagonal.Sigmas(new Vector2(0.1, 0.2)); // 0.1 rad std on bearing, 20cm on range
+        shared_ptr<Diagonal> measurementNoise = Diagonal.Sigmas(new Vector2(0.1, 0.2)); // 0.1 rad std on bearing, 20cm on range
         // create the measurement values - indices are (pose id, landmark id)
         Rot2 bearing11 = Rot2.fromDegrees(45);
         Rot2 bearing21 = Rot2.fromDegrees(90);

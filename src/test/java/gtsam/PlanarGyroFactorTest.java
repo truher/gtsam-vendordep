@@ -30,7 +30,7 @@ public class PlanarGyroFactorTest {
         shared_ptr<PlanarGyroFactor> x = PlanarGyroFactor.FromRate(//
                 Key.P(0), Key.P(1), Key.B(0), p, omega, dt);
 
-        // // Check the effect of bias.
+        // Check the effect of bias.
         double bias = 0.05;
         Matrix H = new Matrix();
         Rot2 corrected = x.get().deltaR(bias, H);
@@ -172,7 +172,7 @@ public class PlanarGyroFactorTest {
         double arwSigma = 0.1;
         double trueOmega = Math.PI / 10.0;
         double B1 = 0.3;
-        // // Measurement includes bias.
+        // Measurement includes bias.
         double measuredOmega = trueOmega + B1;
         double deltaT = 1.0;
         double biasInstabilitySigma = 3e-4;
@@ -194,7 +194,6 @@ public class PlanarGyroFactorTest {
 
     @Test
     void testoptimize() throws Throwable {
-        // using noiseModel::Diagonal;
 
         NonlinearFactorGraph graph = new NonlinearFactorGraph();
 
@@ -228,7 +227,7 @@ public class PlanarGyroFactorTest {
         // Bias priorr: very uncertain.
         graph.add(PriorFactor.PriorFactorDouble(Key.B(0), 1.0, Diagonal.Sigmas(new Vector1(1))));
 
-        // // Gyro measurements affect rotation only.
+        // Gyro measurements affect rotation only.
         double trueOmega = 0.1;
         double bias = 1; // large !
         double measuredOmega = trueOmega + bias;
@@ -249,7 +248,7 @@ public class PlanarGyroFactorTest {
         graph.add(PlanarGyroFactor.FromRate(Key.P(2), Key.P(3), Key.B(2), p, measuredOmega, dt));
         graph.add(PlanarGyroFactor.FromRate(Key.P(3), Key.P(4), Key.B(3), p, measuredOmega, dt));
 
-        // // Initial values should not matter.
+        // Initial values should not matter.
         Values values = new Values();
         values.insert(Key.B(0), 0.0);
         values.insert(Key.B(1), 0.0);

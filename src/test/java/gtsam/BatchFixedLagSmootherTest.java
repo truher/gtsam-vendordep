@@ -47,7 +47,7 @@ public class BatchFixedLagSmootherTest {
         BatchFixedLagSmoother smoother = new BatchFixedLagSmoother(
                 7.0, new LevenbergMarquardtParams());
 
-        // // Create containers to keep the full graph
+        // Create containers to keep the full graph
         Values fullinit = new Values();
         NonlinearFactorGraph fullgraph = new NonlinearFactorGraph();
 
@@ -78,7 +78,7 @@ public class BatchFixedLagSmootherTest {
             ++i;
         }
 
-        // // Add odometry from time 0 to time 5
+        // Add odometry from time 0 to time 5
         while (i <= 5) {
             Key key1 = new Key(i - 1);
             Key key2 = new Key(i);
@@ -134,7 +134,7 @@ public class BatchFixedLagSmootherTest {
             ++i;
         }
 
-        // // Add odometry from time 6 to time 15
+        // Add odometry from time 6 to time 15
         while (i <= 15) {
             Key key1 = new Key(i - 1);
             Key key2 = new Key(i);
@@ -160,7 +160,7 @@ public class BatchFixedLagSmootherTest {
             ++i;
         }
 
-        // // add/remove an extra factor
+        // add/remove an extra factor
         {
             Key key1 = new Key(i - 1);
             Key key2 = new Key(i);

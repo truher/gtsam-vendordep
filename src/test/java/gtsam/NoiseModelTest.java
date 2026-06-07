@@ -301,7 +301,7 @@ public class NoiseModelTest {
         // Ab was modified in place !!!
         assertTrue(Matrix.linear_dependent(exampleQR.Rd, Ab1, 1e-4));
 
-        // // Expected result for constrained version
+        // Expected result for constrained version
         Vector expectedSigmas = new Vector(new double[] {
                 0.0894427, 0.0894427, 0.223607, 0.223607 });
         shared_ptr<Diagonal> expectedModel = Diagonal.Sigmas(expectedSigmas);

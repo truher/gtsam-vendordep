@@ -328,7 +328,7 @@ public class Rot3Test {
         // by Quaternions or SO3.
         // Note, quaternions are off by default
         // #if defined(GTSAM_USE_QUATERNIONS)
-        // // Quaternion bounds angle to [-pi, pi] resulting in ~179.9 degrees
+        // Quaternion bounds angle to [-pi, pi] resulting in ~179.9 degrees
         // assertTrue(assert_equal(Vector3(0.264451979, -0.742197651, -3.04098211),
         // (Vector)Rot3::Logmap(Rlund), 1e-8));
         // #else
@@ -579,7 +579,7 @@ public class Rot3Test {
 
     @Test
     void testRQ() throws Throwable {
-        // // Try RQ on a pure rotation
+        // Try RQ on a pure rotation
         Pair<Matrix3, Vector3> actualPair = Rot3.RQ(R.matrix());
         Matrix3 actualK = actualPair.first;
         Vector3 actual = actualPair.second;
@@ -662,7 +662,7 @@ public class Rot3Test {
         assertTrue(assert_equal(R2, new Rot3(q2)));
         assertTrue(assert_equal(R2, Rot3.Quaternion(q2.w(), q2.x(), q2.y(), q2.z())));
 
-        // // Check converting Rot3 to quaterion
+        // Check converting Rot3 to quaterion
         assertTrue(assert_equal(R1.toQuaternion().coeffs(), q1.coeffs()));
         assertTrue(assert_equal(R2.toQuaternion().coeffs(), q2.coeffs()));
 
