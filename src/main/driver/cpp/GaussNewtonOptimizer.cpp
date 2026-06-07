@@ -22,9 +22,9 @@ void GaussNewtonOptimizer_delete(gtsam::GaussNewtonOptimizer* p) {
     delete p;
 }
 gtsam::GaussNewtonOptimizer* GaussNewtonOptimizer(  //
-    gtsam::NonlinearFactorGraph graph,              //
-    gtsam::Values initialValues,                    //
-    gtsam::GaussNewtonParams params) {              //
+    gtsam::NonlinearFactorGraph* graph,              //
+    gtsam::Values* initialValues,                    //
+    gtsam::GaussNewtonParams* params) {              //
     return new gtsam::GaussNewtonOptimizer(*graph, *initialValues, *params);
 }
 }

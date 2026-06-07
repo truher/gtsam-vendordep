@@ -41,10 +41,6 @@ void noiseModel_Base_WhitenSystem(const gtsam::noiseModel::Base* model,
                                   gtsam::Matrix* A, gtsam::Vector* b) {
     return model->WhitenSystem(*A, *b);
 }
-void noiseModel_Base_WhitenSystemVector(const gtsam::noiseModel::Base* model,
-                                        gtsam::Vector* b) {
-    return model->WhitenSystem(*b);
-}
 void noiseModel_Base_whitenInPlace(const gtsam::noiseModel::Base* model,
                                    gtsam::Vector* v) {
     model->whitenInPlace(*v);
@@ -189,7 +185,6 @@ std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Precision(
 //
 // UNIT
 //
-
 std::shared_ptr<gtsam::noiseModel::Unit>* noiseModel_Unit_Create(int dim) {
     return new std::shared_ptr<gtsam::noiseModel::Unit>(
         gtsam::noiseModel::Unit::Create(dim));
@@ -272,9 +267,14 @@ gtsam::Vector* noiseModel_Robust_unwhiten(
     const gtsam::noiseModel::Robust* model, const gtsam::Vector* v) {
     return new gtsam::Vector(model->unwhiten(*v));
 }
-std::shared_ptr<gtsam::noiseModel::mEstimator::Base> noiseModel_Robust_robust(
+std::shared_ptr<gtsam::noiseModel::mEstimator::Base>* noiseModel_Robust_robust(
     const gtsam::noiseModel::Robust* r) {
-    return new shared_ptr<gtsam::noiseModel::mEstimator::Base>(r->robust());
+    return new std::shared_ptr<gtsam::noiseModel::mEstimator::Base>(
+        r->robust());
+}
+void noiseModel_Robust_WhitenSystemVector(
+    const gtsam::noiseModel::Robust* model, gtsam::Vector* b) {
+    model->WhitenSystem(*b);
 }
 //
 // mEstimator

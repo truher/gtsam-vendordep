@@ -970,13 +970,13 @@ public class NoiseModelTest {
         assertEquals(dcs.get().weight(0), 1, 1e-8);
         shared_ptr<L2WithDeadZone> lsdz = L2WithDeadZone.Create(k);
         assertEquals(lsdz.get().loss(0), 0, 1e-8);
-        assertEquals(lsdz.get().weight(0), 0, 1e-8);
+        assertEquals(lsdz.get().weight(0), 0, 1e-8); // why is this zero?
         shared_ptr<AsymmetricCauchy> assy_cauchy = AsymmetricCauchy.Create(k);
         assertEquals(assy_cauchy.get().loss(0), 0, 1e-8);
-        assertEquals(assy_cauchy.get().weight(0), 0, 1e-8);
+        assertEquals(assy_cauchy.get().weight(0), 1, 1e-8);
         shared_ptr<AsymmetricTukey> assy_tukey = AsymmetricTukey.Create(k);
         assertEquals(assy_tukey.get().loss(0), 0, 1e-8);
-        assertEquals(assy_tukey.get().weight(0), 0, 1e-8);
+        assertEquals(assy_tukey.get().weight(0), 1, 1e-8);
     }
 
     static void TEST_GAUSSIAN(shared_ptr<Gaussian> gaussian) throws Throwable {

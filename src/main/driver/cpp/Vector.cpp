@@ -58,7 +58,7 @@ gtsam::Matrix* Vector_transpose(const gtsam::Vector* v) {
 gtsam::Vector* Vector_Constant(int size, double value) {
     return new gtsam::Vector(gtsam::Vector::Constant(size, value));
 }
-gtam::Vector* Vector_LinSpaced(int size, double low, double high) {
+gtsam::Vector* Vector_LinSpaced(int size, double low, double high) {
     return new gtsam::Vector(gtsam::Vector::LinSpaced(size, low, high));
 }
 //////////////////////////

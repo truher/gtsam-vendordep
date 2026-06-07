@@ -18,8 +18,10 @@ Matrix*
 Matrix2*
 Matrix3*
 noiseModel*
+NoiseModelFactor*
 NonlinearFactor*
 NonlinearFactorGraph*
+NonlinearOptimizer*
 PinholeCamera*
 PlanarGyroBiasFactor*
 PlanarGyroFactor*

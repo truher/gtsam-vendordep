@@ -1,3 +1,5 @@
+#include <gtsam/geometry/Point2.h>
+#include <gtsam/geometry/Pose2.h>
 #include <gtsam/sam/BearingRangeFactor.h>
 
 extern "C" {
@@ -8,7 +10,7 @@ BearingRangeFactorPose2Point2(  //
     const gtsam::Rot2* bearing,  //
     double range,                //
     const gtsam::SharedNoiseModel* model) {
-    return new std::shared_ptr<gtsam::BearingRangeFactor<Pose2, Point2>>(
+    return new std::shared_ptr<gtsam::BearingRangeFactor<gtsam::Pose2, gtsam::Point2>>(
         new gtsam::BearingRangeFactor<gtsam::Pose2, gtsam::Point2>(
             key1, key2, *bearing, range, *model));
 }
