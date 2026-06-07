@@ -45,9 +45,7 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_retractH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_localCoordinates(ADDRESS, ADDRESS, ADDRESS),
         Rot2_localCoordinatesH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot2_Expmap(ADDRESS, ADDRESS),
         Rot2_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot2_Logmap(ADDRESS, ADDRESS),
         Rot2_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot2_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Rot2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
@@ -68,19 +66,9 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         }
 
         @Override
-        public Vector1 Logmap(Rot2 g) throws Throwable {
-            return new Vector1((MemorySegment) FF.Rot2_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Vector1 Logmap(Rot2 g, Matrix H) throws Throwable {
             return new Vector1((MemorySegment) FF.Rot2_LogmapH.h.invokeExact(
                     g.ptr, H.ptr));
-        }
-
-        @Override
-        public Rot2 Expmap(Vector1 v) throws Throwable {
-            return new Rot2((MemorySegment) FF.Rot2_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override

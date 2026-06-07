@@ -39,9 +39,7 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         Pose2_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Pose2_Adjoint(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_Expmap(ADDRESS, ADDRESS),
         Pose2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
-        Pose2_Logmap(ADDRESS, ADDRESS),
         Pose2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Pose2_compose(ADDRESS, ADDRESS, ADDRESS),
         Pose2_composeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
@@ -82,19 +80,9 @@ public class Pose2 extends ForeignObject implements LieGroup<Pose2, Vector3> {
         }
 
         @Override
-        public Vector3 Logmap(Pose2 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Pose2_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Vector3 Logmap(Pose2 g, Matrix H) throws Throwable {
             return new Vector3((MemorySegment) FF.Pose2_LogmapH.h.invokeExact(
                     g.ptr, H.ptr));
-        }
-
-        @Override
-        public Pose2 Expmap(Vector3 xi) throws Throwable {
-            return new Pose2((MemorySegment) FF.Pose2_Expmap.h.invokeExact(xi.ptr));
         }
 
         @Override

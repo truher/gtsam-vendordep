@@ -27,7 +27,7 @@ public class BetweenFactorTest {
         Matrix actualH2 = new Matrix();
         Vector3 actual = factor.get().evaluateError(R1, R2, actualH1, actualH2);
 
-        Vector3 expected = Rot3.companion.Logmap(measured.inverse().compose(R1.between(R2)));
+        Vector3 expected = new Rot3().logmap(measured.inverse().compose(R1.between(R2)));
         // Uncomment to make unit test fail
         assertTrue(assert_equal(expected, actual/* , 1e-100 */));
 

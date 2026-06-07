@@ -130,14 +130,8 @@ gtsam::Vector3* Rot3_logmapH(const gtsam::Rot3* r,  //
                              gtsam::Matrix* H2) {   //
     return new gtsam::Vector3(r->logmap(*g, *H1, *H2));
 }
-gtsam::Vector3* Rot3_Logmap(const gtsam::Rot3* p) {
-    return new gtsam::Vector3(gtsam::Rot3::Logmap(*p));
-}
 gtsam::Vector3* Rot3_LogmapH(const gtsam::Rot3* p, gtsam::Matrix* H) {
     return new gtsam::Vector3(gtsam::Rot3::Logmap(*p, *H));
-}
-gtsam::Rot3* Rot3_Expmap(const gtsam::Vector3* xi) {
-    return new gtsam::Rot3(gtsam::Rot3::Expmap(*xi));
 }
 gtsam::Rot3* Rot3_ExpmapH(const gtsam::Vector3* xi, gtsam::Matrix* H) {
     return new gtsam::Rot3(gtsam::Rot3::Expmap(*xi, *H));

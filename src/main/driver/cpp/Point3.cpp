@@ -70,12 +70,6 @@ gtsam::Point3* Point3_expmap(const gtsam::Point3* r, const gtsam::Vector3* v) {
     return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Compose(
         *r, gtsam::traits<gtsam::Point3>::Expmap(*v)));
 }
-gtsam::Vector3* Point3_Logmap(const gtsam::Point3* p) {
-    return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p));
-}
-gtsam::Point3* Point3_Expmap(const gtsam::Vector3* v) {
-    return new gtsam::Point3(gtsam::traits<gtsam::Point3>::Expmap(*v));
-}
 gtsam::Vector3* Point3_LogmapH(const gtsam::Point3* p,  //
                                gtsam::Matrix* H) {      //
     return new gtsam::Vector3(gtsam::traits<gtsam::Point3>::Logmap(*p, *H));

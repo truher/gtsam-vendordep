@@ -35,8 +35,6 @@ public class Point3 extends ForeignObject
         Point3_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point3_logmap(ADDRESS, ADDRESS, ADDRESS),
         Point3_expmap(ADDRESS, ADDRESS, ADDRESS),
-        Point3_Logmap(ADDRESS, ADDRESS),
-        Point3_Expmap(ADDRESS, ADDRESS),
         Point3_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Point3_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Point3_Compose(ADDRESS, ADDRESS, ADDRESS),
@@ -117,18 +115,8 @@ public class Point3 extends ForeignObject
         }
 
         @Override
-        public Vector3 Logmap(Point3 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Point3_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Vector3 Logmap(Point3 m, Matrix Hm) throws Throwable {
             return new Vector3((MemorySegment) FF.Point3_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point3 Expmap(Vector3 v) throws Throwable {
-            return new Point3((MemorySegment) FF.Point3_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override

@@ -35,8 +35,6 @@ public class Point2 extends ForeignObject
         Point2_Retract(ADDRESS, ADDRESS, ADDRESS),
         Point2_logmap(ADDRESS, ADDRESS, ADDRESS),
         Point2_expmap(ADDRESS, ADDRESS, ADDRESS),
-        Point2_Logmap(ADDRESS, ADDRESS),
-        Point2_Expmap(ADDRESS, ADDRESS),
         Point2_LogmapH(ADDRESS, ADDRESS, ADDRESS),
         Point2_ExpmapH(ADDRESS, ADDRESS, ADDRESS),
         Point2_Compose(ADDRESS, ADDRESS, ADDRESS),
@@ -61,18 +59,8 @@ public class Point2 extends ForeignObject
         }
 
         @Override
-        public Vector2 Logmap(Point2 g) throws Throwable {
-            return new Vector2((MemorySegment) FF.Point2_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Vector2 Logmap(Point2 m, Matrix Hm) throws Throwable {
             return new Vector2((MemorySegment) FF.Point2_LogmapH.h.invokeExact(m.ptr, Hm.ptr));
-        }
-
-        @Override
-        public Point2 Expmap(Vector2 v) throws Throwable {
-            return new Point2((MemorySegment) FF.Point2_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override

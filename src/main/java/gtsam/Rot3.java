@@ -61,9 +61,7 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         Rot3_expmap(ADDRESS, ADDRESS, ADDRESS),
         Rot3_expmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_logmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot3_Expmap(ADDRESS, ADDRESS),
         Rot3_ExpmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        Rot3_Logmap(ADDRESS, ADDRESS),
         Rot3_LogmapH(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         Rot3_rotateUnit3(ADDRESS, ADDRESS, ADDRESS),
         Rot3_rotatePoint3(ADDRESS, ADDRESS, ADDRESS),
@@ -122,19 +120,9 @@ public class Rot3 extends ForeignObject implements LieGroup<Rot3, Vector3> {
         }
 
         @Override
-        public Vector3 Logmap(Rot3 g) throws Throwable {
-            return new Vector3((MemorySegment) FF.Rot3_Logmap.h.invokeExact(g.ptr));
-        }
-
-        @Override
         public Vector3 Logmap(Rot3 g, Matrix H) throws Throwable {
             return new Vector3((MemorySegment) FF.Rot3_LogmapH.h.invokeExact(
                     g.ptr, H.ptr));
-        }
-
-        @Override
-        public Rot3 Expmap(Vector3 v) throws Throwable {
-            return new Rot3((MemorySegment) FF.Rot3_Expmap.h.invokeExact(v.ptr));
         }
 
         @Override
