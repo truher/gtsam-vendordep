@@ -38,6 +38,7 @@ public class Key {
     private static final MethodHandle symbol_shorthand_X = symbol("X");
     private static final MethodHandle symbol_shorthand_Y = symbol("Y");
     private static final MethodHandle symbol_shorthand_Z = symbol("Z");
+    private static final MethodHandle symbol_print = Lib.ff("symbol_print", null, JAVA_LONG);
 
     private static final MethodHandle symbol(String label) {
         return Lib.ff("symbol_shorthand_" + label, JAVA_LONG, JAVA_LONG);
@@ -47,6 +48,10 @@ public class Key {
 
     public Key(long _j) {
         j = _j;
+    }
+
+    public void print() throws Throwable {
+        symbol_print.invokeExact(j);
     }
 
     public static Key A(long j) throws Throwable {

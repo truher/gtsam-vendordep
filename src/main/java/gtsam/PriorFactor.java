@@ -39,21 +39,21 @@ public class PriorFactor<T> extends NoiseModelFactor {
     }
 
     public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
-            Key poseKey,
+            Key key,
             double prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorDouble.h.invokeExact(poseKey.j, prior, model.ptr),
+                (MemorySegment) FF.PriorFactorDouble.h.invokeExact(key.j, prior, model.ptr),
                 PriorFactor::new);
     }
 
     /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Point2>> PriorFactorPoint2(
-            Key poseKey,
+            Key key,
             Point2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPoint2.h.invokeExact(poseKey.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPoint2.h.invokeExact(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
@@ -69,11 +69,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
 
     /** @param prior is copied, ok to delete. */
     public static shared_ptr<PriorFactor<Pose2>> PriorFactorPose2(
-            Key poseKey,
+            Key key,
             Pose2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPose2.h.invokeExact(poseKey.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPose2.h.invokeExact(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 

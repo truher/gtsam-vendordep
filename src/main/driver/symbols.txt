@@ -3,6 +3,7 @@ BearingRangeFactor*
 BetweenFactor*
 Cal3DS2*
 CustomFactor*
+Factor*
 FactorIndices*
 GaussianFactor*
 GaussNewton*
@@ -38,7 +39,7 @@ Result*
 Rot2*
 Rot3*
 shared_ptr*
-symbol_shorthand*
+symbol*
 TangentVector*
 Testable*
 Unit3*

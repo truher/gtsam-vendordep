@@ -8,15 +8,15 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
  * Factors are always passed around inside shared_ptr, so this does not manage
  * its own lifecycle, passes null to the parent ForeignObject deleter.
  */
-public class NonlinearFactor extends ForeignObject {
+public class NonlinearFactor extends Factor {
     public enum FF {
+        NonlinearFactor_error(JAVA_DOUBLE, ADDRESS, ADDRESS),
         NonlinearFactor_linearize(ADDRESS, ADDRESS, ADDRESS),
         NonlinearFactor_print(null, ADDRESS),
         NonlinearFactor_equals(JAVA_BOOLEAN, ADDRESS, ADDRESS);
@@ -30,7 +30,11 @@ public class NonlinearFactor extends ForeignObject {
 
     /** @param p pointer to the factor itself, not the shared_ptr. */
     NonlinearFactor(MemorySegment p) {
-        super(p, null);
+        super(p);
+    }
+
+    public double error(Values v) throws Throwable {
+        return (double) FF.NonlinearFactor_error.h.invokeExact(ptr, v.ptr);
     }
 
     /**
@@ -38,9 +42,11 @@ public class NonlinearFactor extends ForeignObject {
      * 
      * Returns shared_ptr<GaussianFactor>
      */
-    public GaussianFactor linearize(Values v) throws Throwable {
-        return new GaussianFactor((MemorySegment) FF.NonlinearFactor_linearize.h.invokeExact(
-                ptr, v.ptr));
+    public shared_ptr<GaussianFactor> linearize(Values v) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.NonlinearFactor_linearize.h.invokeExact(
+                        ptr, v.ptr),
+                GaussianFactor::new);
     }
 
     public void print() throws Throwable {

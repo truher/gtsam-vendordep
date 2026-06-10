@@ -6,6 +6,9 @@
  * TODO: remove the duplication here.
  */
 extern "C" {
+void symbol_print(gtsam::Key key) {
+    gtsam::Symbol(key).print();
+}
 gtsam::Key symbol_shorthand_A(std::uint64_t j) {
     return gtsam::symbol_shorthand::A(j);
 }

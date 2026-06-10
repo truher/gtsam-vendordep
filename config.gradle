@@ -26,6 +26,7 @@ nativeUtils {
                 "linuxarm32",
                 "linuxarm64",
                 "linuxathena",
+                "linuxsystemcore",
                 "linuxx86-64",
                 "osxuniversal",
                 "windowsarm64",

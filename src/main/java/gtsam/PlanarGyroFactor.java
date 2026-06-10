@@ -12,6 +12,45 @@ import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
 /**
+ * Gyro factor that functions like "Between" for just the yaw, and treats bias
+ * as slowly changing.
+ * 
+ * Example:
+ * 
+ * {@snippet :
+ * 
+ * // Std dev of "angle random walk" noise
+ * // The usual published measurement is stddev (σ), rad/√s.
+ * // Typical value is 1e-4 rad/sqrt(s)
+ * double arwSigma = 1e-4;
+ * 
+ * // Std dev of bias instability
+ * // The usual published measurement is stddev (σ), rad/s.
+ * // typical value is 3e-5 rad/s
+ * double biasInstabilitySigma = 3e-5;
+ * 
+ * shared_ptr<PlanarGyroParams> params = PlanarGyroParams.makeSharedPlanarGyroParams( //
+ *         arwSigma, biasInstabilitySigma);
+ * 
+ * // Measurement period in seconds
+ * double dt = 0.5;
+ * 
+ * // Rotation between poses
+ * Rot2 dr = new Rot2(0.05);
+ * 
+ * // Factor representing the difference in yaw of each pose, Key.X(n)
+ * shared_ptr<PlanarGyroFactor> x = PlanarGyroFactor.FromRotation( //
+ *         Key.X(0), Key.X(1), Key.B(0), params, dr, dt);
+ * 
+ * // Factor representing the difference in bias, Key.B(n)
+ * shared_ptr<PlanarGyroBiasFactor> b = PlanarGyroBiasFactor.makeSharedPlanarGyroBiasFactor( //
+ *         Key.B(0), Key.B(1), params);
+ * 
+ * graph.add(x);
+ * graph.add(b);
+ * 
+ * }
+ * 
  * See gtsam/navigation/PlanarGyroFactor.h
  */
 public class PlanarGyroFactor extends NonlinearFactor {

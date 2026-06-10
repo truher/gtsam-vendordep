@@ -224,7 +224,7 @@ public class PlanarGyroFactorTest {
         graph.add(BetweenFactorPose2.newBetweenFactorPose2(//
                 Key.P(3), Key.P(4), p3.between(p4).compose(pErr), highRotationNoise));
 
-        // Bias priorr: very uncertain.
+        // Bias prior: very uncertain.
         graph.add(PriorFactor.PriorFactorDouble(Key.B(0), 1.0, Diagonal.Sigmas(new Vector1(1))));
 
         // Gyro measurements affect rotation only.

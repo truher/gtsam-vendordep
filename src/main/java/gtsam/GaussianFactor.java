@@ -11,7 +11,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.Lib;
 import org.team100.foreign.Pairs;
 
-public class GaussianFactor {
+public class GaussianFactor extends Factor {
     public enum FF {
         GaussianFactor_jacobian(Pairs.PtrPair, ADDRESS);
 
@@ -22,19 +22,13 @@ public class GaussianFactor {
         }
     }
 
-    /**
-     * Pointer to a shared pointer that points at the factor, because that's how
-     * these are produced, e.g. by NonlinearFactor.linearize().
-     */
-    final MemorySegment sharedPtrPtr;
-
     GaussianFactor(MemorySegment p) {
-        sharedPtrPtr = p;
+        super(p);
     }
 
     public Pair<Matrix, Vector> jacobian() throws Throwable {
         MemorySegment resultStruct = (MemorySegment) FF.GaussianFactor_jacobian.h.invokeExact(
-                (SegmentAllocator) Lib.arena, sharedPtrPtr);
+                (SegmentAllocator) Lib.arena, ptr);
         MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultStruct, 0);
         MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultStruct, 0);
         return new Pair<>(new Matrix(firstPtr), new Vector(secondPtr));
