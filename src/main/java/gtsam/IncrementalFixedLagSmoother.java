@@ -8,16 +8,12 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class IncrementalFixedLagSmoother extends ForeignObject {
+public class IncrementalFixedLagSmoother extends FixedLagSmoother {
     public enum FF {
         IncrementalFixedLagSmoother_delete(null, ADDRESS),
         IncrementalFixedLagSmoother(ADDRESS, JAVA_DOUBLE, ADDRESS),
-        IncrementalFixedLagSmoother_update(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        IncrementalFixedLagSmoother_updateFactorIndices(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        IncrementalFixedLagSmoother_calculateEstimate(ADDRESS, ADDRESS),
         IncrementalFixedLagSmoother_calculateEstimatePoint2(ADDRESS, ADDRESS, JAVA_LONG),
         IncrementalFixedLagSmoother_getFactors(ADDRESS, ADDRESS),
         IncrementalFixedLagSmoother_getISAM2Result(ADDRESS, ADDRESS),
@@ -41,34 +37,12 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
                 lag, params.ptr));
     }
 
-    public FixedLagSmoother.Result update(
-            NonlinearFactorGraph newFactors,
-            Values newTheta,
-            FixedLagSmoother.KeyTimestampMap timestamps) throws Throwable {
-        return new FixedLagSmoother.Result(
-                (MemorySegment) FF.IncrementalFixedLagSmoother_update.h.invokeExact(
-                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr));
-    }
-
-    public FixedLagSmoother.Result update(
-            NonlinearFactorGraph newFactors,
-            Values newTheta,
-            FixedLagSmoother.KeyTimestampMap timestamps,
-            FactorIndices indices) throws Throwable {
-        return new FixedLagSmoother.Result(
-                (MemorySegment) FF.IncrementalFixedLagSmoother_updateFactorIndices.h.invokeExact(
-                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr, indices.ptr));
-    }
-
-    public Values calculateEstimate() throws Throwable {
-        return Values.owned((MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimate.h.invokeExact(ptr));
-    }
-
     public Point2 calculateEstimatePoint2(Key key) throws Throwable {
         return new Point2(
                 (MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimatePoint2.h.invokeExact(ptr, key.j));
     }
 
+    // This method is not an override in C++ but it probably should be here.
     public NonlinearFactorGraph getFactors() throws Throwable {
         return new NonlinearFactorGraph((MemorySegment) FF.IncrementalFixedLagSmoother_getFactors.h.invokeExact(ptr));
     }
@@ -83,7 +57,6 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
 
     public ISAM2 getISAM2() throws Throwable {
         return new ISAM2((MemorySegment) FF.IncrementalFixedLagSmoother_getISAM2.h.invokeExact(ptr));
-
     }
 
 }

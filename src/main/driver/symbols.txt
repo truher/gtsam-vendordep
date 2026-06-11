@@ -5,6 +5,7 @@ Cal3DS2*
 CustomFactor*
 Factor*
 FactorIndices*
+FixedLagSmoother*
 GaussianFactor*
 GaussNewton*
 IncrementalFixedLagSmoother*

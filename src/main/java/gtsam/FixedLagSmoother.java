@@ -11,7 +11,7 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class FixedLagSmoother {
+public class FixedLagSmoother extends ForeignObject {
     /**
      * {@snippet :
      * struct Result {
@@ -75,4 +75,45 @@ public class FixedLagSmoother {
             FF.KeyTimestampMap_clear.h.invokeExact(ptr);
         }
     }
+
+    public enum FF {
+        FixedLagSmoother_update(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        FixedLagSmoother_updateFactorIndices(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        FixedLagSmoother_calculateEstimate(ADDRESS, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
+
+    protected FixedLagSmoother(MemorySegment pointer, MethodHandle deleter) {
+        super(pointer, deleter);
+    }
+
+    public FixedLagSmoother.Result update(
+            NonlinearFactorGraph newFactors,
+            Values newTheta,
+            FixedLagSmoother.KeyTimestampMap timestamps) throws Throwable {
+        return new FixedLagSmoother.Result(
+                (MemorySegment) FF.FixedLagSmoother_update.h.invokeExact(
+                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr));
+    }
+
+    public FixedLagSmoother.Result update(
+            NonlinearFactorGraph newFactors,
+            Values newTheta,
+            FixedLagSmoother.KeyTimestampMap timestamps,
+            FactorIndices indices) throws Throwable {
+        return new FixedLagSmoother.Result(
+                (MemorySegment) FF.FixedLagSmoother_updateFactorIndices.h.invokeExact(
+                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr, indices.ptr));
+    }
+
+    /** Returned Values are owned. */
+    public Values calculateEstimate() throws Throwable {
+        return Values.owned((MemorySegment) FF.FixedLagSmoother_calculateEstimate.h.invokeExact(ptr));
+    }
+
 }

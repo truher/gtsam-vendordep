@@ -377,6 +377,8 @@ public class BatchFixedLagSmootherTest {
 
                 neesCount++;
             } catch (Throwable t) {
+                System.err.printf("Caught exception %s\n", t.getMessage());
+                t.printStackTrace();
                 continue;
             }
         }

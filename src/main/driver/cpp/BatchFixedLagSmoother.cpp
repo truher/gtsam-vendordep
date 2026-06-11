@@ -15,29 +15,6 @@ gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother2(
 void BatchFixedLagSmoother_delete(gtsam::BatchFixedLagSmoother* p) {
     delete p;
 }
-// Result is a struct with some counters
-// typedef std::map<Key, double> KeyTimestampMap;
-gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_update(  //
-    gtsam::BatchFixedLagSmoother* p,                            //
-    const gtsam::NonlinearFactorGraph* newFactors,              //
-    const gtsam::Values* newTheta,                              //
-    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps));
-}
-gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
-    gtsam::BatchFixedLagSmoother* p,                                         //
-    const gtsam::NonlinearFactorGraph* newFactors,                           //
-    const gtsam::Values* newTheta,                                           //
-    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,              //
-    const gtsam::FactorIndices* indices) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps, *indices));
-}
-gtsam::Values* BatchFixedLagSmoother_calculateEstimate(
-    const gtsam::BatchFixedLagSmoother* p) {
-    return new gtsam::Values(p->calculateEstimate());
-}
 gtsam::Point2* BatchFixedLagSmoother_calculateEstimatePoint2(
     const gtsam::BatchFixedLagSmoother* p, gtsam::Key key) {
     return new gtsam::Point2(p->calculateEstimate<gtsam::Point2>(key));

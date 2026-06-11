@@ -10,28 +10,6 @@ void IncrementalFixedLagSmoother_delete(      //
     gtsam::IncrementalFixedLagSmoother* p) {  //
     delete p;
 }
-gtsam::FixedLagSmoother::Result* IncrementalFixedLagSmoother_update(  //
-    gtsam::IncrementalFixedLagSmoother* p,                            //
-    const gtsam::NonlinearFactorGraph* newFactors,                    //
-    const gtsam::Values* newTheta,                                    //
-    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps));
-}
-gtsam::FixedLagSmoother::Result*
-IncrementalFixedLagSmoother_updateFactorIndices(                 //
-    gtsam::IncrementalFixedLagSmoother* p,                       //
-    const gtsam::NonlinearFactorGraph* newFactors,               //
-    const gtsam::Values* newTheta,                               //
-    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,  //
-    const gtsam::FactorIndices* indices) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps, *indices));
-}
-gtsam::Values* IncrementalFixedLagSmoother_calculateEstimate(
-    const gtsam::IncrementalFixedLagSmoother* p) {
-    return new gtsam::Values(p->calculateEstimate());
-}
 gtsam::Point2* IncrementalFixedLagSmoother_calculateEstimatePoint2(
     const gtsam::IncrementalFixedLagSmoother* p, gtsam::Key key) {
     return new gtsam::Point2(p->calculateEstimate<gtsam::Point2>(key));
