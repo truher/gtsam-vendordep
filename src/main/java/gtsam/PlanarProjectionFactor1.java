@@ -15,16 +15,17 @@ import org.team100.foreign.Lib;
  * PlanarProjectionFactor projects landmarks through a simulated camera, and as
  * the solver wanders around the solution space, the camera can sometimes be in
  * a position such that the landmarks are "behind" the camera. GTSAM, by
- * default, throws an exception if that happens, but we don't want that. So the
- * GTSAM library MUST be built with the correct flags.
+ * default, throws an exception if that happens, and we depend on it: without
+ * that exception, we would have to duplicate the chirality checking logic.
+ * So use the flag as shown here:
  * 
  * {@snippet :
- * cmake -S . -B build -DGTSAM_THROW_CHEIRALITY_EXCEPTION=OFF -DGTSAM_BUILD_UNSTABLE=OFF
+ * cmake -S . -B build -DGTSAM_THROW_CHEIRALITY_EXCEPTION=ON -DGTSAM_BUILD_UNSTABLE=OFF
  * cmake --build build --target check
  * }
  * 
- * The flag about "unstable" is necessary because the unstable part doesn't work
- * without the cheirality exception (!?)
+ * The flag about "unstable" is not necessary but we don't use any unstable parts
+ * anyway.
  */
 public class PlanarProjectionFactor1 extends NonlinearFactor {
     public enum FF {
