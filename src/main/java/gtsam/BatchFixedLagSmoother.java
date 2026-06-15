@@ -17,6 +17,7 @@ public class BatchFixedLagSmoother extends FixedLagSmoother {
         BatchFixedLagSmoother2(ADDRESS, JAVA_DOUBLE, ADDRESS, JAVA_BOOLEAN),
         BatchFixedLagSmoother_delete(null, ADDRESS),
         BatchFixedLagSmoother_calculateEstimatePoint2(ADDRESS, ADDRESS, JAVA_LONG),
+        BatchFixedLagSmoother_calculateEstimatePose2(ADDRESS, ADDRESS, JAVA_LONG),
         BatchFixedLagSmoother_getFactors(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
@@ -49,6 +50,10 @@ public class BatchFixedLagSmoother extends FixedLagSmoother {
 
     public Point2 calculateEstimatePoint2(Key key) throws Throwable {
         return new Point2((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimatePoint2.h.invokeExact(ptr, key.j));
+    }
+
+    public Pose2 calculateEstimatePose2(Key key) throws Throwable {
+        return new Pose2((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimatePose2.h.invokeExact(ptr, key.j));
     }
 
     // This method is not an override in C++ but it probably should be here.

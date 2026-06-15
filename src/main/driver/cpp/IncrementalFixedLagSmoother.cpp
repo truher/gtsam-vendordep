@@ -1,4 +1,7 @@
+#include <gtsam/geometry/Point2.h>
+#include <gtsam/geometry/Pose2.h>
 #include <gtsam/nonlinear/IncrementalFixedLagSmoother.h>
+#include <gtsam/nonlinear/NonlinearFactorGraph.h>
 
 extern "C" {
 gtsam::IncrementalFixedLagSmoother* IncrementalFixedLagSmoother(
@@ -13,6 +16,10 @@ void IncrementalFixedLagSmoother_delete(      //
 gtsam::Point2* IncrementalFixedLagSmoother_calculateEstimatePoint2(
     const gtsam::IncrementalFixedLagSmoother* p, gtsam::Key key) {
     return new gtsam::Point2(p->calculateEstimate<gtsam::Point2>(key));
+}
+gtsam::Pose2* IncrementalFixedLagSmoother_calculateEstimatePose2(
+    const gtsam::IncrementalFixedLagSmoother* p, gtsam::Key key) {
+    return new gtsam::Pose2(p->calculateEstimate<gtsam::Pose2>(key));
 }
 gtsam::NonlinearFactorGraph* IncrementalFixedLagSmoother_getFactors(
     const gtsam::IncrementalFixedLagSmoother* p) {

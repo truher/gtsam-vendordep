@@ -25,7 +25,8 @@ public class FixedLagSmoother extends ForeignObject {
      */
     public static class Result extends ForeignObject {
         public enum FF {
-            Result_delete(null, ADDRESS);
+            Result_delete(null, ADDRESS),
+            Result_print(null, ADDRESS);
 
             public final MethodHandle h;
 
@@ -36,6 +37,10 @@ public class FixedLagSmoother extends ForeignObject {
 
         public Result(MemorySegment p) {
             super(p, FF.Result_delete.h);
+        }
+
+        public void print() throws Throwable {
+            FF.Result_print.h.invokeExact(ptr);
         }
     }
 

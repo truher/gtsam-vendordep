@@ -15,6 +15,7 @@ public class IncrementalFixedLagSmoother extends FixedLagSmoother {
         IncrementalFixedLagSmoother_delete(null, ADDRESS),
         IncrementalFixedLagSmoother(ADDRESS, JAVA_DOUBLE, ADDRESS),
         IncrementalFixedLagSmoother_calculateEstimatePoint2(ADDRESS, ADDRESS, JAVA_LONG),
+        IncrementalFixedLagSmoother_calculateEstimatePose2(ADDRESS, ADDRESS, JAVA_LONG),
         IncrementalFixedLagSmoother_getFactors(ADDRESS, ADDRESS),
         IncrementalFixedLagSmoother_getISAM2Result(ADDRESS, ADDRESS),
         IncrementalFixedLagSmoother_getLinearizationPoint(ADDRESS, ADDRESS),
@@ -40,6 +41,11 @@ public class IncrementalFixedLagSmoother extends FixedLagSmoother {
     public Point2 calculateEstimatePoint2(Key key) throws Throwable {
         return new Point2(
                 (MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimatePoint2.h.invokeExact(ptr, key.j));
+    }
+
+    public Pose2 calculateEstimatePose2(Key key) throws Throwable {
+        return new Pose2(
+                (MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimatePose2.h.invokeExact(ptr, key.j));
     }
 
     // This method is not an override in C++ but it probably should be here.

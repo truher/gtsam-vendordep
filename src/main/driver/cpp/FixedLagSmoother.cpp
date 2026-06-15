@@ -1,4 +1,5 @@
 #include <gtsam/nonlinear/FixedLagSmoother.h>
+#include <gtsam/nonlinear/Values.h>
 
 extern "C" {
 //
@@ -6,6 +7,9 @@ extern "C" {
 //
 void Result_delete(gtsam::FixedLagSmoother::Result* p) {
     delete p;
+}
+void Result_print(gtsam::FixedLagSmoother::Result* r) {
+    r->print();
 }
 //
 // KEY TIMESTAMP MAP
@@ -29,17 +33,17 @@ void KeyTimestampMap_clear(gtsam::FixedLagSmoother::KeyTimestampMap* p) {
 //
 gtsam::FixedLagSmoother::Result* FixedLagSmoother_update(  //
     gtsam::FixedLagSmoother* p,                            //
-    const gtsam::NonlinearFactorGraph* newFactors,              //
-    const gtsam::Values* newTheta,                              //
+    const gtsam::NonlinearFactorGraph* newFactors,         //
+    const gtsam::Values* newTheta,                         //
     const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps) {
     return new gtsam::FixedLagSmoother::Result(
         p->update(*newFactors, *newTheta, *timestamps));
 }
 gtsam::FixedLagSmoother::Result* FixedLagSmoother_updateFactorIndices(  //
     gtsam::FixedLagSmoother* p,                                         //
-    const gtsam::NonlinearFactorGraph* newFactors,                           //
-    const gtsam::Values* newTheta,                                           //
-    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,              //
+    const gtsam::NonlinearFactorGraph* newFactors,                      //
+    const gtsam::Values* newTheta,                                      //
+    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,         //
     const gtsam::FactorIndices* indices) {
     return new gtsam::FixedLagSmoother::Result(
         p->update(*newFactors, *newTheta, *timestamps, *indices));
