@@ -12,7 +12,8 @@ import org.team100.foreign.Lib;
 public class ISAM2Result extends ForeignObject {
     public enum FF {
         ISAM2Result_delete(null, ADDRESS),
-        ISAM2Result_newFactorsIndices(ADDRESS, ADDRESS);
+        ISAM2Result_newFactorsIndices(ADDRESS, ADDRESS),
+        ISAM2Result_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -27,6 +28,10 @@ public class ISAM2Result extends ForeignObject {
 
     public FactorIndices newFactorsIndices() throws Throwable {
         return new FactorIndices((MemorySegment) FF.ISAM2Result_newFactorsIndices.h.invokeExact(ptr));
+    }
+
+    public void print() throws Throwable {
+        FF.ISAM2Result_print.h.invokeExact(ptr);
     }
 
 }

@@ -8,4 +8,7 @@ void ISAM2Result_delete(gtsam::ISAM2Result* p) {
 gtsam::FactorIndices* ISAM2Result_newFactorsIndices(gtsam::ISAM2Result* p) {
     return new gtsam::FactorIndices(p->newFactorsIndices);
 }
+void ISAM2Result_print(gtsam::ISAM2Result* p) {
+    p->print();
+}
 }

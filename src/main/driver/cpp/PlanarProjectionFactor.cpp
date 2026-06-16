@@ -1,4 +1,5 @@
 #include <gtsam/base/types.h>
+#include <gtsam/geometry/Cal3DS2.h>
 #include <gtsam/geometry/Point2.h>
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/linear/NoiseModel.h>
