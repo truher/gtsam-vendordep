@@ -82,6 +82,7 @@ public class FixedLagSmoother extends ForeignObject {
     }
 
     public enum FF {
+        FixedLagSmoother_update2(ADDRESS, ADDRESS),
         FixedLagSmoother_update(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         FixedLagSmoother_updateFactorIndices(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         FixedLagSmoother_calculateEstimate(ADDRESS, ADDRESS);
@@ -95,6 +96,12 @@ public class FixedLagSmoother extends ForeignObject {
 
     protected FixedLagSmoother(MemorySegment pointer, MethodHandle deleter) {
         super(pointer, deleter);
+    }
+
+    public FixedLagSmoother.Result update() throws Throwable {
+        return new FixedLagSmoother.Result(
+                (MemorySegment) FF.FixedLagSmoother_update2.h.invokeExact(
+                        ptr));
     }
 
     public FixedLagSmoother.Result update(

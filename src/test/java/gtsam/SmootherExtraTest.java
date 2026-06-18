@@ -10,7 +10,7 @@ import gtsam.noiseModel.Diagonal;
 /** These tests are for investigating the smoother problem. */
 public class SmootherExtraTest {
     // static double TAG_SIZE_M = 0.1651;
-    static double TAG_SIZE_M = 2;
+    static double TAG_SIZE_M = 0.5;
     static double HALF = TAG_SIZE_M / 2;
 
     @Test
@@ -60,6 +60,27 @@ public class SmootherExtraTest {
         prior(0, 100, new_factors);
 
         vision(new_factors);
+
+        var optimizer = new GaussNewtonOptimizer(new_factors, new_values, new GaussNewtonParams());
+        Values result = optimizer.optimize();
+        result.print("result");
+    }
+
+    @Test
+    void testGN3d() throws Throwable {
+        var new_factors = new NonlinearFactorGraph();
+        var new_values = new Values();
+
+        new_values.insert(Key.X(0), new Pose3());
+        new_values.insert(Key.L(0), new Point3());
+        new_values.insert(Key.L(1), new Point3());
+        new_values.insert(Key.L(2), new Point3());
+        new_values.insert(Key.L(3), new Point3());
+
+        priorPose3(0, 100, new_factors);
+        landmarkPriors(new_factors);
+
+        vision3d(new_factors);
 
         var optimizer = new GaussNewtonOptimizer(new_factors, new_values, new GaussNewtonParams());
         Values result = optimizer.optimize();
@@ -129,6 +150,7 @@ public class SmootherExtraTest {
         var lag = 100000;
         ISAM2Params isam2Params = new ISAM2Params();
         isam2Params.findUnusedFactorSlots(true);
+        isam2Params.relinearizeSkip(1);
         var smoother = new IncrementalFixedLagSmoother(lag, isam2Params);
 
         new_values.insert(Key.X(0), new Pose2());
@@ -138,8 +160,10 @@ public class SmootherExtraTest {
 
         vision(new_factors);
 
-        Result updateResult = smoother.update(new_factors, new_values, new_timestamps);
-        updateResult.print();
+        smoother.update(new_factors, new_values, new_timestamps);
+        smoother.update();
+        smoother.update();
+        smoother.update();
         Values result = smoother.calculateEstimate();
         result.print("result");
     }
@@ -160,6 +184,32 @@ public class SmootherExtraTest {
         ISAM2Result isam2Result = isam2.update(new_factors, new_values);
         isam2Result.print();
         Values result = isam2.calculateEstimate();
+        result.print("result");
+    }
+
+    @Test
+    void testISAM23d() throws Throwable {
+        var new_factors = new NonlinearFactorGraph();
+        var new_values = new Values();
+
+        new_values.insert(Key.X(0), new Pose3());
+        new_values.insert(Key.L(0), new Point3());
+        new_values.insert(Key.L(1), new Point3());
+        new_values.insert(Key.L(2), new Point3());
+        new_values.insert(Key.L(3), new Point3());
+
+        priorPose3(0, 100, new_factors);
+        landmarkPriors(new_factors);
+
+        vision3d(new_factors);
+
+        ISAM2Params isam2Params = new ISAM2Params();
+        isam2Params.relinearizeSkip(1);
+        isam2Params.relinearizeThreshold(0.001);
+        ISAM2 isam2 = new ISAM2(isam2Params);
+        ISAM2Result isam2Result = isam2.update(new_factors, new_values);
+        isam2Result.print();
+        Values result = isam2.calculateBestEstimate();
         result.print("result");
     }
 
@@ -225,6 +275,7 @@ public class SmootherExtraTest {
         result.print("result");
     }
 
+    /** use 2d prior */
     void prior(long j, double sigma, NonlinearFactorGraph new_factors) throws Throwable {
         new_factors.add(PriorFactor.PriorFactorPose2(
                 Key.X(j),
@@ -232,6 +283,24 @@ public class SmootherExtraTest {
                 Diagonal.Sigmas(new Vector3(sigma, sigma, sigma))));
     }
 
+    /** use 3d prior */
+    void priorPose3(long j, double sigma, NonlinearFactorGraph new_factors) throws Throwable {
+        new_factors.add(PriorFactor.PriorFactorPose3(
+                Key.X(j),
+                new Pose3(new Rot3(), new Point3()),
+                Diagonal.Sigmas(new Vector(new double[] {
+                        sigma, sigma, sigma, sigma, sigma, sigma }))));
+    }
+
+    void priorPoint3(long j, Point3 pt, double sigma, NonlinearFactorGraph new_factors) throws Throwable {
+        new_factors.add(PriorFactor.PriorFactorPoint3(
+                Key.L(j),
+                pt,
+                Diagonal.Sigmas(new Vector(new double[] {
+                        sigma, sigma, sigma }))));
+    }
+
+    /** use 2d projection factor */
     void vision(NonlinearFactorGraph new_factors) throws Throwable {
         List<Point3> landmarks = make_tag(8, 4, 1, 0);
         // this is what the solver should produce
@@ -256,6 +325,41 @@ public class SmootherExtraTest {
         }
     }
 
+    void landmarkPriors(NonlinearFactorGraph new_factors) throws Throwable {
+        List<Point3> landmarks = make_tag(8, 4, 1, 0);
+        for (int i = 0; i < landmarks.size(); ++i) {
+            Point3 pt = landmarks.get(i);
+            System.out.printf("Landmark %d (%f %f %f)\n",
+                    i, pt.x(), pt.y(), pt.z());
+            priorPoint3(i, pt, 0.001, new_factors);
+        }
+    }
+
+    /** use 3d projection factor */
+    void vision3d(NonlinearFactorGraph new_factors) throws Throwable {
+        List<Point3> landmarks = make_tag(8, 4, 1, 0);
+        // this is what the solver should produce
+        Pose3 ground_truth = new Pose3(new Rot3(), new Point3(2, 2, 0));
+        List<Point2> measurements = pixels3d(landmarks, ground_truth);
+        if (landmarks.size() != measurements.size())
+            throw new RuntimeException();
+        // try one point only, for debugging.
+        // m_vision.add(t1_us, m_landmarks.get(0), measurements.get(0));
+        for (int i = 0; i < landmarks.size(); ++i) {
+            Point2 measurement = measurements.get(i);
+            System.out.printf("measurement %d (%f %f)\n", i, measurement.x(), measurement.y());
+            shared_ptr<GenericProjectionFactorCal3DS2> f = //
+                    GenericProjectionFactorCal3DS2.newGenericProjectionFactorCal3DS2(
+                            measurement,
+                            Diagonal.Sigmas(new Vector2(2, 2)),
+                            Key.X(0),
+                            Key.L(i),
+                            sharedCalib(),
+                            camera_offset());
+            new_factors.add(f);
+        }
+    }
+
     List<Point3> make_tag(double x, double y, double z, double yaw) throws Throwable {
         double s = HALF * Math.sin(yaw);
         double c = HALF * Math.cos(yaw);
@@ -275,8 +379,21 @@ public class SmootherExtraTest {
         return camera.project(landmark);
     }
 
+    Point2 pixel3d(Point3 landmark, Pose3 robot_pose) throws Throwable {
+        Pose3 camera_offset = camera_offset();
+        Cal3DS2 calib = calib();
+        Pose3 camera_pose = robot_pose.compose(camera_offset);
+        PinholeCamera<Cal3DS2> camera = PinholeCamera.PinholeCameraCal3DS2(
+                camera_pose, calib);
+        return camera.project(landmark);
+    }
+
     Cal3DS2 calib() throws Throwable {
         return new Cal3DS2(200.0, 200.0, 0.0, 400.0, 300.0, 0.0, 0.0);
+    }
+
+    shared_ptr<Cal3DS2> sharedCalib() throws Throwable {
+        return Cal3DS2.sharedCal3DS2(200.0, 200.0, 0.0, 400.0, 300.0, 0.0, 0.0);
     }
 
     Pose3 camera_offset() throws Throwable {
@@ -297,6 +414,28 @@ public class SmootherExtraTest {
         Point2 p2 = pixel(landmarks.get(2), robot_pose);
         // upper left
         Point2 p3 = pixel(landmarks.get(3), robot_pose);
+        List<Point2> gt_pixels = List.of(p0, p1, p2, p3);
+        // Omit out-of-frame tags.
+        for (Point2 p : gt_pixels) {
+            double x = p.x();
+            double y = p.y();
+            if (x < 0 || y < 0 || x > 800 || y > 600) {
+                // any corner out of frame means the whole tag is not seen
+                return List.of();
+            }
+        }
+        return gt_pixels;
+    }
+
+    List<Point2> pixels3d(List<Point3> landmarks, Pose3 robot_pose) throws Throwable {
+        // lower left
+        Point2 p0 = pixel3d(landmarks.get(0), robot_pose);
+        // lower right
+        Point2 p1 = pixel3d(landmarks.get(1), robot_pose);
+        // upper right
+        Point2 p2 = pixel3d(landmarks.get(2), robot_pose);
+        // upper left
+        Point2 p3 = pixel3d(landmarks.get(3), robot_pose);
         List<Point2> gt_pixels = List.of(p0, p1, p2, p3);
         // Omit out-of-frame tags.
         for (Point2 p : gt_pixels) {

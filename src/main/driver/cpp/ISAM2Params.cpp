@@ -10,4 +10,13 @@ void ISAM2Params_delete(gtsam::ISAM2Params* p) {
 void ISAM2Params_findUnusedFactorSlots(gtsam::ISAM2Params* p, bool val) {
     p->findUnusedFactorSlots = val;
 }
+void ISAM2Params_enableDetailedResults(gtsam::ISAM2Params* p, bool val) {
+    p->enableDetailedResults = val;
+}
+void ISAM2Params_relinearizeSkip(gtsam::ISAM2Params* p, int val) {
+    p->relinearizeSkip = val;
+}
+void ISAM2Params_relinearizeThreshold(gtsam::ISAM2Params* p, double val) {
+    p->relinearizeThreshold = val;
+}
 }

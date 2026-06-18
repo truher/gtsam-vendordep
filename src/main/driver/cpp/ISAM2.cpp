@@ -16,4 +16,7 @@ gtsam::ISAM2Result* ISAM2_update(
 gtsam::Values* ISAM2_calculateEstimate(const gtsam::ISAM2* p) {
     return new gtsam::Values(p->calculateEstimate());
 }
+gtsam::Values* ISAM2_calculateBestEstimate(const gtsam::ISAM2* p) {
+    return new gtsam::Values(p->calculateBestEstimate());
+}
 }

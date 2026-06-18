@@ -1,6 +1,8 @@
 #include <gtsam/geometry/Cal3DS2.h>
+#include <gtsam/geometry/Point2.h>
 #include <gtsam/geometry/Point3.h>
 #include <gtsam/geometry/Pose3.h>
+#include <gtsam/inference/Symbol.h>
 #include <gtsam/slam/ProjectionFactor.h>
 
 extern "C" {
@@ -13,10 +15,11 @@ GenericProjectionFactorCal3DS2(                                 //
     gtsam::Key poseKey,                                         //
     gtsam::Key pointKey,                                        //
     const std::shared_ptr<gtsam::Cal3DS2>* K,                   //
-    const gtsam::Pose3* bTc) {                                  //
+    gtsam::Pose3* bTc) {                                        //
     return new std::shared_ptr<gtsam::GenericProjectionFactor<  //
         gtsam::Pose3, gtsam::Point3, gtsam::Cal3DS2>>(          //
-        new gtsam::GenericProjectionFactor(                     //
+        new gtsam::GenericProjectionFactor<gtsam::Pose3, gtsam::Point3,
+                                           gtsam::Cal3DS2>(  //
             *measured, *model, poseKey, pointKey, *K, *bTc));
 }
 }

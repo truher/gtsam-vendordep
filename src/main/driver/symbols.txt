@@ -1,6 +1,7 @@
 BatchFixedLagSmoother*
 BearingRangeFactor*
 BetweenFactor*
+Cal3_S2*
 Cal3DS2*
 CustomFactor*
 Factor*
@@ -8,6 +9,7 @@ FactorIndices*
 FixedLagSmoother*
 GaussianFactor*
 GaussNewton*
+GenericProjectionFactor*
 IncrementalFixedLagSmoother*
 ISAM2*
 JacobianVector*

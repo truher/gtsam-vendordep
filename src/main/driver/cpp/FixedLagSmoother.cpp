@@ -31,6 +31,11 @@ void KeyTimestampMap_clear(gtsam::FixedLagSmoother::KeyTimestampMap* p) {
 //
 // FIXED LAG SMOOTHER
 //
+gtsam::FixedLagSmoother::Result* FixedLagSmoother_update2(  //
+    gtsam::FixedLagSmoother* p) {
+    return new gtsam::FixedLagSmoother::Result(
+        p->update());
+}
 gtsam::FixedLagSmoother::Result* FixedLagSmoother_update(  //
     gtsam::FixedLagSmoother* p,                            //
     const gtsam::NonlinearFactorGraph* newFactors,         //

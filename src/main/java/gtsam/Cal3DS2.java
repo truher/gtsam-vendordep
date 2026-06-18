@@ -16,6 +16,10 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE),
+        Cal3DS2_shared(ADDRESS,
+                JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
+                JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
+                JAVA_DOUBLE, JAVA_DOUBLE),
         Cal3DS2_delete(null, ADDRESS),
         Cal3DS2_localCoordinates(ADDRESS, ADDRESS, ADDRESS),
         Cal3DS2_retract(ADDRESS, ADDRESS, ADDRESS),
@@ -67,6 +71,15 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
             double s, double u0, double v0, //
             double k1, double k2) throws Throwable {
         this(fx, fy, s, u0, v0, k1, k2, 0.0, 0.0, 1e-5);
+    }
+
+    public static shared_ptr<Cal3DS2> sharedCal3DS2(
+            double fx, double fy, //
+            double s, double u0, double v0, //
+            double k1, double k2) throws Throwable {
+        return new shared_ptr<>(
+                (MemorySegment) FF.Cal3DS2_shared.h.invokeExact(fx, fy, s, u0, v0, k1, k2, 0.0, 0.0, 1e-5),
+                Cal3DS2::new);
     }
 
     @Override

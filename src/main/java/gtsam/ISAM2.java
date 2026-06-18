@@ -14,7 +14,8 @@ public class ISAM2 extends ForeignObject {
         ISAM2(ADDRESS, ADDRESS),
         ISAM2_delete(null, ADDRESS),
         ISAM2_update(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        ISAM2_calculateEstimate(ADDRESS, ADDRESS);
+        ISAM2_calculateEstimate(ADDRESS, ADDRESS),
+        ISAM2_calculateBestEstimate(ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -47,4 +48,8 @@ public class ISAM2 extends ForeignObject {
                 (MemorySegment) FF.ISAM2_calculateEstimate.h.invokeExact(ptr));
     }
 
+    public Values calculateBestEstimate() throws Throwable {
+        return Values.owned(
+                (MemorySegment) FF.ISAM2_calculateBestEstimate.h.invokeExact(ptr));
+    }
 }
