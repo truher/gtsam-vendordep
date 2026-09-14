@@ -2,41 +2,35 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 
-import java.lang.foreign.FunctionDescriptor;
-import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SegmentAllocator;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
 
 import org.team100.foreign.Lib;
+import org.team100.foreign.Pairs;
 
-public class GaussianFactor {
-    private static final StructLayout PtrPair = MemoryLayout.structLayout(
-            ValueLayout.ADDRESS.withName("first"),
-            ValueLayout.ADDRESS.withName("second"));
-    private static final VarHandle first = PtrPair.varHandle(MemoryLayout.PathElement.groupElement("first"));
-    private static final VarHandle second = PtrPair.varHandle(MemoryLayout.PathElement.groupElement("second"));
-    private static final MethodHandle GaussianFactor_jacobian = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("GaussianFactor_jacobian"),
-            FunctionDescriptor.of(PtrPair, ADDRESS));
-    /**
-     * Pointer to a shared pointer that points at the factor, because that's how
-     * these are produced, e.g. by NonlinearFactor.linearize().
-     */
-    final MemorySegment sharedPtrPtr;
+public class GaussianFactor extends Factor {
+    public enum FF {
+        GaussianFactor_jacobian(Pairs.PtrPair, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(StructLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
 
     GaussianFactor(MemorySegment p) {
-        sharedPtrPtr = p;
+        super(p);
     }
 
     public Pair<Matrix, Vector> jacobian() throws Throwable {
-        MemorySegment resultStruct = (MemorySegment) GaussianFactor_jacobian.invokeExact(
-                (SegmentAllocator) Lib.arena, sharedPtrPtr);
-        MemorySegment firstPtr = (MemorySegment) first.get(resultStruct, 0);
-        MemorySegment secondPtr = (MemorySegment) second.get(resultStruct, 0);
+        MemorySegment resultStruct = (MemorySegment) FF.GaussianFactor_jacobian.h.invokeExact(
+                (SegmentAllocator) Lib.arena, ptr);
+        MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultStruct, 0);
+        MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultStruct, 0);
         return new Pair<>(new Matrix(firstPtr), new Vector(secondPtr));
     }
 

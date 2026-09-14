@@ -2,27 +2,46 @@ package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 import java.util.function.Function;
 
+import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class shared_ptr<T> {
-    private static final MethodHandle shared_ptr_get = Lib.linker.downcallHandle(
-            Lib.lib.findOrThrow("shared_ptr_get"),
-            FunctionDescriptor.of(ADDRESS, ADDRESS));
-    final MemorySegment sharedPtrPtr;
-    final Function<MemorySegment, T> f;
+/**
+ * A pointer to a shared pointer.
+ * 
+ * Extends ForeignObject so that the shared pointer will be "deleted"
+ * (decrementing its counter) when this container object is no longer reachable.
+ * 
+ * The underlying pointer must not be deleted (since it is shared), and so
+ * generally should not extend ForeignObject.
+ */
+public class shared_ptr<T> extends ForeignObject {
+    public enum FF {
+        shared_ptr_get(ADDRESS, ADDRESS),
+        shared_ptr_delete(null, ADDRESS);
+
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
+
+    final Function<MemorySegment, T> construct;
 
     /**
-     * @param p pointer to the shared_ptr itself
-     * @param f constructor of T, using a pointer
+     * @param p    pointer to the shared_ptr itself.
+     * @param ctor constructor of T, using the inner pointer (from get()).
      */
-    shared_ptr(MemorySegment p, Function<MemorySegment, T> f) {
-        sharedPtrPtr = p;
-        this.f = f;
+    public shared_ptr(//
+            MemorySegment p, //
+            Function<MemorySegment, T> ctor) {
+        super(p, FF.shared_ptr_delete.h);
+        construct = ctor;
     }
 
     /**
@@ -30,8 +49,15 @@ public class shared_ptr<T> {
      * shared_ptr.get().
      * 
      * TODO: the pointer here must not be owned.
+     * 
+     * NULLABLE
      */
     public T get() throws Throwable {
-        return f.apply((MemorySegment) shared_ptr_get.invokeExact(sharedPtrPtr));
+        MemorySegment p = (MemorySegment) FF.shared_ptr_get.h.invokeExact(ptr);
+        // transmute C++ nullptr to Java null.
+        if (p.equals(MemorySegment.NULL))
+            return null;
+        return construct.apply(p);
     }
+
 }

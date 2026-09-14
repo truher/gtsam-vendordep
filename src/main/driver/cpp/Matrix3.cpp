@@ -14,10 +14,46 @@ gtsam::Matrix3* Matrix3(                 //
 void Matrix3_delete(gtsam::Matrix3* p) {
     delete p;
 }
+double Matrix3_at(const gtsam::Matrix3* m, int r, int c) {
+    return (*m)(r, c);
+}
+gtsam::Vector3* Matrix3_col(const gtsam::Matrix3* m, int c) {
+    return new gtsam::Vector3(m->col(c));
+}
 gtsam::Matrix3* Matrix3_unaryMinus(gtsam::Matrix3* m) {
     return new gtsam::Matrix3(-(*m));
 }
 gtsam::Matrix3* Matrix3_identity() {
     return new gtsam::Matrix3(gtsam::Matrix3::Identity());
+}
+gtsam::Matrix3* Matrix3_compose(const gtsam::Matrix3* a,
+                                const gtsam::Matrix3* b) {
+    return new gtsam::Matrix3((*a) * (*b));
+}
+gtsam::Matrix3* Matrix3_plus(const gtsam::Matrix3* v,
+                             const gtsam::Matrix3* other) {
+    return new gtsam::Matrix3((*v) + (*other));
+}
+gtsam::Matrix3* Matrix3_times(const gtsam::Matrix3* v, double a) {
+    return new gtsam::Matrix3((*v) * a);
+}
+gtsam::Vector3* Matrix3_timesVector3(const gtsam::Matrix3* m,
+                                     const gtsam::Vector3* v) {
+    return new gtsam::Vector3((*m) * (*v));
+}
+gtsam::Matrix3* Matrix3_skewSymmetric(const gtsam::Vector3* v) {
+    return new gtsam::Matrix3(gtsam::skewSymmetric(*v));
+}
+double Matrix3_determinant(const gtsam::Matrix3* M) {
+    return M->determinant();
+}
+gtsam::Matrix3* Matrix3_transpose(const gtsam::Matrix3* m) {
+    return new gtsam::Matrix3(m->transpose());
+}
+double Matrix3_norm(const gtsam::Matrix3* m) {
+    return m->norm();
+}
+gtsam::Matrix3* Matrix3_inverse(const gtsam::Matrix3* m) {
+    return new gtsam::Matrix3(m->inverse());
 }
 }

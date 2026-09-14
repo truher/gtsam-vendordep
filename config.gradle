@@ -21,7 +21,7 @@ nativeUtils {
             headerClassifier = "headers"
             sourceClassifier = "sources"
             ext = "zip"
-            version = '4.3a1+573fa1d'
+            version = "4.3a1+60a8758"
             targetPlatforms = [
                 "linuxarm32",
                 "linuxarm64",

@@ -3,6 +3,7 @@ package org.team100.foreign;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
+import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
@@ -21,28 +22,58 @@ public class Lib {
     public static final SymbolLookup lib;
     static {
         SymbolLookup slib;
+        // Where are we?
+        // String cwd = Paths.get("").toAbsolutePath().toString();
+        // System.out.println("CWD: " + cwd);
+        // System.out.flush();
+        // Where is the library?
+
         try {
             // Systemcore location.
             slib = SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
         } catch (IllegalArgumentException e) {
             // Desktop location.
-            slib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+
+            try {
+                slib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+            } catch (IllegalArgumentException ee) {
+                // Test location.
+                slib = SymbolLookup.libraryLookup("build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
+                        arena);
+            }
         }
         lib = slib;
     }
+
     public static final Linker linker = Linker.nativeLinker();
 
-    public static MethodHandle down(
-            String name, ValueLayout returnType, ValueLayout... parameterTypes) {
+    public static MethodHandle ff(Enum<?> fn, ValueLayout returnType, ValueLayout... parameterTypes) {
         return linker.downcallHandle(
-                lib.findOrThrow(name),
-                FunctionDescriptor.of(returnType, parameterTypes));
+                lib.findOrThrow(fn.name()),
+                of(returnType, parameterTypes));
     }
 
-    public static MethodHandle downVoid(
-            String name, ValueLayout... parameterTypes) {
+    public static MethodHandle ff(String name, ValueLayout returnType, ValueLayout... parameterTypes) {
         return linker.downcallHandle(
                 lib.findOrThrow(name),
-                FunctionDescriptor.ofVoid(parameterTypes));
+                of(returnType, parameterTypes));
+    }
+
+    public static MethodHandle ff(Enum<?> fn, StructLayout returnType, ValueLayout... parameterTypes) {
+        return linker.downcallHandle(
+                lib.findOrThrow(fn.name()),
+                of(returnType, parameterTypes));
+    }
+
+    public static FunctionDescriptor of(ValueLayout returnType, ValueLayout... parameterTypes) {
+        if (returnType == null)
+            return FunctionDescriptor.ofVoid(parameterTypes);
+        return FunctionDescriptor.of(returnType, parameterTypes);
+    }
+
+    public static FunctionDescriptor of(StructLayout returnType, ValueLayout... parameterTypes) {
+        if (returnType == null)
+            return FunctionDescriptor.ofVoid(parameterTypes);
+        return FunctionDescriptor.of(returnType, parameterTypes);
     }
 }

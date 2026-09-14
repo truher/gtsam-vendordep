@@ -22,7 +22,7 @@ extern "C" {
  * This copies the return value, which is a heap-allocated,
  * java-owned thing, because it will be deleted soon after the
  * error function completes.
- * 
+ *
  * Making this copy is quite slow (about 10% in my test), so it
  * would be good to find a way to eliminate it.
  */
@@ -41,11 +41,5 @@ std::shared_ptr<gtsam::CustomFactor>* CustomFactor(
                             const gtsam::JacobianVector* H) -> gtsam::Vector {
                 return gtsam::Vector(*(errorFunction(&factor, &v, H)));
             }));
-}
-const gtsam::KeyVector* CustomFactor_keys(const gtsam::CustomFactor* p) {
-    return new gtsam::KeyVector(p->keys());
-}
-double CustomFactor_error(gtsam::CustomFactor* p, const gtsam::Values* v) {
-    return p->error(*v);
 }
 }

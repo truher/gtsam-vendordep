@@ -18,10 +18,6 @@ gtsam::LevenbergMarquardtOptimizer* LevenbergMarquardtOptimizer3(
                                                   *initialValues,  //
                                                   *params);
 }
-const gtsam::Values* LevenbergMarquardtOptimizer_optimize(
-    gtsam::LevenbergMarquardtOptimizer* p) {
-    return new gtsam::Values(p->optimize());
-}
 const gtsam::Values* LevenbergMarquardtOptimizer_values(
     gtsam::LevenbergMarquardtOptimizer* p) {
     return new gtsam::Values(p->values());

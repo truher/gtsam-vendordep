@@ -1,32 +1,256 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
-public class Point3 extends ForeignObject {
-    private static final MethodHandle Point3 = Lib.down(
-            "Point3", ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
-    private static final MethodHandle Point3_delete = Lib.downVoid(
-            "Point3_delete", ADDRESS);
-    private static final MethodHandle Point3_print = Lib.downVoid(
-            "Point3_print", ADDRESS);
+/**
+ * TODO: Point3 is a typedef of Vector3, so this seems wrong.
+ * TODO: implement vectortype
+ */
+public class Point3 extends ForeignObject
+        implements LieGroup<Point3, Vector3> {
+    public enum FF {
+        Point3(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE),
+        Point3_delete(null, ADDRESS),
+        Point3_x(JAVA_DOUBLE, ADDRESS),
+        Point3_y(JAVA_DOUBLE, ADDRESS),
+        Point3_z(JAVA_DOUBLE, ADDRESS),
+        Point3_plus(ADDRESS, ADDRESS, ADDRESS),
+        Point3_minus(ADDRESS, ADDRESS, ADDRESS),
+        Point3_times(ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Point3_cross(ADDRESS, ADDRESS, ADDRESS),
+        Point3_crossPoint3Point3(ADDRESS, ADDRESS, ADDRESS),
+        Point3_crossPoint3Point3H(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_check_group_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point3_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Point3_Local(ADDRESS, ADDRESS, ADDRESS),
+        Point3_Retract(ADDRESS, ADDRESS, ADDRESS),
+        Point3_logmap(ADDRESS, ADDRESS, ADDRESS),
+        Point3_expmap(ADDRESS, ADDRESS, ADDRESS),
+        Point3_Compose(ADDRESS, ADDRESS, ADDRESS),
+        Point3_ComposeH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_Between(ADDRESS, ADDRESS, ADDRESS),
+        Point3_BetweenH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_Inverse(ADDRESS, ADDRESS),
+        Point3_InverseH(ADDRESS, ADDRESS, ADDRESS),
+        Point3_AdjointMap(ADDRESS, ADDRESS),
+        Point3_dot(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point3_dotPoint3Point3(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point3_dotPoint3Point3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_normalize(ADDRESS, ADDRESS),
+        Point3_normalizeH(ADDRESS, ADDRESS, ADDRESS),
+        Point3_norm3(JAVA_DOUBLE, ADDRESS),
+        Point3_norm3H(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point3_norm(JAVA_DOUBLE, ADDRESS),
+        Point3_distance3(JAVA_DOUBLE, ADDRESS, ADDRESS),
+        Point3_distance3H(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, ADDRESS),
+        Point3_interpolate(ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-    public Point3(MemorySegment p) {
-        super(p, Point3_delete);
+        public final MethodHandle h;
+
+        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            h = Lib.ff(this, returnType, parameterTypes);
+        }
+    }
+
+    Point3(MemorySegment p) {
+        super(p, FF.Point3_delete.h);
+    }
+
+    public Point3() throws Throwable {
+        this(0, 0, 0);
     }
 
     public Point3(double x, double y, double z) throws Throwable {
-        this((MemorySegment) Point3.invokeExact(x, y, z));
+        this((MemorySegment) FF.Point3.h.invokeExact(x, y, z));
     }
 
-    public void print() throws Throwable {
-        Point3_print.invokeExact(ptr);
+    public Point3(Vector3 v) throws Throwable {
+        this(v.at(0), v.at(1), v.at(2));
     }
 
+    public double x() throws Throwable {
+        return (double) FF.Point3_x.h.invokeExact(ptr);
+    }
+
+    public double y() throws Throwable {
+        return (double) FF.Point3_y.h.invokeExact(ptr);
+    }
+
+    public double z() throws Throwable {
+        return (double) FF.Point3_z.h.invokeExact(ptr);
+    }
+
+    public Point3 plus(Point3 other) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_plus.h.invokeExact(ptr, other.ptr));
+    }
+
+    public Point3 minus(Point3 other) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_minus.h.invokeExact(ptr, other.ptr));
+    }
+
+    public Point3 times(double a) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_times.h.invokeExact(ptr, a));
+    }
+
+    public static boolean check_group_invariants(Point3 a, Point3 b) throws Throwable {
+        return (boolean) FF.Point3_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    public static boolean check_manifold_invariants(Point3 a, Point3 b) throws Throwable {
+        return (boolean) FF.Point3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    }
+
+    @Override
+    public Vector3 dxZero() throws Throwable {
+        return new Vector3(0, 0, 0);
+    }
+
+    @Override
+    public int dimension() throws Throwable {
+        return 3;
+    }
+
+    public Point3 cross(Point3 q) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_cross.h.invokeExact(ptr, q.ptr));
+    }
+
+    public static Point3 cross(Point3 p, Point3 q) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_crossPoint3Point3.h.invokeExact(p.ptr, q.ptr));
+    }
+
+    public static Point3 cross(Point3 p, Point3 q, Matrix H1, Matrix H2) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_crossPoint3Point3H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr));
+    }
+
+    public static double dot(Point3 p, Point3 q) throws Throwable {
+        return (double) FF.Point3_dotPoint3Point3.h.invokeExact(p.ptr, q.ptr);
+    }
+
+    public static double dot(Point3 p, Point3 q, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Point3_dotPoint3Point3H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
+    }
+
+    @Override
+    public Point3 compose(Point3 h) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_Compose.h.invokeExact(ptr, h.ptr));
+    }
+
+    @Override
+    public Point3 compose(Point3 h, Matrix H1, Matrix H2) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_ComposeH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Point3 between(Point3 h) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_Between.h.invokeExact(ptr, h.ptr));
+
+    }
+
+    @Override
+    public Point3 between(Point3 h, Matrix H1, Matrix H2) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_BetweenH.h.invokeExact(
+                ptr, h.ptr, H1.ptr, H2.ptr));
+    }
+
+    @Override
+    public Point3 inverse() throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_Inverse.h.invokeExact(ptr));
+    }
+
+    @Override
+    public Point3 inverse(Matrix H) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_InverseH.h.invokeExact(
+                ptr, H.ptr));
+    }
+
+    @Override
+    public Matrix AdjointMap() throws Throwable {
+        return new Matrix((MemorySegment) FF.Point3_AdjointMap.h.invokeExact(ptr));
+    }
+
+    @Override
+    public Point3 expmap(Vector3 v) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_expmap.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
+    public Point3 expmap(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
+    }
+
+    public Vector3 logmap(Point3 g) throws Throwable {
+        return new Vector3((MemorySegment) FF.Point3_logmap.h.invokeExact(ptr, g.ptr));
+    }
+
+    @Override
+    public Vector3 logmap(Point3 g, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Point3 retract(Vector3 v) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_Retract.h.invokeExact(ptr, v.ptr));
+    }
+
+    @Override
+    public Point3 retract(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Vector3 local(Point3 g) throws Throwable {
+        return new Vector3((MemorySegment) FF.Point3_Local.h.invokeExact(ptr, g.ptr));
+    }
+
+    @Override
+    public Vector3 local(Point3 g, Matrix H1, Matrix H2) throws Throwable {
+        throw new UnsupportedOperationException();
+    }
+
+    public double dot(Point3 g) throws Throwable {
+        return (double) FF.Point3_dot.h.invokeExact(ptr, g.ptr);
+    }
+
+    public static Point3 normalize(Point3 p) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_normalize.h.invokeExact(p.ptr));
+    }
+
+    public static Point3 normalize(Point3 p, Matrix H) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_normalizeH.h.invokeExact(p.ptr, H.ptr));
+    }
+
+    public static double norm3(Point3 p) throws Throwable {
+        return (double) FF.Point3_norm3.h.invokeExact(p.ptr);
+    }
+
+    public static double norm3(Point3 p, Matrix H) throws Throwable {
+        return (double) FF.Point3_norm3H.h.invokeExact(p.ptr, H.ptr);
+    }
+
+    public double norm() throws Throwable {
+        // This is the Eigen norm.
+        return (double) FF.Point3_norm.h.invokeExact(ptr);
+    }
+
+    public static double distance3(Point3 p, Point3 q) throws Throwable {
+        return (double) FF.Point3_distance3.h.invokeExact(p.ptr, q.ptr);
+    }
+
+    public static double distance3(Point3 p, Point3 q, Matrix H1, Matrix H2) throws Throwable {
+        return (double) FF.Point3_distance3H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
+    }
+
+    public static Point3 interpolate(Point3 X, Point3 Y, double t) throws Throwable {
+        return new Point3((MemorySegment) FF.Point3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
+    }
 }

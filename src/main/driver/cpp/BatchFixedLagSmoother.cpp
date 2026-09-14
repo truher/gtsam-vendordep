@@ -3,11 +3,14 @@
 #include <gtsam/nonlinear/Values.h>
 
 extern "C" {
-void Result_delete(gtsam::FixedLagSmoother::Result* p) {
-    delete p;
-}
 gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother(double lag) {
     return new gtsam::BatchFixedLagSmoother(lag);
+}
+gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother2(
+    double lag,                               //
+    gtsam::LevenbergMarquardtParams* params,  //
+    bool consistent) {
+    return new gtsam::BatchFixedLagSmoother(lag, *params, consistent);
 }
 void BatchFixedLagSmoother_delete(gtsam::BatchFixedLagSmoother* p) {
     delete p;
@@ -22,29 +25,25 @@ gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_update(  //
     return new gtsam::FixedLagSmoother::Result(
         p->update(*newFactors, *newTheta, *timestamps));
 }
+gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
+    gtsam::BatchFixedLagSmoother* p,                                         //
+    const gtsam::NonlinearFactorGraph* newFactors,                           //
+    const gtsam::Values* newTheta,                                           //
+    const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,              //
+    const gtsam::FactorIndices* indices) {
+    return new gtsam::FixedLagSmoother::Result(
+        p->update(*newFactors, *newTheta, *timestamps, *indices));
+}
 gtsam::Values* BatchFixedLagSmoother_calculateEstimate(
     const gtsam::BatchFixedLagSmoother* p) {
     return new gtsam::Values(p->calculateEstimate());
 }
+gtsam::Point2* BatchFixedLagSmoother_calculateEstimatePoint2(
+    const gtsam::BatchFixedLagSmoother* p, gtsam::Key key) {
+    return new gtsam::Point2(p->calculateEstimate<gtsam::Point2>(key));
+}
 gtsam::NonlinearFactorGraph* BatchFixedLagSmoother_getFactors(
     const gtsam::BatchFixedLagSmoother* p) {
     return new gtsam::NonlinearFactorGraph(p->getFactors());
-}
-
-////////////////////////////
-
-gtsam::FixedLagSmoother::KeyTimestampMap* KeyTimestampMap() {
-    return new gtsam::FixedLagSmoother::KeyTimestampMap();
-}
-void KeyTimestampMap_delete(gtsam::FixedLagSmoother::KeyTimestampMap* p) {
-    delete p;
-}
-// TODO: maybe move this?
-void KeyTimestampMap_put(gtsam::FixedLagSmoother::KeyTimestampMap* p,
-                         gtsam::Key k, double v) {
-    (*p)[k] = v;
-}
-void KeyTimestampMap_clear(gtsam::FixedLagSmoother::KeyTimestampMap* p) {
-    p->clear();
 }
 }
