@@ -93,6 +93,23 @@ so I commented out the relevant lines in config.gradle:
 // nativeUtils.wpi.addWarningsAsErrors()
 ```
 
+## Gradle and JDK version
+
+Because thirdparty GTSAM uses java 25, I upgraded the gradle here to 9.4.1,
+by typing this (twice, so the gradle jar is updated):
+
+```
+./gradlew wrapper --gradle-version 9.4.1
+```
+
+Once gradle is updated, you can update the JDK version in the wpilib tree,
+e.g.
+
+```
+mv jdk jdk17
+ln -sfn /usr/lib/jvm/java-25-openjdk-amd64 jdk
+```
+
 ## Building
 
 If you ran the thirdparty gtsam build on the same machine, the artifacts
@@ -146,3 +163,21 @@ $ nm -g libgtsamwrapper.so | grep ' T '
 Once you publish (see above) then the java tests should work,
 including through the vscode test extension.
 
+
+## Building for SystemCore
+
+To build with the systemcore in native utils,
+we need a custom version, since the 2027
+branch appears not to be published anywhere.
+
+To build just the systemcore assets, use
+
+```
+./gradlew build -Ponlylinuxsystemcore
+```
+
+and
+
+```
+./gradlew build -Ponlylinuxsystemcore -PreleaseMode=true
+```

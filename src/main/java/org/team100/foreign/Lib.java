@@ -27,11 +27,13 @@ public class Lib {
         // System.out.println("CWD: " + cwd);
         // System.out.flush();
         // Where is the library?
+
         try {
             // Systemcore location.
             slib = SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
         } catch (IllegalArgumentException e) {
             // Desktop location.
+
             try {
                 slib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
             } catch (IllegalArgumentException ee) {
