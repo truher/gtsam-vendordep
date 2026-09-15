@@ -4,7 +4,7 @@ nativeUtils.addWpiNativeUtils()
 nativeUtils.withCrossSystemCore()
 nativeUtils.withCrossLinuxArm64()
 
-// nativeUtils.crossCompilers.getByName("linuxsystemcore").optional = false
+nativeUtils.crossCompilers.getByName("linuxsystemcore").optional = false
 
 nativeUtils {
     wpi {
@@ -16,12 +16,12 @@ nativeUtils {
     }
     nativeDependencyContainer {
         gtsam(getNativeDependencyTypeClass('WPIStaticMavenDependency')) {
-            groupId = "edu.wpi.first.thirdparty.frc2026.gtsam"
+            groupId = "org.wpilib.thirdparty.gtsam"
             artifactId = "gtsam-cpp"
             headerClassifier = "headers"
             sourceClassifier = "sources"
             ext = "zip"
-            version = "4.3a1+60a8758"
+            version = "2027-4.3-6"
             targetPlatforms = [
                 "linuxarm32",
                 "linuxarm64",

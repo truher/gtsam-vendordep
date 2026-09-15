@@ -131,7 +131,7 @@ or
 ./gradlew build -PreleaseMode=true
 ```
 
-To publish the output to build/repos
+To publish the output to build/repos/releases/org/team100/gtsam-vendordep and to ~/releases/maven/development/org/team100/gtsam-vendordep
 
 ```
 ./gradlew publish
@@ -180,4 +180,19 @@ and
 
 ```
 ./gradlew build -Ponlylinuxsystemcore -PreleaseMode=true
+```
+
+## update for 2027
+
+This now complains with "No Toolchain Found for systemCore"
+
+it suggests `./gradlew installSystemCoreToolchain`
+
+what does that do?  It seems to put something in /home/joel/.gradle/toolchains/frc/2025/systemcore
+
+you also need to build the not-systemcore version to run locally.
+
+```
+./gradlew build
+./gradlew publish
 ```
