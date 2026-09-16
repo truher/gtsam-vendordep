@@ -131,7 +131,7 @@ or
 ./gradlew build -PreleaseMode=true
 ```
 
-To publish the output to build/repos/releases/org/team100/gtsam-vendordep and to ~/releases/maven/development/org/team100/gtsam-vendordep
+To publish the output to build/repos/releases/org/team100/gtsam-vendordep
 
 ```
 ./gradlew publish
@@ -143,6 +143,11 @@ or
 ./gradlew publish -PreleaseMode=true
 ```
 
+you could copy the output, e.g.:
+
+```
+cp -r build/repos/releases/org/team100/gtsam-vendordep ~/releases/maven/development/org/team100
+```
 
 
 ## Symbols
