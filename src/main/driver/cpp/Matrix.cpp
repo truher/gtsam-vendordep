@@ -1,4 +1,7 @@
 #include <gtsam/base/Matrix.h>
+#include <gtsam/base/MatrixConstants.h>
+
+#include <Eigen/Cholesky>
 
 #include <iostream>
 #include <random>
@@ -79,14 +82,14 @@ void Matrix_print(const gtsam::Matrix* A) {
 std::mt19937 rng(42);
 std::normal_distribution<double> dist(0.0, 1.0);
 gtsam::Vector* Matrix_draw(const gtsam::Matrix* covariances) {
-    Eigen::LLT<Eigen::MatrixXd> llt(*covariances);
+    // Eigen::LLT<Eigen::MatrixXd> llt(*covariances);
     gtsam::Vector vec = gtsam::Vector::Zero(covariances->rows());
-    Eigen::ComputationInfo info = llt.info();
+    Eigen::ComputationInfo info = covariances->llt().info();
     if (info != Eigen::ComputationInfo::Success) {
         std::cout << "Matrix_draw failed with info: " << info << std::endl;
         return new gtsam::Vector(vec);
     }
-    gtsam::Matrix L = llt.matrixL();
+    gtsam::Matrix L = covariances->llt().matrixL();
     for (int i = 0; i < vec.size(); ++i) {
         vec[i] = dist(rng);
     }

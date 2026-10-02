@@ -73,4 +73,8 @@ int NonlinearFactorGraph_size(const gtsam::NonlinearFactorGraph* g) {
 void NonlinearFactorGraph_print(const gtsam::NonlinearFactorGraph* g) {
     g->print();
 }
+void NonlinearFactorGraph_printErrors(const gtsam::NonlinearFactorGraph* g,
+                                      const gtsam::Values* values) {
+    g->printErrors(*values);
+}
 }

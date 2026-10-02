@@ -25,6 +25,9 @@ extern "C" {
  *
  * Making this copy is quite slow (about 10% in my test), so it
  * would be good to find a way to eliminate it.
+ * 
+ * In gtsam dc5246a the jacobian was made OptionalJacobianVector,
+ * so we unpack it here to pass as a plain pointer.
  */
 std::shared_ptr<gtsam::CustomFactor>* CustomFactor(
     const gtsam::SharedNoiseModel* noiseModel,                        //
@@ -38,8 +41,8 @@ std::shared_ptr<gtsam::CustomFactor>* CustomFactor(
             *keys,                                                    //
             [errorFunction](const gtsam::CustomFactor& factor,        //
                             const gtsam::Values& v,                   //
-                            const gtsam::JacobianVector* H) -> gtsam::Vector {
-                return gtsam::Vector(*(errorFunction(&factor, &v, H)));
+                            const gtsam::OptionalJacobianVector H) -> gtsam::Vector {
+                return gtsam::Vector(*(errorFunction(&factor, &v, H.has_value() ? &H->get() : nullptr)));
             }));
 }
 }

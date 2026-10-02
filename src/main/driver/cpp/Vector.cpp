@@ -1,6 +1,7 @@
 #include <gtsam/base/Lie.h>
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Pose2.h>
+#include <gtsam/geometry/SOn.h>
 
 extern "C" {
 ////////////////////////////

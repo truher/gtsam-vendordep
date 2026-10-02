@@ -28,7 +28,8 @@ public class NonlinearFactorGraph extends FactorGraph {
         NonlinearFactorGraph_linearize(ADDRESS, ADDRESS, ADDRESS),
         NonlinearFactorGraph_at(ADDRESS, ADDRESS, JAVA_INT),
         NonlinearFactorGraph_size(JAVA_INT, ADDRESS),
-        NonlinearFactorGraph_print(null, ADDRESS);
+        NonlinearFactorGraph_print(null, ADDRESS),
+        NonlinearFactorGraph_printErrors(null, ADDRESS, ADDRESS);
 
         public final MethodHandle h;
 
@@ -107,5 +108,10 @@ public class NonlinearFactorGraph extends FactorGraph {
     public void print(String label) throws Throwable {
         System.out.println(label);
         FF.NonlinearFactorGraph_print.h.invokeExact(ptr);
+    }
+
+    public void printErrors(Values values, String label) throws Throwable {
+        System.out.println(label);
+        FF.NonlinearFactorGraph_printErrors.h.invokeExact(ptr, values.ptr);
     }
 }

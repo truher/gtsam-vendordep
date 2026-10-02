@@ -16,4 +16,7 @@ gtsam::Matrix* Marginals_marginalCovariance(const gtsam::Marginals* p,
                                             const gtsam::Key key) {
     return new gtsam::Matrix(p->marginalCovariance(key));
 }
+void Marginals_print(const gtsam::Marginals* p) {
+    p->print();
+}
 }

@@ -792,7 +792,8 @@ public class NoiseModelTest {
         assertEquals(0.00039211, dcs.get().weight(error2), 1e-8);
 
         assertEquals(0.5, dcs.get().loss(error1), 1e-8);
-        assertEquals(0.9900990099, dcs.get().loss(error2), 1e-8);
+        // changed in 6ce09e3
+        assertEquals(1.4801980198, dcs.get().loss(error2), 1e-8);
     }
 
     @Test

@@ -42,7 +42,7 @@ gtsam::Point3* Point3_crossPoint3Point3H(const gtsam::Point3* p,  //
 }
 gtsam::Point3* Point3_cross(const gtsam::Point3* p,    //
                             const gtsam::Point3* q) {  //
-    return new gtsam::Point3(p->cross(*q));
+    return new gtsam::Point3(gtsam::cross(*p, *q));
 }
 bool Point3_check_group_invariants(const gtsam::Point3* a,  //
                                    const gtsam::Point3* b) {

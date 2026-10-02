@@ -333,8 +333,13 @@ public class Rot3Test {
         // (Vector)Rot3::Logmap(Rlund), 1e-8));
         // #else
         // SO3 will be approximate because of the non-orthogonality
-        assertTrue(assert_equal(new Vector3(0.264452, -0.742197708, -3.04098184),
-                new Rot3().logmap(Rlund), 1e-8));
+        // Vector3 expected = new Vector3(0.264452, -0.742197708, -3.04098184);
+        // changed in 39d3a93 which references https://github.com/borglab/gtsam/issues/1233
+        // and https://github.com/borglab/gtsam/pull/2099
+        Vector3 expected = new Vector3(0.264451957511, -0.74219758996, -3.04098186076);
+        Vector3 actual = new Rot3().logmap(Rlund);
+        System.out.printf("expected %s actual %s\n", expected.toString(), actual.toString());
+        assertTrue(assert_equal(expected, actual, 1e-8));
         // #endif
     }
 

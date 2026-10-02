@@ -99,7 +99,7 @@ public class Vector3 extends ForeignObject
             int rows = 3;
             b.append("[");
             for (int r = 0; r < rows; ++r) {
-                b.append(String.format(" %8.5f ", at(r)));
+                b.append(String.format(" %12.8f ", at(r)));
             }
             b.append("]\n");
             return b.toString();

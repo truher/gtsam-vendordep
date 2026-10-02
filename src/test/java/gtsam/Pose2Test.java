@@ -41,11 +41,14 @@ public class Pose2Test {
     void testRetract() throws Throwable {
         Pose2 pose = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         // expected if GTSAM_SLOW_BUT_CORRECT_EXPMAP is set
-        // Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
-        // what we actually do,
-        Pose2 expected = new Pose2(Math.PI / 2.0 + 0.99, new Point2(1.015, 2.01));
+        Pose2 expected = new Pose2(1.00811, 2.01528, 2.5608);
+        // this is now set by default
+        // what we used to do,
+        // Pose2 expected = new Pose2(Math.PI / 2.0 + 0.99, new Point2(1.015, 2.01));
 
         Pose2 actual = pose.retract(new Vector3(0.01, -0.015, 0.99));
+        System.out.printf("expected %s actual %s\n", expected.toString(), actual.toString());
+
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
 
@@ -195,10 +198,12 @@ public class Pose2Test {
         Pose2 pose0 = new Pose2(Math.PI / 2.0, new Point2(1, 2));
         Pose2 pose = new Pose2(Math.PI / 2.0 + 0.018, new Point2(1.015, 2.01));
         // expected if GTSAM_SLOW_BUT_CORRECT_EXPMAP is set
-        // Vector3 expected(0.00986473, -0.0150896, 0.018);
-        // What we actually do
-        Vector3 expected = new Vector3(0.01, -0.015, 0.018);
+        Vector3 expected = new Vector3(0.00986473, -0.0150896, 0.018);
+        // this is now the default.
+        // What we used to do
+        // Vector3 expected = new Vector3(0.01, -0.015, 0.018);
         Vector3 actual = pose0.local(pose);
+        System.out.printf("expected %s actual %s\n", expected.toString(), actual.toString());
         assertTrue(assert_equal(expected, actual, 1e-5));
     }
 

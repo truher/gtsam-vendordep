@@ -16,7 +16,8 @@ public class Marginals extends ForeignObject {
         MarginalsCholesky(ADDRESS, ADDRESS, ADDRESS),
         MarginalsQR(ADDRESS, ADDRESS, ADDRESS),
         Marginals_delete(null, ADDRESS),
-        Marginals_marginalCovariance(ADDRESS, ADDRESS, JAVA_LONG);
+        Marginals_marginalCovariance(ADDRESS, ADDRESS, JAVA_LONG),
+        Marginals_print(null, ADDRESS);
 
         public final MethodHandle h;
 
@@ -44,6 +45,11 @@ public class Marginals extends ForeignObject {
 
     public Matrix marginalCovariance(Key key) throws Throwable {
         return new Matrix((MemorySegment) FF.Marginals_marginalCovariance.h.invokeExact(ptr, key.j));
+    }
+
+    public void print(String label) throws Throwable {
+        System.out.println(label);
+        FF.Marginals_print.h.invokeExact(ptr);
     }
 
 }
