@@ -30,15 +30,26 @@ public class Marginals extends ForeignObject {
         super(p, FF.Marginals_delete.h);
     }
 
-    /** Default is Cholesky. */
+    /**
+     * Default is Cholesky.
+     * NOTE! Cholesky can be unstable in confusing ways, producing
+     * IndeterminateSystemException. You should use QR instead.
+     */
     public Marginals(NonlinearFactorGraph graph, Values result) throws Throwable {
         this((MemorySegment) FF.MarginalsCholesky.h.invokeExact(graph.ptr, result.ptr));
     }
 
+    /**
+     * NOTE! Cholesky can be unstable in confusing ways, producing
+     * IndeterminateSystemException. You should use QR instead.
+     */
     public static Marginals Cholesky(NonlinearFactorGraph graph, Values result) throws Throwable {
         return new Marginals(graph, result);
     }
 
+    /**
+     * QR is more stable but slower.
+     */
     public static Marginals QR(NonlinearFactorGraph graph, Values result) throws Throwable {
         return new Marginals((MemorySegment) FF.MarginalsQR.h.invokeExact(graph.ptr, result.ptr));
     }
