@@ -16,10 +16,14 @@ public class Cauchy extends Base {
     public enum FF {
         noiseModel_mEstimator_Cauchy_Create(ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -27,9 +31,9 @@ public class Cauchy extends Base {
         super(p);
     }
 
-    public static shared_ptr<Cauchy> Create(double k) throws Throwable {
+    public static shared_ptr<Cauchy> Create(double k) {
         return new shared_ptr<Cauchy>(
-                (MemorySegment) FF.noiseModel_mEstimator_Cauchy_Create.h.invokeExact(k),
+                (MemorySegment) FF.noiseModel_mEstimator_Cauchy_Create.invoke(k),
                 Cauchy::new);
     }
 }

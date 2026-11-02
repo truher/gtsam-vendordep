@@ -14,10 +14,14 @@ public class BearingRangeFactorPose2Point2 extends NoiseModelFactor {
     public enum FF {
         BearingRangeFactorPose2Point2(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, JAVA_DOUBLE, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -30,8 +34,8 @@ public class BearingRangeFactorPose2Point2 extends NoiseModelFactor {
             Key key2,
             Rot2 bearing,
             double range,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.BearingRangeFactorPose2Point2.h.invokeExact(
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.BearingRangeFactorPose2Point2.invoke(
                 key1.j, key2.j, bearing.ptr, range, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BearingRangeFactorPose2Point2::new);
     }

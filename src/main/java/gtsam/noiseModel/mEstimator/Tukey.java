@@ -16,10 +16,14 @@ public class Tukey extends Base {
     public enum FF {
         noiseModel_mEstimator_Tukey_Create(ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -27,9 +31,9 @@ public class Tukey extends Base {
         super(p);
     }
 
-    public static shared_ptr<Tukey> Create(double k) throws Throwable {
+    public static shared_ptr<Tukey> Create(double k) {
         return new shared_ptr<Tukey>(
-                (MemorySegment) FF.noiseModel_mEstimator_Tukey_Create.h.invokeExact(k),
+                (MemorySegment) FF.noiseModel_mEstimator_Tukey_Create.invoke(k),
                 Tukey::new);
     }
 }

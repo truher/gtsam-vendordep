@@ -19,24 +19,13 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
  */
 public class Rot3Test {
 
-    static Rot3 R;
-    static Point3 P;
-    static double error;
-    static double epsilon;
-
-    static {
-        try {
-            R = Rot3.Rodrigues(0.1, 0.4, 0.2);
-            P = new Point3(0.2, 0.7, -2.0);
-            error = 1e-9;
-            epsilon = 0.001;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+    static Rot3 R = Rot3.Rodrigues(0.1, 0.4, 0.2);
+    static Point3 P = new Point3(0.2, 0.7, -2.0);
+    static double error = 1e-9;
+    static double epsilon = 0.001;
 
     @Test
-    void testchart() throws Throwable {
+    void testchart() {
         Matrix3 R = new Matrix3(//
                 0, 1, 0, //
                 1, 0, 0, //
@@ -45,7 +34,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testfinalructor() throws Throwable {
+    void testfinalructor() {
         Rot3 expected = new Rot3(Matrix3.identity());
         Point3 r1 = new Point3(1, 0, 0);
         Point3 r2 = new Point3(0, 1, 0);
@@ -55,7 +44,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testfinalructor2() throws Throwable {
+    void testfinalructor2() {
         Matrix3 R = new Matrix3(//
                 0, 1, 0, //
                 1, 0, 0, //
@@ -69,7 +58,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testfinalructor3() throws Throwable {
+    void testfinalructor3() {
         Rot3 expected = new Rot3(//
                 0, 1, 0, //
                 1, 0, 0, //
@@ -81,7 +70,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testtranspose() throws Throwable {
+    void testtranspose() {
         Point3 r1 = new Point3(0, 1, 0);
         Point3 r2 = new Point3(1, 0, 0);
         Point3 r3 = new Point3(0, 0, -1);
@@ -93,14 +82,14 @@ public class Rot3Test {
     }
 
     @Test
-    void testequals() throws Throwable {
+    void testequals() {
         assertTrue(R.equals(R));
         Rot3 zero = new Rot3();
         assertTrue(!R.equals(zero));
     }
 
     @Test
-    void testAxisAngle() throws Throwable {
+    void testAxisAngle() {
         // rotation around Y
         Point3 axis = new Point3(0., 1., 0.);
         double angle = 3.14 / 4.0;
@@ -119,7 +108,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testAxisAngle2() throws Throwable {
+    void testAxisAngle2() {
         // finalructor from a rotation matrix, as doubles in *row-major* order.
         Rot3 R1 = new Rot3(//
                 -0.999957, 0.00922903, 0.00203116, //
@@ -134,7 +123,7 @@ public class Rot3Test {
     }
 
     // Notice this uses J^2 whereas fast uses w*w', and has cos(t)*I + ....
-    Rot3 slow_but_correct_Rodrigues(Point3 p) throws Throwable {
+    Rot3 slow_but_correct_Rodrigues(Point3 p) {
         Vector3 w = new Vector3(p);
         double t = w.norm();
         Matrix3 J = Matrix3.skewSymmetric(w.times(1 / t));
@@ -147,7 +136,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testRodrigues() throws Throwable {
+    void testRodrigues() {
         Rot3 R1 = Rot3.Rodrigues(epsilon, 0, 0);
         Point3 w = new Point3(epsilon, 0., 0.);
         Rot3 R2 = slow_but_correct_Rodrigues(w);
@@ -155,7 +144,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testRodrigues2() throws Throwable {
+    void testRodrigues2() {
         // rotation around Y
         Point3 axis = new Point3(0., 1., 0.);
         double angle = 3.14 / 4.0;
@@ -170,7 +159,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testRodrigues3() throws Throwable {
+    void testRodrigues3() {
         Vector3 w = new Vector3(0.1, 0.2, 0.3);
         Rot3 R1 = Rot3.AxisAngle(new Point3(w.times(1 / w.norm())), w.norm());
         Rot3 R2 = slow_but_correct_Rodrigues(new Point3(w));
@@ -178,7 +167,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testRodrigues4() throws Throwable {
+    void testRodrigues4() {
         // rotation around Z
         Point3 axis = new Point3(0., 0., 1.);
         double angle = Math.PI / 2.0;
@@ -194,7 +183,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testretract() throws Throwable {
+    void testretract() {
         Vector3 v = new Vector3();
         assertTrue(assert_equal(R, R.retract(v)));
     }
@@ -207,7 +196,7 @@ public class Rot3Test {
 
     RetractNormalizationMetrics measureRetractNormalization(
             final Rot3 base,
-            final Vector3 omega) throws Throwable {
+            final Vector3 omega) {
         final Rot3 retracted = base.retract(omega);
         final Matrix3 matrix = retracted.matrix();
         return new RetractNormalizationMetrics(
@@ -218,7 +207,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testretractNormalizationAcrossMagnitudes() throws Throwable {
+    void testretractNormalizationAcrossMagnitudes() {
         final Vector3 direction = new Vector3(1.0, -2.0, 3.0).normalized();
         List<Rot3> bases = List.of(
                 new Rot3(),
@@ -256,20 +245,20 @@ public class Rot3Test {
         }
     }
 
-    void CHECK_OMEGA(double X, double Y, double Z) throws Throwable {
+    void CHECK_OMEGA(double X, double Y, double Z) {
         Point3 w = new Point3(X, Y, Z);
         Rot3 R = Rot3.Rodrigues(w);
         assertTrue(assert_equal(w, new Point3(new Rot3().logmap(R)), 1e-12));
     }
 
-    void CHECK_OMEGA_ZERO(double X, double Y, double Z) throws Throwable {
+    void CHECK_OMEGA_ZERO(double X, double Y, double Z) {
         Point3 w = new Point3(X, Y, Z);
         Rot3 R = Rot3.Rodrigues(w);
         assertTrue(assert_equal(new Vector3(), new Rot3().logmap(R)));
     }
 
     @Test
-    void testlog() throws Throwable {
+    void testlog() {
         final double PI = Math.acos(-1.0);
 
         // Check zero
@@ -334,7 +323,8 @@ public class Rot3Test {
         // #else
         // SO3 will be approximate because of the non-orthogonality
         // Vector3 expected = new Vector3(0.264452, -0.742197708, -3.04098184);
-        // changed in 39d3a93 which references https://github.com/borglab/gtsam/issues/1233
+        // changed in 39d3a93 which references
+        // https://github.com/borglab/gtsam/issues/1233
         // and https://github.com/borglab/gtsam/pull/2099
         Vector3 expected = new Vector3(0.264451957511, -0.74219758996, -3.04098186076);
         Vector3 actual = new Rot3().logmap(Rlund);
@@ -344,21 +334,21 @@ public class Rot3Test {
     }
 
     @Test
-    void testretract_localCoordinates() throws Throwable {
+    void testretract_localCoordinates() {
         Vector3 d12 = new Vector3(0.1, 0.1, 0.1);
         Rot3 R2 = R.retract(d12);
         assertTrue(assert_equal(d12, R.local(R2)));
     }
 
     @Test
-    void testexpmap_logmap() throws Throwable {
+    void testexpmap_logmap() {
         Vector3 d12 = new Vector3(0.1, 0.1, 0.1);
         Rot3 R2 = R.expmap(d12);
         assertTrue(assert_equal(d12, R.logmap(R2)));
     }
 
     @Test
-    void testretract_localCoordinates2() throws Throwable {
+    void testretract_localCoordinates2() {
         Rot3 t1 = R;
         Rot3 t2 = R.compose(R);
         Vector3 d12 = t1.local(t2);
@@ -369,7 +359,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testmanifold_expmap() throws Throwable {
+    void testmanifold_expmap() {
         Rot3 gR1 = Rot3.Rodrigues(0.1, 0.4, 0.2);
         Rot3 gR2 = Rot3.Rodrigues(0.3, 0.1, 0.7);
 
@@ -398,7 +388,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testrotate_derivatives() throws Throwable {
+    void testrotate_derivatives() {
         Matrix actualDrotate1a = new Matrix();
         Matrix actualDrotate1b = new Matrix();
         Matrix actualDrotate2 = new Matrix();
@@ -423,7 +413,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testunrotate() throws Throwable {
+    void testunrotate() {
         Point3 w = R.rotate(P);
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
@@ -445,7 +435,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testcompose() throws Throwable {
+    void testcompose() {
         Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
         Rot3 R2 = Rot3.Rodrigues(0.2, 0.3, 0.5);
 
@@ -472,7 +462,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testinverse() throws Throwable {
+    void testinverse() {
         Rot3 R = Rot3.Rodrigues(0.1, 0.2, 0.3);
         Rot3 I = new Rot3();
         Matrix actualH = Matrix.I_3x3();
@@ -490,7 +480,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testbetween() throws Throwable {
+    void testbetween() {
         Rot3 r1 = Rot3.Rz(Math.PI / 3.0);
         // this seems not to be used in the C++ test too.
         // Rot3 r2 = Rot3.Rz(2.0 * Math.PI / 3.0);
@@ -531,7 +521,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testxyz() throws Throwable {
+    void testxyz() {
         double t = 0.1;
         double st = Math.sin(t);
         double ct = Math.cos(t);
@@ -563,7 +553,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testyaw_pitch_roll() throws Throwable {
+    void testyaw_pitch_roll() {
         double t = 0.1;
 
         // yaw is around z axis
@@ -583,7 +573,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testRQ() throws Throwable {
+    void testRQ() {
         // Try RQ on a pure rotation
         Pair<Matrix3, Vector3> actualPair = Rot3.RQ(R.matrix());
         Matrix3 actualK = actualPair.first;
@@ -619,7 +609,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testexpmapStability() throws Throwable {
+    void testexpmapStability() {
         Vector3 w = new Vector3(78e-9, 5e-8, 97e-7);
         double theta = w.norm();
         double theta2 = theta * theta;
@@ -637,7 +627,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testlogmapStability() throws Throwable {
+    void testlogmapStability() {
         Vector3 w = new Vector3(1e-8, 0.0, 0.0);
         Rot3 R = new Rot3().expmap(w);
         Vector3 actualw = new Rot3().logmap(R);
@@ -645,7 +635,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testquaternion() throws Throwable {
+    void testquaternion() {
         // NOTE: This is also verifying the ability to convert Vector to Quaternion
         Quaternion q1 = new Quaternion(//
                 0.710997408193224, 0.360544029310185, 0.594459869568306, 0.105395217842782);
@@ -686,7 +676,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testConvertQuaternion() throws Throwable {
+    void testConvertQuaternion() {
         Quaternion q = new Quaternion(1, 2, 3, 4);
         assertEquals(1, q.w(), 1e-9);
         assertEquals(2, q.x(), 1e-9);
@@ -700,13 +690,13 @@ public class Rot3Test {
         assertEquals(4, R.toQuaternion().z(), 1e-9);
     }
 
-    Matrix3 Cayley(final Matrix3 A) throws Throwable {
+    Matrix3 Cayley(final Matrix3 A) {
         Matrix3 I = Matrix3.identity();
         return I.minus(A).compose(I.plus(A).inverse());
     }
 
     @Test
-    void testCayley() throws Throwable {
+    void testCayley() {
         Matrix3 A = Matrix3.skewSymmetric(new Vector3(1, 2, -3));
         Matrix3 Q = Cayley(A);
         assertTrue(assert_equal(Matrix3.identity(), Q.transpose().compose(Q)));
@@ -714,7 +704,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testslerp() throws Throwable {
+    void testslerp() {
         // A first simple test
         Rot3 R1 = Rot3.Rz(1);
         Rot3 R2 = Rot3.Rz(2);
@@ -731,17 +721,13 @@ public class Rot3Test {
     static Rot3 T2;
 
     static {
-        try {
-            id = new Rot3();
-            T1 = Rot3.AxisAngle(new Point3(0, 0, 1), 1);
-            T2 = Rot3.AxisAngle(new Point3(0, 1, 0), 2);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
+        id = new Rot3();
+        T1 = Rot3.AxisAngle(new Point3(0, 0, 1), 1);
+        T2 = Rot3.AxisAngle(new Point3(0, 1, 0), 2);
     }
 
     @Test
-    void testInvariants() throws Throwable {
+    void testInvariants() {
         assertTrue(Rot3.check_group_invariants(id, id));
         assertTrue(Rot3.check_group_invariants(id, T1));
         assertTrue(Rot3.check_group_invariants(T2, id));
@@ -756,7 +742,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testClosestTo() throws Throwable {
+    void testClosestTo() {
         Matrix3 M = new Matrix3(
                 0.79067393, 0.6051136, -0.0930814, //
                 0.4155925, -0.64214347, -0.64324489, //
@@ -769,7 +755,7 @@ public class Rot3Test {
         assertTrue(assert_equal(expected, actual.matrix(), 1e-6));
     }
 
-    void CHECK_AXIS_ANGLE(Unit3 expectedAxis, double expectedAngle, Rot3 rotation) throws Throwable {
+    void CHECK_AXIS_ANGLE(Unit3 expectedAxis, double expectedAngle, Rot3 rotation) {
         Pair<Unit3, Double> aa = rotation.axisAngle();
         Unit3 actualAxis = aa.first;
         double actualAngle = aa.second;
@@ -779,7 +765,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testaxisAngle() throws Throwable {
+    void testaxisAngle() {
         // CHECK R defined at top = Rot3::Rodrigues(0.1, 0.4, 0.2)
         Vector3 omega = new Vector3(0.1, 0.4, 0.2);
         Unit3 axis = new Unit3(omega);
@@ -828,12 +814,12 @@ public class Rot3Test {
         CHECK_AXIS_ANGLE(_axis, theta165, Rot3.AxisAngle(axis, theta195));
     }
 
-    Rot3 RzRyRx_proxy(Vector1 a, Vector1 b, Vector1 c) throws Throwable {
+    Rot3 RzRyRx_proxy(Vector1 a, Vector1 b, Vector1 c) {
         return Rot3.RzRyRx(a.at(0), b.at(0), c.at(0));
     }
 
     @Test
-    void testRzRyRx_scalars_derivative() throws Throwable {
+    void testRzRyRx_scalars_derivative() {
         final Vector1 x = new Vector1(0.1);
         final Vector1 y = new Vector1(0.4);
         final Vector1 z = new Vector1(0.2);
@@ -861,12 +847,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num_z, act_z));
     }
 
-    Rot3 RzRyRx_proxy(Vector3 xyz) throws Throwable {
+    Rot3 RzRyRx_proxy(Vector3 xyz) {
         return Rot3.RzRyRx(xyz);
     }
 
     @Test
-    void testRzRyRx_vector_derivative() throws Throwable {
+    void testRzRyRx_vector_derivative() {
         final Vector3 xyz = new Vector3(-0.3, 0.1, 0.7);
         Matrix num = NumericalDerivative.<Rot3, Vector3, //
                 Vector3, Vector3>numericalDerivative11(this::RzRyRx_proxy, xyz, 1e-5);
@@ -877,12 +863,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, act));
     }
 
-    Rot3 Ypr_proxy(Vector1 y, Vector1 p, Vector1 r) throws Throwable {
+    Rot3 Ypr_proxy(Vector1 y, Vector1 p, Vector1 r) {
         return Rot3.Ypr(y.at(0), p.at(0), r.at(0));
     }
 
     @Test
-    void testYpr_derivative() throws Throwable {
+    void testYpr_derivative() {
         final Vector1 y = new Vector1(0.7);
         final Vector1 p = new Vector1(-0.3);
         final Vector1 r = new Vector1(0.1);
@@ -910,12 +896,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num_r, act_r));
     }
 
-    Vector3 xyz_proxy(Rot3 R) throws Throwable {
+    Vector3 xyz_proxy(Rot3 R) {
         return R.xyz();
     }
 
     @Test
-    void testxyz_derivative() throws Throwable {
+    void testxyz_derivative() {
         final Vector3 aa = new Vector3(-0.6, 0.3, 0.2);
         final Rot3 R = new Rot3().expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
@@ -925,12 +911,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, calc));
     }
 
-    Vector3 ypr_proxy(Rot3 R) throws Throwable {
+    Vector3 ypr_proxy(Rot3 R) {
         return R.ypr();
     }
 
     @Test
-    void testypr_derivative() throws Throwable {
+    void testypr_derivative() {
         final Vector3 aa = new Vector3(0.1, -0.3, -0.2);
         final Rot3 R = new Rot3().expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
@@ -940,12 +926,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, calc));
     }
 
-    Vector3 rpy_proxy(Rot3 R) throws Throwable {
+    Vector3 rpy_proxy(Rot3 R) {
         return R.rpy();
     }
 
     @Test
-    void testrpy_derivative() throws Throwable {
+    void testrpy_derivative() {
         final Vector3 aa = new Vector3(1.2, 0.3, -0.9);
         final Rot3 R = new Rot3().expmap(aa);
         Matrix num = NumericalDerivative.<Vector3, Vector3, //
@@ -955,12 +941,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, calc));
     }
 
-    Vector1 roll_proxy(Rot3 R) throws Throwable {
+    Vector1 roll_proxy(Rot3 R) {
         return new Vector1(R.roll());
     }
 
     @Test
-    void testroll_derivative() throws Throwable {
+    void testroll_derivative() {
         Vector3 aa = new Vector3(0.8, -0.8, 0.8);
         Rot3 R = new Rot3().expmap(aa);
         Matrix num = NumericalDerivative.<Vector1, Vector1, //
@@ -970,12 +956,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, calc));
     }
 
-    Vector1 pitch_proxy(Rot3 R) throws Throwable {
+    Vector1 pitch_proxy(Rot3 R) {
         return new Vector1(R.pitch());
     }
 
     @Test
-    void testpitch_derivative() throws Throwable {
+    void testpitch_derivative() {
         final Vector3 aa = new Vector3(0.01, 0.1, 0.0);
         final Rot3 R = new Rot3().expmap(aa);
         final Matrix num = NumericalDerivative.<Vector1, Vector1, //
@@ -985,12 +971,12 @@ public class Rot3Test {
         assertTrue(assert_equal(num, calc));
     }
 
-    Vector1 yaw_proxy(Rot3 R) throws Throwable {
+    Vector1 yaw_proxy(Rot3 R) {
         return new Vector1(R.yaw());
     }
 
     @Test
-    void testyaw_derivative() throws Throwable {
+    void testyaw_derivative() {
         final Vector3 aa = new Vector3(0.0, 0.1, 0.6);
         final Rot3 R = new Rot3().expmap(aa);
         Matrix num = NumericalDerivative.<Vector1, Vector1, //
@@ -1001,7 +987,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testdeterminant() throws Throwable {
+    void testdeterminant() {
         int degree = 1;
         Rot3 R_w0 = new Rot3(); // Zero rotation
         Rot3 R_w1 = Rot3.Ry(degree * Math.PI / 180);
@@ -1020,7 +1006,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testExpmapChainRule() throws Throwable {
+    void testExpmapChainRule() {
         // Multiply with an arbitrary matrix and exponentiate
         Matrix3 M = new Matrix3( //
                 1, 2, 3, //
@@ -1037,7 +1023,7 @@ public class Rot3Test {
     }
 
     @Test
-    void testexpmapChainRule() throws Throwable {
+    void testexpmapChainRule() {
         // Multiply an arbitrary rotation with exp(M*x)
         // Perhaps counter-intuitively, this has the same derivatives as above
         Matrix3 M = new Matrix3( //

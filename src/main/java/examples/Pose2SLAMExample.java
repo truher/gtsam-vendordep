@@ -24,7 +24,7 @@ import gtsam.noiseModel.Diagonal;
 
 public class Pose2SLAMExample {
 
-    public static void main(String args[]) throws Throwable {
+    public static void main(String args[]) {
 
         // 1. Create a factor graph container and add factors to it.
         NonlinearFactorGraph graph = new NonlinearFactorGraph();

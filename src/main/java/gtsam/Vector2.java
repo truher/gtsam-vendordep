@@ -22,15 +22,19 @@ public class Vector2 extends ForeignObject
         Vector2_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector2_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
     @Override
-    public Vector2 dxZero() throws Throwable {
+    public Vector2 dxZero() {
         return new Vector2(0, 0);
     }
 
@@ -38,15 +42,15 @@ public class Vector2 extends ForeignObject
         super(p, FF.Vector2_delete.h);
     }
 
-    public Vector2() throws Throwable {
-        this((MemorySegment) FF.Vector2.h.invokeExact());
+    public Vector2() {
+        this((MemorySegment) FF.Vector2.invoke());
     }
 
-    public Vector2(Vector v) throws Throwable {
+    public Vector2(Vector v) {
         this(v.at(0), v.at(1));
     }
 
-    public Vector2(double v0, double v1) throws Throwable {
+    public Vector2(double v0, double v1) {
         this();
         set(0, v0);
         set(1, v1);
@@ -57,48 +61,48 @@ public class Vector2 extends ForeignObject
         return 2;
     }
 
-    public double at(int i) throws Throwable {
-        return (double) FF.Vector2_at.h.invokeExact(ptr, i);
+    public double at(int i) {
+        return (double) FF.Vector2_at.invoke(ptr, i);
     }
 
     @Override
-    public void set(int i, double val) throws Throwable {
-        FF.Vector2_set.h.invokeExact(ptr, i, val);
+    public void set(int i, double val) {
+        FF.Vector2_set.invoke(ptr, i, val);
     }
 
     @Override
-    public Vector2 plus(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) FF.Vector2_plus.h.invokeExact(ptr, other.ptr));
+    public Vector2 plus(Vector2 other) {
+        return new Vector2((MemorySegment) FF.Vector2_plus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector2 minus(Vector2 other) throws Throwable {
-        return new Vector2((MemorySegment) FF.Vector2_minus.h.invokeExact(ptr, other.ptr));
+    public Vector2 minus(Vector2 other) {
+        return new Vector2((MemorySegment) FF.Vector2_minus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector2 times(double a) throws Throwable {
-        return new Vector2((MemorySegment) FF.Vector2_times.h.invokeExact(ptr, a));
+    public Vector2 times(double a) {
+        return new Vector2((MemorySegment) FF.Vector2_times.invoke(ptr, a));
     }
 
     @Override
-    public Vector2 local(Vector2 other) throws Throwable {
+    public Vector2 local(Vector2 other) {
         return other.minus(this);
     }
 
     @Override
-    public Vector2 retract(Vector2 v) throws Throwable {
-        return new Vector2((MemorySegment) FF.Vector2_plus.h.invokeExact(ptr, v.ptr));
+    public Vector2 retract(Vector2 v) {
+        return new Vector2((MemorySegment) FF.Vector2_plus.invoke(ptr, v.ptr));
     }
 
     @Override
-    public Vector2 local(Vector2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 local(Vector2 g, Matrix H1, Matrix H2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }
 
     @Override
-    public Vector2 retract(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 retract(Vector2 v, Matrix H1, Matrix H2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }

@@ -44,10 +44,14 @@ public class Values extends ForeignObject {
         Values_print(null, ADDRESS),
         Values_retract(ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -62,8 +66,8 @@ public class Values extends ForeignObject {
     /**
      * Will be deleted upon GC.
      */
-    public Values() throws Throwable {
-        this((MemorySegment) FF.Values.h.invokeExact(), FF.Values_delete.h);
+    public Values() {
+        this((MemorySegment) FF.Values.invoke(), FF.Values_delete.h);
     }
 
     /**
@@ -82,85 +86,85 @@ public class Values extends ForeignObject {
         return new Values(p, FF.Values_delete.h);
     }
 
-    public void print(String label) throws Throwable {
+    public void print(String label) {
         System.out.println(label);
-        FF.Values_print.h.invokeExact(ptr);
+        FF.Values_print.invoke(ptr);
     }
 
-    public void insert(Values v) throws Throwable {
-        FF.Values_insertValues.h.invokeExact(ptr, v.ptr);
+    public void insert(Values v) {
+        FF.Values_insertValues.invoke(ptr, v.ptr);
     }
 
-    public void insert(Key j, double p) throws Throwable {
-        FF.Values_insertDouble.h.invokeExact(ptr, j.j, p);
+    public void insert(Key j, double p) {
+        FF.Values_insertDouble.invoke(ptr, j.j, p);
     }
 
-    public void insert(Key j, Point2 p) throws Throwable {
-        FF.Values_insertPoint2.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Point2 p) {
+        FF.Values_insertPoint2.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Point3 p) throws Throwable {
-        FF.Values_insertPoint3.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Point3 p) {
+        FF.Values_insertPoint3.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Pose2 p) throws Throwable {
-        FF.Values_insertPose2.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Pose2 p) {
+        FF.Values_insertPose2.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Pose3 p) throws Throwable {
-        FF.Values_insertPose3.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Pose3 p) {
+        FF.Values_insertPose3.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Rot2 p) throws Throwable {
-        FF.Values_insertRot2.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Rot2 p) {
+        FF.Values_insertRot2.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Rot3 p) throws Throwable {
-        FF.Values_insertRot3.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Rot3 p) {
+        FF.Values_insertRot3.invoke(ptr, j.j, p.ptr);
     }
 
-    public void insert(Key j, Cal3DS2 p) throws Throwable {
-        FF.Values_insertCal3DS2.h.invokeExact(ptr, j.j, p.ptr);
+    public void insert(Key j, Cal3DS2 p) {
+        FF.Values_insertCal3DS2.invoke(ptr, j.j, p.ptr);
     }
 
-    public double atDouble(Key j) throws Throwable {
-        return (double) FF.Values_atDouble.h.invokeExact(ptr, j.j);
+    public double atDouble(Key j) {
+        return (double) FF.Values_atDouble.invoke(ptr, j.j);
     }
 
-    public Point2 atPoint2(Key j) throws Throwable {
-        return new Point2((MemorySegment) FF.Values_atPoint2.h.invokeExact(ptr, j.j));
+    public Point2 atPoint2(Key j) {
+        return new Point2((MemorySegment) FF.Values_atPoint2.invoke(ptr, j.j));
     }
 
-    public Point3 atPoint3(Key j) throws Throwable {
-        return new Point3((MemorySegment) FF.Values_atPoint3.h.invokeExact(ptr, j.j));
+    public Point3 atPoint3(Key j) {
+        return new Point3((MemorySegment) FF.Values_atPoint3.invoke(ptr, j.j));
     }
 
-    public Pose2 atPose2(Key j) throws Throwable {
-        return new Pose2((MemorySegment) FF.Values_atPose2.h.invokeExact(ptr, j.j));
+    public Pose2 atPose2(Key j) {
+        return new Pose2((MemorySegment) FF.Values_atPose2.invoke(ptr, j.j));
     }
 
-    public Pose3 atPose3(Key j) throws Throwable {
-        return new Pose3((MemorySegment) FF.Values_atPose3.h.invokeExact(ptr, j.j));
+    public Pose3 atPose3(Key j) {
+        return new Pose3((MemorySegment) FF.Values_atPose3.invoke(ptr, j.j));
     }
 
-    public Cal3DS2 atCal3DS2(Key j) throws Throwable {
-        return new Cal3DS2((MemorySegment) FF.Values_atCal3DS2.h.invokeExact(ptr, j.j));
+    public Cal3DS2 atCal3DS2(Key j) {
+        return new Cal3DS2((MemorySegment) FF.Values_atCal3DS2.invoke(ptr, j.j));
     }
 
-    public boolean exists(Key j) throws Throwable {
-        return (boolean) FF.Values_exists.h.invokeExact(ptr, j.j);
+    public boolean exists(Key j) {
+        return (boolean) FF.Values_exists.invoke(ptr, j.j);
     }
 
-    public void clear() throws Throwable {
-        FF.Values_clear.h.invokeExact(ptr);
+    public void clear() {
+        FF.Values_clear.invoke(ptr);
     }
 
-    public long size() throws Throwable {
-        return (long) FF.Values_size.h.invokeExact(ptr);
+    public long size() {
+        return (long) FF.Values_size.invoke(ptr);
     }
 
-    public Values retract(VectorValues delta) throws Throwable {
-        return Values.owned((MemorySegment) FF.Values_retract.h.invokeExact(
+    public Values retract(VectorValues delta) {
+        return Values.owned((MemorySegment) FF.Values_retract.invoke(
                 ptr, delta.ptr));
     }
 }

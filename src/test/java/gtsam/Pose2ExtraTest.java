@@ -11,7 +11,7 @@ import gtsam.NumericalDerivative.ThrowingFunction;
 /** These are not part of gtsam */
 public class Pose2ExtraTest {
     @Test
-    void testExpmapDerivative() throws Throwable {
+    void testExpmapDerivative() {
         Vector3 w0 = new Vector3(0.1, 0.27, 0.0);
         Matrix3 actualH = Pose2.ExpmapDerivative(w0);
         ThrowingFunction<Vector3, Pose2> h = (v) -> new Pose2().expmap(v, new Matrix(), new Matrix(3, 3));

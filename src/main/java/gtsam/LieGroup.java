@@ -21,13 +21,13 @@ public interface LieGroup<//
         V extends VectorType<V>>
         extends Group<T>, Manifold<T, V> {
 
-    Matrix AdjointMap() throws Throwable;
+    Matrix AdjointMap();
 
-    T expmap(V v) throws Throwable;
+    T expmap(V v);
 
-    T expmap(V v, Matrix H1, Matrix H2) throws Throwable;
+    T expmap(V v, Matrix H1, Matrix H2);
 
-    V logmap(T g) throws Throwable;
+    V logmap(T g);
 
-    V logmap(T g, Matrix H1, Matrix H2) throws Throwable;
+    V logmap(T g, Matrix H1, Matrix H2);
 }

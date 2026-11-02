@@ -59,10 +59,14 @@ public class PlanarGyroFactor extends NonlinearFactor {
             PlanarGyroParams(ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE),
             PlanarGyroParams_arwSigma(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE);
 
-            public final MethodHandle h;
+            private final MethodHandle h;
 
-            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
                 h = Lib.ff(this, returnType, parameterTypes);
+            }
+
+            private Object invoke(Object... args) {
+                return Lib.invoke(h, args);
             }
         }
 
@@ -73,14 +77,14 @@ public class PlanarGyroFactor extends NonlinearFactor {
 
         public static shared_ptr<PlanarGyroParams> makeSharedPlanarGyroParams(
                 double arw, double biasInstability)
-                throws Throwable {
+                {
             return new shared_ptr<>(
-                    (MemorySegment) FF.PlanarGyroParams.h.invokeExact(arw, biasInstability),
+                    (MemorySegment) FF.PlanarGyroParams.invoke(arw, biasInstability),
                     PlanarGyroParams::new);
         }
 
-        public double arwSigma(double dt) throws Throwable {
-            return (double) FF.PlanarGyroParams_arwSigma.h.invokeExact(ptr, dt);
+        public double arwSigma(double dt) {
+            return (double) FF.PlanarGyroParams_arwSigma.invoke(ptr, dt);
         }
 
     }
@@ -89,10 +93,14 @@ public class PlanarGyroFactor extends NonlinearFactor {
         public enum FF {
             PlanarGyroBiasFactor(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS);
 
-            public final MethodHandle h;
+            private final MethodHandle h;
 
-            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
                 h = Lib.ff(this, returnType, parameterTypes);
+            }
+
+            private Object invoke(Object... args) {
+                return Lib.invoke(h, args);
             }
         }
 
@@ -103,9 +111,9 @@ public class PlanarGyroFactor extends NonlinearFactor {
 
         public static shared_ptr<PlanarGyroBiasFactor> makeSharedPlanarGyroBiasFactor(
                 Key bias_i, Key bias_j, shared_ptr<PlanarGyroParams> p)
-                throws Throwable {
+                {
             return new shared_ptr<>(
-                    (MemorySegment) FF.PlanarGyroBiasFactor.h.invokeExact(bias_i.j, bias_j.j, p.ptr),
+                    (MemorySegment) FF.PlanarGyroBiasFactor.invoke(bias_i.j, bias_j.j, p.ptr),
                     PlanarGyroBiasFactor::new);
         }
     }
@@ -120,10 +128,14 @@ public class PlanarGyroFactor extends NonlinearFactor {
         PlanarGyroFactor_computeError(JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS),
         PlanarGyroFactor_evaluateError(ADDRESS, ADDRESS, ADDRESS, ADDRESS, JAVA_DOUBLE, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -133,37 +145,37 @@ public class PlanarGyroFactor extends NonlinearFactor {
     }
 
     public static shared_ptr<PlanarGyroFactor> FromRotation(
-            Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, Rot2 dr, double dt) throws Throwable {
+            Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, Rot2 dr, double dt) {
         return new shared_ptr<>(
-                (MemorySegment) FF.PlanarGyroFactor_FromRotation.h.invokeExact(
+                (MemorySegment) FF.PlanarGyroFactor_FromRotation.invoke(
                         pose_i.j, pose_j.j, bias.j, p.ptr, dr.ptr, dt),
                 PlanarGyroFactor::new);
     }
 
     public static shared_ptr<PlanarGyroFactor> FromRate(
             Key pose_i, Key pose_j, Key bias, shared_ptr<PlanarGyroParams> p, double omega, double dt)
-            throws Throwable {
+            {
         return new shared_ptr<>(
-                (MemorySegment) FF.PlanarGyroFactor_FromRate.h.invokeExact(
+                (MemorySegment) FF.PlanarGyroFactor_FromRate.invoke(
                         pose_i.j, pose_j.j, bias.j, p.ptr, omega, dt),
                 PlanarGyroFactor::new);
     }
 
-    public Rot2 deltaR(double bias, Matrix H) throws Throwable {
-        return new Rot2((MemorySegment) FF.PlanarGyroFactor_deltaR.h.invokeExact(ptr, bias, H.ptr));
+    public Rot2 deltaR(double bias, Matrix H) {
+        return new Rot2((MemorySegment) FF.PlanarGyroFactor_deltaR.invoke(ptr, bias, H.ptr));
     }
 
-    public Rot2 predict(Rot2 Ri, double bias, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) FF.PlanarGyroFactor_predict.h.invokeExact(ptr, Ri.ptr, bias, H1.ptr, H2.ptr));
+    public Rot2 predict(Rot2 Ri, double bias, Matrix H1, Matrix H2) {
+        return new Rot2((MemorySegment) FF.PlanarGyroFactor_predict.invoke(ptr, Ri.ptr, bias, H1.ptr, H2.ptr));
     }
 
-    public double computeError(Rot2 Ri, Rot2 Rj, double bias, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
-        return (double) FF.PlanarGyroFactor_computeError.h.invokeExact(//
+    public double computeError(Rot2 Ri, Rot2 Rj, double bias, Matrix H1, Matrix H2, Matrix H3) {
+        return (double) FF.PlanarGyroFactor_computeError.invoke(//
                 ptr, Ri.ptr, Rj.ptr, bias, H1.ptr, H2.ptr, H3.ptr);
     }
 
-    public Vector evaluateError(Pose2 Pi, Pose2 Pj, double bias, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
-        return new Vector((MemorySegment) FF.PlanarGyroFactor_evaluateError.h.invokeExact(//
+    public Vector evaluateError(Pose2 Pi, Pose2 Pj, double bias, Matrix H1, Matrix H2, Matrix H3) {
+        return new Vector((MemorySegment) FF.PlanarGyroFactor_evaluateError.invoke(//
                 ptr, Pi.ptr, Pj.ptr, bias, H1.ptr, H2.ptr, H3.ptr));
     }
 }

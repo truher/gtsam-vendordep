@@ -22,10 +22,14 @@ public class JacobianVector extends ForeignObject {
         JacobianVector_insert(null, ADDRESS, JAVA_INT, ADDRESS),
         JacobianVector_insertMatrix3(null, ADDRESS, JAVA_INT, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -40,11 +44,11 @@ public class JacobianVector extends ForeignObject {
         return new JacobianVector(p);
     }
 
-    public void insert(int i, Matrix m) throws Throwable {
-        FF.JacobianVector_insert.h.invokeExact(ptr, i, m.ptr);
+    public void insert(int i, Matrix m) {
+        FF.JacobianVector_insert.invoke(ptr, i, m.ptr);
     }
 
-    public void insert(int i, Matrix3 m) throws Throwable {
-        FF.JacobianVector_insertMatrix3.h.invokeExact(ptr, i, m.ptr);
+    public void insert(int i, Matrix3 m) {
+        FF.JacobianVector_insertMatrix3.invoke(ptr, i, m.ptr);
     }
 }

@@ -43,82 +43,86 @@ public class Point2 extends ForeignObject
         Point2_InverseH(ADDRESS, ADDRESS, ADDRESS),
         Point2_AdjointMap(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
     @Override
-    public Point2 compose(Point2 h) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_Compose.h.invokeExact(ptr, h.ptr));
+    public Point2 compose(Point2 h) {
+        return new Point2((MemorySegment) FF.Point2_Compose.invoke(ptr, h.ptr));
     }
 
     @Override
-    public Point2 compose(Point2 h, Matrix H1, Matrix H2) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_ComposeH.h.invokeExact(
+    public Point2 compose(Point2 h, Matrix H1, Matrix H2) {
+        return new Point2((MemorySegment) FF.Point2_ComposeH.invoke(
                 ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Point2 between(Point2 h) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_Between.h.invokeExact(ptr, h.ptr));
+    public Point2 between(Point2 h) {
+        return new Point2((MemorySegment) FF.Point2_Between.invoke(ptr, h.ptr));
     }
 
     @Override
-    public Point2 between(Point2 h, Matrix H1, Matrix H2) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_BetweenH.h.invokeExact(
+    public Point2 between(Point2 h, Matrix H1, Matrix H2) {
+        return new Point2((MemorySegment) FF.Point2_BetweenH.invoke(
                 ptr, h.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Point2 inverse() throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_Inverse.h.invokeExact(ptr));
+    public Point2 inverse() {
+        return new Point2((MemorySegment) FF.Point2_Inverse.invoke(ptr));
     }
 
     @Override
-    public Point2 inverse(Matrix H) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_InverseH.h.invokeExact(
+    public Point2 inverse(Matrix H) {
+        return new Point2((MemorySegment) FF.Point2_InverseH.invoke(
                 ptr, H.ptr));
     }
 
     @Override
-    public Matrix AdjointMap() throws Throwable {
-        return new Matrix((MemorySegment) FF.Point2_AdjointMap.h.invokeExact(ptr));
+    public Matrix AdjointMap() {
+        return new Matrix((MemorySegment) FF.Point2_AdjointMap.invoke(ptr));
     }
 
     @Override
-    public Point2 expmap(Vector2 v) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_expmap.h.invokeExact(ptr, v.ptr));
+    public Point2 expmap(Vector2 v) {
+        return new Point2((MemorySegment) FF.Point2_expmap.invoke(ptr, v.ptr));
     }
 
     @Override
-    public Point2 expmap(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+    public Point2 expmap(Vector2 v, Matrix H1, Matrix H2) {
         throw new UnsupportedOperationException();
     }
 
-    public Vector2 logmap(Point2 g) throws Throwable {
-        return new Vector2((MemorySegment) FF.Point2_logmap.h.invokeExact(ptr, g.ptr));
+    public Vector2 logmap(Point2 g) {
+        return new Vector2((MemorySegment) FF.Point2_logmap.invoke(ptr, g.ptr));
     }
 
     @Override
-    public Vector2 logmap(Point2 g, Matrix H1, Matrix H2) throws Throwable {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Point2 retract(Vector2 v, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 logmap(Point2 g, Matrix H1, Matrix H2) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Vector2 local(Point2 g, Matrix H1, Matrix H2) throws Throwable {
+    public Point2 retract(Vector2 v, Matrix H1, Matrix H2) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Vector2 dxZero() throws Throwable {
+    public Vector2 local(Point2 g, Matrix H1, Matrix H2) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Vector2 dxZero() {
         return new Vector2(0, 0);
     }
 
@@ -126,79 +130,79 @@ public class Point2 extends ForeignObject
         super(p, FF.Point2_delete.h);
     }
 
-    public Point2() throws Throwable {
+    public Point2() {
         this(0, 0);
     }
 
-    public Point2(double x, double y) throws Throwable {
-        this((MemorySegment) FF.Point2.h.invokeExact(x, y));
+    public Point2(double x, double y) {
+        this((MemorySegment) FF.Point2.invoke(x, y));
     }
 
-    public double x() throws Throwable {
-        return (double) FF.Point2_x.h.invokeExact(ptr);
+    public double x() {
+        return (double) FF.Point2_x.invoke(ptr);
     }
 
-    public double y() throws Throwable {
-        return (double) FF.Point2_y.h.invokeExact(ptr);
+    public double y() {
+        return (double) FF.Point2_y.invoke(ptr);
     }
 
-    public Point2 plus(Point2 other) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_plus.h.invokeExact(ptr, other.ptr));
+    public Point2 plus(Point2 other) {
+        return new Point2((MemorySegment) FF.Point2_plus.invoke(ptr, other.ptr));
     }
 
-    public Point2 minus(Point2 other) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_minus.h.invokeExact(ptr, other.ptr));
+    public Point2 minus(Point2 other) {
+        return new Point2((MemorySegment) FF.Point2_minus.invoke(ptr, other.ptr));
     }
 
-    public Point2 times(double a) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_times.h.invokeExact(ptr, a));
+    public Point2 times(double a) {
+        return new Point2((MemorySegment) FF.Point2_times.invoke(ptr, a));
     }
 
     @Override
-    public int dimension() throws Throwable {
+    public int dimension() {
         return 2;
     }
 
     @Override
-    public Vector2 local(Point2 other) throws Throwable {
-        return new Vector2((MemorySegment) FF.Point2_Local.h.invokeExact(ptr, other.ptr));
+    public Vector2 local(Point2 other) {
+        return new Vector2((MemorySegment) FF.Point2_Local.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Point2 retract(Vector2 v) throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_Retract.h.invokeExact(ptr, v.ptr));
+    public Point2 retract(Vector2 v) {
+        return new Point2((MemorySegment) FF.Point2_Retract.invoke(ptr, v.ptr));
     }
 
-    public static double norm2(Point2 p) throws Throwable {
-        return (double) FF.Point2_norm2.h.invokeExact(p.ptr);
+    public static double norm2(Point2 p) {
+        return (double) FF.Point2_norm2.invoke(p.ptr);
     }
 
-    public static double norm2(Point2 p, Matrix H) throws Throwable {
-        return (double) FF.Point2_norm2H.h.invokeExact(p.ptr, H.ptr);
+    public static double norm2(Point2 p, Matrix H) {
+        return (double) FF.Point2_norm2H.invoke(p.ptr, H.ptr);
     }
 
-    public static double distance2(Point2 p, Point2 q) throws Throwable {
-        return (double) FF.Point2_distance2.h.invokeExact(p.ptr, q.ptr);
+    public static double distance2(Point2 p, Point2 q) {
+        return (double) FF.Point2_distance2.invoke(p.ptr, q.ptr);
     }
 
-    public static double distance2(Point2 p, Point2 q, Matrix H1, Matrix H2) throws Throwable {
-        return (double) FF.Point2_distance2H.h.invokeExact(p.ptr, q.ptr, H1.ptr, H2.ptr);
+    public static double distance2(Point2 p, Point2 q, Matrix H1, Matrix H2) {
+        return (double) FF.Point2_distance2H.invoke(p.ptr, q.ptr, H1.ptr, H2.ptr);
     }
 
-    public double norm() throws Throwable {
-        return (double) FF.Point2_norm.h.invokeExact(ptr);
+    public double norm() {
+        return (double) FF.Point2_norm.invoke(ptr);
     }
 
-    public static boolean check_group_invariants(Point2 a, Point2 b) throws Throwable {
-        return (boolean) FF.Point2_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_group_invariants(Point2 a, Point2 b) {
+        return (boolean) FF.Point2_check_group_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public static boolean check_manifold_invariants(Point2 a, Point2 b) throws Throwable {
-        return (boolean) FF.Point2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_manifold_invariants(Point2 a, Point2 b) {
+        return (boolean) FF.Point2_check_manifold_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public Point2 normalized() throws Throwable {
-        return new Point2((MemorySegment) FF.Point2_normalized.h.invokeExact(ptr));
+    public Point2 normalized() {
+        return new Point2((MemorySegment) FF.Point2_normalized.invoke(ptr));
     }
 
 }

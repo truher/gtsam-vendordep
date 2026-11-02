@@ -16,10 +16,14 @@ public class BetweenFactorPose2 extends NoiseModelFactor {
         BetweenFactorPose2(ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS),
         BetweenFactorPose2_error(JAVA_DOUBLE, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -32,13 +36,13 @@ public class BetweenFactorPose2 extends NoiseModelFactor {
             Key key1,
             Key key2,
             Pose2 measured,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPose2.h.invokeExact(
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPose2.invoke(
                 key1.j, key2.j, measured.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BetweenFactorPose2::new);
     }
 
-    public double error(Values v) throws Throwable {
-        return (double) FF.BetweenFactorPose2_error.h.invokeExact(ptr, v.ptr);
+    public double error(Values v) {
+        return (double) FF.BetweenFactorPose2_error.invoke(ptr, v.ptr);
     }
 }

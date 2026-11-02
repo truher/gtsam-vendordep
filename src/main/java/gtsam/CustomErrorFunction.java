@@ -24,7 +24,7 @@ public interface CustomErrorFunction {
         }
     }
 
-    Vector apply(CustomFactor factor, Values v, JacobianVector H) throws Throwable;
+    Vector apply(CustomFactor factor, Values v, JacobianVector H);
 
     /**
      * Arguments are locally-scoped pointers to the parameters of
@@ -35,12 +35,11 @@ public interface CustomErrorFunction {
      * @param values   Pointer to the factor values
      * @param jacobian Nullable pointer to jacobians
      * @return Pointer to owned error vector, should be copied.
-     * @throws Throwable
      */
     default MemorySegment bind(
             MemorySegment factor,
             MemorySegment values,
-            MemorySegment jacobian) throws Throwable {
+            MemorySegment jacobian) {
         Vector v = apply(
                 // Must be observer.
                 new CustomFactor(factor),

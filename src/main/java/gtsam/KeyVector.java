@@ -24,10 +24,14 @@ public class KeyVector extends ForeignObject {
         KeyVector_at(JAVA_LONG, ADDRESS, JAVA_LONG),
         KeyVector_size(JAVA_LONG, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -35,26 +39,26 @@ public class KeyVector extends ForeignObject {
         super(p, FF.KeyVector_delete.h);
     }
 
-    public KeyVector() throws Throwable {
-        this((MemorySegment) FF.KeyVector.h.invokeExact());
+    public KeyVector() {
+        this((MemorySegment) FF.KeyVector.invoke());
     }
 
-    public KeyVector(Key... keys) throws Throwable {
+    public KeyVector(Key... keys) {
         this();
         for (Key k : keys) {
             push_back(k);
         }
     }
 
-    public void push_back(Key key) throws Throwable {
-        FF.KeyVector_push_back.h.invokeExact(ptr, key.j);
+    public void push_back(Key key) {
+        FF.KeyVector_push_back.invoke(ptr, key.j);
     }
 
-    public Key at(long i) throws Throwable {
-        return new Key((long) FF.KeyVector_at.h.invokeExact(ptr, i));
+    public Key at(long i) {
+        return new Key((long) FF.KeyVector_at.invoke(ptr, i));
     }
 
-    public long size() throws Throwable {
-        return (long) FF.KeyVector_size.h.invokeExact(ptr);
+    public long size() {
+        return (long) FF.KeyVector_size.invoke(ptr);
     }
 }

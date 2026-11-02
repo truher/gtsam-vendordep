@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 public class Point2Test {
 
     @Test
-    void testConstructor() throws Throwable {
+    void testConstructor() {
         new Point2(0, 0);
     }
 
     //
     @Test
-    void testInvariants() throws Throwable {
+    void testInvariants() {
         Point2 p1 = new Point2(1, 2);
         Point2 p2 = new Point2(4, 5);
         assertTrue(Point2.check_group_invariants(p1, p2));
@@ -26,21 +26,21 @@ public class Point2Test {
     }
 
     @Test
-    void testconstructor() throws Throwable {
+    void testconstructor() {
         Point2 p1 = new Point2(1, 2);
         Point2 p2 = p1;
         assertTrue(assert_equal(p1, p2));
     }
 
     @Test
-    void testequality() throws Throwable {
+    void testequality() {
         Point2 p1 = new Point2(1, 2);
         Point2 p2 = new Point2(1, 3);
         assertTrue(!(assert_equal(p1, p2)));
     }
 
     @Test
-    void testLie() throws Throwable {
+    void testLie() {
         Point2 p1 = new Point2(1, 2);
         Point2 p2 = new Point2(4, 5);
         Matrix H1 = new Matrix();
@@ -59,7 +59,7 @@ public class Point2Test {
     }
 
     @Test
-    void testexpmap() throws Throwable {
+    void testexpmap() {
         Vector2 d = new Vector2(1, -1);
         Point2 a = new Point2(4, 5);
         Point2 b = a.retract(d);
@@ -68,7 +68,7 @@ public class Point2Test {
     }
 
     @Test
-    void testarithmetic() throws Throwable {
+    void testarithmetic() {
         assertTrue(assert_equal(new Point2(-5, -6), new Point2(5, 6).times(-1)));
         assertTrue(assert_equal(new Point2(5, 6), new Point2(4, 5).plus(new Point2(1, 1))));
         assertTrue(assert_equal(new Point2(3, 4), new Point2(4, 5).minus(new Point2(1, 1))));
@@ -78,7 +78,7 @@ public class Point2Test {
     }
 
     @Test
-    void testunit() throws Throwable {
+    void testunit() {
         Point2 p0 = new Point2(10, 0);
         Point2 p1 = new Point2(0, -10);
         Point2 p2 = new Point2(10, 10);
@@ -97,25 +97,21 @@ public class Point2Test {
     static Point2 l4;
 
     static {
-        try {
-            x1 = new Point2(0, 0);
-            x2 = new Point2(1, 1);
-            x3 = new Point2(1, 1);
-            l1 = new Point2(1, 0);
-            l2 = new Point2(1, 1);
-            l3 = new Point2(2, 2);
-            l4 = new Point2(1, 3);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
+        x1 = new Point2(0, 0);
+        x2 = new Point2(1, 1);
+        x3 = new Point2(1, 1);
+        l1 = new Point2(1, 0);
+        l2 = new Point2(1, 1);
+        l3 = new Point2(2, 2);
+        l4 = new Point2(1, 3);
     }
 
-    Vector1 norm_proxy(Point2 point) throws Throwable {
+    Vector1 norm_proxy(Point2 point) {
         return new Vector1(point.norm());
     }
 
     @Test
-    void testnorm() throws Throwable {
+    void testnorm() {
         Point2 p0 = new Point2(Math.cos(5.0), Math.sin(5.0));
         assertEquals(1, p0.norm(), 1e-6);
         Point2 p1 = new Point2(4, 5);
@@ -144,12 +140,12 @@ public class Point2Test {
         assertTrue(assert_equal(expectedH, actualH));
     }
 
-    Vector1 distance_proxy(Point2 location, Point2 point) throws Throwable {
+    Vector1 distance_proxy(Point2 location, Point2 point) {
         return new Vector1(Point2.distance2(location, point));
     }
 
     @Test
-    void testdistance() throws Throwable {
+    void testdistance() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();

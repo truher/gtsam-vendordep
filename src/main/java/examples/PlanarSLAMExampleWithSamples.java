@@ -22,7 +22,7 @@ import gtsam.noiseModel.Diagonal;
  */
 public class PlanarSLAMExampleWithSamples {
 
-    public static void main(String args[]) throws Throwable {
+    public static void main(String args[]) {
 
         NonlinearFactorGraph graph = new NonlinearFactorGraph();
 

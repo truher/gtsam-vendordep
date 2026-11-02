@@ -30,10 +30,14 @@ public class Gaussian extends Base {
         noiseModel_Gaussian_QR(ADDRESS, ADDRESS, ADDRESS),
         noiseModel_Gaussian_negLogConstant(JAVA_DOUBLE, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -41,68 +45,67 @@ public class Gaussian extends Base {
         super(p);
     }
 
-    public static shared_ptr<Gaussian> SqrtInformation(Matrix R, boolean smart) throws Throwable {
+    public static shared_ptr<Gaussian> SqrtInformation(Matrix R, boolean smart) {
         return new shared_ptr<Gaussian>(
-                (MemorySegment) FF.noiseModel_Gaussian_SqrtInformation.h.invokeExact(R.ptr, smart),
+                (MemorySegment) FF.noiseModel_Gaussian_SqrtInformation.invoke(R.ptr, smart),
                 Gaussian::new);
     }
 
-    public static shared_ptr<Gaussian> Covariance(Matrix covariance, boolean smart) throws Throwable {
+    public static shared_ptr<Gaussian> Covariance(Matrix covariance, boolean smart) {
         return new shared_ptr<Gaussian>(
-                (MemorySegment) FF.noiseModel_Gaussian_Covariance.h.invokeExact(covariance.ptr, smart),
+                (MemorySegment) FF.noiseModel_Gaussian_Covariance.invoke(covariance.ptr, smart),
                 Gaussian::new);
     }
 
-    public static shared_ptr<Gaussian> Information(Matrix M, boolean smart) throws Throwable {
+    public static shared_ptr<Gaussian> Information(Matrix M, boolean smart) {
         return new shared_ptr<Gaussian>(
-                (MemorySegment) FF.noiseModel_Gaussian_Information.h.invokeExact(M.ptr, smart),
+                (MemorySegment) FF.noiseModel_Gaussian_Information.invoke(M.ptr, smart),
                 Gaussian::new);
     }
 
     @Override
-    public Vector sigmas() throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Gaussian_sigmas.h.invokeExact(ptr));
+    public Vector sigmas() {
+        return new Vector((MemorySegment) FF.noiseModel_Gaussian_sigmas.invoke(ptr));
     }
 
     @Override
-    public Vector whiten(Vector v) throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Gaussian_whiten.h.invokeExact(ptr, v.ptr));
+    public Vector whiten(Vector v) {
+        return new Vector((MemorySegment) FF.noiseModel_Gaussian_whiten.invoke(ptr, v.ptr));
     }
 
     @Override
-    public Vector unwhiten(Vector v) throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Gaussian_unwhiten.h.invokeExact(ptr, v.ptr));
+    public Vector unwhiten(Vector v) {
+        return new Vector((MemorySegment) FF.noiseModel_Gaussian_unwhiten.invoke(ptr, v.ptr));
     }
 
- 
-    public Matrix R() throws Throwable {
-        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_R.h.invokeExact(ptr));
+    public Matrix R() {
+        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_R.invoke(ptr));
     }
 
-    public Matrix covariance() throws Throwable {
-        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_covariance.h.invokeExact(ptr));
+    public Matrix covariance() {
+        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_covariance.invoke(ptr));
     }
 
-    public Matrix information() throws Throwable {
-        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_information.h.invokeExact(ptr));
+    public Matrix information() {
+        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_information.invoke(ptr));
     }
 
     @Override
-    public Matrix Whiten(Matrix H) throws Throwable {
-        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_Whiten.h.invokeExact(ptr, H.ptr));
+    public Matrix Whiten(Matrix H) {
+        return new Matrix((MemorySegment) FF.noiseModel_Gaussian_Whiten.invoke(ptr, H.ptr));
     }
 
-    public void WhitenInPlace(Matrix H) throws Throwable {
-        FF.noiseModel_Gaussian_WhitenInPlace.h.invokeExact(ptr, H.ptr);
+    public void WhitenInPlace(Matrix H) {
+        FF.noiseModel_Gaussian_WhitenInPlace.invoke(ptr, H.ptr);
     }
 
-    public shared_ptr<Diagonal> QR(Matrix Ab) throws Throwable {
+    public shared_ptr<Diagonal> QR(Matrix Ab) {
         return new shared_ptr<Diagonal>(
-                (MemorySegment) FF.noiseModel_Gaussian_QR.h.invokeExact(ptr, Ab.ptr),
+                (MemorySegment) FF.noiseModel_Gaussian_QR.invoke(ptr, Ab.ptr),
                 Diagonal::new);
     }
 
-    public double negLogConstant() throws Throwable {
-        return (double) FF.noiseModel_Gaussian_negLogConstant.h.invokeExact(ptr);
+    public double negLogConstant() {
+        return (double) FF.noiseModel_Gaussian_negLogConstant.invoke(ptr);
     }
 }

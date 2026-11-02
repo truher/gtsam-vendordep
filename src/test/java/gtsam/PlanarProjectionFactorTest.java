@@ -21,7 +21,7 @@ public class PlanarProjectionFactorTest {
      * Example: center projection and Jacobian.
      */
     @Test
-    void testError1_1() throws Throwable {
+    void testError1_1() {
         Point3 landmark = new Point3(1, 0, 0);
         Point2 measured = new Point2(200, 200);
         Pose3 offset = new Pose3(
@@ -48,7 +48,7 @@ public class PlanarProjectionFactorTest {
      * Example: upper left corner projection and Jacobian.
      */
     @Test
-    void Error1_2() throws Throwable {
+    void Error1_2() {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
         Pose3 offset = new Pose3(
@@ -75,7 +75,7 @@ public class PlanarProjectionFactorTest {
      * Example: upper left corner projection and Jacobian with distortion.
      */
     @Test
-    void Error1_3() throws Throwable {
+    void Error1_3() {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
         Pose3 offset = new Pose3(
@@ -102,7 +102,7 @@ public class PlanarProjectionFactorTest {
      * Verify Jacobians with numeric derivative.
      */
     @Test
-    void Jacobian() throws Throwable {
+    void Jacobian() {
         Random rng = new Random(42);
         DoubleSupplier dist = () -> rng.nextDouble(-0.3, 0.3);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
@@ -137,7 +137,7 @@ public class PlanarProjectionFactorTest {
      * Example localization.
      */
     @Test
-    void Solve() throws Throwable {
+    void Solve() {
         shared_ptr<Diagonal> pxModel = Diagonal.Sigmas(new Vector2(1, 1));
         // pose model is wide, so the solver finds the right answer.
         shared_ptr<Diagonal> xNoise = Diagonal.Sigmas(new Vector3(10, 10, 10));
@@ -200,7 +200,7 @@ public class PlanarProjectionFactorTest {
      * Example: center projection and Jacobian
      */
     @Test
-    void Error3_1() throws Throwable {
+    void Error3_1() {
         Point3 landmark = new Point3(1, 0, 0);
         Point2 measured = new Point2(200, 200);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
@@ -233,7 +233,7 @@ public class PlanarProjectionFactorTest {
     }
 
     @Test
-    void Error3_2() throws Throwable {
+    void Error3_2() {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
@@ -267,7 +267,7 @@ public class PlanarProjectionFactorTest {
     }
 
     @Test
-    void Error3_3() throws Throwable {
+    void Error3_3() {
         Point3 landmark = new Point3(1, 1, 1);
         Point2 measured = new Point2(0, 0);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
@@ -301,7 +301,7 @@ public class PlanarProjectionFactorTest {
      * Verify Jacobians with numeric derivative
      */
     @Test
-    void Jacobian3() throws Throwable {
+    void Jacobian3() {
         Random rng = new Random(42);
         DoubleSupplier dist = () -> rng.nextDouble(-0.3, 0.3);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(new Vector2(1, 1));
@@ -367,7 +367,7 @@ public class PlanarProjectionFactorTest {
      * Example localization.
      */
     @Test
-    void SolveOffset() throws Throwable {
+    void SolveOffset() {
         shared_ptr<Diagonal> pxModel = Diagonal.Sigmas(new Vector2(1, 1));
         shared_ptr<Diagonal> xNoise = Diagonal.Sigmas(new Vector3(0.01, 0.01,
                 0.01));

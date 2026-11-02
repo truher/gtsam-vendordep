@@ -13,10 +13,14 @@ public class GaussianFactorGraph extends ForeignObject {
     public enum FF {
         GaussianFactorGraph_optimize(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -24,8 +28,8 @@ public class GaussianFactorGraph extends ForeignObject {
         super(pointer, null);
     }
 
-    public VectorValues optimize() throws Throwable {
-        return new VectorValues((MemorySegment) FF.GaussianFactorGraph_optimize.h.invokeExact(ptr));
+    public VectorValues optimize() {
+        return new VectorValues((MemorySegment) FF.GaussianFactorGraph_optimize.invoke(ptr));
     }
 
 }

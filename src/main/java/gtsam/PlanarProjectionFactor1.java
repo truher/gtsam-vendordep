@@ -24,7 +24,8 @@ import org.team100.foreign.Lib;
  * cmake --build build --target check
  * }
  * 
- * The flag about "unstable" is not necessary but we don't use any unstable parts
+ * The flag about "unstable" is not necessary but we don't use any unstable
+ * parts
  * anyway.
  */
 public class PlanarProjectionFactor1 extends NonlinearFactor {
@@ -34,10 +35,14 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
         PlanarProjectionFactor1_evaluateError(
                 ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -52,17 +57,17 @@ public class PlanarProjectionFactor1 extends NonlinearFactor {
             Point2 measured,
             Pose3 bTc,
             Cal3DS2 calib,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         return new shared_ptr<>(
-                (MemorySegment) FF.PlanarProjectionFactor1.h.invokeExact(
+                (MemorySegment) FF.PlanarProjectionFactor1.invoke(
                         poseKey.j, landmark.ptr, measured.ptr, bTc.ptr, calib.ptr, model.ptr),
                 PlanarProjectionFactor1::new);
     }
 
-    public Vector2 evaluateError(Pose2 pose, Matrix H) throws Throwable {
+    public Vector2 evaluateError(Pose2 pose, Matrix H) {
         // TODO: maybe this should be Vector instead of Vector2
         return new Vector2(
-                (MemorySegment) FF.PlanarProjectionFactor1_evaluateError.h.invokeExact(
+                (MemorySegment) FF.PlanarProjectionFactor1_evaluateError.invoke(
                         ptr, pose.ptr, H.ptr));
 
     }

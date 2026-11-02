@@ -13,10 +13,14 @@ public abstract class NonlinearOptimizer extends ForeignObject {
     public enum FF {
         NonlinearOptimizer_optimize(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -25,8 +29,8 @@ public abstract class NonlinearOptimizer extends ForeignObject {
         super(pointer, deleter);
     }
 
-    public Values optimize() throws Throwable {
-        return Values.owned((MemorySegment) FF.NonlinearOptimizer_optimize.h.invokeExact(ptr));
+    public Values optimize() {
+        return Values.owned((MemorySegment) FF.NonlinearOptimizer_optimize.invoke(ptr));
     }
 
 }

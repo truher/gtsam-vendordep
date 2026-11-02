@@ -16,10 +16,14 @@ public class PinholeCamera<T> extends ForeignObject {
         PinholeCameraCal3DS2_delete(null, ADDRESS),
         PinholeCameraCal3DS2_project(ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -28,14 +32,14 @@ public class PinholeCamera<T> extends ForeignObject {
     }
 
     public static PinholeCamera<Cal3DS2> PinholeCameraCal3DS2(
-            Pose3 pose, Cal3DS2 K) throws Throwable {
+            Pose3 pose, Cal3DS2 K) {
         return new PinholeCamera<>(
-                (MemorySegment) FF.PinholeCameraCal3DS2.h.invokeExact(pose.ptr, K.ptr),
+                (MemorySegment) FF.PinholeCameraCal3DS2.invoke(pose.ptr, K.ptr),
                 FF.PinholeCameraCal3DS2_delete.h);
     }
 
-    public Point2 project(Point3 pw) throws Throwable {
-        return new Point2((MemorySegment) FF.PinholeCameraCal3DS2_project.h.invokeExact(ptr, pw.ptr));
+    public Point2 project(Point3 pw) {
+        return new Point2((MemorySegment) FF.PinholeCameraCal3DS2_project.invoke(ptr, pw.ptr));
     }
 
 }

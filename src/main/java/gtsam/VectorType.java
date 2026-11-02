@@ -3,15 +3,15 @@ package gtsam;
 // TODO: include dimension as a type parameter.
 // TODO: add method handle maker here?
 public interface VectorType<V extends VectorType<V>> {
-    int dimension() throws Throwable;
+    int dimension();
 
-    double at(int i) throws Throwable;
+    double at(int i);
 
-    void set(int i, double val) throws Throwable;
+    void set(int i, double val);
 
-    V plus(V other) throws Throwable;
+    V plus(V other);
 
-    V minus(V other) throws Throwable;
+    V minus(V other);
 
-    V times(double a) throws Throwable;
+    V times(double a);
 }

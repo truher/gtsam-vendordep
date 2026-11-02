@@ -16,10 +16,14 @@ public class BetweenFactorPoint2 extends NoiseModelFactor {
         BetweenFactorPoint2_evaluateError(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         BetweenFactorPoint2_evaluateErrorH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -31,20 +35,20 @@ public class BetweenFactorPoint2 extends NoiseModelFactor {
             Key key1,
             Key key2,
             Point2 measured,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPoint2.h.invokeExact(
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorPoint2.invoke(
                 key1.j, key2.j, measured.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BetweenFactorPoint2::new);
     }
 
-    public Vector2 evaluateError(Point2 R1, Point2 R2) throws Throwable {
+    public Vector2 evaluateError(Point2 R1, Point2 R2) {
         return new Vector2(
-                (MemorySegment) FF.BetweenFactorPoint2_evaluateError.h.invokeExact(ptr, R1.ptr, R2.ptr));
+                (MemorySegment) FF.BetweenFactorPoint2_evaluateError.invoke(ptr, R1.ptr, R2.ptr));
     }
 
-    public Vector2 evaluateError(Point2 R1, Point2 R2, Matrix H1, Matrix H2) throws Throwable {
+    public Vector2 evaluateError(Point2 R1, Point2 R2, Matrix H1, Matrix H2) {
         return new Vector2(
-                (MemorySegment) FF.BetweenFactorPoint2_evaluateErrorH.h.invokeExact(
+                (MemorySegment) FF.BetweenFactorPoint2_evaluateErrorH.invoke(
                         ptr, R1.ptr, R2.ptr, H1.ptr, H2.ptr));
     }
 }

@@ -13,10 +13,14 @@ public class Factor extends ForeignObject {
     public enum FF {
         Factor_keys(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -24,8 +28,8 @@ public class Factor extends ForeignObject {
         super(p, null);
     }
 
-    public KeyVector keys() throws Throwable {
-        return new KeyVector((MemorySegment) FF.Factor_keys.h.invokeExact(ptr));
+    public KeyVector keys() {
+        return new KeyVector((MemorySegment) FF.Factor_keys.invoke(ptr));
     }
 
 }

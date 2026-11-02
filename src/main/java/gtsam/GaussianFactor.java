@@ -15,10 +15,14 @@ public class GaussianFactor extends Factor {
     public enum FF {
         GaussianFactor_jacobian(Pairs.PtrPair, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(StructLayout returnType, ValueLayout... parameterTypes) {
+        private FF(StructLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -26,8 +30,8 @@ public class GaussianFactor extends Factor {
         super(p);
     }
 
-    public Pair<Matrix, Vector> jacobian() throws Throwable {
-        MemorySegment resultStruct = (MemorySegment) FF.GaussianFactor_jacobian.h.invokeExact(
+    public Pair<Matrix, Vector> jacobian() {
+        MemorySegment resultStruct = (MemorySegment) FF.GaussianFactor_jacobian.invoke(
                 (SegmentAllocator) Lib.arena, ptr);
         MemorySegment firstPtr = (MemorySegment) Pairs.PtrPair_first.get(resultStruct, 0);
         MemorySegment secondPtr = (MemorySegment) Pairs.PtrPair_second.get(resultStruct, 0);

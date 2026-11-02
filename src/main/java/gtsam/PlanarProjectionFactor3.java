@@ -16,10 +16,14 @@ public class PlanarProjectionFactor3 extends NonlinearFactor {
         PlanarProjectionFactor3_evaluateError(
                 ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -34,17 +38,17 @@ public class PlanarProjectionFactor3 extends NonlinearFactor {
             Key calibKey,
             Point3 landmark,
             Point2 measured,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         return new shared_ptr<>(
-                (MemorySegment) FF.PlanarProjectionFactor3.h.invokeExact(
+                (MemorySegment) FF.PlanarProjectionFactor3.invoke(
                         poseKey.j, offsetKey.j, calibKey.j, landmark.ptr, measured.ptr, model.ptr),
                 PlanarProjectionFactor3::new);
     }
 
     public Vector evaluateError(Pose2 wTb, Pose3 bTc, Cal3DS2 calib, Matrix HwTb, Matrix HbTc, Matrix Hcalib)
-            throws Throwable {
+            {
         return new Vector(
-                (MemorySegment) FF.PlanarProjectionFactor3_evaluateError.h.invokeExact(
+                (MemorySegment) FF.PlanarProjectionFactor3_evaluateError.invoke(
                         ptr, wTb.ptr, bTc.ptr, calib.ptr, HwTb.ptr, HbTc.ptr, Hcalib.ptr));
 
     }

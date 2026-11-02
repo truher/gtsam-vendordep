@@ -13,10 +13,14 @@ public abstract class FactorGraph extends ForeignObject {
     public enum FF {
         FactorGraph_add_factorsNonlinearFactorGraph(ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -25,9 +29,9 @@ public abstract class FactorGraph extends ForeignObject {
         super(pointer, deleter);
     }
 
-    public FactorIndices add_factors(NonlinearFactorGraph g) throws Throwable {
+    public FactorIndices add_factors(NonlinearFactorGraph g) {
         return new FactorIndices(
-                (MemorySegment) FF.FactorGraph_add_factorsNonlinearFactorGraph.h.invokeExact(
+                (MemorySegment) FF.FactorGraph_add_factorsNonlinearFactorGraph.invoke(
                         ptr, g.ptr));
     }
 

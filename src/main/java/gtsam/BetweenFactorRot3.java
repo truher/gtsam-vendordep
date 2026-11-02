@@ -16,10 +16,14 @@ public class BetweenFactorRot3 extends NoiseModelFactor {
         BetweenFactorRot3_evaluateError(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         BetweenFactorRot3_evaluateErrorH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -31,20 +35,20 @@ public class BetweenFactorRot3 extends NoiseModelFactor {
             Key key1,
             Key key2,
             Rot3 measured,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorRot3.h.invokeExact(
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.BetweenFactorRot3.invoke(
                 key1.j, key2.j, measured.ptr, model.ptr);
         return new shared_ptr<>(sharedPtrPtr, BetweenFactorRot3::new);
     }
 
-    public Vector3 evaluateError(Rot3 R1, Rot3 R2) throws Throwable {
+    public Vector3 evaluateError(Rot3 R1, Rot3 R2) {
         return new Vector3(
-                (MemorySegment) FF.BetweenFactorRot3_evaluateError.h.invokeExact(ptr, R1.ptr, R2.ptr));
+                (MemorySegment) FF.BetweenFactorRot3_evaluateError.invoke(ptr, R1.ptr, R2.ptr));
     }
 
-    public Vector3 evaluateError(Rot3 R1, Rot3 R2, Matrix H1, Matrix H2) throws Throwable {
+    public Vector3 evaluateError(Rot3 R1, Rot3 R2, Matrix H1, Matrix H2) {
         return new Vector3(
-                (MemorySegment) FF.BetweenFactorRot3_evaluateErrorH.h.invokeExact(
+                (MemorySegment) FF.BetweenFactorRot3_evaluateErrorH.invoke(
                         ptr, R1.ptr, R2.ptr, H1.ptr, H2.ptr));
     }
 }

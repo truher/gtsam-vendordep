@@ -15,7 +15,7 @@ import gtsam.noiseModel.Isotropic;
 public class SimpleRotation {
     private static final double degree = Math.PI / 180;
 
-    public static void main(String args[]) throws Throwable {
+    public static void main(String args[]) {
 
         /**
          * Step 1: Create a factor to express a unary constraint

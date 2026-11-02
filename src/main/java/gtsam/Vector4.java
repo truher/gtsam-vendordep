@@ -22,10 +22,14 @@ public class Vector4 extends ForeignObject implements VectorType<Vector4> {
         Vector4_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector4_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -34,32 +38,32 @@ public class Vector4 extends ForeignObject implements VectorType<Vector4> {
     }
 
     @Override
-    public int dimension() throws Throwable {
+    public int dimension() {
         return 9;
     }
 
     @Override
-    public double at(int i) throws Throwable {
-        return (double) FF.Vector4_at.h.invokeExact(ptr, i);
+    public double at(int i) {
+        return (double) FF.Vector4_at.invoke(ptr, i);
     }
 
     @Override
-    public void set(int i, double val) throws Throwable {
-        FF.Vector4_set.h.invokeExact(ptr, i, val);
+    public void set(int i, double val) {
+        FF.Vector4_set.invoke(ptr, i, val);
     }
 
     @Override
-    public Vector4 plus(Vector4 other) throws Throwable {
-        return new Vector4((MemorySegment) FF.Vector4_plus.h.invokeExact(ptr, other.ptr));
+    public Vector4 plus(Vector4 other) {
+        return new Vector4((MemorySegment) FF.Vector4_plus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector4 minus(Vector4 other) throws Throwable {
-        return new Vector4((MemorySegment) FF.Vector4_minus.h.invokeExact(ptr, other.ptr));
+    public Vector4 minus(Vector4 other) {
+        return new Vector4((MemorySegment) FF.Vector4_minus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector4 times(double a) throws Throwable {
-        return new Vector4((MemorySegment) FF.Vector4_times.h.invokeExact(ptr, a));
+    public Vector4 times(double a) {
+        return new Vector4((MemorySegment) FF.Vector4_times.invoke(ptr, a));
     }
 }

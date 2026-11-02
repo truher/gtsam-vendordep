@@ -19,7 +19,7 @@ public class IncrementalFixedLagSmootherTest {
     boolean check_smoother(final NonlinearFactorGraph fullgraph,
             final Values fullinit,
             final IncrementalFixedLagSmoother smoother,
-            final Key key) throws Throwable {
+            final Key key) {
         shared_ptr<GaussianFactorGraph> linearized = fullgraph.linearize(fullinit);
         VectorValues delta = linearized.get().optimize();
         Values fullfinal = fullinit.retract(delta);
@@ -31,7 +31,7 @@ public class IncrementalFixedLagSmootherTest {
     }
 
     @Test
-    void testExample() throws Throwable {
+    void testExample() {
         // Test the IncrementalFixedLagSmoother in a pure linear environment. Thus,
         // full optimization and the IncrementalFixedLagSmoother should be identical
         // (even with the linearized approximations at the end of the smoothing lag

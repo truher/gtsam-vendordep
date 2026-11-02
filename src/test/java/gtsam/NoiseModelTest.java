@@ -37,30 +37,16 @@ import gtsam.noiseModel.mEstimator.Welsch;
  */
 public class NoiseModelTest {
 
-    static final double kSigma;
-    static final double kInverseSigma;
-    static final double kVariance;
-    static final double prc;
-    static final Matrix R;
-    static final Matrix kCovariance;
-    static final Vector3 kSigmas;
-
-    static {
-        try {
-            kSigma = 2;
-            kInverseSigma = 1.0 / kSigma;
-            kVariance = kSigma * kSigma;
-            prc = 1.0 / kVariance;
-            R = Matrix.I_3x3().times(kInverseSigma);
-            kCovariance = Matrix.I_3x3().times(kVariance);
-            kSigmas = new Vector3(kSigma, kSigma, kSigma);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    static final double kSigma = 2;
+    static final double kInverseSigma = 1.0 / kSigma;
+    static final double kVariance = kSigma * kSigma;
+    static final double prc = 1.0 / kVariance;
+    static final Matrix R = Matrix.I_3x3().times(kInverseSigma);
+    static final Matrix kCovariance = Matrix.I_3x3().times(kVariance);
+    static final Vector3 kSigmas = new Vector3(kSigma, kSigma, kSigma);
 
     @Test
-    void testconstructors() throws Throwable {
+    void testconstructors() {
         Vector3 whitened = new Vector3(5.0, 10.0, 15.0);
         Vector3 unwhitened = new Vector3(10.0, 20.0, 30.0);
 
@@ -121,14 +107,14 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testUnit() throws Throwable {
+    void testUnit() {
         Vector3 v = new Vector3(5.0, 10.0, 15.0);
         shared_ptr<? extends Gaussian> u = Unit.Create(3);
         assertTrue(assert_equal(v, new Vector3(u.get().whiten(new Vector(v)))));
     }
 
     @Test
-    void testUnitCreateMeasured() throws Throwable {
+    void testUnitCreateMeasured() {
         Matrix fixed = Matrix.I_2x2();
         shared_ptr<Unit> fixedModel = Unit.Create(fixed);
         assertEquals(4, fixedModel.get().dim());
@@ -141,7 +127,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testMatchesDimension() throws Throwable {
+    void testMatchesDimension() {
         Matrix fixed = Matrix.I_2x2();
         assertTrue(Util.matchesDimension(Unit.Create(4).get(), fixed));
         assertFalse(Util.matchesDimension(Unit.Create(3).get(), fixed));
@@ -153,7 +139,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testequals() throws Throwable {
+    void testequals() {
         shared_ptr<Gaussian> g1 = Gaussian.SqrtInformation(R, true);
         shared_ptr<Gaussian> g2 = Gaussian.SqrtInformation(Matrix.I_3x3(), true);
         shared_ptr<Diagonal> d1 = Diagonal.Sigmas(new Vector3(kSigma, kSigma, kSigma));
@@ -172,7 +158,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testConstrainedConstructors() throws Throwable {
+    void testConstrainedConstructors() {
         int d = 3;
         double m = 100.0;
         final double kInfinity = Double.POSITIVE_INFINITY;
@@ -202,7 +188,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testConstrainedMixed() throws Throwable {
+    void testConstrainedMixed() {
         Vector feasible = new Vector(new double[] { 1.0, 0.0, 1.0 });
         Vector infeasible = new Vector(new double[] { 1.0, 1.0, 1.0 });
         shared_ptr<? extends Diagonal> d = Constrained.MixedSigmas(
@@ -218,7 +204,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testConstrainedAll() throws Throwable {
+    void testConstrainedAll() {
         Vector3 feasible = new Vector3(0.0, 0.0, 0.0);
         Vector3 infeasible = new Vector3(1.0, 1.0, 1.0);
 
@@ -235,7 +221,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testConstrainedInformationFromA() throws Throwable {
+    void testConstrainedInformationFromA() {
         // Use one constrained row and one finite-precision row.
         Vector2 sigmas = new Vector2(0.0, 2.0);
         shared_ptr<Constrained> model = Constrained.MixedSigmas(new Vector(sigmas));
@@ -267,30 +253,26 @@ public class NoiseModelTest {
         static Matrix Rd;
         static shared_ptr<Diagonal> diagonal;
         static {
-            try {
-                Ab = new Matrix(new double[][] {
-                        { -1., 0., 1., 0., 0., 0., -0.2 },
-                        { 0., -1., 0., 1., 0., 0., 0.3 },
-                        { 1., 0., 0., 0., -1., 0., 0.2 },
-                        { 0., 1., 0., 0., 0., -1., -0.1 } });
-                sigmas = new Vector(new double[] { 0.2, 0.2, 0.1, 0.1 });
+            Ab = new Matrix(new double[][] {
+                    { -1., 0., 1., 0., 0., 0., -0.2 },
+                    { 0., -1., 0., 1., 0., 0., 0.3 },
+                    { 1., 0., 0., 0., -1., 0., 0.2 },
+                    { 0., 1., 0., 0., 0., -1., -0.1 } });
+            sigmas = new Vector(new double[] { 0.2, 0.2, 0.1, 0.1 });
 
-                // the matrix AB yields the following factorized version:
-                Rd = new Matrix(new double[][] {
-                        { 11.1803, 0.0, -2.23607, 0.0, -8.94427, 0.0, 2.23607 },
-                        { 0.0, 11.1803, 0.0, -2.23607, 0.0, -8.94427, -1.56525 },
-                        { 0.0, 0.0, 4.47214, 0.0, -4.47214, 0.0, 0.0 },
-                        { 0.0, 0.0, 0.0, 4.47214, 0.0, -4.47214, 0.894427 } });
+            // the matrix AB yields the following factorized version:
+            Rd = new Matrix(new double[][] {
+                    { 11.1803, 0.0, -2.23607, 0.0, -8.94427, 0.0, 2.23607 },
+                    { 0.0, 11.1803, 0.0, -2.23607, 0.0, -8.94427, -1.56525 },
+                    { 0.0, 0.0, 4.47214, 0.0, -4.47214, 0.0, 0.0 },
+                    { 0.0, 0.0, 0.0, 4.47214, 0.0, -4.47214, 0.894427 } });
 
-                diagonal = Diagonal.Sigmas(sigmas);
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
+            diagonal = Diagonal.Sigmas(sigmas);
         }
     }
 
     @Test
-    void testQR() throws Throwable {
+    void testQR() {
         Matrix Ab1 = exampleQR.Ab;
         // make a copy. otherwise overwritten !
         Matrix Ab2 = exampleQR.Ab.times(1.0);
@@ -320,7 +302,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testOverdeterminedQR() throws Throwable {
+    void testOverdeterminedQR() {
         Matrix Ab1 = new Matrix(new double[][] {
                 { 0, 1, 0, 0 },
                 { 0, 0, 1, 0 },
@@ -376,7 +358,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testMixedQR() throws Throwable {
+    void testMixedQR() {
         // Call Constrained version, with first and third row treated as constraints
         // Naming the 6 variables u,v,w,x,y,z, we have
         // u = -z
@@ -409,7 +391,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testMixedQR2() throws Throwable {
+    void testMixedQR2() {
         // Let's have three variables x,y,z, but x=z and y=z
         // Hence, all non-constraints are really measurements on z
         Matrix Ab = new Matrix(new double[][] {
@@ -451,7 +433,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testFullyConstrained() throws Throwable {
+    void testFullyConstrained() {
         Matrix Ab = new Matrix(new double[][] {
                 { 1, 0, 0, 0, 0, 1, 2 }, // u+z = 2
                 { 0, 0, 1, 1, 0, 0, 4 }, // w+x = 4
@@ -473,7 +455,7 @@ public class NoiseModelTest {
 
     // This matches constraint_eliminate2 in testJacobianFactor
     @Test
-    void testQRNan() throws Throwable {
+    void testQRNan() {
         shared_ptr<? extends Diagonal> constrained = Constrained.All(2);
         Matrix Ab = new Matrix(new double[][] {
                 { 2, 4, 2, 4, 6 },
@@ -492,7 +474,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testSmartSqrtInformation() throws Throwable {
+    void testSmartSqrtInformation() {
         boolean smart = true;
         shared_ptr<? extends Gaussian> expected = Unit.Create(3);
         shared_ptr<Gaussian> actual = Gaussian.SqrtInformation(Matrix.I_3x3(), smart);
@@ -500,7 +482,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testSmartSqrtInformation2() throws Throwable {
+    void testSmartSqrtInformation2() {
         boolean smart = true;
         shared_ptr<? extends Gaussian> expected = Isotropic.Sigma(3, 2, true);
         shared_ptr<Gaussian> actual = Gaussian.SqrtInformation(Matrix.I_3x3().times(0.5), smart);
@@ -508,7 +490,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testSmartInformation() throws Throwable {
+    void testSmartInformation() {
         boolean smart = true;
         shared_ptr<? extends Gaussian> expected = Isotropic.Variance(3, 2, true);
         Matrix M = Matrix.I_3x3().times(0.5);
@@ -519,7 +501,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testSmartCovariance() throws Throwable {
+    void testSmartCovariance() {
         boolean smart = true;
         shared_ptr<? extends Gaussian> expected = Unit.Create(3);
         shared_ptr<Gaussian> actual = Gaussian.Covariance(Matrix.I_3x3(), smart);
@@ -527,7 +509,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testScalarOrVector() throws Throwable {
+    void testScalarOrVector() {
         boolean smart = true;
         shared_ptr<? extends Gaussian> expected = Unit.Create(3);
         shared_ptr<Gaussian> actual = Gaussian.Covariance(Matrix.I_3x3(), smart);
@@ -535,7 +517,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testWhitenInPlace() throws Throwable {
+    void testWhitenInPlace() {
         Vector3 sigmas = new Vector3(0.1, 0.1, 0.1);
         shared_ptr<Diagonal> model = Diagonal.Sigmas(sigmas);
         Matrix A = Matrix.I_3x3();
@@ -545,7 +527,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testInPlaceVectorOperations() throws Throwable {
+    void testInPlaceVectorOperations() {
         shared_ptr<Gaussian> gaussian = Gaussian.SqrtInformation(R, false);
         Vector3 v = new Vector3(5.0, 10.0, 15.0);
         Vector expected = gaussian.get().unwhiten(new Vector(v));
@@ -604,7 +586,7 @@ public class NoiseModelTest {
      */
 
     @Test
-    void testrobustFunctionFair() throws Throwable {
+    void testrobustFunctionFair() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -624,7 +606,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionHuber() throws Throwable {
+    void testrobustFunctionHuber() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -644,7 +626,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionCauchy() throws Throwable {
+    void testrobustFunctionCauchy() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -664,7 +646,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionAsymmetricCauchy() throws Throwable {
+    void testrobustFunctionAsymmetricCauchy() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -684,7 +666,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionGemanMcClure() throws Throwable {
+    void testrobustFunctionGemanMcClure() {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -703,7 +685,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionTLS() throws Throwable {
+    void testrobustFunctionTLS() {
         final double k = 4.0;
         final double error1 = 0.5;
         final double error2 = 10.0;
@@ -722,7 +704,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionWelsch() throws Throwable {
+    void testrobustFunctionWelsch() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -742,7 +724,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionTukey() throws Throwable {
+    void testrobustFunctionTukey() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -762,7 +744,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionAsymmetricTukey() throws Throwable {
+    void testrobustFunctionAsymmetricTukey() {
         final double k = 5.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -782,7 +764,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionDCS() throws Throwable {
+    void testrobustFunctionDCS() {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 10.0;
@@ -797,7 +779,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustFunctionL2WithDeadZone() throws Throwable {
+    void testrobustFunctionL2WithDeadZone() {
         final double k = 1.0;
         final double e0 = -10.0;
         final double e1 = -1.01;
@@ -823,7 +805,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseHuber() throws Throwable {
+    void testrobustNoiseHuber() {
         final double k = 10.0;
         final double error1 = 1.0;
         final double error2 = 100.0;
@@ -844,7 +826,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseGemanMcClure() throws Throwable {
+    void testrobustNoiseGemanMcClure() {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 100.0;
@@ -876,7 +858,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseTLS() throws Throwable {
+    void testrobustNoiseTLS() {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 100.0;
@@ -904,7 +886,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseDCS() throws Throwable {
+    void testrobustNoiseDCS() {
         final double k = 1.0;
         final double error1 = 1.0;
         final double error2 = 100.0;
@@ -931,7 +913,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testrobustNoiseL2WithDeadZone() throws Throwable {
+    void testrobustNoiseL2WithDeadZone() {
         double dead_zone_size = 1.0;
         shared_ptr<Robust> robust = Robust.Create(
                 L2WithDeadZone.Create(dead_zone_size),
@@ -946,7 +928,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testlossFunctionAtZero() throws Throwable {
+    void testlossFunctionAtZero() {
         final double k = 5.0;
         shared_ptr<Fair> fair = Fair.Create(k);
         assertEquals(fair.get().loss(0), 0, 1e-8);
@@ -980,7 +962,7 @@ public class NoiseModelTest {
         assertEquals(assy_tukey.get().weight(0), 1, 1e-8);
     }
 
-    static void TEST_GAUSSIAN(shared_ptr<Gaussian> gaussian) throws Throwable {
+    static void TEST_GAUSSIAN(shared_ptr<Gaussian> gaussian) {
         Matrix R = new Matrix(new double[][] {
                 { 6, 5, 4 },
                 { 0, 3, 2 },
@@ -1005,7 +987,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testNonDiagonalGaussian() throws Throwable {
+    void testNonDiagonalGaussian() {
         Matrix R = new Matrix(new double[][] {
                 { 6, 5, 4 },
                 { 0, 3, 2 },
@@ -1031,7 +1013,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testNegLogNormalizationConstant1D() throws Throwable {
+    void testNegLogNormalizationConstant1D() {
         // Very simple 1D noise model, which we can compute by hand.
         double sigma = 0.1;
         // For expected values, we compute -log(1/sqrt(|2πΣ|)) by hand.
@@ -1068,7 +1050,7 @@ public class NoiseModelTest {
     }
 
     @Test
-    void testNegLogNormalizationConstant3D() throws Throwable {
+    void testNegLogNormalizationConstant3D() {
         // Simple 3D noise model, which we can compute by hand.
         double sigma = 0.1;
         int n = 3;

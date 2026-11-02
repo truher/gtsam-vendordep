@@ -13,9 +13,8 @@ import gtsam.noiseModel.Isotropic;
  */
 public class BetweenFactorTest {
 
-
     @Test
-    void testRot3() throws Throwable {
+    void testRot3() {
         Rot3 R1 = Rot3.Rodrigues(0.1, 0.2, 0.3);
         Rot3 R2 = Rot3.Rodrigues(0.4, 0.5, 0.6);
         Rot3 noise = new Rot3();
@@ -46,7 +45,7 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testScalar() throws Throwable {
+    void testScalar() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(1, 1, true);
         double measured = 0.0;
         shared_ptr<BetweenFactorDouble> factor = BetweenFactorDouble.newBetweenFactorDouble(
@@ -56,7 +55,7 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testVector3() throws Throwable {
+    void testVector3() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Vector3 measured = new Vector3(1, 2, 3);
         shared_ptr<BetweenFactorVector3> factor = BetweenFactorVector3.newBetweenFactorVector3(
@@ -68,7 +67,7 @@ public class BetweenFactorTest {
 
     /** Note this throws in C++ if the sizes are wrong, so be careful. */
     @Test
-    void testDynamicSizeVector() throws Throwable {
+    void testDynamicSizeVector() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(5, 1.0, true);
         Vector measured = new Vector(new double[] { 1, 2, 3, 4, 5 });
         shared_ptr<BetweenFactorVector> factor = BetweenFactorVector.newBetweenFactorVector(
@@ -79,7 +78,7 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testPoint3() throws Throwable {
+    void testPoint3() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Point3 measured = new Point3(1, 2, 3);
         shared_ptr<BetweenFactorPoint3> factor = BetweenFactorPoint3.newBetweenFactorPoint3(//
@@ -90,7 +89,7 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testRot3Again() throws Throwable {
+    void testRot3Again() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(3, 1.0, true);
         Rot3 measured = Rot3.Ry(Math.PI / 2);
         shared_ptr<BetweenFactorRot3> factor = BetweenFactorRot3.newBetweenFactorRot3(
@@ -101,7 +100,7 @@ public class BetweenFactorTest {
     }
 
     @Test
-    void testPose3() throws Throwable {
+    void testPose3() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(6, 1.0, true);
         Pose3 measured = new Pose3(new Rot3(), new Point3(1, 2, 3));
         shared_ptr<BetweenFactorPose3> factor = BetweenFactorPose3.newBetweenFactorPose3(

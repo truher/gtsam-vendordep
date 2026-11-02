@@ -34,165 +34,169 @@ public class Testable {
         Testable_assert_equal_Vector6(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector9(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
-    public static boolean assert_equal(Cal3DS2 expected, Cal3DS2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Cal3DS2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Cal3DS2 expected, Cal3DS2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Cal3DS2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Cal3DS2 expected, Cal3DS2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Cal3DS2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Cal3DS2 expected, Cal3DS2 actual) {
+        return (boolean) FF.Testable_assert_equal_Cal3DS2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(double expected, double actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Double.h.invokeExact(expected, actual, tol);
+    public static boolean assert_equal(double expected, double actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Double.invoke(expected, actual, tol);
     }
 
     public static boolean assert_equal(Gaussian expected, Gaussian actual, double tol)
-            throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Gaussian.h.invokeExact(expected.ptr, actual.ptr, tol);
+            {
+        return (boolean) FF.Testable_assert_equal_Gaussian.invoke(expected.ptr, actual.ptr, tol);
     }
 
     public static boolean assert_equal(Gaussian expected, Gaussian actual)
-            throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Gaussian.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+            {
+        return (boolean) FF.Testable_assert_equal_Gaussian.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Matrix expected, Matrix actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Matrix expected, Matrix actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Matrix.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Matrix expected, Matrix actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Matrix expected, Matrix actual) {
+        return (boolean) FF.Testable_assert_equal_Matrix.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Matrix2 expected, Matrix2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Matrix2 expected, Matrix2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Matrix2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Matrix2 expected, Matrix2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Matrix2 expected, Matrix2 actual) {
+        return (boolean) FF.Testable_assert_equal_Matrix2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Matrix3 expected, Matrix3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Matrix3 expected, Matrix3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Matrix3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Matrix3 expected, Matrix3 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Matrix3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Matrix3 expected, Matrix3 actual) {
+        return (boolean) FF.Testable_assert_equal_Matrix3.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Point2 expected, Point2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Point2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Point2 expected, Point2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Point2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Point2 expected, Point2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Point2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Point2 expected, Point2 actual) {
+        return (boolean) FF.Testable_assert_equal_Point2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Point3 expected, Point3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Point3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Point3 expected, Point3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Point3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Point3 expected, Point3 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Point3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Point3 expected, Point3 actual) {
+        return (boolean) FF.Testable_assert_equal_Point3.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Pose2 expected, Pose2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Pose2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Pose2 expected, Pose2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Pose2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Pose2 expected, Pose2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Pose2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Pose2 expected, Pose2 actual) {
+        return (boolean) FF.Testable_assert_equal_Pose2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Pose3 expected, Pose3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Pose3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Pose3 expected, Pose3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Pose3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Pose3 expected, Pose3 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Pose3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Pose3 expected, Pose3 actual) {
+        return (boolean) FF.Testable_assert_equal_Pose3.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Rot2 expected, Rot2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Rot2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Rot2 expected, Rot2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Rot2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Rot2 expected, Rot2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Rot2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Rot2 expected, Rot2 actual) {
+        return (boolean) FF.Testable_assert_equal_Rot2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Rot3 expected, Rot3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Rot3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Rot3 expected, Rot3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Rot3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Rot3 expected, Rot3 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Rot3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Rot3 expected, Rot3 actual) {
+        return (boolean) FF.Testable_assert_equal_Rot3.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Unit3 expected, Unit3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Unit3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Unit3 expected, Unit3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Unit3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector expected, Vector actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector expected, Vector actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector expected, Vector actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector expected, Vector actual) {
+        return (boolean) FF.Testable_assert_equal_Vector.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector1 expected, Vector1 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector1.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector1 expected, Vector1 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector1.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector1 expected, Vector1 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector1.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector1 expected, Vector1 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector1.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector2 expected, Vector2 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector2.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector2 expected, Vector2 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector2.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector2 expected, Vector2 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector2.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector2 expected, Vector2 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector2.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector3 expected, Vector3 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector3.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector3 expected, Vector3 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector3.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector3 expected, Vector3 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector3.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector3 expected, Vector3 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector3.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector4 expected, Vector4 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector4.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector4 expected, Vector4 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector4.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector4 expected, Vector4 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector4.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector4 expected, Vector4 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector4.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector6 expected, Vector6 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector6.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector6 expected, Vector6 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector6.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector6 expected, Vector6 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector6.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector6 expected, Vector6 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector6.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
-    public static boolean assert_equal(Vector9 expected, Vector9 actual, double tol) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector9.h.invokeExact(expected.ptr, actual.ptr, tol);
+    public static boolean assert_equal(Vector9 expected, Vector9 actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector9.invoke(expected.ptr, actual.ptr, tol);
     }
 
-    public static boolean assert_equal(Vector9 expected, Vector9 actual) throws Throwable {
-        return (boolean) FF.Testable_assert_equal_Vector9.h.invokeExact(expected.ptr, actual.ptr, 1e-9);
+    public static boolean assert_equal(Vector9 expected, Vector9 actual) {
+        return (boolean) FF.Testable_assert_equal_Vector9.invoke(expected.ptr, actual.ptr, 1e-9);
     }
 
 }

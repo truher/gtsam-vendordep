@@ -65,15 +65,19 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         Pose3_Create(ADDRESS, ADDRESS, ADDRESS),
         Pose3_CreateH(ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
     @Override
-    public Vector6 dxZero() throws Throwable {
+    public Vector6 dxZero() {
         return new Vector6(0, 0, 0, 0, 0, 0);
     }
 
@@ -81,38 +85,38 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
         super(p, FF.Pose3_delete.h);
     }
 
-    public Pose3() throws Throwable {
+    public Pose3() {
         // TODO: avoid these
         this(new Rot3(), new Point3(0, 0, 0));
     }
 
     /** Copies the arguments. */
-    public Pose3(Rot3 r, Point3 t) throws Throwable {
-        this((MemorySegment) FF.Pose3.h.invokeExact(r.ptr, t.ptr));
+    public Pose3(Rot3 r, Point3 t) {
+        this((MemorySegment) FF.Pose3.invoke(r.ptr, t.ptr));
     }
 
-    public Pose3(Pose2 p) throws Throwable {
-        this((MemorySegment) FF.Pose3_Pose2.h.invokeExact(p.ptr));
-    }
-
-    @Override
-    public Vector6 local(Pose3 g) throws Throwable {
-        return new Vector6(
-                (MemorySegment) FF.Pose3_localCoordinates.h.invokeExact(ptr, g.ptr));
+    public Pose3(Pose2 p) {
+        this((MemorySegment) FF.Pose3_Pose2.invoke(p.ptr));
     }
 
     @Override
-    public Vector6 local(Pose3 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector6 local(Pose3 g) {
         return new Vector6(
-                (MemorySegment) FF.Pose3_localCoordinates.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+                (MemorySegment) FF.Pose3_localCoordinates.invoke(ptr, g.ptr));
     }
 
-    public Pose3 compose(Pose3 p2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_compose.h.invokeExact(ptr, p2.ptr));
+    @Override
+    public Vector6 local(Pose3 g, Matrix H1, Matrix H2) {
+        return new Vector6(
+                (MemorySegment) FF.Pose3_localCoordinates.invoke(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
-    public Pose3 compose(Pose3 p2, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_composeH.h.invokeExact(
+    public Pose3 compose(Pose3 p2) {
+        return new Pose3((MemorySegment) FF.Pose3_compose.invoke(ptr, p2.ptr));
+    }
+
+    public Pose3 compose(Pose3 p2, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_composeH.invoke(
                 ptr, p2.ptr, H1.ptr, H2.ptr));
     }
 
@@ -122,205 +126,205 @@ public class Pose3 extends ForeignObject implements LieGroup<Pose3, Vector6> {
     }
 
     @Override
-    public Pose3 retract(Vector6 v) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_retract.h.invokeExact(ptr, v.ptr()));
+    public Pose3 retract(Vector6 v) {
+        return new Pose3((MemorySegment) FF.Pose3_retract.invoke(ptr, v.ptr()));
     }
 
     @Override
-    public Pose3 retract(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_retractH.h.invokeExact(
+    public Pose3 retract(Vector6 v, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_retractH.invoke(
                 ptr, v.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Pose3 inverse() throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_inverse.h.invokeExact(ptr));
+    public Pose3 inverse() {
+        return new Pose3((MemorySegment) FF.Pose3_inverse.invoke(ptr));
     }
 
-    public Pose3 inverse(Matrix H) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_inverseH.h.invokeExact(ptr, H.ptr));
-    }
-
-    @Override
-    public Pose3 between(Pose3 other) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_between.h.invokeExact(ptr, other.ptr));
+    public Pose3 inverse(Matrix H) {
+        return new Pose3((MemorySegment) FF.Pose3_inverseH.invoke(ptr, H.ptr));
     }
 
     @Override
-    public Pose3 between(Pose3 other, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_betweenH.h.invokeExact(
+    public Pose3 between(Pose3 other) {
+        return new Pose3((MemorySegment) FF.Pose3_between.invoke(ptr, other.ptr));
+    }
+
+    @Override
+    public Pose3 between(Pose3 other, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_betweenH.invoke(
                 ptr, other.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Matrix AdjointMap() throws Throwable {
+    public Matrix AdjointMap() {
         // coerce Matrix6 to dynamic
-        return new Matrix((MemorySegment) FF.Pose3_AdjointMap.h.invokeExact(ptr));
+        return new Matrix((MemorySegment) FF.Pose3_AdjointMap.invoke(ptr));
     }
 
     @Override
-    public Pose3 expmap(Vector6 v) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_expmap.h.invokeExact(ptr, v.ptr));
+    public Pose3 expmap(Vector6 v) {
+        return new Pose3((MemorySegment) FF.Pose3_expmap.invoke(ptr, v.ptr));
     }
 
     @Override
-    public Pose3 expmap(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    public Pose3 expmap(Vector6 v, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_expmapH.invoke(ptr, v.ptr, H1.ptr, H2.ptr));
     }
 
-    public Vector6 logmap(Pose3 g) throws Throwable {
-        return new Vector6((MemorySegment) FF.Pose3_logmap.h.invokeExact(ptr, g.ptr));
+    public Vector6 logmap(Pose3 g) {
+        return new Vector6((MemorySegment) FF.Pose3_logmap.invoke(ptr, g.ptr));
     }
 
     @Override
-    public Vector6 logmap(Pose3 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector6((MemorySegment) FF.Pose3_logmapH.h.invokeExact(ptr, g.ptr, H1.ptr, H2.ptr));
+    public Vector6 logmap(Pose3 g, Matrix H1, Matrix H2) {
+        return new Vector6((MemorySegment) FF.Pose3_logmapH.invoke(ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
     /** 4x4 homogeneous matrix */
-    public Matrix matrix() throws Throwable {
-        return new Matrix((MemorySegment) FF.Pose3_matrix.h.invokeExact(ptr));
+    public Matrix matrix() {
+        return new Matrix((MemorySegment) FF.Pose3_matrix.invoke(ptr));
     }
 
-    public Unit3 bearing(Point3 p) throws Throwable {
-        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3.h.invokeExact(ptr, p.ptr));
+    public Unit3 bearing(Point3 p) {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3.invoke(ptr, p.ptr));
     }
 
-    public Unit3 bearing(Point3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    public Unit3 bearing(Point3 p, Matrix H1, Matrix H2) {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPoint3H.invoke(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public Unit3 bearing(Pose3 p) throws Throwable {
-        return new Unit3((MemorySegment) FF.Pose3_bearingPose3.h.invokeExact(ptr, p.ptr));
+    public Unit3 bearing(Pose3 p) {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPose3.invoke(ptr, p.ptr));
     }
 
-    public Unit3 bearing(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Unit3((MemorySegment) FF.Pose3_bearingPose3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    public Unit3 bearing(Pose3 p, Matrix H1, Matrix H2) {
+        return new Unit3((MemorySegment) FF.Pose3_bearingPose3H.invoke(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public double range(Point3 p) throws Throwable {
-        return (double) FF.Pose3_rangePoint3.h.invokeExact(ptr, p.ptr);
+    public double range(Point3 p) {
+        return (double) FF.Pose3_rangePoint3.invoke(ptr, p.ptr);
     }
 
-    public double range(Point3 p, Matrix H1, Matrix H2) throws Throwable {
-        return (double) FF.Pose3_rangePoint3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
+    public double range(Point3 p, Matrix H1, Matrix H2) {
+        return (double) FF.Pose3_rangePoint3H.invoke(ptr, p.ptr, H1.ptr, H2.ptr);
     }
 
-    public double range(Pose3 p) throws Throwable {
-        return (double) FF.Pose3_rangePose3.h.invokeExact(ptr, p.ptr);
+    public double range(Pose3 p) {
+        return (double) FF.Pose3_rangePose3.invoke(ptr, p.ptr);
     }
 
-    public double range(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
-        return (double) FF.Pose3_rangePose3H.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr);
+    public double range(Pose3 p, Matrix H1, Matrix H2) {
+        return (double) FF.Pose3_rangePose3H.invoke(ptr, p.ptr, H1.ptr, H2.ptr);
     }
 
-    public static boolean check_group_invariants(Pose3 a, Pose3 b) throws Throwable {
-        return (boolean) FF.Pose3_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_group_invariants(Pose3 a, Pose3 b) {
+        return (boolean) FF.Pose3_check_group_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public static boolean check_manifold_invariants(Pose3 a, Pose3 b) throws Throwable {
-        return (boolean) FF.Pose3_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_manifold_invariants(Pose3 a, Pose3 b) {
+        return (boolean) FF.Pose3_check_manifold_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public static Vector6 logmap_default(Pose3 p, Pose3 q) throws Throwable {
-        return new Vector6((MemorySegment) FF.Pose3_logmap_default.h.invokeExact(p.ptr, q.ptr));
+    public static Vector6 logmap_default(Pose3 p, Pose3 q) {
+        return new Vector6((MemorySegment) FF.Pose3_logmap_default.invoke(p.ptr, q.ptr));
     }
 
-    public static Pose3 expmap_default(Pose3 p, Vector6 d) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_expmap_default.h.invokeExact(p.ptr, d.ptr));
+    public static Pose3 expmap_default(Pose3 p, Vector6 d) {
+        return new Pose3((MemorySegment) FF.Pose3_expmap_default.invoke(p.ptr, d.ptr));
     }
 
-    public Vector6 Adjoint(Vector6 v) throws Throwable {
-        return new Vector6((MemorySegment) FF.Pose3_Adjoint.h.invokeExact(ptr, v.ptr));
+    public Vector6 Adjoint(Vector6 v) {
+        return new Vector6((MemorySegment) FF.Pose3_Adjoint.invoke(ptr, v.ptr));
     }
 
-    public Vector6 Adjoint(Vector6 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector6((MemorySegment) FF.Pose3_AdjointH.h.invokeExact(ptr, v.ptr, H1.ptr, H2.ptr));
+    public Vector6 Adjoint(Vector6 v, Matrix H1, Matrix H2) {
+        return new Vector6((MemorySegment) FF.Pose3_AdjointH.invoke(ptr, v.ptr, H1.ptr, H2.ptr));
     }
 
-    public Rot3 rotation() throws Throwable {
-        return new Rot3((MemorySegment) FF.Pose3_rotation.h.invokeExact(ptr));
+    public Rot3 rotation() {
+        return new Rot3((MemorySegment) FF.Pose3_rotation.invoke(ptr));
     }
 
-    public Rot3 rotation(Matrix H) throws Throwable {
-        return new Rot3((MemorySegment) FF.Pose3_rotationH.h.invokeExact(ptr, H.ptr));
+    public Rot3 rotation(Matrix H) {
+        return new Rot3((MemorySegment) FF.Pose3_rotationH.invoke(ptr, H.ptr));
     }
 
-    public Point3 translation() throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_translation.h.invokeExact(ptr));
+    public Point3 translation() {
+        return new Point3((MemorySegment) FF.Pose3_translation.invoke(ptr));
     }
 
-    public Point3 translation(Matrix H) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_translationH.h.invokeExact(ptr, H.ptr));
+    public Point3 translation(Matrix H) {
+        return new Point3((MemorySegment) FF.Pose3_translationH.invoke(ptr, H.ptr));
     }
 
-    public Point3 transformTo(Point3 point) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_transformTo.h.invokeExact(
+    public Point3 transformTo(Point3 point) {
+        return new Point3((MemorySegment) FF.Pose3_transformTo.invoke(
                 ptr, point.ptr));
     }
 
     public Point3 transformTo(//
             Point3 point, //
             Matrix Dpose, //
-            Matrix Dpoint) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_transformToH.h.invokeExact(
+            Matrix Dpoint) {
+        return new Point3((MemorySegment) FF.Pose3_transformToH.invoke(
                 ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
     }
 
-    public Point3 transformFrom(Point3 point) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_transformFrom.h.invokeExact(
+    public Point3 transformFrom(Point3 point) {
+        return new Point3((MemorySegment) FF.Pose3_transformFrom.invoke(
                 ptr, point.ptr));
     }
 
     public Point3 transformFrom(//
             Point3 point, //
             Matrix Dpose, //
-            Matrix Dpoint) throws Throwable {
-        return new Point3((MemorySegment) FF.Pose3_transformFromH.h.invokeExact(
+            Matrix Dpoint) {
+        return new Point3((MemorySegment) FF.Pose3_transformFromH.invoke(
                 ptr, point.ptr, Dpose.ptr, Dpoint.ptr));
     }
 
-    public static Pose3 interpolate(Pose3 X, Pose3 Y, double t) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_interpolate.h.invokeExact(X.ptr, Y.ptr, t));
+    public static Pose3 interpolate(Pose3 X, Pose3 Y, double t) {
+        return new Pose3((MemorySegment) FF.Pose3_interpolate.invoke(X.ptr, Y.ptr, t));
     }
 
     public static Pose3 interpolate(
-            Pose3 X, Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_interpolateH.h.invokeExact(X.ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
+            Pose3 X, Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateH.invoke(X.ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
     }
 
-    public Pose3 interpolateRt(Pose3 Y, double t) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_interpolateRt.h.invokeExact(ptr, Y.ptr, t));
+    public Pose3 interpolateRt(Pose3 Y, double t) {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateRt.invoke(ptr, Y.ptr, t));
     }
 
-    public Pose3 interpolateRt(Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_interpolateRtH.h.invokeExact(ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
+    public Pose3 interpolateRt(Pose3 Y, double t, Matrix H1, Matrix H2, Matrix H3) {
+        return new Pose3((MemorySegment) FF.Pose3_interpolateRtH.invoke(ptr, Y.ptr, t, H1.ptr, H2.ptr, H3.ptr));
     }
 
-    public Pose3 transformPoseFrom(Pose3 p) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_transformPoseFrom.h.invokeExact(ptr, p.ptr));
+    public Pose3 transformPoseFrom(Pose3 p) {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseFrom.invoke(ptr, p.ptr));
     }
 
-    public Pose3 transformPoseFrom(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_transformPoseFromH.h.invokeExact(
+    public Pose3 transformPoseFrom(Pose3 p, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseFromH.invoke(
                 ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public Pose3 transformPoseTo(Pose3 p) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_transformPoseTo.h.invokeExact(ptr, p.ptr));
+    public Pose3 transformPoseTo(Pose3 p) {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseTo.invoke(ptr, p.ptr));
     }
 
-    public Pose3 transformPoseTo(Pose3 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_transformPoseToH.h.invokeExact(
+    public Pose3 transformPoseTo(Pose3 p, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_transformPoseToH.invoke(
                 ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public static Pose3 Create(Rot3 R, Point3 t) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_Create.h.invokeExact(R.ptr, t.ptr));
+    public static Pose3 Create(Rot3 R, Point3 t) {
+        return new Pose3((MemorySegment) FF.Pose3_Create.invoke(R.ptr, t.ptr));
     }
 
-    public static Pose3 Create(Rot3 R, Point3 t, Matrix H1, Matrix H2) throws Throwable {
-        return new Pose3((MemorySegment) FF.Pose3_CreateH.h.invokeExact(R.ptr, t.ptr, H1.ptr, H2.ptr));
+    public static Pose3 Create(Rot3 R, Point3 t, Matrix H1, Matrix H2) {
+        return new Pose3((MemorySegment) FF.Pose3_CreateH.invoke(R.ptr, t.ptr, H1.ptr, H2.ptr));
     }
 
 }

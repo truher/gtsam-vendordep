@@ -9,7 +9,7 @@ import gtsam.noiseModel.Diagonal;
 public class PriorFactorExtraTest {
 
     @Test
-    void testMismatchedModelDimension() throws Throwable {
+    void testMismatchedModelDimension() {
         // the noise vector here has dimension 2, but pose2 has
         // dimension 3.
         assertThrows(IllegalArgumentException.class,

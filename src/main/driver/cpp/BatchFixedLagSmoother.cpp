@@ -27,7 +27,7 @@ gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_update(  //
     } catch (const gtsam::IndeterminateSystemException e) {
         std::cout << "caught IndeterminateSystemException: " << e.what()
                   << std::endl;
-        return new gtsam::FixedLagSmoother::Result();
+        return nullptr;
     }
 }
 gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
@@ -36,13 +36,14 @@ gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
     const gtsam::Values* newTheta,                                           //
     const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,              //
     const gtsam::FactorIndices* indices) {
+    // this can throw, which breaks the Java side, so catch here.
     try {
         return new gtsam::FixedLagSmoother::Result(
             p->update(*newFactors, *newTheta, *timestamps, *indices));
     } catch (const gtsam::IndeterminateSystemException e) {
         std::cout << "caught IndeterminateSystemException: " << e.what()
                   << std::endl;
-        return new gtsam::FixedLagSmoother::Result();
+        return nullptr;
     }
 }
 gtsam::Values* BatchFixedLagSmoother_calculateEstimate(

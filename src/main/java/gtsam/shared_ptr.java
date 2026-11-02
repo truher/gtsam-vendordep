@@ -24,10 +24,14 @@ public class shared_ptr<T> extends ForeignObject {
         shared_ptr_get(ADDRESS, ADDRESS),
         shared_ptr_delete(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -52,8 +56,8 @@ public class shared_ptr<T> extends ForeignObject {
      * 
      * NULLABLE
      */
-    public T get() throws Throwable {
-        MemorySegment p = (MemorySegment) FF.shared_ptr_get.h.invokeExact(ptr);
+    public T get() {
+        MemorySegment p = (MemorySegment) FF.shared_ptr_get.invoke(ptr);
         // transmute C++ nullptr to Java null.
         if (p.equals(MemorySegment.NULL))
             return null;

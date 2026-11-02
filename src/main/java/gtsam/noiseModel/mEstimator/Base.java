@@ -15,10 +15,14 @@ public class Base extends ForeignObject {
         noiseModel_mEstimator_Base_weight(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE),
         noiseModel_mEstimator_Base_loss(JAVA_DOUBLE, ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -26,12 +30,12 @@ public class Base extends ForeignObject {
         super(pointer, null);
     }
 
-    public double weight(double distance) throws Throwable {
-        return (double) FF.noiseModel_mEstimator_Base_weight.h.invokeExact(ptr, distance);
+    public double weight(double distance) {
+        return (double) FF.noiseModel_mEstimator_Base_weight.invoke(ptr, distance);
     }
 
-    public double loss(double distance) throws Throwable {
-        return (double) FF.noiseModel_mEstimator_Base_loss.h.invokeExact(ptr, distance);
+    public double loss(double distance) {
+        return (double) FF.noiseModel_mEstimator_Base_loss.invoke(ptr, distance);
     }
 
 }

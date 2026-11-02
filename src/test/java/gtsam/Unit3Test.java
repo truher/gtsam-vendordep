@@ -17,7 +17,7 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
 public class Unit3Test {
 
     @Test
-    void testpoint3() throws Throwable {
+    void testpoint3() {
         List<Point3> ps = List.of(
                 new Point3(1, 0, 0),
                 new Point3(0, 1, 0),
@@ -38,7 +38,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testRotate() throws Throwable {
+    void testRotate() {
         Rot3 R = Rot3.Yaw(0.5);
         Unit3 p = new Unit3(1, 0, 0);
         Unit3 expected = new Unit3(R.matrix().col(0));
@@ -68,7 +68,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testUnrotate() throws Throwable {
+    void testUnrotate() {
         Rot3 R = Rot3.Yaw(-Math.PI / 4.0);
         Unit3 p = new Unit3(1, 0, 0);
         Unit3 expected = new Unit3(1, 1, 0);
@@ -98,7 +98,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testDot() throws Throwable {
+    void testDot() {
         Unit3 p = new Unit3(1, 0.2, 0.3);
         Unit3 q = p.retract(new Vector2(0.5, 0));
         Unit3 r = p.retract(new Vector2(0.8, 0));
@@ -148,7 +148,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testErrorVector() throws Throwable {
+    void testErrorVector() {
         Unit3 p = new Unit3(1, 0, 0);
         Unit3 q = p.retract(new Vector2(0.5, 0));
         Unit3 r = p.retract(new Vector2(0.8, 0));
@@ -177,7 +177,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testErrorVector2() throws Throwable {
+    void testErrorVector2() {
         Unit3 p = new Unit3(0.1, -0.2, 0.8);
         Unit3 q = p.retract(new Vector2(0.2, -0.1));
         Unit3 r = p.retract(new Vector2(0.8, 0));
@@ -228,7 +228,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testDistance() throws Throwable {
+    void testDistance() {
         Unit3 p = new Unit3(1, 0, 0);
         Unit3 q = p.retract(new Vector2(0.5, 0));
         Unit3 r = p.retract(new Vector2(0.8, 0));
@@ -258,14 +258,14 @@ public class Unit3Test {
     }
 
     @Test
-    void testLocalCoordinates0() throws Throwable {
+    void testLocalCoordinates0() {
         Unit3 p = new Unit3();
         Vector2 actual = p.local(p);
         assertTrue(assert_equal(new Vector2(0, 0), actual, 1e-5));
     }
 
     @Test
-    void testlocalCoordinates() throws Throwable {
+    void testlocalCoordinates() {
         {
             Unit3 p = new Unit3();
             Unit3 q = new Unit3();
@@ -337,7 +337,7 @@ public class Unit3Test {
     }
 
     // Wrapper to make basis return a Vector6 so we can test numerical derivatives.
-    Vector6 BasisTest(Unit3 p, Matrix H) throws Throwable {
+    Vector6 BasisTest(Unit3 p, Matrix H) {
         Matrix B = p.basis(H);
         Vector6 B_vec = new Vector6(
                 B.at(0, 0), B.at(1, 0), B.at(2, 0), B.at(0, 1), B.at(1, 1), B.at(2, 1));
@@ -345,7 +345,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testbasis() throws Throwable {
+    void testbasis() {
         Unit3 p = new Unit3(0.1, -0.2, 0.9);
         Matrix expected = new Matrix(new double[][] {
                 { 0.0, -0.994169047 },
@@ -374,7 +374,7 @@ public class Unit3Test {
 
     // Check the basis derivatives of a bunch of random Unit3s.
     @Test
-    void testBasisDerivatives() throws Throwable {
+    void testBasisDerivatives() {
         int num_tests = 100;
         Random rng = new Random(42);
         for (int i = 0; i < num_tests; i++) {
@@ -390,7 +390,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testRetract() throws Throwable {
+    void testRetract() {
         {
             Unit3 p = new Unit3();
             Vector2 v = new Vector2(0.5, 0);
@@ -409,7 +409,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testJacobianRetract() throws Throwable {
+    void testJacobianRetract() {
         Matrix H = new Matrix();
         Unit3 p = new Unit3();
         ThrowingFunction<Vector2, Unit3> f = (v) -> p.retract(v);
@@ -432,7 +432,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testRetractExpmap() throws Throwable {
+    void testRetractExpmap() {
         Unit3 p = new Unit3();
         Vector2 v = new Vector2((Math.PI / 2.0), 0);
         Unit3 expected = new Unit3(new Point3(0, 0, 1));
@@ -442,7 +442,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testRandom() throws Throwable {
+    void testRandom() {
         Random rng = new Random(42);
         // Check that means are all zero at least
         Point3 expectedMean = new Point3(0, 0, 0);
@@ -456,7 +456,7 @@ public class Unit3Test {
 
     // New test that uses Unit3::Random
     @Test
-    void testLocalCoordinatesRetract() throws Throwable {
+    void testLocalCoordinatesRetract() {
         Random rng = new Random(42);
         int numIterations = 10000;
 
@@ -477,7 +477,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testFromPoint3v() throws Throwable {
+    void testFromPoint3v() {
         Matrix actualH = new Matrix();
         // arbitrary point
         Point3 point = new Point3(1, -2, 3); 
@@ -492,7 +492,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testCopyAssign() throws Throwable {
+    void testCopyAssign() {
         Unit3 p = new Unit3(1, 0.2, 0.3);
         assertTrue(assert_equal(new Vector2(0, 0), p.errorVector(p), 1e-6));
         p = new Unit3(-1, 2, 8);
@@ -500,7 +500,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testcross() throws Throwable {
+    void testcross() {
         Matrix aH1 = new Matrix();
         Matrix aH2 = new Matrix();
         ThrowingFunction2<Unit3, Unit3, Unit3> f = (pp, qq) -> Unit3.cross(pp, qq);
@@ -520,7 +520,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testMixedCrossUnit3Point3() throws Throwable {
+    void testMixedCrossUnit3Point3() {
         Matrix aH1 = new Matrix();
         Matrix aH2 = new Matrix();
 
@@ -553,7 +553,7 @@ public class Unit3Test {
     }
 
     @Test
-    void testMixedCrossPoint3Unit3() throws Throwable {
+    void testMixedCrossPoint3Unit3() {
         Matrix aH1 = new Matrix();
         Matrix aH2 = new Matrix();
 

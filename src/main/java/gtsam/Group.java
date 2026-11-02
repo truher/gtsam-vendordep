@@ -14,15 +14,15 @@ package gtsam;
  * https://en.wikipedia.org/wiki/Group_(mathematics)
  */
 public interface Group<T extends Group<T>> {
-    T compose(T h) throws Throwable;
+    T compose(T h);
 
-    T compose(T h, Matrix H1, Matrix H2) throws Throwable;
+    T compose(T h, Matrix H1, Matrix H2);
 
-    T between(T h) throws Throwable;
+    T between(T h);
 
-    T between(T h, Matrix H1, Matrix H2) throws Throwable;
+    T between(T h, Matrix H1, Matrix H2);
 
-    T inverse() throws Throwable;
+    T inverse();
 
-    T inverse(Matrix H) throws Throwable;
+    T inverse(Matrix H);
 }

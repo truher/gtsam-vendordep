@@ -21,7 +21,7 @@ public class BatchFixedLagSmootherTest {
             final NonlinearFactorGraph fullgraph,
             final Values fullinit,
             final BatchFixedLagSmoother smoother,
-            final Key key) throws Throwable {
+            final Key key) {
 
         shared_ptr<GaussianFactorGraph> linearized = fullgraph.linearize(fullinit);
         VectorValues delta = linearized.get().optimize();
@@ -34,7 +34,7 @@ public class BatchFixedLagSmootherTest {
     }
 
     @Test
-    void testExample() throws Throwable {
+    void testExample() {
         // Test the BatchFixedLagSmoother in a pure linear environment. Thus, full
         // optimization and the BatchFixedLagSmoother should be identical (even with the
         // linearized approximations at the end of the smoothing lag)
@@ -228,7 +228,7 @@ public class BatchFixedLagSmootherTest {
     }
 
     @Test
-    void testEnforceConsistency() throws Throwable {
+    void testEnforceConsistency() {
         // Verify that enforceConsistency_ actually preserves linearization points
         // for variables involved in marginal factors after marginalization.
         // Before the fix, linearValues_ was never populated, so this feature
@@ -284,7 +284,7 @@ public class BatchFixedLagSmootherTest {
     }
 
     @Test
-    void testNEES() throws Throwable {
+    void testNEES() {
         // Monte Carlo NEES evaluation comparing enforceConsistency on vs off.
         // Uses Pose2 (x, y, theta) so the problem is genuinely nonlinear --
         // the rotation makes Jacobians depend on the linearization point,
@@ -360,25 +360,21 @@ public class BatchFixedLagSmootherTest {
             Key lastKey = new Key(numSteps);
 
             // TODO: this try will not work.
-            try {
-                // enforceConsistency = true
-                Values estOn = smootherOn.calculateEstimate();
-                Marginals marginalsOn = Marginals.QR(smootherOn.getFactors(), estOn);
-                Matrix covOn = marginalsOn.marginalCovariance(lastKey);
-                Vector errOn = new Vector(groundTruth[numSteps].local(estOn.atPose2(lastKey)));
-                neesSum_on += errOn.transpose().compose(covOn.inverse()).times(errOn).at(0);
+            // enforceConsistency = true
+            Values estOn = smootherOn.calculateEstimate();
+            Marginals marginalsOn = Marginals.QR(smootherOn.getFactors(), estOn);
+            Matrix covOn = marginalsOn.marginalCovariance(lastKey);
+            Vector errOn = new Vector(groundTruth[numSteps].local(estOn.atPose2(lastKey)));
+            neesSum_on += errOn.transpose().compose(covOn.inverse()).times(errOn).at(0);
 
-                // enforceConsistency = false
-                Values estOff = smootherOff.calculateEstimate();
-                Marginals marginalsOff = Marginals.QR(smootherOff.getFactors(), estOff);
-                Matrix covOff = marginalsOff.marginalCovariance(lastKey);
-                Vector errOff = new Vector(groundTruth[numSteps].local(estOff.atPose2(lastKey)));
-                neesSum_off += errOff.transpose().compose(covOff.inverse()).times(errOff).at(0);
+            // enforceConsistency = false
+            Values estOff = smootherOff.calculateEstimate();
+            Marginals marginalsOff = Marginals.QR(smootherOff.getFactors(), estOff);
+            Matrix covOff = marginalsOff.marginalCovariance(lastKey);
+            Vector errOff = new Vector(groundTruth[numSteps].local(estOff.atPose2(lastKey)));
+            neesSum_off += errOff.transpose().compose(covOff.inverse()).times(errOff).at(0);
 
-                neesCount++;
-            } catch (Throwable t) {
-                continue;
-            }
+            neesCount++;
         }
 
         double avgNees_on = neesSum_on / neesCount;

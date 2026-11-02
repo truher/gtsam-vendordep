@@ -26,10 +26,14 @@ public abstract class Base extends ForeignObject {
         noiseModel_Base_whitenInPlace(null, ADDRESS, ADDRESS),
         noiseModel_Base_unwhitenInPlace(null, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -37,39 +41,40 @@ public abstract class Base extends ForeignObject {
         super(p, null);
     }
 
-    public boolean isUnit() throws Throwable {
-        return (boolean) FF.noiseModel_Base_isUnit.h.invokeExact(ptr);
+    public boolean isUnit() {
+        return (boolean) FF.noiseModel_Base_isUnit.invoke(ptr);
     }
 
-    public int dim() throws Throwable {
-        return (int) FF.noiseModel_Base_dim.h.invokeExact(ptr);
+    public int dim() {
+        return (int) FF.noiseModel_Base_dim.invoke(ptr);
     }
 
-    public abstract Vector sigmas() throws Throwable;
+    public abstract Vector sigmas();
 
-    public abstract Vector whiten(Vector v) throws Throwable;
+    public abstract Vector whiten(Vector v);
 
-    public abstract Matrix Whiten(Matrix H) throws Throwable;
+    public abstract Matrix Whiten(Matrix H);
 
-    public abstract Vector unwhiten(Vector v) throws Throwable;
+    public abstract Vector unwhiten(Vector v);
 
-    public double squaredMahalanobisDistance(Vector v) throws Throwable {
-        return (double) FF.noiseModel_Base_squaredMahalanobisDistance.h.invokeExact(ptr, v.ptr);
+    public double squaredMahalanobisDistance(Vector v) {
+        return (double) FF.noiseModel_Base_squaredMahalanobisDistance.invoke(ptr, v.ptr);
     }
 
-    public double loss(double d) throws Throwable {
-        return (double) FF.noiseModel_Base_loss.h.invokeExact(ptr, d);
+    public double loss(double d) {
+        return (double) FF.noiseModel_Base_loss.invoke(ptr, d);
     }
 
-    public void WhitenSystem(Matrix A, Vector b) throws Throwable {
-        FF.noiseModel_Base_WhitenSystem.h.invokeExact(ptr, A.ptr, b.ptr);
-    }
-    public void whitenInPlace(Vector v) throws Throwable {
-        FF.noiseModel_Base_whitenInPlace.h.invokeExact(ptr, v.ptr);
+    public void WhitenSystem(Matrix A, Vector b) {
+        FF.noiseModel_Base_WhitenSystem.invoke(ptr, A.ptr, b.ptr);
     }
 
-    public void unwhitenInPlace(Vector v) throws Throwable {
-        FF.noiseModel_Base_unwhitenInPlace.h.invokeExact(ptr, v.ptr);
+    public void whitenInPlace(Vector v) {
+        FF.noiseModel_Base_whitenInPlace.invoke(ptr, v.ptr);
+    }
+
+    public void unwhitenInPlace(Vector v) {
+        FF.noiseModel_Base_unwhitenInPlace.invoke(ptr, v.ptr);
     }
 
 }

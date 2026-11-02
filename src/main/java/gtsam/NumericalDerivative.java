@@ -3,17 +3,17 @@ package gtsam;
 public class NumericalDerivative {
     @FunctionalInterface
     interface ThrowingFunction<X, Y> {
-        Y apply(X t) throws Throwable;
+        Y apply(X t);
     }
 
     @FunctionalInterface
     interface ThrowingFunction2<X1, X2, Y> {
-        Y apply(X1 x1, X2 x2) throws Throwable;
+        Y apply(X1 x1, X2 x2);
     }
 
     @FunctionalInterface
     interface ThrowingFunction3<X1, X2, X3, Y> {
-        Y apply(X1 x1, X2 x2, X3 x3) throws Throwable;
+        Y apply(X1 x1, X2 x2, X3 x3);
     }
 
     public static <//
@@ -22,7 +22,7 @@ public class NumericalDerivative {
             X extends Manifold<X, Xvec>, //
             Xvec extends VectorType<Xvec>//
     > Matrix numericalDerivative11(
-            ThrowingFunction<X, Y> h, X x, double delta) throws Throwable {
+            ThrowingFunction<X, Y> h, X x, double delta) {
         Y hx = h.apply(x);
         int m = hx.dimension();
         // using Eigen here would be a pain
@@ -66,7 +66,7 @@ public class NumericalDerivative {
             X2vec extends VectorType<X2vec>//
     > Matrix numericalDerivative21(
             ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2, double delta)
-            throws Throwable {
+            {
         return NumericalDerivative.<Y, Yvec, X1, X1vec>numericalDerivative11(
                 (X1 x) -> h.apply(x, x2), x1, delta);
     }
@@ -80,7 +80,7 @@ public class NumericalDerivative {
             X2vec extends VectorType<X2vec>//
     > Matrix numericalDerivative22(
             ThrowingFunction2<X1, X2, Y> h, X1 x1, X2 x2, double delta)
-            throws Throwable {
+            {
         return NumericalDerivative.<Y, Yvec, X2, X2vec>numericalDerivative11(
                 (X2 x) -> h.apply(x1, x), x2, delta);
     }
@@ -96,7 +96,7 @@ public class NumericalDerivative {
             X3vec extends VectorType<X3vec>//
     > Matrix numericalDerivative31(
             ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
-            throws Throwable {
+            {
         return NumericalDerivative.<Y, Yvec, X1, X1vec>numericalDerivative11(
                 (X1 x) -> h.apply(x, x2, x3), x1, delta);
     }
@@ -112,7 +112,7 @@ public class NumericalDerivative {
             X3vec extends VectorType<X3vec>//
     > Matrix numericalDerivative32(
             ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
-            throws Throwable {
+            {
         return NumericalDerivative.<Y, Yvec, X2, X2vec>numericalDerivative11(
                 (X2 x) -> h.apply(x1, x, x3), x2, delta);
     }
@@ -128,7 +128,7 @@ public class NumericalDerivative {
             X3vec extends VectorType<X3vec> //
     > Matrix numericalDerivative33(
             ThrowingFunction3<X1, X2, X3, Y> h, X1 x1, X2 x2, X3 x3, double delta)
-            throws Throwable {
+            {
         return NumericalDerivative.<Y, Yvec, X3, X3vec>numericalDerivative11(
                 (X3 x) -> h.apply(x1, x2, x), x3, delta);
 

@@ -21,10 +21,14 @@ public class NonlinearFactor extends Factor {
         NonlinearFactor_print(null, ADDRESS),
         NonlinearFactor_equals(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -33,8 +37,8 @@ public class NonlinearFactor extends Factor {
         super(p);
     }
 
-    public double error(Values v) throws Throwable {
-        return (double) FF.NonlinearFactor_error.h.invokeExact(ptr, v.ptr);
+    public double error(Values v) {
+        return (double) FF.NonlinearFactor_error.invoke(ptr, v.ptr);
     }
 
     /**
@@ -42,19 +46,19 @@ public class NonlinearFactor extends Factor {
      * 
      * Returns shared_ptr<GaussianFactor>
      */
-    public shared_ptr<GaussianFactor> linearize(Values v) throws Throwable {
+    public shared_ptr<GaussianFactor> linearize(Values v) {
         return new shared_ptr<>(
-                (MemorySegment) FF.NonlinearFactor_linearize.h.invokeExact(
+                (MemorySegment) FF.NonlinearFactor_linearize.invoke(
                         ptr, v.ptr),
                 GaussianFactor::new);
     }
 
-    public void print() throws Throwable {
-        FF.NonlinearFactor_print.h.invokeExact(ptr);
+    public void print() {
+        FF.NonlinearFactor_print.invoke(ptr);
     }
 
-    public boolean equals(NonlinearFactor g) throws Throwable {
-        return (boolean) FF.NonlinearFactor_equals.h.invokeExact(ptr, g.ptr);
+    public boolean equals(NonlinearFactor g) {
+        return (boolean) FF.NonlinearFactor_equals.invoke(ptr, g.ptr);
     }
 
 }

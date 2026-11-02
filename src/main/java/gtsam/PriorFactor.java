@@ -26,10 +26,14 @@ public class PriorFactor<T> extends NoiseModelFactor {
         PriorFactorVector3(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS),
         PriorFactorCal3DS2(ADDRESS, JAVA_LONG, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -41,11 +45,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
             Key key,
             double prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 1)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorDouble.h.invokeExact(key.j, prior, model.ptr),
+                (MemorySegment) FF.PriorFactorDouble.invoke(key.j, prior, model.ptr),
                 PriorFactor::new);
     }
 
@@ -53,11 +57,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Point2>> PriorFactorPoint2(
             Key key,
             Point2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 2)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPoint2.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPoint2.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
@@ -65,11 +69,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Point3>> PriorFactorPoint3(
             Key key,
             Point3 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 3)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPoint3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPoint3.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
@@ -77,11 +81,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Pose2>> PriorFactorPose2(
             Key key,
             Pose2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 3)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPose2.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPose2.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
@@ -89,33 +93,33 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Pose3>> PriorFactorPose3(
             Key key,
             Pose3 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 6)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorPose3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorPose3.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
     public static shared_ptr<PriorFactor<Vector>> PriorFactorVector(
             Key key,
             Vector prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != prior.dimension())
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorVector.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorVector.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
     public static shared_ptr<PriorFactor<Vector3>> PriorFactorVector3(
             Key key,
             Vector3 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 3)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorVector3.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorVector3.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 
@@ -123,11 +127,11 @@ public class PriorFactor<T> extends NoiseModelFactor {
     public static shared_ptr<PriorFactor<Cal3DS2>> PriorFactorCal3DS2(
             Key key,
             Cal3DS2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model) throws Throwable {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 9)
             throw new IllegalArgumentException();
         return new shared_ptr<>(
-                (MemorySegment) FF.PriorFactorCal3DS2.h.invokeExact(key.j, prior.ptr, model.ptr),
+                (MemorySegment) FF.PriorFactorCal3DS2.invoke(key.j, prior.ptr, model.ptr),
                 PriorFactor::new);
     }
 }

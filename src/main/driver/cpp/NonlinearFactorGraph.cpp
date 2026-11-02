@@ -62,9 +62,8 @@ std::shared_ptr<gtsam::NonlinearFactor>* NonlinearFactorGraph_at(
         // "at" may throw, so catch and return nullptr anyway.
         return new std::shared_ptr<gtsam::NonlinearFactor>(g->at(i));
     } catch (const std::out_of_range& e) {
-        std::cout << "caught err: " << e.what() << std::endl;
-        // returning nullptr here is ok, noticed by java.
-        return new std::shared_ptr<gtsam::NonlinearFactor>();
+        std::cout << "caught out_of_range: " << e.what() << std::endl;
+        return new std::shared_ptr<gtsam::NonlinearFactor>(nullptr);
     }
 }
 int NonlinearFactorGraph_size(const gtsam::NonlinearFactorGraph* g) {

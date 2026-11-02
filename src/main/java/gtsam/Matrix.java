@@ -40,10 +40,14 @@ public class Matrix extends ForeignObject {
         Matrix_print(null, ADDRESS),
         Matrix_draw(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -51,35 +55,35 @@ public class Matrix extends ForeignObject {
         super(p, FF.Matrix_delete.h);
     }
 
-    public Matrix() throws Throwable {
-        this((MemorySegment) FF.Matrix.h.invokeExact());
+    public Matrix() {
+        this((MemorySegment) FF.Matrix.invoke());
     }
 
-    public static Matrix I_1x1() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_identity1.h.invokeExact());
+    public static Matrix I_1x1() {
+        return new Matrix((MemorySegment) FF.Matrix_identity1.invoke());
     }
 
-    public static Matrix I_2x2() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_identity2.h.invokeExact());
+    public static Matrix I_2x2() {
+        return new Matrix((MemorySegment) FF.Matrix_identity2.invoke());
     }
 
-    public static Matrix I_3x3() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_identity3.h.invokeExact());
+    public static Matrix I_3x3() {
+        return new Matrix((MemorySegment) FF.Matrix_identity3.invoke());
     }
 
-    public static Matrix I_4x4() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_identity4.h.invokeExact());
+    public static Matrix I_4x4() {
+        return new Matrix((MemorySegment) FF.Matrix_identity4.invoke());
     }
 
-    public Matrix(int rows, int cols) throws Throwable {
-        this((MemorySegment) FF.Matrix_withRowsCols.h.invokeExact(rows, cols));
+    public Matrix(int rows, int cols) {
+        this((MemorySegment) FF.Matrix_withRowsCols.invoke(rows, cols));
     }
 
-    public Matrix(Matrix3 m) throws Throwable {
-        this((MemorySegment) FF.Matrix_Matrix3.h.invokeExact(m.ptr));
+    public Matrix(Matrix3 m) {
+        this((MemorySegment) FF.Matrix_Matrix3.invoke(m.ptr));
     }
 
-    public Matrix(double[][] x) throws Throwable {
+    public Matrix(double[][] x) {
         int rows = x.length;
         int cols = x[0].length;
         this(rows, cols);
@@ -90,74 +94,74 @@ public class Matrix extends ForeignObject {
         }
     }
 
-    public void set(int row, int col, double v) throws Throwable {
-        FF.Matrix_set.h.invokeExact(ptr, row, col, v);
+    public void set(int row, int col, double v) {
+        FF.Matrix_set.invoke(ptr, row, col, v);
     }
 
-    public <V extends VectorType<V>> void setCol(int col, V v) throws Throwable {
+    public <V extends VectorType<V>> void setCol(int col, V v) {
         for (int row = 0; row < v.dimension(); ++row) {
             set(row, col, v.at(row));
         }
     }
 
-    public double at(int r, int c) throws Throwable {
-        return (double) FF.Matrix_at.h.invokeExact(ptr, r, c);
+    public double at(int r, int c) {
+        return (double) FF.Matrix_at.invoke(ptr, r, c);
     }
 
-    public Vector diagonal_cwiseSqrt() throws Throwable {
+    public Vector diagonal_cwiseSqrt() {
         return new Vector(
-                (MemorySegment) FF.Matrix_diagonal_cwiseSqrt.h.invokeExact(ptr));
+                (MemorySegment) FF.Matrix_diagonal_cwiseSqrt.invoke(ptr));
     }
 
-    public int rows() throws Throwable {
-        return (int) FF.Matrix_rows.h.invokeExact(ptr);
+    public int rows() {
+        return (int) FF.Matrix_rows.invoke(ptr);
     }
 
-    public int cols() throws Throwable {
-        return (int) FF.Matrix_cols.h.invokeExact(ptr);
+    public int cols() {
+        return (int) FF.Matrix_cols.invoke(ptr);
     }
 
     /** TODO: what if not square? Pseudo-inverse? */
-    public Matrix inverse() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_inverse.h.invokeExact(ptr));
+    public Matrix inverse() {
+        return new Matrix((MemorySegment) FF.Matrix_inverse.invoke(ptr));
     }
 
     /**
      * Matrix multiplication. Maybe rename this?
      * Note this type, compose arg, and return type might all be different.
      */
-    public Matrix compose(Matrix other) throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_compose.h.invokeExact(ptr, other.ptr));
+    public Matrix compose(Matrix other) {
+        return new Matrix((MemorySegment) FF.Matrix_compose.invoke(ptr, other.ptr));
     }
 
     /** Note return type may be different than this type. */
-    public Matrix transpose() throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_transpose.h.invokeExact(ptr));
+    public Matrix transpose() {
+        return new Matrix((MemorySegment) FF.Matrix_transpose.invoke(ptr));
     }
 
-    public Vector times(Vector v) throws Throwable {
-        return new Vector((MemorySegment) FF.Matrix_timesVector.h.invokeExact(ptr, v.ptr));
+    public Vector times(Vector v) {
+        return new Vector((MemorySegment) FF.Matrix_timesVector.invoke(ptr, v.ptr));
     }
 
-    public Vector3 times(Vector3 v) throws Throwable {
-        return new Vector3((MemorySegment) FF.Matrix_timesVector3.h.invokeExact(ptr, v.ptr));
+    public Vector3 times(Vector3 v) {
+        return new Vector3((MemorySegment) FF.Matrix_timesVector3.invoke(ptr, v.ptr));
     }
 
-    public Matrix times(double a) throws Throwable {
-        return new Matrix((MemorySegment) FF.Matrix_timesDouble.h.invokeExact(ptr, a));
+    public Matrix times(double a) {
+        return new Matrix((MemorySegment) FF.Matrix_timesDouble.invoke(ptr, a));
     }
 
-    public static boolean linear_dependent(Matrix A, Matrix B) throws Throwable {
-        return (boolean) FF.Matrix_linear_dependent.h.invokeExact(A.ptr, B.ptr, 1e-9);
+    public static boolean linear_dependent(Matrix A, Matrix B) {
+        return (boolean) FF.Matrix_linear_dependent.invoke(A.ptr, B.ptr, 1e-9);
     }
 
-    public static boolean linear_dependent(Matrix A, Matrix B, double tol) throws Throwable {
-        return (boolean) FF.Matrix_linear_dependent.h.invokeExact(A.ptr, B.ptr, tol);
+    public static boolean linear_dependent(Matrix A, Matrix B, double tol) {
+        return (boolean) FF.Matrix_linear_dependent.invoke(A.ptr, B.ptr, tol);
     }
 
-    public void print(String label) throws Throwable {
+    public void print(String label) {
         System.out.println(label);
-        FF.Matrix_print.h.invokeExact(ptr);
+        FF.Matrix_print.invoke(ptr);
     }
 
     /**
@@ -165,7 +169,7 @@ public class Matrix extends ForeignObject {
      * produces a sample from the multivariate normal distribution described by the
      * covariance matrix.
      */
-    public Vector draw() throws Throwable {
-        return new Vector((MemorySegment) FF.Matrix_draw.h.invokeExact(ptr));
+    public Vector draw() {
+        return new Vector((MemorySegment) FF.Matrix_draw.invoke(ptr));
     }
 }

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class ValuesTest {
 
     @Test
-    void testbasic_functions() throws Throwable {
+    void testbasic_functions() {
         Values values = new Values();
         values.insert(new Key(2), new Point3(0, 0, 0));
         values.insert(Key.X(4), new Point3(0, 0, 0));

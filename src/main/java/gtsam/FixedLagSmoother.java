@@ -29,10 +29,14 @@ public class FixedLagSmoother {
             Result_getIterations(JAVA_LONG, ADDRESS),
             Result_getError(JAVA_DOUBLE, ADDRESS);
 
-            public final MethodHandle h;
+            private final MethodHandle h;
 
-            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
                 h = Lib.ff(this, returnType, parameterTypes);
+            }
+
+            private Object invoke(Object... args) {
+                return Lib.invoke(h, args);
             }
         }
 
@@ -40,12 +44,12 @@ public class FixedLagSmoother {
             super(p, FF.Result_delete.h);
         }
 
-        public long getIterations() throws Throwable {
-            return (long) FF.Result_getIterations.h.invokeExact(ptr);
+        public long getIterations() {
+            return (long) FF.Result_getIterations.invoke(ptr);
         }
 
-        public double getError() throws Throwable {
-            return (double) FF.Result_getError.h.invokeExact(ptr);
+        public double getError() {
+            return (double) FF.Result_getError.invoke(ptr);
         }
     }
 
@@ -62,10 +66,14 @@ public class FixedLagSmoother {
             KeyTimestampMap_put(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
             KeyTimestampMap_clear(null, ADDRESS);
 
-            public final MethodHandle h;
+            private final MethodHandle h;
 
-            FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+            private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
                 h = Lib.ff(this, returnType, parameterTypes);
+            }
+
+            private Object invoke(Object... args) {
+                return Lib.invoke(h, args);
             }
         }
 
@@ -73,16 +81,16 @@ public class FixedLagSmoother {
             super(p, FF.KeyTimestampMap_delete.h);
         }
 
-        public KeyTimestampMap() throws Throwable {
-            this((MemorySegment) FF.KeyTimestampMap.h.invokeExact());
+        public KeyTimestampMap() {
+            this((MemorySegment) FF.KeyTimestampMap.invoke());
         }
 
-        public void put(Key k, double v) throws Throwable {
-            FF.KeyTimestampMap_put.h.invokeExact(ptr, k.j, v);
+        public void put(Key k, double v) {
+            FF.KeyTimestampMap_put.invoke(ptr, k.j, v);
         }
 
-        public void clear() throws Throwable {
-            FF.KeyTimestampMap_clear.h.invokeExact(ptr);
+        public void clear() {
+            FF.KeyTimestampMap_clear.invoke(ptr);
         }
     }
 }

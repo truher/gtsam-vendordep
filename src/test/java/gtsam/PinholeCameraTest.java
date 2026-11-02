@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class PinholeCameraTest {
     @Test
-    void testConstruction() throws Throwable {
+    void testConstruction() {
         Pose3 pose = new Pose3();
         Cal3DS2 cal = new Cal3DS2(100, 100, 0, 50, 50, 0, 0);
         PinholeCamera<Cal3DS2> cam = PinholeCamera.PinholeCameraCal3DS2(pose, cal);

@@ -24,6 +24,7 @@ public abstract class ForeignObject {
                 // System.out.println("Cleanup running...");
                 deleter.invokeExact(pointer);
             } catch (Throwable e) {
+                throw new RuntimeException(e);
             }
         }
     }

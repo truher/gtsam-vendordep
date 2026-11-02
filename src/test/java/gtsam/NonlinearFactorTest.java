@@ -28,7 +28,7 @@ import gtsam.noiseModel.mEstimator.Welsch;
 public class NonlinearFactorTest {
 
     @Test
-    void testWeight() throws Throwable {
+    void testWeight() {
         // create a values structure for the non linear factor graph
         Values values = new Values();
 

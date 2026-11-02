@@ -26,15 +26,15 @@ public interface Manifold<//
         V extends VectorType<V>> {
 
     /** Zero tangent vector, used by numerical differentiation. */
-    V dxZero() throws Throwable;
+    V dxZero();
 
-    int dimension() throws Throwable;
+    int dimension();
 
-    V local(T other) throws Throwable;
+    V local(T other);
 
-    V local(T g, Matrix H1, Matrix H2) throws Throwable;
+    V local(T g, Matrix H1, Matrix H2);
 
-    T retract(V v) throws Throwable;
+    T retract(V v);
 
-    T retract(V v, Matrix H1, Matrix H2) throws Throwable;
+    T retract(V v, Matrix H1, Matrix H2);
 }

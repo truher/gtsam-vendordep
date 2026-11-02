@@ -13,19 +13,11 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
  * See gtsam/geometry/tests/testRot2.cpp
  */
 public class Rot2Test {
-    static Rot2 R;
-    static Point2 P;
-    static {
-        try {
-            R = Rot2.fromAngle(0.1);
-            P = new Point2(0.2, 0.7);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    static Rot2 R = Rot2.fromAngle(0.1);
+    static Point2 P = new Point2(0.2, 0.7);
 
     @Test
-    void testconstructors_and_angle() throws Throwable {
+    void testconstructors_and_angle() {
         double c = Math.cos(0.1);
         double s = Math.sin(0.1);
         assertEquals(0.1, R.theta(), 1e-9);
@@ -36,20 +28,20 @@ public class Rot2Test {
     }
 
     @Test
-    void testunit() throws Throwable {
+    void testunit() {
         assertTrue(assert_equal(new Point2(1.0, 0.0), Rot2.fromAngle(0).unit()));
         assertTrue(assert_equal(new Point2(0.0, 1.0), Rot2.fromAngle(Math.PI / 2.0).unit()));
     }
 
     @Test
-    void testtranspose() throws Throwable {
+    void testtranspose() {
         Matrix2 expected = R.inverse().matrix();
         Matrix2 actual = R.transpose();
         assertTrue(assert_equal(expected, actual));
     }
 
     @Test
-    void testcompose() throws Throwable {
+    void testcompose() {
         assertTrue(assert_equal(Rot2.fromAngle(0.45),
                 Rot2.fromAngle(0.2).compose(Rot2.fromAngle(0.25))));
         assertTrue(assert_equal(Rot2.fromAngle(0.45),
@@ -63,7 +55,7 @@ public class Rot2Test {
     }
 
     @Test
-    void testbetween() throws Throwable {
+    void testbetween() {
         assertTrue(assert_equal(Rot2.fromAngle(0.05),
                 Rot2.fromAngle(0.2).between(Rot2.fromAngle(0.25))));
         assertTrue(assert_equal(Rot2.fromAngle(-0.05),
@@ -77,20 +69,20 @@ public class Rot2Test {
     }
 
     @Test
-    void testequals() throws Throwable {
+    void testequals() {
         assertTrue(R.equals(R));
         Rot2 zero = new Rot2();
         assertTrue(!R.equals(zero));
     }
 
     @Test
-    void testexpmap() throws Throwable {
+    void testexpmap() {
         Vector1 v = new Vector1(0);
         assertTrue(assert_equal(R.retract(v), R));
     }
 
     @Test
-    void testlogmap() throws Throwable {
+    void testlogmap() {
         Rot2 rot0 = Rot2.fromAngle(Math.PI / 2.0);
         Rot2 rot = Rot2.fromAngle(Math.PI);
         Vector1 expected = new Vector1(Math.PI / 2.0);
@@ -102,7 +94,7 @@ public class Rot2Test {
      * rotate and derivatives
      */
     @Test
-    void testrotate() throws Throwable {
+    void testrotate() {
         Matrix H1 = new Matrix();
         Matrix H2 = new Matrix();
         Point2 actual = R.rotate(P, H1, H2);
@@ -125,7 +117,7 @@ public class Rot2Test {
      * unrotate and derivatives
      */
     @Test
-    void testunrotate() throws Throwable {
+    void testunrotate() {
         ThrowingFunction2<Rot2, Point2, Point2> unrotate_ = //
                 (Rot2 R, Point2 p) -> R.unrotate(p);
         Matrix H1 = new Matrix();
@@ -146,7 +138,7 @@ public class Rot2Test {
     }
 
     @Test
-    void testrelativeBearing() throws Throwable {
+    void testrelativeBearing() {
         Point2 l1 = new Point2(1, 0);
         Point2 l2 = new Point2(1, 1);
         Matrix expectedH = new Matrix();
@@ -181,17 +173,13 @@ public class Rot2Test {
     static Rot2 T2;
 
     static {
-        try {
-            id = new Rot2();
-            T1 = new Rot2(0.1);
-            T2 = new Rot2(0.2);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
+        id = new Rot2();
+        T1 = new Rot2(0.1);
+        T2 = new Rot2(0.2);
     }
 
     @Test
-    void testInvariants() throws Throwable {
+    void testInvariants() {
         assertTrue(Rot2.check_group_invariants(id, id));
         assertTrue(Rot2.check_group_invariants(id, T1));
         assertTrue(Rot2.check_group_invariants(T2, id));

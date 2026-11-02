@@ -8,7 +8,7 @@ import gtsam.noiseModel.Isotropic;
 
 public class BetweenFactorExtraTest {
     @Test
-    void testKeys() throws Throwable {
+    void testKeys() {
         shared_ptr<Isotropic> model = Isotropic.Sigma(1, 1, true);
         double measured = 0.0;
         shared_ptr<BetweenFactorDouble> factor = BetweenFactorDouble.newBetweenFactorDouble(

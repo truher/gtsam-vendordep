@@ -14,19 +14,23 @@ public class LevenbergMarquardtParams extends ForeignObject {
         LevenbergMarquardtParams(ADDRESS),
         LevenbergMarquardtParams_delete(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
+        }
     }
+
     LevenbergMarquardtParams(MemorySegment p) {
         super(p, FF.LevenbergMarquardtParams_delete.h);
     }
-    public LevenbergMarquardtParams() throws Throwable {
-        this((MemorySegment) FF.LevenbergMarquardtParams.h.invokeExact());
+
+    public LevenbergMarquardtParams() {
+        this((MemorySegment) FF.LevenbergMarquardtParams.invoke());
     }
-
-
 
 }

@@ -15,10 +15,14 @@ public class LevenbergMarquardtOptimizer extends NonlinearOptimizer {
         LevenbergMarquardtOptimizer3(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         LevenbergMarquardtOptimizer_values(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -28,23 +32,23 @@ public class LevenbergMarquardtOptimizer extends NonlinearOptimizer {
 
     public LevenbergMarquardtOptimizer(
             NonlinearFactorGraph graph,
-            Values initialValues) throws Throwable {
-        this((MemorySegment) FF.LevenbergMarquardtOptimizer.h.invokeExact(
+            Values initialValues) {
+        this((MemorySegment) FF.LevenbergMarquardtOptimizer.invoke(
                 graph.ptr, initialValues.ptr));
     }
 
     public LevenbergMarquardtOptimizer(
             NonlinearFactorGraph graph,
             Values initialValues,
-            LevenbergMarquardtParams params) throws Throwable {
-        this((MemorySegment) FF.LevenbergMarquardtOptimizer3.h.invokeExact(
+            LevenbergMarquardtParams params) {
+        this((MemorySegment) FF.LevenbergMarquardtOptimizer3.invoke(
                 graph.ptr, initialValues.ptr, params.ptr));
     }
 
     /** Returned Values are owned. */
-    public Values values() throws Throwable {
+    public Values values() {
         return Values.owned(
-                (MemorySegment) FF.LevenbergMarquardtOptimizer_values.h.invokeExact(ptr));
+                (MemorySegment) FF.LevenbergMarquardtOptimizer_values.invoke(ptr));
     }
 
 }

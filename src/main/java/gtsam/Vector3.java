@@ -26,15 +26,19 @@ public class Vector3 extends ForeignObject
         Vector3_normalized(ADDRESS, ADDRESS),
         Vector3_cross(ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
     @Override
-    public Vector3 dxZero() throws Throwable {
+    public Vector3 dxZero() {
         return new Vector3(0, 0, 0);
     }
 
@@ -43,106 +47,101 @@ public class Vector3 extends ForeignObject
     }
 
     /** Initializes to zero. */
-    public Vector3() throws Throwable {
-        this((MemorySegment) FF.Vector3.h.invokeExact());
+    public Vector3() {
+        this((MemorySegment) FF.Vector3.invoke());
     }
 
-    public Vector3(double v0, double v1, double v2) throws Throwable {
+    public Vector3(double v0, double v1, double v2) {
         this();
         set(0, v0);
         set(1, v1);
         set(2, v2);
     }
 
-    public Vector3(Point3 p) throws Throwable {
+    public Vector3(Point3 p) {
         this(p.x(), p.y(), p.z());
     }
 
-    public Vector3(Vector v) throws Throwable {
+    public Vector3(Vector v) {
         this(v.at(0), v.at(1), v.at(2));
     }
 
     @Override
-    public int dimension() throws Throwable {
+    public int dimension() {
         return 3;
     }
 
     @Override
-    public double at(int i) throws Throwable {
-        return (double) FF.Vector3_at.h.invokeExact(ptr, i);
+    public double at(int i) {
+        return (double) FF.Vector3_at.invoke(ptr, i);
     }
 
     @Override
-    public void set(int i, double val) throws Throwable {
-        FF.Vector3_set.h.invokeExact(ptr, i, val);
+    public void set(int i, double val) {
+        FF.Vector3_set.invoke(ptr, i, val);
     }
 
     @Override
-    public Vector3 plus(Vector3 other) throws Throwable {
-        return new Vector3((MemorySegment) FF.Vector3_plus.h.invokeExact(ptr, other.ptr));
+    public Vector3 plus(Vector3 other) {
+        return new Vector3((MemorySegment) FF.Vector3_plus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector3 minus(Vector3 other) throws Throwable {
-        return new Vector3((MemorySegment) FF.Vector3_minus.h.invokeExact(ptr, other.ptr));
+    public Vector3 minus(Vector3 other) {
+        return new Vector3((MemorySegment) FF.Vector3_minus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector3 times(double a) throws Throwable {
-        return new Vector3((MemorySegment) FF.Vector3_times.h.invokeExact(ptr, a));
+    public Vector3 times(double a) {
+        return new Vector3((MemorySegment) FF.Vector3_times.invoke(ptr, a));
     }
 
     @Override
     public String toString() {
-        try {
-            StringBuilder b = new StringBuilder();
-            int rows = 3;
-            b.append("[");
-            for (int r = 0; r < rows; ++r) {
-                b.append(String.format(" %12.8f ", at(r)));
-            }
-            b.append("]\n");
-            return b.toString();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return "";
+        StringBuilder b = new StringBuilder();
+        int rows = 3;
+        b.append("[");
+        for (int r = 0; r < rows; ++r) {
+            b.append(String.format(" %12.8f ", at(r)));
         }
+        b.append("]\n");
+        return b.toString();
     }
 
     @Override
-    public Vector3 local(Vector3 other) throws Throwable {
+    public Vector3 local(Vector3 other) {
         return other.minus(this);
     }
 
     @Override
-    public Vector3 retract(Vector3 v) throws Throwable {
+    public Vector3 retract(Vector3 v) {
         return plus(v);
     }
 
-    public double norm() throws Throwable {
-        return (double) FF.Vector3_norm.h.invokeExact(ptr);
+    public double norm() {
+        return (double) FF.Vector3_norm.invoke(ptr);
     }
 
-    public double dot(Vector3 other) throws Throwable {
-        return (double) FF.Vector3_dot.h.invokeExact(ptr, other.ptr);
+    public double dot(Vector3 other) {
+        return (double) FF.Vector3_dot.invoke(ptr, other.ptr);
     }
 
-    public Vector3 normalized() throws Throwable {
-        return new Vector3((MemorySegment) FF.Vector3_normalized.h.invokeExact(ptr));
+    public Vector3 normalized() {
+        return new Vector3((MemorySegment) FF.Vector3_normalized.invoke(ptr));
     }
 
-    public Vector3 cross(Vector3 other) throws Throwable {
-        return new Vector3((MemorySegment) FF.Vector3_cross.h.invokeExact(ptr, other.ptr));
+    public Vector3 cross(Vector3 other) {
+        return new Vector3((MemorySegment) FF.Vector3_cross.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector3 local(Vector3 g, Matrix H1, Matrix H2) throws Throwable {
+    public Vector3 local(Vector3 g, Matrix H1, Matrix H2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
     }
 
     @Override
-    public Vector3 retract(Vector3 v, Matrix H1, Matrix H2) throws Throwable {
+    public Vector3 retract(Vector3 v, Matrix H1, Matrix H2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'retract'");
     }

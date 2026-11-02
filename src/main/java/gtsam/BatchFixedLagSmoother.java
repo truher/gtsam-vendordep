@@ -23,10 +23,14 @@ public class BatchFixedLagSmoother extends ForeignObject {
         BatchFixedLagSmoother_calculateEstimatePoint2(ADDRESS, ADDRESS, JAVA_LONG),
         BatchFixedLagSmoother_getFactors(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -34,53 +38,59 @@ public class BatchFixedLagSmoother extends ForeignObject {
         super(p, FF.BatchFixedLagSmoother_delete.h);
     }
 
-    public BatchFixedLagSmoother(double lag) throws Throwable {
-        this((MemorySegment) FF.BatchFixedLagSmoother.h.invokeExact(lag));
+    public BatchFixedLagSmoother(double lag) {
+        this((MemorySegment) FF.BatchFixedLagSmoother.invoke(lag));
     }
 
     public BatchFixedLagSmoother(double lag,
-            LevenbergMarquardtParams params) throws Throwable {
-        this((MemorySegment) FF.BatchFixedLagSmoother2.h.invokeExact(
+            LevenbergMarquardtParams params) {
+        this((MemorySegment) FF.BatchFixedLagSmoother2.invoke(
                 lag, params.ptr, true));
     }
 
     public BatchFixedLagSmoother(double lag,
             LevenbergMarquardtParams params,
-            boolean consistent) throws Throwable {
-        this((MemorySegment) FF.BatchFixedLagSmoother2.h.invokeExact(
+            boolean consistent) {
+        this((MemorySegment) FF.BatchFixedLagSmoother2.invoke(
                 lag, params.ptr, consistent));
     }
 
     public FixedLagSmoother.Result update(
             NonlinearFactorGraph newFactors,
             Values newTheta,
-            FixedLagSmoother.KeyTimestampMap timestamps) throws Throwable {
-        return new FixedLagSmoother.Result(
-                (MemorySegment) FF.BatchFixedLagSmoother_update.h.invokeExact(
-                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr));
+            FixedLagSmoother.KeyTimestampMap timestamps) {
+        MemorySegment p = (MemorySegment) FF.BatchFixedLagSmoother_update.invoke(
+                ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new IndeterminateSystemException();
+        }
+        return new FixedLagSmoother.Result(p);
     }
 
     public FixedLagSmoother.Result update(
             NonlinearFactorGraph newFactors,
             Values newTheta,
             FixedLagSmoother.KeyTimestampMap timestamps,
-            FactorIndices indices) throws Throwable {
-        return new FixedLagSmoother.Result(
-                (MemorySegment) FF.BatchFixedLagSmoother_updateFactorIndices.h.invokeExact(
-                        ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr, indices.ptr));
+            FactorIndices indices) {
+        MemorySegment p = (MemorySegment) FF.BatchFixedLagSmoother_updateFactorIndices.invoke(
+                ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr, indices.ptr);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new IndeterminateSystemException();
+        }
+        return new FixedLagSmoother.Result(p);
     }
 
     /** Returned Values are owned. */
-    public Values calculateEstimate() throws Throwable {
-        return Values.owned((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimate.h.invokeExact(ptr));
+    public Values calculateEstimate() {
+        return Values.owned((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimate.invoke(ptr));
     }
 
-    public Point2 calculateEstimatePoint2(Key key) throws Throwable {
-        return new Point2((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimatePoint2.h.invokeExact(ptr, key.j));
+    public Point2 calculateEstimatePoint2(Key key) {
+        return new Point2((MemorySegment) FF.BatchFixedLagSmoother_calculateEstimatePoint2.invoke(ptr, key.j));
     }
 
-    public NonlinearFactorGraph getFactors() throws Throwable {
-        return new NonlinearFactorGraph((MemorySegment) FF.BatchFixedLagSmoother_getFactors.h.invokeExact(ptr));
+    public NonlinearFactorGraph getFactors() {
+        return new NonlinearFactorGraph((MemorySegment) FF.BatchFixedLagSmoother_getFactors.invoke(ptr));
     }
 
 }

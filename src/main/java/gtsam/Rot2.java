@@ -49,10 +49,14 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         Rot2_check_manifold_invariants(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         Rot2_print(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -60,179 +64,178 @@ public class Rot2 extends ForeignObject implements LieGroup<Rot2, Vector1> {
         super(p, FF.Rot2_delete.h);
     }
 
-    public Rot2() throws Throwable {
+    public Rot2() {
         this(0);
     }
 
-    public Rot2(double theta) throws Throwable {
-        // this((MemorySegment) Rot2.invokeExact(theta));
-        this((MemorySegment) FF.Rot2.h.invokeExact(theta));
+    public Rot2(double theta) {
+        this((MemorySegment) FF.Rot2.invoke(theta));
     }
 
-    public static Rot2 fromAngle(double theta) throws Throwable {
+    public static Rot2 fromAngle(double theta) {
         return new Rot2(theta);
     }
 
-    public double theta() throws Throwable {
-        return (double) FF.Rot2_theta.h.invokeExact(ptr);
+    public double theta() {
+        return (double) FF.Rot2_theta.invoke(ptr);
     }
 
-    public double c() throws Throwable {
-        return (double) FF.Rot2_c.h.invokeExact(ptr);
+    public double c() {
+        return (double) FF.Rot2_c.invoke(ptr);
     }
 
-    public double s() throws Throwable {
-        return (double) FF.Rot2_s.h.invokeExact(ptr);
+    public double s() {
+        return (double) FF.Rot2_s.invoke(ptr);
     }
 
-    public Matrix2 matrix() throws Throwable {
-        return new Matrix2((MemorySegment) FF.Rot2_matrix.h.invokeExact(ptr));
+    public Matrix2 matrix() {
+        return new Matrix2((MemorySegment) FF.Rot2_matrix.invoke(ptr));
     }
 
     @Override
-    public Rot2 compose(Rot2 other) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_compose.h.invokeExact(ptr, other.ptr));
+    public Rot2 compose(Rot2 other) {
+        return new Rot2((MemorySegment) FF.Rot2_compose.invoke(ptr, other.ptr));
     }
 
-    public Rot2 compose(Rot2 other, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_composeH.h.invokeExact(ptr, other.ptr, H1.ptr, H2.ptr));
+    public Rot2 compose(Rot2 other, Matrix H1, Matrix H2) {
+        return new Rot2((MemorySegment) FF.Rot2_composeH.invoke(ptr, other.ptr, H1.ptr, H2.ptr));
     }
 
-    public Point2 rotate(Point2 p) throws Throwable {
-        return new Point2((MemorySegment) FF.Rot2_rotate.h.invokeExact(ptr, p.ptr));
+    public Point2 rotate(Point2 p) {
+        return new Point2((MemorySegment) FF.Rot2_rotate.invoke(ptr, p.ptr));
     }
 
-    public Point2 rotate(Point2 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Point2((MemorySegment) FF.Rot2_rotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    public Point2 rotate(Point2 p, Matrix H1, Matrix H2) {
+        return new Point2((MemorySegment) FF.Rot2_rotateH.invoke(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public Point2 unrotate(Point2 p) throws Throwable {
-        return new Point2((MemorySegment) FF.Rot2_unrotate.h.invokeExact(ptr, p.ptr));
+    public Point2 unrotate(Point2 p) {
+        return new Point2((MemorySegment) FF.Rot2_unrotate.invoke(ptr, p.ptr));
     }
 
-    public Point2 unrotate(Point2 p, Matrix H1, Matrix H2) throws Throwable {
-        return new Point2((MemorySegment) FF.Rot2_unrotateH.h.invokeExact(ptr, p.ptr, H1.ptr, H2.ptr));
+    public Point2 unrotate(Point2 p, Matrix H1, Matrix H2) {
+        return new Point2((MemorySegment) FF.Rot2_unrotateH.invoke(ptr, p.ptr, H1.ptr, H2.ptr));
     }
 
-    public static Rot2 fromCosSin(double c, double s) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_fromCosSin.h.invokeExact(c, s));
+    public static Rot2 fromCosSin(double c, double s) {
+        return new Rot2((MemorySegment) FF.Rot2_fromCosSin.invoke(c, s));
     }
 
-    public static Rot2 fromDegrees(double degrees) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_fromDegrees.h.invokeExact(degrees));
+    public static Rot2 fromDegrees(double degrees) {
+        return new Rot2((MemorySegment) FF.Rot2_fromDegrees.invoke(degrees));
     }
 
     /** Note order of arguments, y first, x second. */
-    public static Rot2 atan2(double y, double x) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_atan2.h.invokeExact(y, x));
+    public static Rot2 atan2(double y, double x) {
+        return new Rot2((MemorySegment) FF.Rot2_atan2.invoke(y, x));
     }
 
-    public static Rot2 relativeBearing(Point2 d) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_relativeBearing.h.invokeExact(d.ptr));
+    public static Rot2 relativeBearing(Point2 d) {
+        return new Rot2((MemorySegment) FF.Rot2_relativeBearing.invoke(d.ptr));
     }
 
-    public static Rot2 relativeBearing(Point2 d, Matrix H) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_relativeBearingH.h.invokeExact(d.ptr, H.ptr));
+    public static Rot2 relativeBearing(Point2 d, Matrix H) {
+        return new Rot2((MemorySegment) FF.Rot2_relativeBearingH.invoke(d.ptr, H.ptr));
     }
 
-    public Point2 unit() throws Throwable {
-        return new Point2((MemorySegment) FF.Rot2_unit.h.invokeExact(ptr));
-    }
-
-    @Override
-    public Rot2 inverse() throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_inverse.h.invokeExact(ptr));
+    public Point2 unit() {
+        return new Point2((MemorySegment) FF.Rot2_unit.invoke(ptr));
     }
 
     @Override
-    public Rot2 inverse(Matrix H) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_inverseH.h.invokeExact(ptr, H.ptr));
+    public Rot2 inverse() {
+        return new Rot2((MemorySegment) FF.Rot2_inverse.invoke(ptr));
     }
 
     @Override
-    public Matrix AdjointMap() throws Throwable {
-        return new Matrix((MemorySegment) FF.Rot2_AdjointMap.h.invokeExact(ptr));
+    public Rot2 inverse(Matrix H) {
+        return new Rot2((MemorySegment) FF.Rot2_inverseH.invoke(ptr, H.ptr));
     }
 
     @Override
-    public Rot2 expmap(Vector1 v) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_expmap.h.invokeExact(ptr, v.ptr));
+    public Matrix AdjointMap() {
+        return new Matrix((MemorySegment) FF.Rot2_AdjointMap.invoke(ptr));
     }
 
     @Override
-    public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_expmapH.h.invokeExact(ptr, v.ptr, H1.ptr,
+    public Rot2 expmap(Vector1 v) {
+        return new Rot2((MemorySegment) FF.Rot2_expmap.invoke(ptr, v.ptr));
+    }
+
+    @Override
+    public Rot2 expmap(Vector1 v, Matrix H1, Matrix H2) {
+        return new Rot2((MemorySegment) FF.Rot2_expmapH.invoke(ptr, v.ptr, H1.ptr,
                 H2.ptr));
     }
 
     @Override
-    public Vector1 logmap(Rot2 g) throws Throwable {
-        return new Vector1((MemorySegment) FF.Rot2_logmap.h.invokeExact(ptr, g.ptr));
+    public Vector1 logmap(Rot2 g) {
+        return new Vector1((MemorySegment) FF.Rot2_logmap.invoke(ptr, g.ptr));
     }
 
     @Override
-    public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector1((MemorySegment) FF.Rot2_logmapH.h.invokeExact(ptr, g.ptr,
+    public Vector1 logmap(Rot2 g, Matrix H1, Matrix H2) {
+        return new Vector1((MemorySegment) FF.Rot2_logmapH.invoke(ptr, g.ptr,
                 H1.ptr, H2.ptr));
     }
 
-    public Matrix2 transpose() throws Throwable {
-        return new Matrix2((MemorySegment) FF.Rot2_transpose.h.invokeExact(ptr));
+    public Matrix2 transpose() {
+        return new Matrix2((MemorySegment) FF.Rot2_transpose.invoke(ptr));
     }
 
     @Override
-    public Rot2 between(Rot2 g) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_between.h.invokeExact(ptr, g.ptr));
+    public Rot2 between(Rot2 g) {
+        return new Rot2((MemorySegment) FF.Rot2_between.invoke(ptr, g.ptr));
     }
 
     // @Override
-    public Rot2 between(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_betweenH.h.invokeExact(
+    public Rot2 between(Rot2 g, Matrix H1, Matrix H2) {
+        return new Rot2((MemorySegment) FF.Rot2_betweenH.invoke(
                 ptr, g.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Rot2 retract(Vector1 v) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_retract.h.invokeExact(ptr, v.ptr));
+    public Rot2 retract(Vector1 v) {
+        return new Rot2((MemorySegment) FF.Rot2_retract.invoke(ptr, v.ptr));
     }
 
     @Override
-    public Rot2 retract(Vector1 v, Matrix H1, Matrix H2) throws Throwable {
-        return new Rot2((MemorySegment) FF.Rot2_retractH.h.invokeExact(ptr, v.ptr, H1.ptr,
+    public Rot2 retract(Vector1 v, Matrix H1, Matrix H2) {
+        return new Rot2((MemorySegment) FF.Rot2_retractH.invoke(ptr, v.ptr, H1.ptr,
                 H2.ptr));
     }
 
     @Override
-    public Vector1 local(Rot2 g) throws Throwable {
-        return new Vector1((MemorySegment) FF.Rot2_localCoordinates.h.invokeExact(ptr, g.ptr));
+    public Vector1 local(Rot2 g) {
+        return new Vector1((MemorySegment) FF.Rot2_localCoordinates.invoke(ptr, g.ptr));
     }
 
     @Override
-    public Vector1 local(Rot2 g, Matrix H1, Matrix H2) throws Throwable {
-        return new Vector1((MemorySegment) FF.Rot2_localCoordinatesH.h.invokeExact(ptr,
+    public Vector1 local(Rot2 g, Matrix H1, Matrix H2) {
+        return new Vector1((MemorySegment) FF.Rot2_localCoordinatesH.invoke(ptr,
                 g.ptr, H1.ptr, H2.ptr));
     }
 
     @Override
-    public Vector1 dxZero() throws Throwable {
+    public Vector1 dxZero() {
         return new Vector1(0);
     }
 
     @Override
-    public int dimension() throws Throwable {
+    public int dimension() {
         return 1;
     }
 
-    public static boolean check_group_invariants(Rot2 a, Rot2 b) throws Throwable {
-        return (boolean) FF.Rot2_check_group_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_group_invariants(Rot2 a, Rot2 b) {
+        return (boolean) FF.Rot2_check_group_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public static boolean check_manifold_invariants(Rot2 a, Rot2 b) throws Throwable {
-        return (boolean) FF.Rot2_check_manifold_invariants.h.invokeExact(a.ptr, b.ptr);
+    public static boolean check_manifold_invariants(Rot2 a, Rot2 b) {
+        return (boolean) FF.Rot2_check_manifold_invariants.invoke(a.ptr, b.ptr);
     }
 
-    public void print(String label) throws Throwable {
+    public void print(String label) {
         System.out.println(label);
-        FF.Rot2_print.h.invokeExact(ptr);
+        FF.Rot2_print.invoke(ptr);
     }
 }

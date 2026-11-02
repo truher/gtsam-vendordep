@@ -32,10 +32,14 @@ public class Matrix3 extends ForeignObject {
         Matrix3_norm(JAVA_DOUBLE, ADDRESS),
         Matrix3_inverse(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -46,67 +50,67 @@ public class Matrix3 extends ForeignObject {
     public Matrix3( //
             double R11, double R12, double R13, //
             double R21, double R22, double R23, //
-            double R31, double R32, double R33) throws Throwable {
-        this((MemorySegment) FF.Matrix3.h.invokeExact(//
+            double R31, double R32, double R33) {
+        this((MemorySegment) FF.Matrix3.invoke(//
                 R11, R12, R13, //
                 R21, R22, R23, //
                 R31, R32, R33));
     }
 
-    public double at(int r, int c) throws Throwable {
-        return (double) FF.Matrix3_at.h.invokeExact(ptr, r, c);
+    public double at(int r, int c) {
+        return (double) FF.Matrix3_at.invoke(ptr, r, c);
     }
 
-    public Vector3 col(int c) throws Throwable {
-        return new Vector3((MemorySegment) FF.Matrix3_col.h.invokeExact(ptr, c));
+    public Vector3 col(int c) {
+        return new Vector3((MemorySegment) FF.Matrix3_col.invoke(ptr, c));
     }
 
-    public Matrix3 unaryMinus() throws Throwable {
+    public Matrix3 unaryMinus() {
         return new Matrix3(
-                (MemorySegment) FF.Matrix3_unaryMinus.h.invokeExact(ptr));
+                (MemorySegment) FF.Matrix3_unaryMinus.invoke(ptr));
     }
 
-    public static Matrix3 identity() throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_identity.h.invokeExact());
+    public static Matrix3 identity() {
+        return new Matrix3((MemorySegment) FF.Matrix3_identity.invoke());
     }
 
-    public Matrix3 compose(Matrix3 other) throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_compose.h.invokeExact(ptr, other.ptr));
+    public Matrix3 compose(Matrix3 other) {
+        return new Matrix3((MemorySegment) FF.Matrix3_compose.invoke(ptr, other.ptr));
     }
 
-    public Matrix3 plus(Matrix3 other) throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_plus.h.invokeExact(ptr, other.ptr));
+    public Matrix3 plus(Matrix3 other) {
+        return new Matrix3((MemorySegment) FF.Matrix3_plus.invoke(ptr, other.ptr));
     }
 
-    public Matrix3 minus(Matrix3 other) throws Throwable {
+    public Matrix3 minus(Matrix3 other) {
         return plus(other.times(-1));
     }
 
-    public Matrix3 times(double a) throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_times.h.invokeExact(ptr, a));
+    public Matrix3 times(double a) {
+        return new Matrix3((MemorySegment) FF.Matrix3_times.invoke(ptr, a));
     }
 
-    public Vector3 times(Vector3 v) throws Throwable {
-        return new Vector3((MemorySegment) FF.Matrix3_timesVector3.h.invokeExact(ptr, v.ptr));
+    public Vector3 times(Vector3 v) {
+        return new Vector3((MemorySegment) FF.Matrix3_timesVector3.invoke(ptr, v.ptr));
     }
 
-    public static Matrix3 skewSymmetric(Vector3 v) throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_skewSymmetric.h.invokeExact(v.ptr));
+    public static Matrix3 skewSymmetric(Vector3 v) {
+        return new Matrix3((MemorySegment) FF.Matrix3_skewSymmetric.invoke(v.ptr));
     }
 
-    public double determinant() throws Throwable {
-        return (double) FF.Matrix3_determinant.h.invokeExact(ptr);
+    public double determinant() {
+        return (double) FF.Matrix3_determinant.invoke(ptr);
     }
 
-    public Matrix3 transpose() throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_transpose.h.invokeExact(ptr));
+    public Matrix3 transpose() {
+        return new Matrix3((MemorySegment) FF.Matrix3_transpose.invoke(ptr));
     }
 
-    public double norm() throws Throwable {
-        return (double) FF.Matrix3_norm.h.invokeExact(ptr);
+    public double norm() {
+        return (double) FF.Matrix3_norm.invoke(ptr);
     }
 
-    public Matrix3 inverse() throws Throwable {
-        return new Matrix3((MemorySegment) FF.Matrix3_inverse.h.invokeExact(ptr));
+    public Matrix3 inverse() {
+        return new Matrix3((MemorySegment) FF.Matrix3_inverse.invoke(ptr));
     }
 }

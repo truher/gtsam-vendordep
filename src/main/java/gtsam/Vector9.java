@@ -22,10 +22,14 @@ public class Vector9 extends ForeignObject implements VectorType<Vector9> {
         Vector9_minus(ADDRESS, ADDRESS, ADDRESS),
         Vector9_times(ADDRESS, ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -33,14 +37,14 @@ public class Vector9 extends ForeignObject implements VectorType<Vector9> {
         super(p, FF.Vector9_delete.h);
     }
 
-    public Vector9() throws Throwable {
-        this((MemorySegment) FF.Vector9.h.invokeExact());
+    public Vector9() {
+        this((MemorySegment) FF.Vector9.invoke());
     }
 
     public Vector9(//
             double v0, double v1, double v2, //
             double v3, double v4, double v5, //
-            double v6, double v7, double v8) throws Throwable {
+            double v6, double v7, double v8) {
         this();
         set(0, v0);
         set(1, v1);
@@ -54,33 +58,33 @@ public class Vector9 extends ForeignObject implements VectorType<Vector9> {
     }
 
     @Override
-    public int dimension() throws Throwable {
+    public int dimension() {
         return 9;
     }
 
     @Override
-    public double at(int i) throws Throwable {
-        return (double) FF.Vector9_at.h.invokeExact(ptr, i);
+    public double at(int i) {
+        return (double) FF.Vector9_at.invoke(ptr, i);
     }
 
     @Override
-    public void set(int i, double val) throws Throwable {
-        FF.Vector9_set.h.invokeExact(ptr, i, val);
+    public void set(int i, double val) {
+        FF.Vector9_set.invoke(ptr, i, val);
     }
 
     @Override
-    public Vector9 plus(Vector9 other) throws Throwable {
-        return new Vector9((MemorySegment) FF.Vector9_plus.h.invokeExact(ptr, other.ptr));
+    public Vector9 plus(Vector9 other) {
+        return new Vector9((MemorySegment) FF.Vector9_plus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector9 minus(Vector9 other) throws Throwable {
-        return new Vector9((MemorySegment) FF.Vector9_minus.h.invokeExact(ptr, other.ptr));
+    public Vector9 minus(Vector9 other) {
+        return new Vector9((MemorySegment) FF.Vector9_minus.invoke(ptr, other.ptr));
     }
 
     @Override
-    public Vector9 times(double a) throws Throwable {
-        return new Vector9((MemorySegment) FF.Vector9_times.h.invokeExact(ptr, a));
+    public Vector9 times(double a) {
+        return new Vector9((MemorySegment) FF.Vector9_times.invoke(ptr, a));
     }
 
 }

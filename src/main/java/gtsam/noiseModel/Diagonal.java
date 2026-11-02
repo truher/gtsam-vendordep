@@ -30,10 +30,14 @@ public class Diagonal extends Gaussian {
         noiseModel_Diagonal_invsigmas(ADDRESS, ADDRESS),
         noiseModel_Diagonal_precisions(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -41,64 +45,64 @@ public class Diagonal extends Gaussian {
         super(p);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector sigmas) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector sigmas) {
         return Sigmas(sigmas, true);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector sigmas, boolean smart) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector sigmas, boolean smart) {
         return new shared_ptr<Diagonal>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector.h.invokeExact(sigmas.ptr, smart),
+                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector.invoke(sigmas.ptr, smart),
                 Diagonal::new);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas, boolean smart) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas, boolean smart) {
         return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector1.h.invokeExact(sigmas.ptr, smart),
+                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector1.invoke(sigmas.ptr, smart),
                 Diagonal::new);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas) {
         return Sigmas(sigmas, true);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas, boolean smart) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas, boolean smart) {
         return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector2.h.invokeExact(sigmas.ptr, smart),
+                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector2.invoke(sigmas.ptr, smart),
                 Diagonal::new);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas) {
         return Sigmas(sigmas, true);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas, boolean smart) throws Throwable {
-        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector3.h.invokeExact(sigmas.ptr, smart);
+    public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas, boolean smart) {
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector3.invoke(sigmas.ptr, smart);
         if (p.equals(MemorySegment.NULL))
             throw new IllegalArgumentException();
         return new shared_ptr<>(p, Diagonal::new);
     }
 
-    public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas) throws Throwable {
+    public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas) {
         return Sigmas(sigmas, true);
     }
 
-    public static shared_ptr<Diagonal> Variances(Vector3 variances, boolean smart) throws Throwable {
+    public static shared_ptr<Diagonal> Variances(Vector3 variances, boolean smart) {
         return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_VariancesVector3.h.invokeExact(variances.ptr, smart),
+                (MemorySegment) FF.noiseModel_Diagonal_VariancesVector3.invoke(variances.ptr, smart),
                 Diagonal::new);
     }
 
-    public static shared_ptr<Diagonal> Precisions(Vector3 precisions, boolean smart) throws Throwable {
+    public static shared_ptr<Diagonal> Precisions(Vector3 precisions, boolean smart) {
         return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_PrecisionsVector3.h.invokeExact(precisions.ptr, smart),
+                (MemorySegment) FF.noiseModel_Diagonal_PrecisionsVector3.invoke(precisions.ptr, smart),
                 Diagonal::new);
     }
 
-    public Vector invsigmas() throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Diagonal_invsigmas.h.invokeExact(ptr));
+    public Vector invsigmas() {
+        return new Vector((MemorySegment) FF.noiseModel_Diagonal_invsigmas.invoke(ptr));
     }
 
-    public Vector precisions() throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Diagonal_precisions.h.invokeExact(ptr));
+    public Vector precisions() {
+        return new Vector((MemorySegment) FF.noiseModel_Diagonal_precisions.invoke(ptr));
     }
 }

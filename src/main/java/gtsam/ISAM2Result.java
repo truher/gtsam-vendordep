@@ -14,10 +14,14 @@ public class ISAM2Result extends ForeignObject {
         ISAM2Result_delete(null, ADDRESS),
         ISAM2Result_newFactorsIndices(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -25,8 +29,8 @@ public class ISAM2Result extends ForeignObject {
         super(pointer, FF.ISAM2Result_delete.h);
     }
 
-    public FactorIndices newFactorsIndices() throws Throwable {
-        return new FactorIndices((MemorySegment) FF.ISAM2Result_newFactorsIndices.h.invokeExact(ptr));
+    public FactorIndices newFactorsIndices() {
+        return new FactorIndices((MemorySegment) FF.ISAM2Result_newFactorsIndices.invoke(ptr));
     }
 
 }

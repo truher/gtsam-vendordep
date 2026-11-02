@@ -19,30 +19,16 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
  * with Matrix6, and also the expression wrappers.
  */
 public class Pose3Test {
-    static Point3 P;
-    static Rot3 R;
-    static Point3 P2;
-    static Pose3 T;
-    static Pose3 T2;
-    static Pose3 T3;
-    static double tol;
-
-    static {
-        try {
-            P = new Point3(0.2, 0.7, -2);
-            R = Rot3.Rodrigues(0.3, 0, 0);
-            P2 = new Point3(3.5, -8.2, 4.2);
-            T = new Pose3(R, P2);
-            T2 = new Pose3(Rot3.Rodrigues(0.3, 0.2, 0.1), P2);
-            T3 = new Pose3(Rot3.Rodrigues(-90, 0, 0), new Point3(1, 2, 3));
-            tol = 1e-5;
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    static Point3 P = new Point3(0.2, 0.7, -2);
+    static Rot3 R = Rot3.Rodrigues(0.3, 0, 0);
+    static Point3 P2 = new Point3(3.5, -8.2, 4.2);
+    static Pose3 T = new Pose3(R, P2);
+    static Pose3 T2 = new Pose3(Rot3.Rodrigues(0.3, 0.2, 0.1), P2);
+    static Pose3 T3 = new Pose3(Rot3.Rodrigues(-90, 0, 0), new Point3(1, 2, 3));
+    static double tol = 1e-5;
 
     @Test
-    void testequals() throws Throwable {
+    void testequals() {
         Pose3 pose2 = T3;
         assertTrue(assert_equal(T3, pose2));
         Pose3 origin = new Pose3();
@@ -50,14 +36,14 @@ public class Pose3Test {
     }
 
     @Test
-    void testfinalructors() throws Throwable {
+    void testfinalructors() {
         Pose3 expected = new Pose3(Rot3.Rodrigues(0, 0, 3), new Point3(1, 2, 0));
         Pose2 pose2 = new Pose2(1, 2, 3);
         assertTrue(assert_equal(expected, new Pose3(pose2)));
     }
 
     @Test
-    void testretract_first_order() throws Throwable {
+    void testretract_first_order() {
         Pose3 id = new Pose3();
         Vector6 v = new Vector6(0, 0, 0, 0, 0, 0);
         v.set(0, 0.3);
@@ -72,7 +58,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testretract_expmap() throws Throwable {
+    void testretract_expmap() {
         Vector6 v = new Vector6(0, 0, 0, 0, 0, 0);
         v.set(0, 0.3);
         Pose3 pose = new Pose3().expmap(v);
@@ -81,7 +67,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testexpmap_a_full() throws Throwable {
+    void testexpmap_a_full() {
         Pose3 id = new Pose3();
         Vector6 v = new Vector6(0.3, 0, 0, 0, 0, 0);
         assertTrue(assert_equal(Pose3.expmap_default(id, v), new Pose3(R, new Point3(0, 0, 0))));
@@ -92,7 +78,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testexpmap_a_full2() throws Throwable {
+    void testexpmap_a_full2() {
         Pose3 id = new Pose3();
         Vector6 v = new Vector6(0.3, 0, 0, 0, 0, 0);
         assertTrue(assert_equal(Pose3.expmap_default(id, v), new Pose3(R, new Point3(0, 0, 0))));
@@ -103,7 +89,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testexpmap_b() throws Throwable {
+    void testexpmap_b() {
         Pose3 p1 = new Pose3(new Rot3(), new Point3(100, 0, 0));
         Pose3 p2 = p1.retract(new Vector6(0.0, 0.0, 0.1, 0.0, 0.0, 0.0));
         Pose3 expected = new Pose3(Rot3.Rodrigues(0.0, 0.0, 0.1), new Point3(100.0, 0.0, 0.0));
@@ -122,20 +108,16 @@ public class Pose3Test {
         static Pose3 expected;
 
         static {
-            try {
-                xi = new Vector6(0.0, 0.0, w, w, 0.0, 1.0);
-                expectedR = new Rot3(c, -s, 0, s, c, 0, 0, 0, 1);
-                expectedT = new Point3(0.29552, 0.0446635, 1);
-                expected = new Pose3(expectedR, expectedT);
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
+            xi = new Vector6(0.0, 0.0, w, w, 0.0, 1.0);
+            expectedR = new Rot3(c, -s, 0, s, c, 0, 0, 0, 1);
+            expectedT = new Point3(0.29552, 0.0446635, 1);
+            expected = new Pose3(expectedR, expectedT);
         }
     }
 
     // assert that T*exp(xi)*T^-1 is equal to exp(Ad_T(xi))
     @Test
-    void testAdjoint_full() throws Throwable {
+    void testAdjoint_full() {
         Pose3 expected = T.compose(new Pose3().expmap(screwPose3.xi)).compose(T.inverse());
         Vector6 xiprime = T.Adjoint(screwPose3.xi);
         assertTrue(assert_equal(expected, new Pose3().expmap(xiprime), 1e-6));
@@ -151,7 +133,7 @@ public class Pose3Test {
 
     // Check Adjoint numerical derivatives
     @Test
-    void testAdjoint_jacobians() throws Throwable {
+    void testAdjoint_jacobians() {
         Vector6 xi = new Vector6(0.1, 1.2, 2.3, 3.1, 1.4, 4.5);
 
         // Check evaluation sanity check
@@ -205,7 +187,7 @@ public class Pose3Test {
 
     // Check translation and its pushforward
     @Test
-    void testtranslation() throws Throwable {
+    void testtranslation() {
         Matrix actualH = new Matrix();
         assertTrue(assert_equal(new Point3(3.5, -8.2, 4.2), T.translation(actualH), 1e-8));
 
@@ -218,7 +200,7 @@ public class Pose3Test {
 
     // Check rotation and its pushforward
     @Test
-    void testrotation() throws Throwable {
+    void testrotation() {
         Matrix actualH = new Matrix();
         assertTrue(assert_equal(R, T.rotation(actualH), 1e-8));
 
@@ -230,7 +212,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testAdjoint_compose_full() throws Throwable {
+    void testAdjoint_compose_full() {
         // To debug derivatives of compose, assert that
         // T1*T2*exp(Adjoint(inv(T2),x) = T1*exp(x)*T2
         Pose3 T1 = T;
@@ -243,7 +225,7 @@ public class Pose3Test {
 
     // Check compose and its pushforward
     @Test
-    void testcompose() throws Throwable {
+    void testcompose() {
         Matrix actual = (T2.compose(T2)).matrix();
         Matrix expected = T2.matrix().compose(T2.matrix());
         assertTrue(assert_equal(actual, expected, 1e-8));
@@ -268,7 +250,7 @@ public class Pose3Test {
 
     // Check compose and its pushforward, another case
     @Test
-    void testcompose2() throws Throwable {
+    void testcompose2() {
         Pose3 T1 = T;
         Matrix actual = (T1.compose(T2)).matrix();
         Matrix expected = T1.matrix().compose(T2.matrix());
@@ -293,7 +275,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testinverse() throws Throwable {
+    void testinverse() {
         Matrix actualDinverse = new Matrix();
         Matrix actual = T.inverse(actualDinverse).matrix();
         Matrix expected = T.matrix().inverse();
@@ -307,7 +289,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testinverseDerivatives2() throws Throwable {
+    void testinverseDerivatives2() {
         Rot3 R = Rot3.Rodrigues(0.3, 0.4, -0.5);
         Point3 t = new Point3(3.5, -8.2, 4.2);
         Pose3 T = new Pose3(R, t);
@@ -322,18 +304,18 @@ public class Pose3Test {
     }
 
     @Test
-    void testcompose_inverse() throws Throwable {
+    void testcompose_inverse() {
         Matrix actual = (T.compose(T.inverse())).matrix();
         Matrix expected = Matrix.I_4x4();
         assertTrue(assert_equal(actual, expected, 1e-8));
     }
 
-    Point3 transformFrom_(final Pose3 pose, final Point3 point) throws Throwable {
+    Point3 transformFrom_(final Pose3 pose, final Point3 point) {
         return pose.transformFrom(point);
     }
 
     @Test
-    void testDtransform_from1_a() throws Throwable {
+    void testDtransform_from1_a() {
         Matrix actualDtransform_from1 = new Matrix();
         T.transformFrom(P, actualDtransform_from1, new Matrix());
         Matrix numerical = NumericalDerivative.<//
@@ -345,7 +327,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testDtransform_from1_b() throws Throwable {
+    void testDtransform_from1_b() {
         Pose3 origin = new Pose3();
         Matrix actualDtransform_from1 = new Matrix();
         origin.transformFrom(P, actualDtransform_from1, new Matrix());
@@ -358,7 +340,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testDtransform_from1_c() throws Throwable {
+    void testDtransform_from1_c() {
         Point3 origin = new Point3(0, 0, 0);
         Pose3 T0 = new Pose3(R, origin);
         Matrix actualDtransform_from1 = new Matrix();
@@ -372,7 +354,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testDtransform_from1_d() throws Throwable {
+    void testDtransform_from1_d() {
         Rot3 I = new Rot3();
         Point3 t0 = new Point3(100, 0, 0);
         Pose3 T0 = new Pose3(I, t0);
@@ -387,7 +369,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testDtransform_from2() throws Throwable {
+    void testDtransform_from2() {
         Matrix actualDtransform_from2 = new Matrix();
         T.transformFrom(P, new Matrix(), actualDtransform_from2);
         Matrix numerical = NumericalDerivative.<//
@@ -398,12 +380,12 @@ public class Pose3Test {
         assertTrue(assert_equal(numerical, actualDtransform_from2, 1e-8));
     }
 
-    Point3 transform_to_(final Pose3 pose, final Point3 point) throws Throwable {
+    Point3 transform_to_(final Pose3 pose, final Point3 point) {
         return pose.transformTo(point);
     }
 
     @Test
-    void testDtransform_to1() throws Throwable {
+    void testDtransform_to1() {
         Matrix computed = new Matrix();
         T.transformTo(P, computed, new Matrix());
         Matrix numerical = NumericalDerivative.<//
@@ -415,7 +397,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testDtransform_to2() throws Throwable {
+    void testDtransform_to2() {
         Matrix computed = new Matrix();
         T.transformTo(P, new Matrix(), computed);
         Matrix numerical = NumericalDerivative.<//
@@ -427,7 +409,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_to_with_derivatives() throws Throwable {
+    void testtransform_to_with_derivatives() {
         Matrix actH1 = new Matrix();
         Matrix actH2 = new Matrix();
         T.transformTo(P, actH1, actH2);
@@ -446,7 +428,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_from_with_derivatives() throws Throwable {
+    void testtransform_from_with_derivatives() {
         Matrix actH1 = new Matrix();
         Matrix actH2 = new Matrix();
         T.transformFrom(P, actH1, actH2);
@@ -465,7 +447,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_to_translate() throws Throwable {
+    void testtransform_to_translate() {
         Point3 actual = new Pose3(new Rot3(), new Point3(1, 2, 3))
                 .transformTo(new Point3(10., 20., 30.));
         Point3 expected = new Point3(9., 18., 27.);
@@ -473,7 +455,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransform_to_rotate() throws Throwable {
+    void testtransform_to_rotate() {
         Pose3 transform = new Pose3(Rot3.Rodrigues(0, 0, -1.570796), new Point3(0, 0, 0));
         Point3 actual = transform.transformTo(new Point3(2, 1, 10));
         Point3 expected = new Point3(-1, 2, 10);
@@ -481,12 +463,12 @@ public class Pose3Test {
     }
 
     // Check transformPoseFrom and its pushforward
-    Pose3 transformPoseFrom_(final Pose3 wTa, final Pose3 aTb) throws Throwable {
+    Pose3 transformPoseFrom_(final Pose3 wTa, final Pose3 aTb) {
         return wTa.transformPoseFrom(aTb);
     }
 
     @Test
-    void testtransformPoseFrom() throws Throwable {
+    void testtransformPoseFrom() {
         Matrix actual = (T2.compose(T2)).matrix();
         Matrix expected = T2.matrix().compose(T2.matrix());
         assertTrue(assert_equal(actual, expected, 1e-8));
@@ -512,25 +494,25 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransformTo() throws Throwable {
+    void testtransformTo() {
         Pose3 transform = new Pose3(Rot3.Rodrigues(0, 0, -1.570796), new Point3(2, 4, 0));
         Point3 actual = transform.transformTo(new Point3(3, 2, 10));
         Point3 expected = new Point3(2, 1, 10);
         assertTrue(assert_equal(expected, actual, 0.001));
     }
 
-    Pose3 transformPoseTo_(final Pose3 pose, final Pose3 pose2) throws Throwable {
+    Pose3 transformPoseTo_(final Pose3 pose, final Pose3 pose2) {
         return pose.transformPoseTo(pose2);
     }
 
     @Test
-    void testtransformPoseTo() throws Throwable {
+    void testtransformPoseTo() {
         Pose3 origin = T.transformPoseTo(T);
         assertTrue(assert_equal(new Pose3(), origin));
     }
 
     @Test
-    void testtransformPoseTo_with_derivatives() throws Throwable {
+    void testtransformPoseTo_with_derivatives() {
         Matrix actH1 = new Matrix();
         Matrix actH2 = new Matrix();
         Pose3 res = T.transformPoseTo(T2, actH1, actH2);
@@ -551,7 +533,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransformPoseTo_with_derivatives2() throws Throwable {
+    void testtransformPoseTo_with_derivatives2() {
         Matrix actH1 = new Matrix();
         Matrix actH2 = new Matrix();
         Pose3 res = T.transformPoseTo(T3, actH1, actH2);
@@ -570,21 +552,21 @@ public class Pose3Test {
     }
 
     @Test
-    void testtransformFrom() throws Throwable {
+    void testtransformFrom() {
         Point3 actual = T3.transformFrom(new Point3(0, 0, 0));
         Point3 expected = new Point3(1., 2., 3.);
         assertTrue(assert_equal(expected, actual));
     }
 
     @Test
-    void testtransform_roundtrip() throws Throwable {
+    void testtransform_roundtrip() {
         Point3 actual = T3.transformFrom(T3.transformTo(new Point3(12., -0.11, 7.0)));
         Point3 expected = new Point3(12., -0.11, 7.0);
         assertTrue(assert_equal(expected, actual));
     }
 
     @Test
-    void testRetract_LocalCoordinates() throws Throwable {
+    void testRetract_LocalCoordinates() {
         Vector6 d = new Vector6(1, 2, 3, 4, 5, 6);
         d = d.times(0.1);
         final Rot3 R = new Rot3().retract(new Vector3(d.at(0), d.at(1), d.at(2)));
@@ -593,7 +575,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testretract_localCoordinates() throws Throwable {
+    void testretract_localCoordinates() {
         Vector6 d12 = new Vector6(1, 2, 3, 4, 5, 6);
         d12 = d12.times(0.1);
         Pose3 t1 = T;
@@ -602,7 +584,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testexpmap_logmap() throws Throwable {
+    void testexpmap_logmap() {
         Vector6 d12 = new Vector6(0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
         Pose3 t1 = T;
         Pose3 t2 = t1.expmap(d12);
@@ -610,7 +592,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testretract_localCoordinates2() throws Throwable {
+    void testretract_localCoordinates2() {
         Pose3 t1 = T;
         Pose3 t2 = T3;
         Vector6 d12 = t1.local(t2);
@@ -622,7 +604,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testmanifold_expmap() throws Throwable {
+    void testmanifold_expmap() {
         Pose3 t1 = T;
         Pose3 t2 = T3;
         Vector6 d12 = t1.logmap(t2);
@@ -635,7 +617,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testsubgroups() throws Throwable {
+    void testsubgroups() {
         // Frank - Below only works for correct "Agrawal06iros style expmap
         // lines in canonical coordinates correspond to Abelian subgroups in SE(3)
         Vector6 d = new Vector6(0.1, 0.2, 0.3, 0.4, 0.5, 0.6);
@@ -650,7 +632,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testbetween() throws Throwable {
+    void testbetween() {
         Pose3 expected = T2.inverse().compose(T3);
         Matrix actualDBetween1 = new Matrix();
         Matrix actualDBetween2 = new Matrix();
@@ -684,29 +666,25 @@ public class Pose3Test {
     static Pose3 xl4;
 
     static {
-        try {
-            l1 = new Point3(1, 0, 0);
-            l2 = new Point3(1, 1, 0);
-            l3 = new Point3(2, 2, 0);
-            l4 = new Point3(1, 4, -4);
-            x1 = new Pose3();
-            x2 = new Pose3(Rot3.Ypr(0.0, 0.0, 0.0), l2);
-            x3 = new Pose3(Rot3.Ypr(Math.PI / 4.0, 0.0, 0.0), l2);
-            xl1 = new Pose3(Rot3.Ypr(0.0, 0.0, 0.0), new Point3(1, 0, 0));
-            xl2 = new Pose3(Rot3.Ypr(0.0, 1.0, 0.0), new Point3(1, 1, 0));
-            xl3 = new Pose3(Rot3.Ypr(1.0, 0.0, 0.0), new Point3(2, 2, 0));
-            xl4 = new Pose3(Rot3.Ypr(0.0, 0.0, 1.0), new Point3(1, 4, -4));
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
+        l1 = new Point3(1, 0, 0);
+        l2 = new Point3(1, 1, 0);
+        l3 = new Point3(2, 2, 0);
+        l4 = new Point3(1, 4, -4);
+        x1 = new Pose3();
+        x2 = new Pose3(Rot3.Ypr(0.0, 0.0, 0.0), l2);
+        x3 = new Pose3(Rot3.Ypr(Math.PI / 4.0, 0.0, 0.0), l2);
+        xl1 = new Pose3(Rot3.Ypr(0.0, 0.0, 0.0), new Point3(1, 0, 0));
+        xl2 = new Pose3(Rot3.Ypr(0.0, 1.0, 0.0), new Point3(1, 1, 0));
+        xl3 = new Pose3(Rot3.Ypr(1.0, 0.0, 0.0), new Point3(2, 2, 0));
+        xl4 = new Pose3(Rot3.Ypr(0.0, 0.0, 1.0), new Point3(1, 4, -4));
     }
 
-    Vector1 range_proxy(Pose3 pose, Point3 point) throws Throwable {
+    Vector1 range_proxy(Pose3 pose, Point3 point) {
         return new Vector1(pose.range(point));
     }
 
     @Test
-    void testrange() throws Throwable {
+    void testrange() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();
@@ -751,12 +729,12 @@ public class Pose3Test {
         assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    Vector1 range_pose_proxy(Pose3 pose, Pose3 point) throws Throwable {
+    Vector1 range_pose_proxy(Pose3 pose, Pose3 point) {
         return new Vector1(pose.range(point));
     }
 
     @Test
-    void testrange_pose() throws Throwable {
+    void testrange_pose() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();
@@ -801,12 +779,12 @@ public class Pose3Test {
         assertTrue(assert_equal(expectedH2, actualH2));
     }
 
-    Unit3 bearing_proxy(Pose3 pose, Point3 point) throws Throwable {
+    Unit3 bearing_proxy(Pose3 pose, Point3 point) {
         return pose.bearing(point);
     }
 
     @Test
-    void testBearing() throws Throwable {
+    void testBearing() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();
@@ -828,7 +806,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testBearing2() throws Throwable {
+    void testBearing2() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();
@@ -850,7 +828,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testPoseToPoseBearing() throws Throwable {
+    void testPoseToPoseBearing() {
         Matrix expectedH1 = new Matrix();
         Matrix actualH1 = new Matrix();
         Matrix expectedH2 = new Matrix();
@@ -879,24 +857,20 @@ public class Pose3Test {
         static List<Vector3> vs;
 
         static {
-            try {
-                small = List.of(new Vector3(0, 0, 0), //
-                        new Vector3(1e-5, 0, 0), new Vector3(0, 1e-5, 0), new Vector3(0, 0, 1e-5), // ,
-                        new Vector3(1e-4, 0, 0), new Vector3(0, 1e-4, 0), new Vector3(0, 0, 1e-4));
+            small = List.of(new Vector3(0, 0, 0), //
+                    new Vector3(1e-5, 0, 0), new Vector3(0, 1e-5, 0), new Vector3(0, 0, 1e-5), // ,
+                    new Vector3(1e-4, 0, 0), new Vector3(0, 1e-4, 0), new Vector3(0, 0, 1e-4));
 
-                large = List.of(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 1, 0),
-                        new Vector3(0, 0, 1), new Vector3(.1, .2, .3), new Vector3(1, -2, 3));
+            large = List.of(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 1, 0),
+                    new Vector3(0, 0, 1), new Vector3(.1, .2, .3), new Vector3(1, -2, 3));
 
-                vs = List.of(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1),
-                        new Vector3(.4, .3, .2), new Vector3(4, 5, 6), new Vector3(-10, -20, 30));
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
+            vs = List.of(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1),
+                    new Vector3(.4, .3, .2), new Vector3(4, 5, 6), new Vector3(-10, -20, 30));
         }
     }
 
     @Test
-    void testExpmapDerivatives() throws Throwable {
+    void testExpmapDerivatives() {
         for (boolean nearZero : List.of(true, false)) {
             for (final Vector3 w : pose3_test_cases.omegas.apply(nearZero)) {
                 for (Vector3 v : pose3_test_cases.vs) {
@@ -914,7 +888,7 @@ public class Pose3Test {
 
     // Check logmap for all small values, as we don't want wrapping.
     @Test
-    void testLogmap() throws Throwable {
+    void testLogmap() {
         boolean nearZero = true;
         for (final Vector3 w : pose3_test_cases.omegas.apply(nearZero)) {
             for (Vector3 v : pose3_test_cases.vs) {
@@ -926,7 +900,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testInvariants() throws Throwable {
+    void testInvariants() {
         Pose3 id = new Pose3();
 
         assertTrue(Pose3.check_group_invariants(id, id));
@@ -941,7 +915,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testinterpolate() throws Throwable {
+    void testinterpolate() {
         assertTrue(assert_equal(T2, Pose3.interpolate(T2, T3, 0.0)));
         assertTrue(assert_equal(T3, Pose3.interpolate(T2, T3, 1.0)));
 
@@ -976,12 +950,12 @@ public class Pose3Test {
         assertTrue(assert_equal(expected2, T2.interpolateRt(T3, t)));
     }
 
-    Pose3 testing_interpolate(final Pose3 t1, final Pose3 t2, Vector1 gamma) throws Throwable {
+    Pose3 testing_interpolate(final Pose3 t1, final Pose3 t2, Vector1 gamma) {
         return Pose3.interpolate(t1, t2, gamma.at(0));
     }
 
     @Test
-    void testinterpolateJacobians() throws Throwable {
+    void testinterpolateJacobians() {
         {
             Pose3 X = new Pose3();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
@@ -1130,12 +1104,12 @@ public class Pose3Test {
         }
     }
 
-    Pose3 testing_interpolate_rt(final Pose3 t1, final Pose3 t2, Vector1 gamma) throws Throwable {
+    Pose3 testing_interpolate_rt(final Pose3 t1, final Pose3 t2, Vector1 gamma) {
         return t1.interpolateRt(t2, gamma.at(0));
     }
 
     @Test
-    void testinterpolateRtJacobians() throws Throwable {
+    void testinterpolateRtJacobians() {
         {
             Pose3 X = new Pose3();
             Pose3 Y = new Pose3(Rot3.Rz(Math.PI / 2), new Point3(1, 0, 0));
@@ -1271,7 +1245,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testCreate() throws Throwable {
+    void testCreate() {
         Matrix actualH1 = new Matrix();
         Matrix actualH2 = new Matrix();
         Pose3 actual = Pose3.Create(R, P2, actualH1, actualH2);
@@ -1290,7 +1264,7 @@ public class Pose3Test {
     }
 
     @Test
-    void testExpmapChainRule() throws Throwable {
+    void testExpmapChainRule() {
         // Muliply with an arbitrary matrix and exponentiate
         Matrix M = new Matrix(new double[][] {
                 { 1, 2, 3, 4, 5, 6 }, //

@@ -13,9 +13,9 @@ public class VectorValues extends ForeignObject {
     public enum FF {
         VectorValues_delete(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
         }
     }

@@ -18,22 +18,26 @@ public class Util {
         noiseModel_matchesDimensionVector(JAVA_BOOLEAN, ADDRESS, ADDRESS),
         noiseModel_matchesDimensionMatrix(JAVA_BOOLEAN, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
-    public static boolean matchesDimension(Base model, double measured) throws Throwable {
-        return (boolean) FF.noiseModel_matchesDimensionDouble.h.invokeExact(model.ptr, measured);
+    public static boolean matchesDimension(Base model, double measured) {
+        return (boolean) FF.noiseModel_matchesDimensionDouble.invoke(model.ptr, measured);
     }
 
-    public static boolean matchesDimension(Base model, Vector measured) throws Throwable {
-        return (boolean) FF.noiseModel_matchesDimensionVector.h.invokeExact(model.ptr, measured.ptr);
+    public static boolean matchesDimension(Base model, Vector measured) {
+        return (boolean) FF.noiseModel_matchesDimensionVector.invoke(model.ptr, measured.ptr);
     }
 
-    public static boolean matchesDimension(Base model, Matrix measured) throws Throwable {
-        return (boolean) FF.noiseModel_matchesDimensionMatrix.h.invokeExact(model.ptr, measured.ptr);
+    public static boolean matchesDimension(Base model, Matrix measured) {
+        return (boolean) FF.noiseModel_matchesDimensionMatrix.invoke(model.ptr, measured.ptr);
     }
 }

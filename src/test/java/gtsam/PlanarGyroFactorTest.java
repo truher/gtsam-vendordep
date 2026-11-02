@@ -18,7 +18,7 @@ import gtsam.noiseModel.Diagonal;
 public class PlanarGyroFactorTest {
 
     @Test
-    void testfromRate() throws Throwable {
+    void testfromRate() {
         double arwSigma = 1.0;
         double omega = 0.1;
         double dt = 0.5;
@@ -45,7 +45,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testfromRotation() throws Throwable {
+    void testfromRotation() {
         double arwSigma = 1.0;
         Rot2 dr = new Rot2(0.05);
         double dt = 0.5;
@@ -64,7 +64,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testvariance() throws Throwable {
+    void testvariance() {
         double arwSigma = 1.0;
         double dt = 0.5;
         double biasInstabilitySigma = 3e-4;
@@ -75,7 +75,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testpredict() throws Throwable {
+    void testpredict() {
         double arwSigma = 1.0;
         double omega = 0.1;
         double dt = 0.5;
@@ -113,7 +113,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testcomputeError() throws Throwable {
+    void testcomputeError() {
         double arwSigma = 1.0;
         double omega = 0.1;
         double dt = 0.5;
@@ -168,7 +168,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testevaluateError() throws Throwable {
+    void testevaluateError() {
         double arwSigma = 0.1;
         double trueOmega = Math.PI / 10.0;
         double B1 = 0.3;
@@ -193,7 +193,7 @@ public class PlanarGyroFactorTest {
     }
 
     @Test
-    void testoptimize() throws Throwable {
+    void testoptimize() {
 
         NonlinearFactorGraph graph = new NonlinearFactorGraph();
 

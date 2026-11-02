@@ -14,22 +14,15 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
  */
 public class Point3Test {
 
-    static Point3 P;
-    static {
-        try {
-            P = new Point3(0.2, 0.7, -2);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    static Point3 P = new Point3(0.2, 0.7, -2);
 
     @Test
-    void testConstructor() throws Throwable {
+    void testConstructor() {
         new Point3(0, 0, 0);
     }
 
     @Test
-    void testInvariants() throws Throwable {
+    void testInvariants() {
         Point3 p1 = new Point3(1, 2, 3);
         Point3 p2 = new Point3(4, 5, 6);
         assertTrue(Point3.check_group_invariants(p1, p2));
@@ -37,7 +30,7 @@ public class Point3Test {
     }
 
     @Test
-    void testLie() throws Throwable {
+    void testLie() {
         Point3 p1 = new Point3(1, 2, 3);
         Point3 p2 = new Point3(4, 5, 6);
         Matrix H1 = new Matrix();
@@ -56,7 +49,7 @@ public class Point3Test {
     }
 
     @Test
-    void testarithmetic() throws Throwable {
+    void testarithmetic() {
         assertTrue(assert_equal(new Point3(-1, -5, -6), new Point3(1, 5, 6).times(-1)));
         assertTrue(assert_equal(new Point3(2, 5, 6), new Point3(1, 4, 5).plus(new Point3(1, 1, 1))));
         assertTrue(assert_equal(new Point3(0, 3, 4), new Point3(1, 4, 5).minus(new Point3(1, 1, 1))));
@@ -66,7 +59,7 @@ public class Point3Test {
     }
 
     @Test
-    void testdot() throws Throwable {
+    void testdot() {
         Point3 origin = new Point3(0, 0, 0);
         Point3 ones = new Point3(1, 1, 1);
         assertTrue(origin.dot(new Point3(1, 1, 0)) == 0);
@@ -122,7 +115,7 @@ public class Point3Test {
     }
 
     @Test
-    void testcross() throws Throwable {
+    void testcross() {
         Matrix aH1 = new Matrix();
         Matrix aH2 = new Matrix();
         ThrowingFunction2<Point3, Point3, Point3> f = (pp, qq) -> Point3.cross(pp, qq);
@@ -141,7 +134,7 @@ public class Point3Test {
     }
 
     @Test
-    void testcross2() throws Throwable {
+    void testcross2() {
         Point3 p = new Point3(1, 0.2, 0.3);
         Point3 q = p.plus(new Point3(0.5, 0.2, -3.0));
         Point3 r = p.plus(new Point3(0.8, 0, 0));
@@ -179,7 +172,7 @@ public class Point3Test {
     }
 
     @Test
-    void testnormalize() throws Throwable {
+    void testnormalize() {
         Matrix actualH = new Matrix();
         Point3 point = new Point3(1, -2, 3); // arbitrary point
         Point3 expected = point.times(1.0 / Math.sqrt(14.0));
@@ -191,12 +184,12 @@ public class Point3Test {
         assertTrue(assert_equal(expectedH, actualH, 1e-8));
     }
 
-    Vector1 norm_proxy(Point3 point) throws Throwable {
+    Vector1 norm_proxy(Point3 point) {
         return new Vector1(point.norm());
     }
 
     @Test
-    void testnorm() throws Throwable {
+    void testnorm() {
         Matrix actualH = new Matrix();
         Point3 point = new Point3(3, 4, 5); // arbitrary point
         double expected = Math.sqrt(50);
@@ -207,12 +200,12 @@ public class Point3Test {
         assertTrue(assert_equal(expectedH, actualH, 1e-8));
     }
 
-    Vector1 testFunc(Point3 P, Point3 Q) throws Throwable {
+    Vector1 testFunc(Point3 P, Point3 Q) {
         return new Vector1(Point3.distance3(P, Q));
     }
 
     @Test
-    void testdistance() throws Throwable {
+    void testdistance() {
         Point3 P = new Point3(1., 12.8, -32.);
         Point3 Q = new Point3(52.7, 4.9, -13.3);
         Matrix H1 = new Matrix();

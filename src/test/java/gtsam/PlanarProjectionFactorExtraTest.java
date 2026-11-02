@@ -7,7 +7,7 @@ import gtsam.noiseModel.Diagonal;
 public class PlanarProjectionFactorExtraTest {
     // exactly like testPlanarProjectionFactor.h
     @Test
-    void testCheiralityError() throws Throwable {
+    void testCheiralityError() {
         Point3 landmark = new Point3(0, 0, 0);
         Point2 measured = new Point2(200, 200);
         Pose3 offset = new Pose3(
@@ -37,7 +37,7 @@ public class PlanarProjectionFactorExtraTest {
 
     // cheirality exception troubleshooting.
     @Test
-    void testCheirality() throws Throwable {
+    void testCheirality() {
         long t_us = 0;
         // put the landmark right in the middle.
         Point3 landmark = new Point3(8, 4, 0.5);

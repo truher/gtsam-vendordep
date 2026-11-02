@@ -13,10 +13,14 @@ public class GaussNewtonOptimizer extends NonlinearOptimizer {
         GaussNewtonOptimizer(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
         GaussNewtonOptimizer_delete(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -27,8 +31,8 @@ public class GaussNewtonOptimizer extends NonlinearOptimizer {
     public GaussNewtonOptimizer(
             NonlinearFactorGraph graph,
             Values initialValues,
-            GaussNewtonParams params) throws Throwable {
-        this((MemorySegment) FF.GaussNewtonOptimizer.h.invokeExact(
+            GaussNewtonParams params) {
+        this((MemorySegment) FF.GaussNewtonOptimizer.invoke(
                 graph.ptr, initialValues.ptr, params.ptr));
     }
 }

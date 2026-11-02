@@ -13,21 +13,13 @@ import gtsam.NumericalDerivative.ThrowingFunction2;
  */
 public class Cal3SD2Test {
 
-    static Cal3DS2 K;
-    static Point2 p;
-    static {
-        try {
-            K = new Cal3DS2(
-                    500, 100, 0.1, 320, 240,
-                    1e-3, 2.0 * 1e-3, 3.0 * 1e-3, 4.0 * 1e-3);
-            p = new Point2(2, 3);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    static Cal3DS2 K = new Cal3DS2(
+            500, 100, 0.1, 320, 240,
+            1e-3, 2.0 * 1e-3, 3.0 * 1e-3, 4.0 * 1e-3);
+    static Point2 p = new Point2(2, 3);
 
     @Test
-    void testUncalibrate() throws Throwable {
+    void testUncalibrate() {
         Vector4 k = K.k();
         double r = p.x() * p.x() + p.y() * p.y();
         double g = 1 + k.at(0) * r + k.at(1) * r * r;
@@ -41,7 +33,7 @@ public class Cal3SD2Test {
     }
 
     @Test
-    void testCalibrate() throws Throwable {
+    void testCalibrate() {
         Point2 pn = new Point2(0.5, 0.5);
         Point2 pi = K.uncalibrate(pn);
         Point2 pn_hat = K.calibrate(pi);
@@ -49,7 +41,7 @@ public class Cal3SD2Test {
     }
 
     @Test
-    void testDuncalibrate1() throws Throwable {
+    void testDuncalibrate1() {
         Matrix computed = new Matrix();
         K.uncalibrate(p, computed, new Matrix());
         ThrowingFunction2<Cal3DS2, Point2, Point2> uncal = (k, pt) -> k.uncalibrate(pt);
@@ -63,7 +55,7 @@ public class Cal3SD2Test {
     }
 
     @Test
-    void testDuncalibrate2() throws Throwable {
+    void testDuncalibrate2() {
         Matrix computed = new Matrix();
         K.uncalibrate(p, new Matrix(), computed);
         ThrowingFunction2<Cal3DS2, Point2, Point2> uncal = (k, pt) -> k.uncalibrate(pt);
@@ -77,7 +69,7 @@ public class Cal3SD2Test {
     }
 
     @Test
-    void testDcalibrate() throws Throwable {
+    void testDcalibrate() {
         Point2 pn = new Point2(0.5, 0.5);
         Point2 pi = K.uncalibrate(pn);
         Matrix Dcal = new Matrix();
@@ -97,12 +89,12 @@ public class Cal3SD2Test {
     }
 
     @Test
-    void testEqual() throws Throwable {
+    void testEqual() {
         assertTrue(assert_equal(K, K, 1e-5));
     }
 
     @Test
-    void testRetract() throws Throwable {
+    void testRetract() {
         Cal3DS2 expected = new Cal3DS2(
                 500 + 1, 100 + 2, 0.1 + 3, 320 + 4, 240 + 5,
                 1e-3 + 6, 2.0 * 1e-3 + 7,

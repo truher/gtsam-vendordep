@@ -20,10 +20,14 @@ public class FactorIndices extends ForeignObject {
         FactorIndices_size(JAVA_INT, ADDRESS),
         FactorIndices_at(JAVA_INT, ADDRESS, JAVA_INT);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -31,16 +35,16 @@ public class FactorIndices extends ForeignObject {
         super(pointer, FF.FactorIndices_delete.h);
     }
 
-    public FactorIndices() throws Throwable {
-        this((MemorySegment) FF.FactorIndices.h.invokeExact());
+    public FactorIndices() {
+        this((MemorySegment) FF.FactorIndices.invoke());
     }
 
-    void add(Key i) throws Throwable {
-        FF.FactorIndices_add.h.invokeExact(ptr, i.j);
+    void add(Key i) {
+        FF.FactorIndices_add.invoke(ptr, i.j);
     }
 
-    int size() throws Throwable {
-        return (int) FF.FactorIndices_size.h.invokeExact(ptr);
+    int size() {
+        return (int) FF.FactorIndices_size.invoke(ptr);
     }
 
     /**
@@ -53,7 +57,7 @@ public class FactorIndices extends ForeignObject {
      * @param i the index into the FactorIndices object itself
      * @return the index pointing somewhere else.
      */
-    int at(int i) throws Throwable {
-        return (int) FF.FactorIndices_at.h.invokeExact(ptr, i);
+    int at(int i) {
+        return (int) FF.FactorIndices_at.invoke(ptr, i);
     }
 }

@@ -13,10 +13,14 @@ public class CustomFactor extends NonlinearFactor {
     public enum FF {
         CustomFactor(ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -28,13 +32,13 @@ public class CustomFactor extends NonlinearFactor {
     public static shared_ptr<CustomFactor> newCustomFactor(
             shared_ptr<? extends gtsam.noiseModel.Base> noiseModel,
             KeyVector keys,
-            CustomErrorFunction errorFunction) throws Throwable {
+            CustomErrorFunction errorFunction) {
         MethodHandle bindHandle = CustomErrorFunction.f.bindTo(errorFunction);
         MemorySegment errorFunctionPtr = Lib.linker.upcallStub(
                 bindHandle,
                 FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
                 Lib.arena);
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.CustomFactor.h.invokeExact(
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.CustomFactor.invoke(
                 noiseModel.ptr, keys.ptr, errorFunctionPtr);
         return new shared_ptr<>(sharedPtrPtr, CustomFactor::new);
     }

@@ -25,10 +25,14 @@ public class Constrained extends Diagonal {
         noiseModel_Constrained_mu(ADDRESS, ADDRESS),
         noiseModel_Constrained_informationFromA(ADDRESS, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -36,48 +40,48 @@ public class Constrained extends Diagonal {
         super(p);
     }
 
-    public static shared_ptr<Constrained> MixedSigmas(double mu, Vector sigmas) throws Throwable {
+    public static shared_ptr<Constrained> MixedSigmas(double mu, Vector sigmas) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasDoubleVector.h.invokeExact(mu, sigmas.ptr),
+                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasDoubleVector.invoke(mu, sigmas.ptr),
                 Constrained::new);
     }
 
-    public static shared_ptr<Constrained> MixedSigmas(Vector mu, Vector sigmas) throws Throwable {
+    public static shared_ptr<Constrained> MixedSigmas(Vector mu, Vector sigmas) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasVectorVector.h.invokeExact(mu.ptr, sigmas.ptr),
+                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasVectorVector.invoke(mu.ptr, sigmas.ptr),
                 Constrained::new);
     }
 
-    public static shared_ptr<Constrained> MixedSigmas(Vector sigmas) throws Throwable {
+    public static shared_ptr<Constrained> MixedSigmas(Vector sigmas) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasVector.h.invokeExact(sigmas.ptr),
+                (MemorySegment) FF.noiseModel_Constrained_MixedSigmasVector.invoke(sigmas.ptr),
                 Constrained::new);
     }
 
-    public static shared_ptr<Constrained> All(int dim) throws Throwable {
+    public static shared_ptr<Constrained> All(int dim) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_AllInt.h.invokeExact(dim),
+                (MemorySegment) FF.noiseModel_Constrained_AllInt.invoke(dim),
                 Constrained::new);
     }
 
-    public static shared_ptr<Constrained> All(int dim, double mu) throws Throwable {
+    public static shared_ptr<Constrained> All(int dim, double mu) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_AllIntDouble.h.invokeExact(dim, mu),
+                (MemorySegment) FF.noiseModel_Constrained_AllIntDouble.invoke(dim, mu),
                 Constrained::new);
     }
 
-    public static shared_ptr<Constrained> All(int dim, Vector mu) throws Throwable {
+    public static shared_ptr<Constrained> All(int dim, Vector mu) {
         return new shared_ptr<Constrained>(
-                (MemorySegment) FF.noiseModel_Constrained_AllIntVector.h.invokeExact(dim, mu.ptr),
+                (MemorySegment) FF.noiseModel_Constrained_AllIntVector.invoke(dim, mu.ptr),
                 Constrained::new);
     }
 
-    public Vector mu() throws Throwable {
-        return new Vector((MemorySegment) FF.noiseModel_Constrained_mu.h.invokeExact(ptr));
+    public Vector mu() {
+        return new Vector((MemorySegment) FF.noiseModel_Constrained_mu.invoke(ptr));
     }
 
-    public Matrix informationFromA(Matrix A) throws Throwable {
-        return new Matrix((MemorySegment) FF.noiseModel_Constrained_informationFromA.h.invokeExact(ptr, A.ptr));
+    public Matrix informationFromA(Matrix A) {
+        return new Matrix((MemorySegment) FF.noiseModel_Constrained_informationFromA.invoke(ptr, A.ptr));
     }
 
 }

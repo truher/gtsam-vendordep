@@ -76,4 +76,12 @@ public class Lib {
             return FunctionDescriptor.ofVoid(parameterTypes);
         return FunctionDescriptor.of(returnType, parameterTypes);
     }
+
+    public static Object invoke(MethodHandle h, Object... args) {
+        try {
+            return h.invokeWithArguments(args);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
 }

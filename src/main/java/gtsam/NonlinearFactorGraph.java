@@ -31,10 +31,14 @@ public class NonlinearFactorGraph extends FactorGraph {
         NonlinearFactorGraph_print(null, ADDRESS),
         NonlinearFactorGraph_printErrors(null, ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -42,34 +46,34 @@ public class NonlinearFactorGraph extends FactorGraph {
         super(p, FF.NonlinearFactorGraph_delete.h);
     }
 
-    public NonlinearFactorGraph() throws Throwable {
-        this((MemorySegment) FF.NonlinearFactorGraph.h.invokeExact());
+    public NonlinearFactorGraph() {
+        this((MemorySegment) FF.NonlinearFactorGraph.invoke());
     }
 
     /**
      * OK to delete f after this: the graph's shared_ptr will hold a reference to
      * the factor itself
      */
-    public <T extends NonlinearFactor> void add(shared_ptr<T> f) throws Throwable {
-        FF.NonlinearFactorGraph_add.h.invokeExact(ptr, f.ptr);
+    public <T extends NonlinearFactor> void add(shared_ptr<T> f) {
+        FF.NonlinearFactorGraph_add.invoke(ptr, f.ptr);
     }
 
-    public void add(NonlinearFactorGraph g) throws Throwable {
-        FF.NonlinearFactorGraph_addNonlinearFactorGraph.h.invokeExact(ptr, g.ptr);
+    public void add(NonlinearFactorGraph g) {
+        FF.NonlinearFactorGraph_addNonlinearFactorGraph.invoke(ptr, g.ptr);
     }
 
-    public void resize(long size) throws Throwable {
-        FF.NonlinearFactorGraph_resize.h.invokeExact(ptr, size);
+    public void resize(long size) {
+        FF.NonlinearFactorGraph_resize.invoke(ptr, size);
     }
 
     public void addPrior(
             Key key,
             Point2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
-            throws Throwable {
+            {
         if (model.get().dim() != 2)
             throw new IllegalArgumentException();
-        FF.NonlinearFactorGraph_addPriorPoint2.h.invokeExact(
+        FF.NonlinearFactorGraph_addPriorPoint2.invoke(
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
@@ -77,10 +81,10 @@ public class NonlinearFactorGraph extends FactorGraph {
             Key key,
             Pose2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
-            throws Throwable {
+            {
         if (model.get().dim() != 3)
             throw new IllegalArgumentException();
-        FF.NonlinearFactorGraph_addPriorPose2.h.invokeExact(
+        FF.NonlinearFactorGraph_addPriorPose2.invoke(
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
@@ -88,36 +92,37 @@ public class NonlinearFactorGraph extends FactorGraph {
             Key key,
             Rot2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
-            throws Throwable {
+            {
         if (model.get().dim() != 1)
             throw new IllegalArgumentException();
-        FF.NonlinearFactorGraph_addPriorRot2.h.invokeExact(
+        FF.NonlinearFactorGraph_addPriorRot2.invoke(
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
-    public shared_ptr<GaussianFactorGraph> linearize(Values init) throws Throwable {
-        MemorySegment sharedPtrPtr = (MemorySegment) FF.NonlinearFactorGraph_linearize.h.invokeExact(ptr, init.ptr);
+    public shared_ptr<GaussianFactorGraph> linearize(Values init) {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.NonlinearFactorGraph_linearize.invoke(ptr, init.ptr);
         return new shared_ptr<>(sharedPtrPtr, GaussianFactorGraph::new);
     }
 
     /** Note the use of the factor *index* here, not the *key*. */
-    public shared_ptr<NonlinearFactor> at(int i) throws Throwable {
-        MemorySegment p = (MemorySegment) FF.NonlinearFactorGraph_at.h.invokeExact(
+    public shared_ptr<NonlinearFactor> at(int i) {
+        MemorySegment p = (MemorySegment) FF.NonlinearFactorGraph_at.invoke(
                 ptr, i);
+        // always returns shared_ptr, which might point at nullptr.
         return new shared_ptr<>(p, NonlinearFactor::new);
     }
 
-    public int size() throws Throwable {
-        return (int) FF.NonlinearFactorGraph_size.h.invokeExact(ptr);
+    public int size() {
+        return (int) FF.NonlinearFactorGraph_size.invoke(ptr);
     }
 
-    public void print(String label) throws Throwable {
+    public void print(String label) {
         System.out.println(label);
-        FF.NonlinearFactorGraph_print.h.invokeExact(ptr);
+        FF.NonlinearFactorGraph_print.invoke(ptr);
     }
 
-    public void printErrors(Values values, String label) throws Throwable {
+    public void printErrors(Values values, String label) {
         System.out.println(label);
-        FF.NonlinearFactorGraph_printErrors.h.invokeExact(ptr, values.ptr);
+        FF.NonlinearFactorGraph_printErrors.invoke(ptr, values.ptr);
     }
 }

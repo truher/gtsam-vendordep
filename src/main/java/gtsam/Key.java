@@ -44,118 +44,122 @@ public class Key {
         return Lib.ff("symbol_shorthand_" + label, JAVA_LONG, JAVA_LONG);
     }
 
+    private static Object invoke(MethodHandle h, Object... args) {
+        return Lib.invoke(h, args);
+    }
+
     public final long j;
 
     public Key(long _j) {
         j = _j;
     }
 
-    public void print() throws Throwable {
-        symbol_print.invokeExact(j);
+    public void print() {
+        invoke(symbol_print, j);
     }
 
-    public static Key A(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_A.invokeExact(j));
+    public static Key A(long j) {
+        return new Key((long) invoke(symbol_shorthand_A, j));
     }
 
-    public static Key B(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_B.invokeExact(j));
+    public static Key B(long j) {
+        return new Key((long) invoke(symbol_shorthand_B, j));
     }
 
-    public static Key C(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_C.invokeExact(j));
+    public static Key C(long j) {
+        return new Key((long) invoke(symbol_shorthand_C, j));
     }
 
-    public static Key D(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_D.invokeExact(j));
+    public static Key D(long j) {
+        return new Key((long) invoke(symbol_shorthand_D, j));
     }
 
-    public static Key E(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_E.invokeExact(j));
+    public static Key E(long j) {
+        return new Key((long) invoke(symbol_shorthand_E, j));
     }
 
-    public static Key F(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_F.invokeExact(j));
+    public static Key F(long j) {
+        return new Key((long) invoke(symbol_shorthand_F, j));
     }
 
-    public static Key G(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_G.invokeExact(j));
+    public static Key G(long j) {
+        return new Key((long) invoke(symbol_shorthand_G, j));
     }
 
-    public static Key H(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_H.invokeExact(j));
+    public static Key H(long j) {
+        return new Key((long) invoke(symbol_shorthand_H, j));
     }
 
-    public static Key I(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_I.invokeExact(j));
+    public static Key I(long j) {
+        return new Key((long) invoke(symbol_shorthand_I, j));
     }
 
-    public static Key J(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_J.invokeExact(j));
+    public static Key J(long j) {
+        return new Key((long) invoke(symbol_shorthand_J, j));
     }
 
-    public static Key K(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_K.invokeExact(j));
+    public static Key K(long j) {
+        return new Key((long) invoke(symbol_shorthand_K, j));
     }
 
-    public static Key L(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_L.invokeExact(j));
+    public static Key L(long j) {
+        return new Key((long) invoke(symbol_shorthand_L, j));
     }
 
-    public static Key M(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_M.invokeExact(j));
+    public static Key M(long j) {
+        return new Key((long) invoke(symbol_shorthand_M, j));
     }
 
-    public static Key N(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_N.invokeExact(j));
+    public static Key N(long j) {
+        return new Key((long) invoke(symbol_shorthand_N, j));
     }
 
-    public static Key O(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_O.invokeExact(j));
+    public static Key O(long j) {
+        return new Key((long) invoke(symbol_shorthand_O, j));
     }
 
-    public static Key P(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_P.invokeExact(j));
+    public static Key P(long j) {
+        return new Key((long) invoke(symbol_shorthand_P, j));
     }
 
-    public static Key Q(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_Q.invokeExact(j));
+    public static Key Q(long j) {
+        return new Key((long) invoke(symbol_shorthand_Q, j));
     }
 
-    public static Key R(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_R.invokeExact(j));
+    public static Key R(long j) {
+        return new Key((long) invoke(symbol_shorthand_R, j));
     }
 
-    public static Key S(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_S.invokeExact(j));
+    public static Key S(long j) {
+        return new Key((long) invoke(symbol_shorthand_S, j));
     }
 
-    public static Key T(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_T.invokeExact(j));
+    public static Key T(long j) {
+        return new Key((long) invoke(symbol_shorthand_T, j));
     }
 
-    public static Key U(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_U.invokeExact(j));
+    public static Key U(long j) {
+        return new Key((long) invoke(symbol_shorthand_U, j));
     }
 
-    public static Key V(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_V.invokeExact(j));
+    public static Key V(long j) {
+        return new Key((long) invoke(symbol_shorthand_V, j));
     }
 
-    public static Key W(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_W.invokeExact(j));
+    public static Key W(long j) {
+        return new Key((long) invoke(symbol_shorthand_W, j));
     }
 
-    public static Key X(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_X.invokeExact(j));
+    public static Key X(long j) {
+        return new Key((long) invoke(symbol_shorthand_X, j));
     }
 
-    public static Key Y(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_Y.invokeExact(j));
+    public static Key Y(long j) {
+        return new Key((long) invoke(symbol_shorthand_Y, j));
     }
 
-    public static Key Z(long j) throws Throwable {
-        return new Key((long) symbol_shorthand_Z.invokeExact(j));
+    public static Key Z(long j) {
+        return new Key((long) invoke(symbol_shorthand_Z, j));
     }
 
 }

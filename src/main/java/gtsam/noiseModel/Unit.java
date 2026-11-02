@@ -23,10 +23,14 @@ public class Unit extends Isotropic {
         noiseModel_Unit_CreateVector(ADDRESS, ADDRESS),
         noiseModel_Unit_CreateMatrix(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -34,18 +38,18 @@ public class Unit extends Isotropic {
         super(p);
     }
 
-    public static shared_ptr<Unit> Create(int dim) throws Throwable {
-        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_Create.h.invokeExact(dim),
+    public static shared_ptr<Unit> Create(int dim) {
+        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_Create.invoke(dim),
                 Unit::new);
     }
 
-    public static shared_ptr<Unit> Create(Vector v) throws Throwable {
-        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateVector.h.invokeExact(v.ptr),
+    public static shared_ptr<Unit> Create(Vector v) {
+        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateVector.invoke(v.ptr),
                 Unit::new);
     }
 
-    public static shared_ptr<Unit> Create(Matrix m) throws Throwable {
-        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateMatrix.h.invokeExact(m.ptr),
+    public static shared_ptr<Unit> Create(Matrix m) {
+        return new shared_ptr<Unit>((MemorySegment) FF.noiseModel_Unit_CreateMatrix.invoke(m.ptr),
                 Unit::new);
     }
 }

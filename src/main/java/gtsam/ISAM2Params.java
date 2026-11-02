@@ -15,10 +15,14 @@ public class ISAM2Params extends ForeignObject {
         ISAM2Params(ADDRESS),
         ISAM2Params_delete(null, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -26,8 +30,8 @@ public class ISAM2Params extends ForeignObject {
         super(pointer, FF.ISAM2Params_delete.h);
     }
 
-    public ISAM2Params() throws Throwable {
-        this((MemorySegment) FF.ISAM2Params.h.invokeExact());
+    public ISAM2Params() {
+        this((MemorySegment) FF.ISAM2Params.invoke());
     }
 
 }

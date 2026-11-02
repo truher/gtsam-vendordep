@@ -18,10 +18,14 @@ public class GaussNewtonParams extends ForeignObject {
         GaussNewtonParams_relativeErrorTol(null, ADDRESS, JAVA_DOUBLE),
         GaussNewtonParams_maxIterations(null, ADDRESS, JAVA_INT);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -29,15 +33,15 @@ public class GaussNewtonParams extends ForeignObject {
         super(pointer, FF.GaussNewtonParams_delete.h);
     }
 
-    public GaussNewtonParams() throws Throwable {
-        this((MemorySegment) FF.GaussNewtonParams.h.invokeExact());
+    public GaussNewtonParams() {
+        this((MemorySegment) FF.GaussNewtonParams.invoke());
     }
 
-    public void relativeErrorTol(double tol) throws Throwable {
-        FF.GaussNewtonParams_relativeErrorTol.h.invokeExact(ptr, tol);
+    public void relativeErrorTol(double tol) {
+        FF.GaussNewtonParams_relativeErrorTol.invoke(ptr, tol);
     }
 
-    public void maxIterations(int i) throws Throwable {
+    public void maxIterations(int i) {
 
     }
 

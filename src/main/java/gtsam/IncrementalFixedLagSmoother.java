@@ -24,10 +24,14 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
         IncrementalFixedLagSmoother_getLinearizationPoint(ADDRESS, ADDRESS),
         IncrementalFixedLagSmoother_getISAM2(ADDRESS, ADDRESS);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -36,17 +40,17 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
     }
 
     public IncrementalFixedLagSmoother(double lag,
-            ISAM2Params params) throws Throwable {
-        this((MemorySegment) FF.IncrementalFixedLagSmoother.h.invokeExact(
+            ISAM2Params params) {
+        this((MemorySegment) FF.IncrementalFixedLagSmoother.invoke(
                 lag, params.ptr));
     }
 
     public FixedLagSmoother.Result update(
             NonlinearFactorGraph newFactors,
             Values newTheta,
-            FixedLagSmoother.KeyTimestampMap timestamps) throws Throwable {
+            FixedLagSmoother.KeyTimestampMap timestamps) {
         return new FixedLagSmoother.Result(
-                (MemorySegment) FF.IncrementalFixedLagSmoother_update.h.invokeExact(
+                (MemorySegment) FF.IncrementalFixedLagSmoother_update.invoke(
                         ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr));
     }
 
@@ -54,35 +58,35 @@ public class IncrementalFixedLagSmoother extends ForeignObject {
             NonlinearFactorGraph newFactors,
             Values newTheta,
             FixedLagSmoother.KeyTimestampMap timestamps,
-            FactorIndices indices) throws Throwable {
+            FactorIndices indices) {
         return new FixedLagSmoother.Result(
-                (MemorySegment) FF.IncrementalFixedLagSmoother_updateFactorIndices.h.invokeExact(
+                (MemorySegment) FF.IncrementalFixedLagSmoother_updateFactorIndices.invoke(
                         ptr, newFactors.ptr, newTheta.ptr, timestamps.ptr, indices.ptr));
     }
 
-    public Values calculateEstimate() throws Throwable {
-        return Values.owned((MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimate.h.invokeExact(ptr));
+    public Values calculateEstimate() {
+        return Values.owned((MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimate.invoke(ptr));
     }
 
-    public Point2 calculateEstimatePoint2(Key key) throws Throwable {
+    public Point2 calculateEstimatePoint2(Key key) {
         return new Point2(
-                (MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimatePoint2.h.invokeExact(ptr, key.j));
+                (MemorySegment) FF.IncrementalFixedLagSmoother_calculateEstimatePoint2.invoke(ptr, key.j));
     }
 
-    public NonlinearFactorGraph getFactors() throws Throwable {
-        return new NonlinearFactorGraph((MemorySegment) FF.IncrementalFixedLagSmoother_getFactors.h.invokeExact(ptr));
+    public NonlinearFactorGraph getFactors() {
+        return new NonlinearFactorGraph((MemorySegment) FF.IncrementalFixedLagSmoother_getFactors.invoke(ptr));
     }
 
-    public ISAM2Result getISAM2Result() throws Throwable {
-        return new ISAM2Result((MemorySegment) FF.IncrementalFixedLagSmoother_getISAM2Result.h.invokeExact(ptr));
+    public ISAM2Result getISAM2Result() {
+        return new ISAM2Result((MemorySegment) FF.IncrementalFixedLagSmoother_getISAM2Result.invoke(ptr));
     }
 
-    public Values getLinearizationPoint() throws Throwable {
-        return Values.observed((MemorySegment) FF.IncrementalFixedLagSmoother_getLinearizationPoint.h.invokeExact(ptr));
+    public Values getLinearizationPoint() {
+        return Values.observed((MemorySegment) FF.IncrementalFixedLagSmoother_getLinearizationPoint.invoke(ptr));
     }
 
-    public ISAM2 getISAM2() throws Throwable {
-        return new ISAM2((MemorySegment) FF.IncrementalFixedLagSmoother_getISAM2.h.invokeExact(ptr));
+    public ISAM2 getISAM2() {
+        return new ISAM2((MemorySegment) FF.IncrementalFixedLagSmoother_getISAM2.invoke(ptr));
 
     }
 

@@ -17,10 +17,14 @@ public class Huber extends Base {
         noiseModel_mEstimator_Huber_Create(ADDRESS, JAVA_DOUBLE),
         noiseModel_mEstimator_Huber_CreateScalar(ADDRESS, JAVA_DOUBLE);
 
-        public final MethodHandle h;
+        private final MethodHandle h;
 
-        FF(ValueLayout returnType, ValueLayout... parameterTypes) {
+        private FF(ValueLayout returnType, ValueLayout... parameterTypes) {
             h = Lib.ff(this, returnType, parameterTypes);
+        }
+
+        private Object invoke(Object... args) {
+            return Lib.invoke(h, args);
         }
     }
 
@@ -28,15 +32,15 @@ public class Huber extends Base {
         super(p);
     }
 
-    public static shared_ptr<Huber> Create(double k) throws Throwable {
+    public static shared_ptr<Huber> Create(double k) {
         return new shared_ptr<Huber>(
-                (MemorySegment) FF.noiseModel_mEstimator_Huber_Create.h.invokeExact(k),
+                (MemorySegment) FF.noiseModel_mEstimator_Huber_Create.invoke(k),
                 Huber::new);
     }
 
-    public static shared_ptr<Huber> CreateScalar(double k) throws Throwable {
+    public static shared_ptr<Huber> CreateScalar(double k) {
         return new shared_ptr<Huber>(
-                (MemorySegment) FF.noiseModel_mEstimator_Huber_CreateScalar.h.invokeExact(k),
+                (MemorySegment) FF.noiseModel_mEstimator_Huber_CreateScalar.invoke(k),
                 Huber::new);
     }
 }
