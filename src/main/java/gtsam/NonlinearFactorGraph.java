@@ -67,6 +67,8 @@ public class NonlinearFactorGraph extends FactorGraph {
             Point2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
             throws Throwable {
+        if (model.get().dim() != 2)
+            throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorPoint2.h.invokeExact(
                 ptr, key.j, prior.ptr, model.ptr);
     }
@@ -76,6 +78,8 @@ public class NonlinearFactorGraph extends FactorGraph {
             Pose2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
             throws Throwable {
+        if (model.get().dim() != 3)
+            throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorPose2.h.invokeExact(
                 ptr, key.j, prior.ptr, model.ptr);
     }
@@ -85,6 +89,8 @@ public class NonlinearFactorGraph extends FactorGraph {
             Rot2 prior,
             shared_ptr<? extends gtsam.noiseModel.Base> model)
             throws Throwable {
+        if (model.get().dim() != 1)
+            throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorRot2.h.invokeExact(
                 ptr, key.j, prior.ptr, model.ptr);
     }

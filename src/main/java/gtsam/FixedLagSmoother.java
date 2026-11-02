@@ -25,7 +25,9 @@ public class FixedLagSmoother {
      */
     public static class Result extends ForeignObject {
         public enum FF {
-            Result_delete(null, ADDRESS);
+            Result_delete(null, ADDRESS),
+            Result_getIterations(JAVA_LONG, ADDRESS),
+            Result_getError(JAVA_DOUBLE, ADDRESS);
 
             public final MethodHandle h;
 
@@ -36,6 +38,14 @@ public class FixedLagSmoother {
 
         public Result(MemorySegment p) {
             super(p, FF.Result_delete.h);
+        }
+
+        public long getIterations() throws Throwable {
+            return (long) FF.Result_getIterations.h.invokeExact(ptr);
+        }
+
+        public double getError() throws Throwable {
+            return (double) FF.Result_getError.h.invokeExact(ptr);
         }
     }
 

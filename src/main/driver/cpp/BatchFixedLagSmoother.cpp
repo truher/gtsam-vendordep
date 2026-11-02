@@ -15,15 +15,20 @@ gtsam::BatchFixedLagSmoother* BatchFixedLagSmoother2(
 void BatchFixedLagSmoother_delete(gtsam::BatchFixedLagSmoother* p) {
     delete p;
 }
-// Result is a struct with some counters
-// typedef std::map<Key, double> KeyTimestampMap;
 gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_update(  //
     gtsam::BatchFixedLagSmoother* p,                            //
     const gtsam::NonlinearFactorGraph* newFactors,              //
     const gtsam::Values* newTheta,                              //
     const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps));
+    // this can throw, which breaks the Java side, so catch here.
+    try {
+        return new gtsam::FixedLagSmoother::Result(
+            p->update(*newFactors, *newTheta, *timestamps));
+    } catch (const gtsam::IndeterminateSystemException e) {
+        std::cout << "caught IndeterminateSystemException: " << e.what()
+                  << std::endl;
+        return new gtsam::FixedLagSmoother::Result();
+    }
 }
 gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
     gtsam::BatchFixedLagSmoother* p,                                         //
@@ -31,8 +36,14 @@ gtsam::FixedLagSmoother::Result* BatchFixedLagSmoother_updateFactorIndices(  //
     const gtsam::Values* newTheta,                                           //
     const gtsam::FixedLagSmoother::KeyTimestampMap* timestamps,              //
     const gtsam::FactorIndices* indices) {
-    return new gtsam::FixedLagSmoother::Result(
-        p->update(*newFactors, *newTheta, *timestamps, *indices));
+    try {
+        return new gtsam::FixedLagSmoother::Result(
+            p->update(*newFactors, *newTheta, *timestamps, *indices));
+    } catch (const gtsam::IndeterminateSystemException e) {
+        std::cout << "caught IndeterminateSystemException: " << e.what()
+                  << std::endl;
+        return new gtsam::FixedLagSmoother::Result();
+    }
 }
 gtsam::Values* BatchFixedLagSmoother_calculateEstimate(
     const gtsam::BatchFixedLagSmoother* p) {

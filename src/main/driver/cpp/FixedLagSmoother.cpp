@@ -4,6 +4,12 @@ extern "C" {
 void Result_delete(gtsam::FixedLagSmoother::Result* p) {
     delete p;
 }
+long Result_getIterations(gtsam::FixedLagSmoother::Result* p) {
+    return p->getIterations();
+}
+double Result_getError(gtsam::FixedLagSmoother::Result* p) {
+    return p->getError();
+}
 //
 gtsam::FixedLagSmoother::KeyTimestampMap* KeyTimestampMap() {
     return new gtsam::FixedLagSmoother::KeyTimestampMap();
