@@ -16,4 +16,12 @@ public class SymbolExtraTest {
         assertEquals(100, s1.index());
     }
 
+    @Test
+    void test1() {
+        // an example that fails if the chrmask is wrong
+        Key k = Key.X(16801263);
+        Symbol s = new Symbol(k);
+        assertEquals(16801263, s.index());
+    }
+
 }

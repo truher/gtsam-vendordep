@@ -11,7 +11,7 @@ public class Symbol {
     private static final long keyBits = 64l;
     private static final long chrBits = 8l;
     private static final long indexBits = keyBits - chrBits;
-    private static final long chrMask = 255 << indexBits;
+    private static final long chrMask = 255l << indexBits;
     private static final long indexMask = ~chrMask;
 
     private final char c_;
