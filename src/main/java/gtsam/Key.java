@@ -58,6 +58,11 @@ public class Key {
         invoke(symbol_print, j);
     }
 
+    @Override
+    public String toString() {
+        return new Symbol(this).toString();
+    }
+
     public static Key A(long j) {
         return new Key((long) invoke(symbol_shorthand_A, j));
     }
