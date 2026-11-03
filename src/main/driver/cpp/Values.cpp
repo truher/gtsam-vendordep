@@ -61,6 +61,9 @@ void Values_insertRot3(gtsam::Values* v,          //
                        const gtsam::Rot3* val) {  //
     v->insert(j, *val);
 }
+const gtsam::KeyVector* Values_keys(const gtsam::Values* v) {
+    return new gtsam::KeyVector(v->keys());
+}
 //
 //
 //

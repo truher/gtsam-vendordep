@@ -31,6 +31,7 @@ public class Values extends ForeignObject {
         Values_insertPose3(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertRot2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_insertRot3(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_keys(ADDRESS, ADDRESS),
         Values_insertCal3DS2(null, ADDRESS, JAVA_LONG, ADDRESS),
         Values_atDouble(JAVA_DOUBLE, ADDRESS, JAVA_LONG),
         Values_atPoint2(ADDRESS, ADDRESS, JAVA_LONG),
@@ -125,6 +126,10 @@ public class Values extends ForeignObject {
 
     public void insert(Key j, Cal3DS2 p) {
         FF.Values_insertCal3DS2.invoke(ptr, j.j, p.ptr);
+    }
+
+    public KeyVector keys() {
+        return new KeyVector((MemorySegment) FF.Values_keys.invoke(ptr));
     }
 
     public double atDouble(Key j) {
