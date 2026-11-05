@@ -23,17 +23,17 @@ public class Values extends ForeignObject {
     public enum FF {
         Values(ADDRESS),
         Values_delete(null, ADDRESS),
-        Values_insertValues(null, ADDRESS, ADDRESS),
-        Values_insertDouble(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
-        Values_insertPoint2(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_insertPoint3(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_insertPose2(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_insertPose3(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_insertRot2(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_insertRot3(null, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertValues(JAVA_BOOLEAN, ADDRESS, ADDRESS),
+        Values_insertDouble(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
+        Values_insertPoint2(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertPoint3(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertPose2(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertPose3(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertRot2(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_insertRot3(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
         Values_keys(ADDRESS, ADDRESS),
-        Values_insertCal3DS2(null, ADDRESS, JAVA_LONG, ADDRESS),
-        Values_atDouble(JAVA_DOUBLE, ADDRESS, JAVA_LONG),
+        Values_insertCal3DS2(JAVA_BOOLEAN, ADDRESS, JAVA_LONG, ADDRESS),
+        Values_atDouble(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPoint2(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPoint3(ADDRESS, ADDRESS, JAVA_LONG),
         Values_atPose2(ADDRESS, ADDRESS, JAVA_LONG),
@@ -55,6 +55,20 @@ public class Values extends ForeignObject {
             return Lib.invoke(h, args);
         }
     }
+
+    public class ValuesKeyAlreadyExists extends RuntimeException {
+    }
+
+    /**
+     * Values.at() can throw two different exceptions but we catch
+     * them both and return null, so in Java we can't differentiate
+     * them.  To see which exception was actually thrown, look at
+     * stdout.
+     */
+    public class AtException extends RuntimeException {
+    }
+
+ 
 
     /**
      * @param p       Pointer to C++ Values object.
@@ -93,39 +107,48 @@ public class Values extends ForeignObject {
     }
 
     public void insert(Values v) {
-        FF.Values_insertValues.invoke(ptr, v.ptr);
+        if (!((boolean) FF.Values_insertValues.invoke(ptr, v.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, double p) {
-        FF.Values_insertDouble.invoke(ptr, j.j, p);
+        if (!((boolean) FF.Values_insertDouble.invoke(ptr, j.j, p)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Point2 p) {
-        FF.Values_insertPoint2.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertPoint2.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Point3 p) {
-        FF.Values_insertPoint3.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertPoint3.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Pose2 p) {
-        FF.Values_insertPose2.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertPose2.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Pose3 p) {
-        FF.Values_insertPose3.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertPose3.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Rot2 p) {
-        FF.Values_insertRot2.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertRot2.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Rot3 p) {
-        FF.Values_insertRot3.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertRot3.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public void insert(Key j, Cal3DS2 p) {
-        FF.Values_insertCal3DS2.invoke(ptr, j.j, p.ptr);
+        if (!((boolean) FF.Values_insertCal3DS2.invoke(ptr, j.j, p.ptr)))
+            throw new ValuesKeyAlreadyExists();
     }
 
     public KeyVector keys() {
@@ -133,27 +156,51 @@ public class Values extends ForeignObject {
     }
 
     public double atDouble(Key j) {
-        return (double) FF.Values_atDouble.invoke(ptr, j.j);
+        MemorySegment p = (MemorySegment) FF.Values_atDouble.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Vector1(p).at(0);
     }
 
     public Point2 atPoint2(Key j) {
-        return new Point2((MemorySegment) FF.Values_atPoint2.invoke(ptr, j.j));
+        MemorySegment p = (MemorySegment) FF.Values_atPoint2.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Point2(p);
     }
 
     public Point3 atPoint3(Key j) {
-        return new Point3((MemorySegment) FF.Values_atPoint3.invoke(ptr, j.j));
+        MemorySegment p = (MemorySegment) FF.Values_atPoint3.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Point3(p);
     }
 
     public Pose2 atPose2(Key j) {
-        return new Pose2((MemorySegment) FF.Values_atPose2.invoke(ptr, j.j));
+        MemorySegment p = (MemorySegment) FF.Values_atPose2.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Pose2(p);
     }
 
     public Pose3 atPose3(Key j) {
-        return new Pose3((MemorySegment) FF.Values_atPose3.invoke(ptr, j.j));
+        MemorySegment p = (MemorySegment) FF.Values_atPose3.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Pose3(p);
     }
 
     public Cal3DS2 atCal3DS2(Key j) {
-        return new Cal3DS2((MemorySegment) FF.Values_atCal3DS2.invoke(ptr, j.j));
+        MemorySegment p = (MemorySegment) FF.Values_atCal3DS2.invoke(ptr, j.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new AtException();
+        }
+        return new Cal3DS2(p);
     }
 
     public boolean exists(Key j) {
