@@ -98,7 +98,7 @@ public class Pose2SLAMExample {
         result.print("Final Result:\n");
 
         // 5. Calculate and print marginal covariances for all variables
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
         marginals.marginalCovariance(new Key(1)).print("x1 covariance:");
         marginals.marginalCovariance(new Key(2)).print("x2 covariance:");
         marginals.marginalCovariance(new Key(3)).print("x3 covariance:");

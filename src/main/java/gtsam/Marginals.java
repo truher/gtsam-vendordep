@@ -6,6 +6,7 @@ import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.util.NoSuchElementException;
 
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
@@ -35,31 +36,34 @@ public class Marginals extends ForeignObject {
     }
 
     /**
-     * Default is Cholesky.
-     * NOTE! Cholesky can be unstable in confusing ways, producing
-     * IndeterminateSystemException. You should use QR instead.
-     */
-    public Marginals(NonlinearFactorGraph graph, Values result) {
-        this((MemorySegment) FF.MarginalsCholesky.invoke(graph.ptr, result.ptr));
-    }
-
-    /**
      * NOTE! Cholesky can be unstable in confusing ways, producing
      * IndeterminateSystemException. You should use QR instead.
      */
     public static Marginals Cholesky(NonlinearFactorGraph graph, Values result) {
-        return new Marginals(graph, result);
+        MemorySegment p = (MemorySegment) FF.MarginalsCholesky.invoke(graph.ptr, result.ptr);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new IndeterminateSystemException();
+        }
+        return new Marginals(p);
     }
 
     /**
      * QR is more stable but slower.
      */
     public static Marginals QR(NonlinearFactorGraph graph, Values result) {
-        return new Marginals((MemorySegment) FF.MarginalsQR.invoke(graph.ptr, result.ptr));
+        MemorySegment p = (MemorySegment) FF.MarginalsQR.invoke(graph.ptr, result.ptr);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new IndeterminateSystemException();
+        }
+        return new Marginals(p);
     }
 
     public Matrix marginalCovariance(Key key) {
-        return new Matrix((MemorySegment) FF.Marginals_marginalCovariance.invoke(ptr, key.j));
+        MemorySegment p = (MemorySegment) FF.Marginals_marginalCovariance.invoke(ptr, key.j);
+        if (p.equals(MemorySegment.NULL)) {
+            throw new NoSuchElementException(String.format("key %s", key));
+        }
+        return new Matrix(p);
     }
 
     public void print(String label) {

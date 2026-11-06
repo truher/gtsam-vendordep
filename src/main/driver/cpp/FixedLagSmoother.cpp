@@ -25,4 +25,11 @@ void KeyTimestampMap_put(gtsam::FixedLagSmoother::KeyTimestampMap* p,
 void KeyTimestampMap_clear(gtsam::FixedLagSmoother::KeyTimestampMap* p) {
     p->clear();
 }
+void KeyTimestampMap_print(const gtsam::FixedLagSmoother::KeyTimestampMap* p) {
+    for (const gtsam::FixedLagSmoother::KeyTimestampMap::value_type&
+             key_timestamp : *p) {
+        std::cout << "Key: " << key_timestamp.first
+             << "  Time: " << key_timestamp.second << std::endl;
+    }
+}
 }

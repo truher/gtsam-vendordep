@@ -64,7 +64,8 @@ public class FixedLagSmoother {
             KeyTimestampMap(ADDRESS),
             KeyTimestampMap_delete(null, ADDRESS),
             KeyTimestampMap_put(null, ADDRESS, JAVA_LONG, JAVA_DOUBLE),
-            KeyTimestampMap_clear(null, ADDRESS);
+            KeyTimestampMap_clear(null, ADDRESS),
+            KeyTimestampMap_print(null, ADDRESS);
 
             private final MethodHandle h;
 
@@ -91,6 +92,10 @@ public class FixedLagSmoother {
 
         public void clear() {
             FF.KeyTimestampMap_clear.invoke(ptr);
+        }
+
+        public void print() {
+            FF.KeyTimestampMap_print.invoke(ptr);
         }
     }
 }

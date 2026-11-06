@@ -66,4 +66,11 @@ public class BatchFixedLagSmootherExtraTest {
                 () -> smoother.update(newFactors, newValues, newKeyTimestampMap));
     }
 
+    @Test
+    void testPrintKeyTimestampMap() {
+        KeyTimestampMap m = new KeyTimestampMap();
+        m.put(Key.X(0), 1.0);
+        m.print();
+    }
+
 }

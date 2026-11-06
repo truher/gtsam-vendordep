@@ -93,7 +93,7 @@ public class PlanarSLAMExample {
         result.print("Final Result:\n");
 
         // Calculate and print marginal covariances for all variables
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
         marginals.marginalCovariance(x1).print("x1 covariance");
         marginals.marginalCovariance(x2).print("x2 covariance");
         marginals.marginalCovariance(x3).print("x3 covariance");

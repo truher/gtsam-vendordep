@@ -69,7 +69,7 @@ public class PlanarSLAMExampleWithSamples {
         Values result = optimizer.optimize();
         result.print("Final Result:\n");
 
-        Marginals marginals = new Marginals(graph, result);
+        Marginals marginals = Marginals.Cholesky(graph, result);
         Matrix x1cov = marginals.marginalCovariance(x1);
         Matrix x2cov = marginals.marginalCovariance(x2);
         Matrix x3cov = marginals.marginalCovariance(x3);
