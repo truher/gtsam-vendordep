@@ -13,6 +13,7 @@ import java.lang.ref.Cleaner;
  */
 public abstract class ForeignObject {
     private record Cleanup(MethodHandle deleter, MemorySegment pointer) implements Runnable {
+        /** @throws IllegalArgumentException if either argument is null. */
         public Cleanup {
             if (deleter == null || pointer == null)
                 throw new IllegalArgumentException();

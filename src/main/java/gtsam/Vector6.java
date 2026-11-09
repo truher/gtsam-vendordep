@@ -109,14 +109,42 @@ public class Vector6 extends ForeignObject
 
     @Override
     public Vector6 local(Vector6 g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        Vector6 result = local(g);
+        H1.set(new double[][] {
+                { -1, 0, 0, 0, 0, 0 },
+                { 0, -1, 0, 0, 0, 0 },
+                { 0, 0, -1, 0, 0, 0 },
+                { 0, 0, 0, -1, 0, 0 },
+                { 0, 0, 0, 0, -1, 0 },
+                { 0, 0, 0, 0, 0, -1 } });
+        H2.set(new double[][] {
+                { 1, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 1, 0, 0, 0 },
+                { 0, 0, 0, 1, 0, 0 },
+                { 0, 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0, 1 } });
+        return result;
     }
 
     @Override
     public Vector6 retract(Vector6 v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        Vector6 result = retract(v);
+        H1.set(new double[][] {
+                { 1, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 1, 0, 0, 0 },
+                { 0, 0, 0, 1, 0, 0 },
+                { 0, 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0, 1 } });
+        H2.set(new double[][] {
+                { 1, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 1, 0, 0, 0 },
+                { 0, 0, 0, 1, 0, 0 },
+                { 0, 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0, 1 } });
+        return result;
     }
 
 }

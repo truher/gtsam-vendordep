@@ -42,6 +42,9 @@ public class PriorFactor<T> extends NoiseModelFactor {
         super(p);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension is not 1
+     */
     public static shared_ptr<PriorFactor<Double>> PriorFactorDouble(
             Key key,
             double prior,
@@ -53,7 +56,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-    /** @param prior is copied, ok to delete. */
+    /**
+     * @param prior is copied, ok to delete.
+     * @throws IllegalArgumentException if the model dimension is not 2
+     */
     public static shared_ptr<PriorFactor<Point2>> PriorFactorPoint2(
             Key key,
             Point2 prior,
@@ -65,7 +71,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-    /** @param prior is copied, ok to delete. */
+    /**
+     * @param prior is copied, ok to delete.
+     * @throws IllegalArgumentException if the model dimension is not 3
+     */
     public static shared_ptr<PriorFactor<Point3>> PriorFactorPoint3(
             Key key,
             Point3 prior,
@@ -77,7 +86,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-    /** @param prior is copied, ok to delete. */
+    /**
+     * @param prior is copied, ok to delete.
+     * @throws IllegalArgumentException if the model dimension is not 3
+     */
     public static shared_ptr<PriorFactor<Pose2>> PriorFactorPose2(
             Key key,
             Pose2 prior,
@@ -89,7 +101,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-    /** @param prior is copied, ok to delete. */
+    /**
+     * @param prior is copied, ok to delete.
+     * @throws IllegalArgumentException if the model dimension is not 6
+     */
     public static shared_ptr<PriorFactor<Pose3>> PriorFactorPose3(
             Key key,
             Pose3 prior,
@@ -101,6 +116,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension doesn't match the
+     *                                  vector dimension.
+     */
     public static shared_ptr<PriorFactor<Vector>> PriorFactorVector(
             Key key,
             Vector prior,
@@ -112,6 +131,9 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension is not 3
+     */
     public static shared_ptr<PriorFactor<Vector3>> PriorFactorVector3(
             Key key,
             Vector3 prior,
@@ -123,7 +145,10 @@ public class PriorFactor<T> extends NoiseModelFactor {
                 PriorFactor::new);
     }
 
-    /** @param prior is copied, ok to delete. */
+    /**
+     * @param prior is copied, ok to delete.
+     * @throws IllegalArgumentException if the model dimension is not 9
+     */
     public static shared_ptr<PriorFactor<Cal3DS2>> PriorFactorCal3DS2(
             Key key,
             Cal3DS2 prior,

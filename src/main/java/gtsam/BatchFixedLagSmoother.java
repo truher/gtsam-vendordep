@@ -55,6 +55,9 @@ public class BatchFixedLagSmoother extends ForeignObject {
                 lag, params.ptr, consistent));
     }
 
+    /**
+     * @throws IndeterminateSystemException if the GTSAM solver fails.
+     */
     public FixedLagSmoother.Result update(
             NonlinearFactorGraph newFactors,
             Values newTheta,
@@ -67,6 +70,9 @@ public class BatchFixedLagSmoother extends ForeignObject {
         return new FixedLagSmoother.Result(p);
     }
 
+    /**
+     * @throws IndeterminateSystemException if the GTSAM solver fails.
+     */
     public FixedLagSmoother.Result update(
             NonlinearFactorGraph newFactors,
             Values newTheta,

@@ -196,13 +196,11 @@ public class Unit3 extends ForeignObject
 
     @Override
     public Vector2 local(Unit3 g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Unit3 retract(Vector2 v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        throw new UnsupportedOperationException();
     }
 }

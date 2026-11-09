@@ -104,6 +104,20 @@ public class Matrix extends ForeignObject {
         }
     }
 
+    public void set(double[][] x) {
+        int rows = x.length;
+        int cols = x[0].length;
+        if (rows != rows())
+            throw new IllegalArgumentException();
+        if (cols != cols())
+            throw new IllegalArgumentException();
+        for (int row = 0; row < rows(); ++row) {
+            for (int col = 0; col < cols(); ++col) {
+                set(row, col, x[row][col]);
+            }
+        }
+    }
+
     public double at(int r, int c) {
         return (double) FF.Matrix_at.invoke(ptr, r, c);
     }

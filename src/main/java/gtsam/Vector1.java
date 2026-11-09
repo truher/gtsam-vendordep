@@ -76,11 +76,13 @@ public class Vector1 extends ForeignObject
         return new Vector1((MemorySegment) FF.Vector1_times.invoke(ptr, a));
     }
 
+    /** In a vector space, local() is just minus(). */
     @Override
     public Vector1 local(Vector1 other) {
         return other.minus(this);
     }
 
+    /** In a vector space, retract() is just plus(). */
     @Override
     public Vector1 retract(Vector1 v) {
         return plus(v);
@@ -88,13 +90,17 @@ public class Vector1 extends ForeignObject
 
     @Override
     public Vector1 local(Vector1 g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        Vector1 result = local(g);
+        H1.set(new double[][] { { -1 } });
+        H2.set(new double[][] { { 1 } });
+        return result;
     }
 
     @Override
     public Vector1 retract(Vector1 v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        Vector1 result = retract(v);
+        H1.set(new double[][] { { 1 } });
+        H2.set(new double[][] { { 1 } });
+        return result;
     }
 }

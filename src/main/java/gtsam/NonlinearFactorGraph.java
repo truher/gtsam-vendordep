@@ -66,33 +66,39 @@ public class NonlinearFactorGraph extends FactorGraph {
         FF.NonlinearFactorGraph_resize.invoke(ptr, size);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension is not 2
+     */
     public void addPrior(
             Key key,
             Point2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model)
-            {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 2)
             throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorPoint2.invoke(
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension is not 3
+     */
     public void addPrior(
             Key key,
             Pose2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model)
-            {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 3)
             throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorPose2.invoke(
                 ptr, key.j, prior.ptr, model.ptr);
     }
 
+    /**
+     * @throws IllegalArgumentException if the model dimension is not 1
+     */
     public void addPrior(
             Key key,
             Rot2 prior,
-            shared_ptr<? extends gtsam.noiseModel.Base> model)
-            {
+            shared_ptr<? extends gtsam.noiseModel.Base> model) {
         if (model.get().dim() != 1)
             throw new IllegalArgumentException();
         FF.NonlinearFactorGraph_addPriorRot2.invoke(

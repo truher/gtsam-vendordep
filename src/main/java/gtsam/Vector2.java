@@ -97,14 +97,18 @@ public class Vector2 extends ForeignObject
 
     @Override
     public Vector2 local(Vector2 g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        Vector2 result = local(g);
+        H1.set(new double[][] { { -1, 0 }, { 0, -1 } });
+        H2.set(new double[][] { { 1, 0 }, { 0, 1 } });
+        return result;
     }
 
     @Override
     public Vector2 retract(Vector2 v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        Vector2 result = retract(v);
+        H1.set(new double[][] { { 1, 0 }, { 0, 1 } });
+        H2.set(new double[][] { { 1, 0 }, { 0, 1 } });
+        return result;
     }
 
 }

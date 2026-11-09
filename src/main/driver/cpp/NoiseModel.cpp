@@ -111,18 +111,33 @@ double noiseModel_Gaussian_negLogConstant(
 //
 std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector(
     const gtsam::Vector* v, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector1(
     const gtsam::Vector1* v, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector2(
     const gtsam::Vector2* v, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Sigmas(*v, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector3(
     const gtsam::Vector3* v, bool smart) {
@@ -137,14 +152,24 @@ std::shared_ptr<gtsam::noiseModel::Diagonal>* noiseModel_Diagonal_SigmasVector3(
 std::shared_ptr<gtsam::noiseModel::Diagonal>*
 noiseModel_Diagonal_VariancesVector3(const gtsam::Vector3* variances,
                                      bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Variances(*variances, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Variances(*variances, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 std::shared_ptr<gtsam::noiseModel::Diagonal>*
 noiseModel_Diagonal_PrecisionsVector3(const gtsam::Vector3* precisions,
                                       bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
-        gtsam::noiseModel::Diagonal::Precisions(*precisions, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Diagonal>(
+            gtsam::noiseModel::Diagonal::Precisions(*precisions, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 gtsam::Vector* noiseModel_Diagonal_invsigmas(
     const gtsam::noiseModel::Diagonal* model) {
@@ -179,8 +204,13 @@ std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Variance(
 }
 std::shared_ptr<gtsam::noiseModel::Isotropic>* noiseModel_Isotropic_Precision(
     int dim, double precision, bool smart) {
-    return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
-        gtsam::noiseModel::Isotropic::Precision(dim, precision, smart));
+    try {
+        return new std::shared_ptr<gtsam::noiseModel::Isotropic>(
+            gtsam::noiseModel::Isotropic::Precision(dim, precision, smart));
+    } catch (const std::invalid_argument& e) {
+        std::cout << "caught err: " << e.what() << std::endl;
+        return nullptr;
+    }
 }
 //
 // UNIT

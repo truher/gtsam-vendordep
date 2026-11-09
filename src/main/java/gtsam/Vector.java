@@ -154,14 +154,12 @@ public class Vector extends ForeignObject
 
     @Override
     public Vector local(Vector g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Vector retract(Vector v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        throw new UnsupportedOperationException();
     }
 
     public void print(String label) {

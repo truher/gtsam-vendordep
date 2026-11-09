@@ -45,36 +45,46 @@ public class Diagonal extends Gaussian {
         super(p);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector sigmas) {
         return Sigmas(sigmas, true);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector sigmas, boolean smart) {
-        return new shared_ptr<Diagonal>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector.invoke(sigmas.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector.invoke(sigmas.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<Diagonal>(p, Diagonal::new);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas, boolean smart) {
-        return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector1.invoke(sigmas.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector1.invoke(sigmas.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<>(p, Diagonal::new);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector1 sigmas) {
         return Sigmas(sigmas, true);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas, boolean smart) {
-        return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_SigmasVector2.invoke(sigmas.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector2.invoke(sigmas.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<>(p, Diagonal::new);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector2 sigmas) {
         return Sigmas(sigmas, true);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas, boolean smart) {
         MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_SigmasVector3.invoke(sigmas.ptr, smart);
         if (p.equals(MemorySegment.NULL))
@@ -82,20 +92,25 @@ public class Diagonal extends Gaussian {
         return new shared_ptr<>(p, Diagonal::new);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Sigmas(Vector3 sigmas) {
         return Sigmas(sigmas, true);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Variances(Vector3 variances, boolean smart) {
-        return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_VariancesVector3.invoke(variances.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_VariancesVector3.invoke(variances.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<>(p, Diagonal::new);
     }
 
+    /** @throws IllegalArgumentException if any sigmas are negative. */
     public static shared_ptr<Diagonal> Precisions(Vector3 precisions, boolean smart) {
-        return new shared_ptr<>(
-                (MemorySegment) FF.noiseModel_Diagonal_PrecisionsVector3.invoke(precisions.ptr, smart),
-                Diagonal::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Diagonal_PrecisionsVector3.invoke(precisions.ptr, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<>(p, Diagonal::new);
     }
 
     public Vector invsigmas() {

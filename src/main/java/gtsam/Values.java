@@ -56,6 +56,10 @@ public class Values extends ForeignObject {
         }
     }
 
+    /**
+     * You should generally not try to catch this; this exception indicates code
+     * error rather than an unavoidable runtime error.
+     */
     public class ValuesKeyAlreadyExists extends RuntimeException {
         public ValuesKeyAlreadyExists() {
         }
@@ -70,6 +74,9 @@ public class Values extends ForeignObject {
      * them both and return null, so in Java we can't differentiate
      * them. To see which exception was actually thrown, look at
      * stdout.
+     * 
+     * You should generally not try to catch this; this exception indicates code
+     * error rather than an unavoidable runtime error.
      */
     public class AtException extends RuntimeException {
         public AtException(Key k) {
@@ -113,6 +120,9 @@ public class Values extends ForeignObject {
         FF.Values_print.invoke(ptr);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Values v) {
         if (!((boolean) FF.Values_insertValues.invoke(ptr, v.ptr))) {
             v.print("duplicate key somewhere here");
@@ -120,41 +130,65 @@ public class Values extends ForeignObject {
         }
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, double p) {
         if (!((boolean) FF.Values_insertDouble.invoke(ptr, j.j, p)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Point2 p) {
         if (!((boolean) FF.Values_insertPoint2.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Point3 p) {
         if (!((boolean) FF.Values_insertPoint3.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Pose2 p) {
         if (!((boolean) FF.Values_insertPose2.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Pose3 p) {
         if (!((boolean) FF.Values_insertPose3.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Rot2 p) {
         if (!((boolean) FF.Values_insertRot2.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Rot3 p) {
         if (!((boolean) FF.Values_insertRot3.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
     }
 
+    /**
+     * @throws ValuesKeyAlreadyExists
+     */
     public void insert(Key j, Cal3DS2 p) {
         if (!((boolean) FF.Values_insertCal3DS2.invoke(ptr, j.j, p.ptr)))
             throw new ValuesKeyAlreadyExists(j);
@@ -164,6 +198,9 @@ public class Values extends ForeignObject {
         return new KeyVector((MemorySegment) FF.Values_keys.invoke(ptr));
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public double atDouble(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atDouble.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {
@@ -172,6 +209,9 @@ public class Values extends ForeignObject {
         return new Vector1(p).at(0);
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public Point2 atPoint2(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atPoint2.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {
@@ -180,6 +220,9 @@ public class Values extends ForeignObject {
         return new Point2(p);
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public Point3 atPoint3(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atPoint3.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {
@@ -188,6 +231,9 @@ public class Values extends ForeignObject {
         return new Point3(p);
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public Pose2 atPose2(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atPose2.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {
@@ -196,6 +242,9 @@ public class Values extends ForeignObject {
         return new Pose2(p);
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public Pose3 atPose3(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atPose3.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {
@@ -204,6 +253,9 @@ public class Values extends ForeignObject {
         return new Pose3(p);
     }
 
+    /**
+     * @throws AtException if the key is missing or if the value has the wrong type.
+     */
     public Cal3DS2 atCal3DS2(Key j) {
         MemorySegment p = (MemorySegment) FF.Values_atCal3DS2.invoke(ptr, j.j);
         if (p.equals(MemorySegment.NULL)) {

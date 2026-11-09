@@ -36,8 +36,9 @@ public class Marginals extends ForeignObject {
     }
 
     /**
-     * NOTE! Cholesky can be unstable in confusing ways, producing
-     * IndeterminateSystemException. You should use QR instead.
+     * Cholesky can be unstable, use QR instead.
+     * 
+     * @throws IndeterminateSystemException if the GTSAM solver fails.
      */
     public static Marginals Cholesky(NonlinearFactorGraph graph, Values result) {
         MemorySegment p = (MemorySegment) FF.MarginalsCholesky.invoke(graph.ptr, result.ptr);
@@ -48,7 +49,9 @@ public class Marginals extends ForeignObject {
     }
 
     /**
-     * QR is more stable but slower.
+     * QR is more stable but slower than Cholesky.
+     * 
+     * @throws IndeterminateSystemException if the GTSAM solver fails.
      */
     public static Marginals QR(NonlinearFactorGraph graph, Values result) {
         MemorySegment p = (MemorySegment) FF.MarginalsQR.invoke(graph.ptr, result.ptr);
@@ -58,6 +61,9 @@ public class Marginals extends ForeignObject {
         return new Marginals(p);
     }
 
+    /**
+     * @throws NoSuchElementException if the key is not present.
+     */
     public Matrix marginalCovariance(Key key) {
         MemorySegment p = (MemorySegment) FF.Marginals_marginalCovariance.invoke(ptr, key.j);
         if (p.equals(MemorySegment.NULL)) {

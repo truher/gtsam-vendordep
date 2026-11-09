@@ -108,11 +108,13 @@ public class Vector3 extends ForeignObject
         return b.toString();
     }
 
+    /** In a vector space, local() is just minus(). */
     @Override
     public Vector3 local(Vector3 other) {
         return other.minus(this);
     }
 
+    /** In a vector space, retract() is just plus(). */
     @Override
     public Vector3 retract(Vector3 v) {
         return plus(v);
@@ -136,13 +138,17 @@ public class Vector3 extends ForeignObject
 
     @Override
     public Vector3 local(Vector3 g, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localCoordinates'");
+        Vector3 result = local(g);
+        H1.set(new double[][] { { -1, 0, 0 }, { 0, -1, 0 }, { 0, 0, -1 } });
+        H2.set(new double[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
+        return result;
     }
 
     @Override
     public Vector3 retract(Vector3 v, Matrix H1, Matrix H2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retract'");
+        Vector3 result = retract(v);
+        H1.set(new double[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
+        H2.set(new double[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
+        return result;
     }
 }

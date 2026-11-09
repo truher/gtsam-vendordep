@@ -34,6 +34,7 @@ public class Isotropic extends Diagonal {
         super(p);
     }
 
+    /** @throws IllegalArgumentException sigma is negative. */
     public static shared_ptr<Isotropic> Sigma(int dim, double sigma, boolean smart) {
         MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Sigma.invoke(dim, sigma, smart);
         if (p.equals(MemorySegment.NULL))
@@ -41,6 +42,7 @@ public class Isotropic extends Diagonal {
         return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
+    /** @throws IllegalArgumentException sigma is negative. */
     public static shared_ptr<Isotropic> Sigma(int dim, double sigma) {
         MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Sigma.invoke(dim, sigma, true);
         if (p.equals(MemorySegment.NULL))
@@ -48,6 +50,7 @@ public class Isotropic extends Diagonal {
         return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
+    /** @throws IllegalArgumentException sigma is negative. */
     public static shared_ptr<Isotropic> Variance(int dim, double variance, boolean smart) {
         MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Variance.invoke(dim, variance, smart);
         if (p.equals(MemorySegment.NULL))
@@ -55,10 +58,12 @@ public class Isotropic extends Diagonal {
         return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
+    /** @throws IllegalArgumentException sigma is negative. */
     public static shared_ptr<Isotropic> Precision(int dim, double precision, boolean smart) {
-        return new shared_ptr<Isotropic>(
-                (MemorySegment) FF.noiseModel_Isotropic_Precision.invoke(dim, precision, smart),
-                Isotropic::new);
+        MemorySegment p = (MemorySegment) FF.noiseModel_Isotropic_Precision.invoke(dim, precision, smart);
+        if (p.equals(MemorySegment.NULL))
+            throw new IllegalArgumentException();
+        return new shared_ptr<Isotropic>(p, Isotropic::new);
     }
 
 }
