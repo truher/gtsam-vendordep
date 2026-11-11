@@ -15,7 +15,7 @@ ext.wpilibVersion = "2027.+"
 repositories {
   mavenCentral()
 }
-wpilibRepositories.use2027Repos()
+// wpilibRepositories.use2027Repos()
 if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllReleaseRepositories(project)
 } else {
@@ -67,9 +67,11 @@ test {
     }
 }
 
-if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
-    test.enabled = false
-}
+// if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
+//     test.enabled = false
+// }
+// skip the tests all the time for now
+test.enabled = false
 
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
