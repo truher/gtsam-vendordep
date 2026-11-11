@@ -4,7 +4,7 @@ plugins {
   id 'cpp'
   id 'java'
   id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
-  id 'org.wpilib.NativeUtils' version '2027.1.1'
+  id 'org.wpilib.NativeUtils' version '2027.14.3'
   id 'org.wpilib.GradleJni' version '2027.0.0'
   id 'org.wpilib.GradleVsCode' version '2027.0.0'
 }
@@ -22,17 +22,19 @@ if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
-java {
-  sourceCompatibility = JavaVersion.VERSION_25
-  targetCompatibility = JavaVersion.VERSION_25
-}
-var javaVersion = "25"
+// java {
+//   sourceCompatibility = JavaVersion.VERSION_25
+//   targetCompatibility = JavaVersion.VERSION_25
+// }
+var javaVersion = 25
 
 // Apply C++ configuration
 apply from: 'config.gradle'
 
 // Apply Java configuration
 dependencies {
+    annotationProcessor "io.avaje:avaje-jsonb-generator:3.11"
+    implementation "io.avaje:avaje-jsonb:3.11"
     implementation "org.wpilib.cscore:cscore-java:$wpilibVersion"
     implementation "org.wpilib.cameraserver:cameraserver-java:$wpilibVersion"
     implementation "org.wpilib.ntcore:ntcore-java:$wpilibVersion"
@@ -41,12 +43,14 @@ dependencies {
     implementation "org.wpilib.wpimath:wpimath-java:$wpilibVersion"
     implementation "org.wpilib.wpiunits:wpiunits-java:$wpilibVersion"
     implementation "org.wpilib.datalog:datalog-java:$wpilibVersion"
+    implementation "org.wpilib.telemetry:telemetry-java:$wpilibVersion"
+    implementation "org.wpilib.tunables:tunables-java:$wpilibVersion"
     implementation "org.wpilib.hal:hal-java:$wpilibVersion"
     implementation "org.ejml:ejml-simple:0.44.0"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.19.2"
-    implementation "com.fasterxml.jackson.core:jackson-core:2.19.2"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.19.2"
-    implementation 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:4.10.0-2'
+    // implementation "com.fasterxml.jackson.core:jackson-annotations:2.19.2"
+    // implementation "com.fasterxml.jackson.core:jackson-core:2.19.2"
+    // implementation "com.fasterxml.jackson.core:jackson-databind:2.19.2"
+    implementation 'org.wpilib.thirdparty.opencv:opencv-java:2027-4.13.0-3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -70,6 +74,7 @@ if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
     options.encoding = 'UTF-8'
+    options.release = javaVersion
 }
 
 // Setup Javadocs to link back to WPILib docs

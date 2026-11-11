@@ -188,6 +188,14 @@ model {
                 groupId = artifactGroupId
                 version = pubVersion
             }
+            
+            vendordep(MavenPublication) {
+                artifact vendordepJsonZip
+
+                artifactId = "${baseArtifactId}-vendordep"
+                groupId = artifactGroupId
+                version = pubVersion
+            }
         }
     }
 }
