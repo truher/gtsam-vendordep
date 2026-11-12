@@ -44,20 +44,13 @@ public class Lib {
         try {
             // For running unit tests.
             return SymbolLookup.libraryLookup(
-                    "build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
-                    arena);
-        } catch (IllegalArgumentException ee) {
-        }
-        try {
-            // For running unit tests.
-            return SymbolLookup.libraryLookup(
-                    "build/libs/gtsamwrapper/shared/linuxx86-64/release/libgtsamwrapper.so",
+                    "build/libs/gtsamwrapper/shared/linuxx86-64/libgtsamwrapper.so",
                     arena);
         } catch (IllegalArgumentException ee) {
         }
         // For running unit tests in MacOS.
         return SymbolLookup.libraryLookup(
-                "build/libs/gtsamwrapper/shared/osxuniversal/debug/libgtsamwrapper.dylib",
+                "build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib",
                 arena);
     }
 

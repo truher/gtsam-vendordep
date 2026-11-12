@@ -106,12 +106,18 @@ def systemArch = getCurrentArch()
 
 model {
   components {
-    gtsamwrapper (JniNativeLibrarySpec) {
-      enableCheckTask true
-      javaCompileTasks << compileJava
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
+    gtsamwrapper (NativeLibrarySpec) {
+      binaries.withType(StaticLibraryBinarySpec) {
+        // only build the shared lib
+        buildable = false
+      }
+      // we never use the debug version for anything
+      targetBuildTypes "release"
+      // enableCheckTask true
+      // javaCompileTasks << compileJava
+      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
       // Leave these for future proofing
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
+      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
       sources {
         cpp {
           source {
@@ -122,9 +128,18 @@ model {
             srcDirs 'src/main/driver/include'
           }
         }
-      }     
-      nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
+      }
+      // "driver_shared" is a key, see WPINativeUtilsExtension.java
+      // it means "add wpi dependencies" which we do not need.
+      // nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
+      // "wpimath_shared" includes eigen, which is mentioned in the transitive
+      // inclusions of our source files.
+      nativeUtils.useRequiredLibrary(it, "wpimath_shared", "gtsam")
     }
+  }
+  tasks {
+    // make the test task wait for the build task to complete
+    test.dependsOn $.binaries.withType(SharedLibraryBinarySpec).findAll {it.buildable}.collect {it.buildTask}
   }
 }
 
