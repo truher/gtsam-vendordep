@@ -115,7 +115,7 @@ model {
         withType(SharedLibraryBinarySpec) {
           if (toolChain in Gcc || toolChain in Clang) {
             // Prints compiler driver steps and passes --verbose to ld
-            linker.args "-v", "-Wl"
+            linker.args "-v"
           } else if (toolChain in VisualCpp) {
             // Prints detailed MSVC linker progress and library search paths
             linker.args "/VERBOSE"
