@@ -4,7 +4,7 @@ nativeUtils.addWpiNativeUtils()
 nativeUtils.withCrossSystemCore()
 nativeUtils.withCrossLinuxArm64()
 
-nativeUtils.crossCompilers.getByName("linuxsystemcore").optional = false
+// nativeUtils.crossCompilers.getByName("linuxsystemcore").optional = false
 
 nativeUtils {
     wpi {
