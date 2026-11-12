@@ -48,6 +48,13 @@ public class Lib {
                     arena);
         } catch (IllegalArgumentException ee) {
         }
+        try {
+            // For Github Actions.
+            return SymbolLookup.libraryLookup(
+                    "build/libs/gtsamwrapper/shared/libgtsamwrapper.so",
+                    arena);
+        } catch (IllegalArgumentException ee) {
+        }
         // For running unit tests in MacOS.
         return SymbolLookup.libraryLookup(
                 "build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib",

@@ -107,9 +107,20 @@ def systemArch = getCurrentArch()
 model {
   components {
     gtsamwrapper (NativeLibrarySpec) {
-      binaries.withType(StaticLibraryBinarySpec) {
-        // only build the shared lib
-        buildable = false
+      binaries {
+        withType(StaticLibraryBinarySpec) {
+          // only build the shared lib
+          buildable = false
+        }
+        withType(SharedLibraryBinarySpec) {
+          if (toolChain in Gcc || toolChain in Clang) {
+            // Prints compiler driver steps and passes --verbose to ld
+            linker.args "-v", "-Wl,--verbose"
+          } else if (toolChain in VisualCpp) {
+            // Prints detailed MSVC linker progress and library search paths
+            linker.args "dbghelp.lib /VERBOSE"
+          }
+        }
       }
       // we never use the debug version for anything
       targetBuildTypes "release"
