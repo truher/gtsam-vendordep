@@ -118,7 +118,7 @@ model {
             linker.args "-v", "-Wl,--verbose"
           } else if (toolChain in VisualCpp) {
             // Prints detailed MSVC linker progress and library search paths
-            linker.args "dbghelp.lib /VERBOSE"
+            linker.args "/VERBOSE dbghelp.lib"
           }
         }
       }
