@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/base/Vector.h>
 #include <gtsam/geometry/Cal3DS2.h>
 

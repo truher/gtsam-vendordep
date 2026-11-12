@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/geometry/Unit3.h>
 
 extern "C" {

@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/base/types.h>
 #include <gtsam/inference/Symbol.h>
 

@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/base/Lie.h>
 #include <gtsam/base/VectorSpace.h>
 #include <gtsam/geometry/Point3.h>

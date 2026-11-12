@@ -67,11 +67,11 @@ test {
     }
 }
 
-// if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
-//     test.enabled = false
-// }
+if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
+    test.enabled = false
+}
 // skip the tests all the time for now
-test.enabled = false
+// test.enabled = false
 
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'

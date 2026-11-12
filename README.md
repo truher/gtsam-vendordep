@@ -45,6 +45,23 @@ but I couldn't find a way to sort out the null in the C bindings, and
 it would have been a bit opaque anyway.  So the C bindings are a bit more
 verbose, but more straightforward.
 
+## cmath
+
+Note!  The Windows (MSVC) build will fail if you don't include these lines
+in your cpp files:
+
+```
+#define _USE_MATH_DEFINES
+#include <cmath>
+```
+
+The reason is that Windows doesn't supply math defines like `M_PI`, so
+you need to add cmath.
+
+The GTSAM build itself notices the build environment and adds that define,
+but here we're not using the GTSAM build, we're just building against the
+GTSAM headers.
+
 ## Types
 
 The GTSAM types, and C++ type system in general, can only be approximated

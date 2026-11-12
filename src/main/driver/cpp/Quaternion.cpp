@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/geometry/Point3.h>
 #include <gtsam/geometry/Quaternion.h>
 

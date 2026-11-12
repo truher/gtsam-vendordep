@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/inference/Factor.h>
 
 // this is just a vector; maybe use vector instead?

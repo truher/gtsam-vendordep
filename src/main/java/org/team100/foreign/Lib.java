@@ -7,6 +7,7 @@ import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.nio.file.Paths;
 
 /**
  * Requires the correct java version,
@@ -14,35 +15,35 @@ import java.lang.invoke.MethodHandle;
  */
 public class Lib {
     public static final Arena arena = Arena.ofAuto();
-    // The vendordep library is unpacked somewhere the loader can find it.
-    // Where does the name, "libgtsamwrapper.so" come from?
-    // it is mentioned in build.gradle model.components
-    // and build.gradle nativeUtils.privateExportsConfigs
-    // and publish.gradle model.publishing.driverTaskList.
-    public static final SymbolLookup lib;
-    static {
-        SymbolLookup slib;
+
+    public static final SymbolLookup lib = load();
+
+    private static SymbolLookup load() {
+        // The vendordep library is unpacked somewhere the loader can find it.
+        // Where does the name, "libgtsamwrapper.so" come from?
+        // it is mentioned in build.gradle model.components
+        // and build.gradle nativeUtils.privateExportsConfigs
+        // and publish.gradle model.publishing.driverTaskList.
         // Where are we?
-        // String cwd = Paths.get("").toAbsolutePath().toString();
-        // System.out.println("CWD: " + cwd);
-        // System.out.flush();
-        // Where is the library?
+        String cwd = Paths.get("").toAbsolutePath().toString();
+        System.out.println("CWD: " + cwd);
+        System.out.flush();
+
+        // Try a few locations for the library.
+        try {
+            // Deployed on the Systemcore.
+            return SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
+        } catch (IllegalArgumentException e) {
+        }
 
         try {
-            // Systemcore location.
-            slib = SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
-        } catch (IllegalArgumentException e) {
-            // Desktop location.
-
-            try {
-                slib = SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
-            } catch (IllegalArgumentException ee) {
-                // Test location.
-                slib = SymbolLookup.libraryLookup("build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
-                        arena);
-            }
+            // In simulation on Desktop.
+            return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+        } catch (IllegalArgumentException ee) {
         }
-        lib = slib;
+        // For running unit tests.
+        return SymbolLookup.libraryLookup("build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
+                arena);
     }
 
     public static final Linker linker = Linker.nativeLinker();

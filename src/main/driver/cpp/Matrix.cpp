@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/base/Matrix.h>
 #include <gtsam/base/MatrixConstants.h>
 

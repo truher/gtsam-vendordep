@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/geometry/Rot3.h>
 #include <gtsam/slam/BetweenFactor.h>
 

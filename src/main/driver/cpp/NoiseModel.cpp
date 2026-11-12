@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/base/Matrix.h>
 // supplies necessary manifold traits!
 #include <gtsam/base/VectorSpace.h>

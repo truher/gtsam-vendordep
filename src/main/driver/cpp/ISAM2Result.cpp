@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/inference/Factor.h>
 #include <gtsam/nonlinear/ISAM2Result.h>
 

@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/geometry/Pose2.h>
 #include <gtsam/slam/PoseRotationPrior.h>
 
