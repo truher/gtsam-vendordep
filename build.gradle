@@ -118,7 +118,10 @@ model {
             linker.args "-v", "-Wl"
           } else if (toolChain in VisualCpp) {
             // Prints detailed MSVC linker progress and library search paths
-            linker.args "/VERBOSE dbghelp.lib"
+            linker.args "/VERBOSE"
+          }
+          tasks.withType(LinkSharedLibrary) {
+            libs.from(files("dbghelp.lib"))
           }
         }
       }
