@@ -23,14 +23,12 @@ nativeUtils {
             ext = "zip"
             version = "2027-4.3-7"
             targetPlatforms = [
-                // "linuxarm32",
                 "linuxarm64",
-                // "linuxathena",
                 "linuxsystemcore",
                 "linuxx86-64",
                 "osxuniversal",
-                // "windowsarm64",
-                "windowsx86"
+                "windowsarm64",
+                "windowsx86-64"
             ]
         }
     }
