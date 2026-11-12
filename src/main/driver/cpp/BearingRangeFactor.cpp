@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtsam/geometry/Point2.h>
 #include <gtsam/geometry/Pose2.h>
 #include <gtsam/sam/BearingRangeFactor.h>
