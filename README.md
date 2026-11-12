@@ -14,11 +14,13 @@ gtsam::Point2* Point2(double x, double y) {
 ...
 ```
 
-Each set of symbols is referenced in src/main/driver/symbols.txt, using wildcards:
+All symbols must be referenced in src/main/driver/symbols.txt.
+
+There are a lot of symbols, so I generated this file using
+the object files:
 
 ```
-Point2*
-...
+find . -name '*.o' | xargs nm -g  | grep ' T ' | cut -f3 -d' ' | sort | uniq > src/main/driver/symbols.txt 
 ```
 
 Make sure you update `symbols.txt` when you add new cpp code!

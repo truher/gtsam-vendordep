@@ -21,7 +21,7 @@ public class Lib {
     private static SymbolLookup load() {
         // The vendordep library is unpacked somewhere the loader can find it.
         // Where does the name, "libgtsamwrapper.so" come from?
-        // it is mentioned in build.gradle model.components
+        // It is mentioned in build.gradle model.components
         // and build.gradle nativeUtils.privateExportsConfigs
         // and publish.gradle model.publishing.driverTaskList.
         // Where are we?
@@ -41,8 +41,23 @@ public class Lib {
             return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
         } catch (IllegalArgumentException ee) {
         }
-        // For running unit tests.
-        return SymbolLookup.libraryLookup("build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
+        try {
+            // For running unit tests.
+            return SymbolLookup.libraryLookup(
+                    "build/libs/gtsamwrapper/shared/linuxx86-64/debug/libgtsamwrapper.so",
+                    arena);
+        } catch (IllegalArgumentException ee) {
+        }
+        try {
+            // For running unit tests.
+            return SymbolLookup.libraryLookup(
+                    "build/libs/gtsamwrapper/shared/linuxx86-64/release/libgtsamwrapper.so",
+                    arena);
+        } catch (IllegalArgumentException ee) {
+        }
+        // For running unit tests in MacOS.
+        return SymbolLookup.libraryLookup(
+                "build/libs/gtsamwrapper/shared/osxuniversal/debug/libgtsamwrapper.dylib",
                 arena);
     }
 

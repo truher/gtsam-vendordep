@@ -22,9 +22,9 @@ jobs:
           - container: wpilib/aarch64-cross-debian:trixie
             artifact-name: Arm64
             build-options: "-Ponlylinuxarm64"
-          - container: wpilib/systemcore-cross-debian:trixie
+          - container: wpilib/debian-base:trixie
             artifact-name: Linux
-            build-options: ""
+            build-options: "-Ponlylinuxx86-64"
     name: "Build - ${{ matrix.artifact-name }}"
     runs-on: ubuntu-24.04
     container: ${{ matrix.container }}
