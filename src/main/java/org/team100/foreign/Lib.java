@@ -55,9 +55,9 @@ public class Lib {
                     arena);
         } catch (IllegalArgumentException ee) {
         }
-        // For running unit tests in MacOS.
+        // For running unit tests in MacOS, it wants an absolute path, ignores CWD.
         return SymbolLookup.libraryLookup(
-                "build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib",
+                "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib",
                 arena);
     }
 
