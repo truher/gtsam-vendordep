@@ -60,7 +60,7 @@ dependencies {
 // Set up java tests
 test {
     useJUnitPlatform()
-    if (toolChain in Clang) {
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
       def existingPath = System.getProperty('java.library.path') ?: ''
       def libDir = file("${projectDir}/build/libs/gtsamwrapper/shared/osxuniversal").absolutePath
       def combinedPath = existingPath ? "${existingPath}${File.pathSeparator}${customPath}" : customPath
