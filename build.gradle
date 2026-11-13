@@ -112,7 +112,7 @@ def systemArch = getCurrentArch()
 
 model {
   components {
-    gtsamwrapper (NativeLibrarySpec) {
+    gtsamwrapper (JniNativeLibrarySpec) {
       binaries {
         withType(StaticLibraryBinarySpec) {
           // only build the shared lib
@@ -131,11 +131,11 @@ model {
       }
       // we never use the debug version for anything
       targetBuildTypes "release"
-      // enableCheckTask true
-      // javaCompileTasks << compileJava
-      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
+      enableCheckTask true
+      javaCompileTasks << compileJava
+      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
       // Leave these for future proofing
-      // jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
+      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
       sources {
         cpp {
           source {
@@ -149,10 +149,10 @@ model {
       }
       // "driver_shared" is a key, see WPINativeUtilsExtension.java
       // it means "add wpi dependencies" which we do not need.
-      // nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
+      nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
       // "wpimath_shared" includes eigen, which is mentioned in the transitive
       // inclusions of our source files.
-      nativeUtils.useRequiredLibrary(it, "wpimath_shared", "gtsam")
+      // nativeUtils.useRequiredLibrary(it, "wpimath_shared", "gtsam")
     }
   }
   tasks {
