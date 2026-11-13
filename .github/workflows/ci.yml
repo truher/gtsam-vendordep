@@ -80,6 +80,8 @@ jobs:
       - name: Build with Gradle
         env:
           LD_DEBUG: libs,files
+          DYLD_PRINT_LIBRARIES: 1
+          DYLD_PRINT_RPATHS: 1
         run: ./gradlew build --no-daemon --info
       - uses: actions/upload-artifact@v7
         with:

@@ -30,7 +30,7 @@ public class Lib {
         try {
             if (!Files.exists(path))
                 return;
-            String[] command = { "otool", "-L", "-l", path.toAbsolutePath().toString() };
+            String[] command = { "otool", "-L",z path.toAbsolutePath().toString() };
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.redirectErrorStream(true);
             Process process = builder.start();
