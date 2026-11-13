@@ -1,7 +1,9 @@
 package org.team100.foreign;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -9,6 +11,7 @@ import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +26,28 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
+    private static void ld(Path path) {
+        try {
+            if (!Files.exists(path))
+                return;
+            String[] command = { "ldd", path.toAbsolutePath().toString() };
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+            int exitCode = process.waitFor();
+            System.out.println("Exited with code: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static void readbytes(Path path) {
         if (!Files.exists(path))
             return;
@@ -36,13 +61,13 @@ public class Lib {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static void info(Path p) {
         System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
         System.out.printf("EXISTS? %b\n", Files.exists(p));
         readbytes(p);
+        ld(p);
     }
 
     private static Path libPath() {
@@ -101,14 +126,14 @@ public class Lib {
         }
         System.out.flush();
 
-        try {
-            // In simulation on Desktop.
-            // TODO: figure out where this file really is.
-            return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
-        } catch (IllegalArgumentException ee) {
-            // System.out.printf("failed %s\n", ee.getMessage());
-            // ee.printStackTrace();
-        }
+        // try {
+        // // In simulation on Desktop.
+        // // TODO: figure out where this file really is.
+        // return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+        // } catch (IllegalArgumentException ee) {
+        // // System.out.printf("failed %s\n", ee.getMessage());
+        // // ee.printStackTrace();
+        // }
 
         try {
             return SymbolLookup.libraryLookup(libPath().toAbsolutePath(), arena);
