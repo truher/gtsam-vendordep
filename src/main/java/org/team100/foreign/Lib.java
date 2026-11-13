@@ -36,7 +36,7 @@ public class Lib {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("===shared===")
+        System.out.println("===shared===");
         Path p2 = Paths.get("build/libs/gtsamwrapper/shared/");
         try {
             Files.list(p2).forEach(System.out::println);
