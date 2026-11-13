@@ -60,6 +60,8 @@ dependencies {
 // Set up java tests
 test {
     useJUnitPlatform()
+    def libDir = file("${projectDir}/build/libs/gtsamwrapper/shared/osxuniversal")
+    systemProperty 'java.library.path', libDir.absolutePath
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
     testLogging {
         events "failed"
@@ -67,9 +69,9 @@ test {
     }
 }
 
-if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
-    test.enabled = false
-}
+// if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
+//     test.enabled = false
+// }
 // skip the tests all the time for now
 // test.enabled = false
 
