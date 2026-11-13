@@ -40,7 +40,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
         env:
-          LD_DEBUG: libs
+          LD_DEBUG: libs,files
         run: ./gradlew build --no-daemon --info ${{ matrix.build-options }}
       - uses: actions/upload-artifact@v7
         with:
@@ -79,7 +79,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
         env:
-          LD_DEBUG: libs
+          LD_DEBUG: libs,files
         run: ./gradlew build --no-daemon --info
       - uses: actions/upload-artifact@v7
         with:
