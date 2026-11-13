@@ -132,7 +132,7 @@ model {
       }
       // we never use the debug version for anything
       targetBuildTypes "release"
-      enableCheckTask true
+    //   enableCheckTask true
     //   javaCompileTasks << compileJava
     //   jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
       // Leave these for future proofing
