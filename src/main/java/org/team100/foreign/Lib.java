@@ -178,6 +178,8 @@ public class Lib {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         System.out.println("===shared===");
         Path p2 = Paths.get("build/libs/gtsamwrapper/shared/");
         try {
@@ -185,6 +187,15 @@ public class Lib {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("===build===");
+        Path p3 = Paths.get("build/libs/gtsamwrapper/shared/");
+        try {
+            Files.list(p3).forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         System.out.flush();
 
         // try {
