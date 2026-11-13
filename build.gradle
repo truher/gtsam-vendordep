@@ -120,11 +120,11 @@ model {
             // Prints detailed MSVC linker progress and library search paths
             linker.args "/VERBOSE"
           }
-          tasks.withType(LinkSharedLibrary) {
-            if (toolChain in VisualCpp) {
-              libs.from(files("C:\Program Files (x86)\Windows Kits\10\Debuggers\lib\x64\dbghelp.lib"))
-            }
-          }
+          // tasks.withType(LinkSharedLibrary) {
+          //   if (toolChain in VisualCpp) {
+          //     libs.from(files("dbghelp.lib"))
+          //   }
+          // }
         }
       }
       // we never use the debug version for anything
