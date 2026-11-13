@@ -189,7 +189,7 @@ public class Lib {
         }
 
         System.out.println("===build===");
-        Path p3 = Paths.get("build/libs/gtsamwrapper/shared/");
+        Path p3 = Paths.get("build");
         try {
             Files.list(p3).forEach(System.out::println);
         } catch (IOException e) {
