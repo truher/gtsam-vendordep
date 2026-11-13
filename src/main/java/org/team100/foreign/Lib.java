@@ -21,6 +21,38 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
+    private static void info(Path p) {
+        System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
+        System.out.printf("EXISTS? %b\n", Files.exists(p));
+    }
+
+    private static Path libPath() {
+
+        // Deployed on the Systemcore.
+        Path p = Paths.get("frc/third-party/lib/libgtsamwrapper.so");
+        info(p);
+        if (Files.exists(p))
+            return p;
+        // For running unit tests.
+        p = Paths.get(
+                "build/libs/gtsamwrapper/shared/linuxx86-64/libgtsamwrapper.so");
+        info(p);
+        if (Files.exists(p))
+            return p;
+        // For Github Actions.
+        p = Paths.get("build/libs/gtsamwrapper/shared/libgtsamwrapper.so");
+        info(p);
+        if (Files.exists(p))
+            return p;
+        // For running unit tests in MacOS.
+        p = Paths.get(System.mapLibraryName("gtsamwrapper"));
+        info(p);
+        if (Files.exists(p))
+            return p;
+        System.out.println("Can't find the library.");
+        return null;
+    }
+
     private static SymbolLookup load() {
         // The vendordep library is unpacked somewhere the loader can find it.
         // Where does the name, "libgtsamwrapper.so" come from?
@@ -45,35 +77,23 @@ public class Lib {
         }
         System.out.flush();
 
-        // Try a few locations for the library.
         try {
-            // Deployed on the Systemcore.
-            return SymbolLookup.libraryLookup("frc/third-party/lib/libgtsamwrapper.so", arena);
-        } catch (IllegalArgumentException e) {
+            // In simulation on Desktop.
+            // TODO: figure out where this file really is.
+            return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
+        } catch (IllegalArgumentException ee) {
+            System.out.printf("failed %s\n", ee.getMessage());
+            ee.printStackTrace();
         }
 
         try {
-            // In simulation on Desktop.
-            return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
-        } catch (IllegalArgumentException ee) {
+            return SymbolLookup.libraryLookup(libPath().toAbsolutePath(), arena);
+        } catch (IllegalArgumentException e) {
+            System.out.printf("lib load failed %s\n", e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        try {
-            // For running unit tests.
-            return SymbolLookup.libraryLookup(
-                    "build/libs/gtsamwrapper/shared/linuxx86-64/libgtsamwrapper.so",
-                    arena);
-        } catch (IllegalArgumentException ee) {
-        }
-        try {
-            // For Github Actions.
-            Path p = Paths.get("build/libs/gtsamwrapper/shared/libgtsamwrapper.so");
-            System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
-            System.out.printf("EXISTS? %b\n", Files.exists(p));
-            return SymbolLookup.libraryLookup(p.toAbsolutePath(), arena);
-        } catch (IllegalArgumentException ee) {
-        }
-        // For running unit tests in MacOS.
-        return SymbolLookup.libraryLookup(System.mapLibraryName("gtsamwrapper"), arena);
+
     }
 
     public static final Linker linker = Linker.nativeLinker();
