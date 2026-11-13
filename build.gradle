@@ -115,11 +115,11 @@ model {
   components {
     gtsamwrapper (JniNativeLibrarySpec) {
       binaries {
-        withType(StaticLibraryBinarySpec) {
-          // only build the shared lib
-          buildable = false
-        }
-        withType(SharedLibraryBinarySpec) {
+        // withType(StaticLibraryBinarySpec) {
+        //   // only build the shared lib
+        //   buildable = false
+        // }
+        // withType(SharedLibraryBinarySpec) {
           tasks.withType(LinkSharedLibrary) {
             if (toolChain in Gcc || toolChain in Clang) {
               linkerArgs.add("-v")
@@ -128,7 +128,7 @@ model {
               linkerArgs.add("dbghelp.lib")
             }
           }
-        }
+        // }
       }
       // we never use the debug version for anything
       targetBuildTypes "release"
