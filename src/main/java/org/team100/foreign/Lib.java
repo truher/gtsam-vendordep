@@ -48,28 +48,6 @@ public class Lib {
         }
     }
 
-    private static void file(Path path) {
-        try {
-            if (!Files.exists(path))
-                return;
-            String[] command = { "file", path.toAbsolutePath().toString() };
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.redirectErrorStream(true);
-            Process process = builder.start();
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
-            int exitCode = process.waitFor();
-            System.out.println("Exited with code: " + exitCode);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static void ld(Path path) {
         try {
             if (!Files.exists(path))
@@ -114,8 +92,6 @@ public class Lib {
         readbytes(p);
         System.out.println("LD");
         ld(p);
-        System.out.println("FILE");
-        file(p);
         System.out.println("READELF");
         readelf(p);
     }
