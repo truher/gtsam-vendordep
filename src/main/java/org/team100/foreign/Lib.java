@@ -1,5 +1,6 @@
 package org.team100.foreign;
 
+import java.io.IOException;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -7,6 +8,8 @@ import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -25,8 +28,21 @@ public class Lib {
         // and build.gradle nativeUtils.privateExportsConfigs
         // and publish.gradle model.publishing.driverTaskList.
         // Where are we?
-        String cwd = Paths.get("").toAbsolutePath().toString();
-        System.out.println("CWD: " + cwd);
+        Path path = Paths.get("");
+        String cwd = path.toAbsolutePath().toString();
+        System.out.println("===CWD: " + cwd);
+        try {
+            Files.list(path).forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("===shared===")
+        Path p2 = Paths.get("build/libs/gtsamwrapper/shared/");
+        try {
+            Files.list(p2).forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.flush();
 
         // Try a few locations for the library.
