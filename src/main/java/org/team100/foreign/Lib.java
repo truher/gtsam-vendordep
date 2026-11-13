@@ -68,6 +68,11 @@ public class Lib {
         info(p);
         if (Files.exists(p))
             return p;
+        p = Paths.get(System.mapLibraryName(
+                "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib"));
+        info(p);
+        if (Files.exists(p))
+            return p;
         System.out.println("Can't find the library.");
         return null;
     }
@@ -101,8 +106,8 @@ public class Lib {
             // TODO: figure out where this file really is.
             return SymbolLookup.libraryLookup("libgtsamwrapper.so", arena);
         } catch (IllegalArgumentException ee) {
-            System.out.printf("failed %s\n", ee.getMessage());
-            ee.printStackTrace();
+            // System.out.printf("failed %s\n", ee.getMessage());
+            // ee.printStackTrace();
         }
 
         try {
