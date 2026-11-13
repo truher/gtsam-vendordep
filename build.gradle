@@ -121,7 +121,9 @@ model {
             linker.args "/VERBOSE"
           }
           tasks.withType(LinkSharedLibrary) {
-            libs.from(files("dbghelp.lib"))
+            if (toolChain in VisualCpp) {
+              libs.from(files("C:\Program Files (x86)\Windows Kits\10\Debuggers\lib\x64\dbghelp.lib"))
+            }
           }
         }
       }
