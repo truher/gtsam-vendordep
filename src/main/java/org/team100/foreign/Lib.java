@@ -48,7 +48,7 @@ public class Lib {
         }
     }
 
-    private static void ld(Path path) {
+    private static void ldd(Path path) {
         try {
             if (!Files.exists(path))
                 return;
@@ -90,8 +90,8 @@ public class Lib {
         System.out.printf("EXISTS? %b\n", Files.exists(p));
         System.out.println("READBYTES");
         readbytes(p);
-        System.out.println("LD");
-        ld(p);
+        System.out.println("LDD");
+        ldd(p);
         System.out.println("READELF");
         readelf(p);
     }

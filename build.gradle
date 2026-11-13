@@ -150,10 +150,10 @@ model {
       }
       // "driver_shared" is a key, see WPINativeUtilsExtension.java
       // it means "add wpi dependencies" which we do not need.
-      nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
+    //   nativeUtils.useRequiredLibrary(it, "driver_shared", "gtsam")
       // "wpimath_shared" includes eigen, which is mentioned in the transitive
       // inclusions of our source files.
-      // nativeUtils.useRequiredLibrary(it, "wpimath_shared", "gtsam")
+      nativeUtils.useRequiredLibrary(it, "wpimath_shared", "gtsam")
     }
   }
   tasks {
