@@ -122,7 +122,9 @@ public class Lib {
 
     private static Path libPath() {
         // For Systemcore.
-        Path p = Paths.get("frc/third-party/lib/libgtsamwrapper.so");
+        // Path p = Paths.get("frc/third-party/lib/libgtsamwrapper.so");
+        // Joel found this path on 11/13/26.
+        Path p = Paths.get("wpilib/third-party/lib/libgtsamwrapper.so");
         info(p);
         if (Files.exists(p))
             return p;
