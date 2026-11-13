@@ -66,9 +66,10 @@ public class Lib {
         }
         try {
             // For Github Actions.
-            return SymbolLookup.libraryLookup(
-                    "build/libs/gtsamwrapper/shared/libgtsamwrapper.so",
-                    arena);
+            Path p = Paths.get("build/libs/gtsamwrapper/shared/libgtsamwrapper.so");
+            System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
+            System.out.printf("EXISTS? %b\n", Files.exists(p));
+            return SymbolLookup.libraryLookup(p.toAbsolutePath(), arena);
         } catch (IllegalArgumentException ee) {
         }
         // For running unit tests in MacOS.

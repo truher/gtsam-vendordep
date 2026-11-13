@@ -119,15 +119,11 @@ model {
           buildable = false
         }
         withType(SharedLibraryBinarySpec) {
-          if (toolChain in Gcc || toolChain in Clang) {
-            // Prints compiler driver steps and passes --verbose to ld
-            linker.args "-v"
-          } else if (toolChain in VisualCpp) {
-            // Prints detailed MSVC linker progress and library search paths
-            linker.args "/VERBOSE"
-          }
           tasks.withType(LinkSharedLibrary) {
-            if (toolChain in VisualCpp) {
+            if (toolChain in Gcc || toolChain in Clang) {
+              linkerArgs.add("-v")
+            } else if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+              linkerArgs.add("/VERBOSE")
               linkerArgs.add("dbghelp.lib")
             }
           }
