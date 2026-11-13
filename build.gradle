@@ -115,10 +115,10 @@ model {
   components {
     gtsamwrapper (JniNativeLibrarySpec) {
       binaries {
-        // withType(StaticLibraryBinarySpec) {
-        //   // only build the shared lib
-        //   buildable = false
-        // }
+        withType(StaticLibraryBinarySpec) {
+          // only build the shared lib
+          buildable = false
+        }
         // withType(SharedLibraryBinarySpec) {
           tasks.withType(LinkSharedLibrary) {
             if (toolChain in Gcc || toolChain in Clang) {
