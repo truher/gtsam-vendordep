@@ -26,6 +26,29 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
+    private static void file(Path path) {
+        try {
+            if (!Files.exists(path))
+                return;
+            String[] command = { "file", path.toAbsolutePath().toString() };
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+            int exitCode = process.waitFor();
+            System.out.println("Exited with code: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private static void ld(Path path) {
         try {
             if (!Files.exists(path))
@@ -66,8 +89,12 @@ public class Lib {
     private static void info(Path p) {
         System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
         System.out.printf("EXISTS? %b\n", Files.exists(p));
+        System.out.println("READBYTES");
         readbytes(p);
+        System.out.println("LD");
         ld(p);
+        System.out.println("FILE");
+        file(p);
     }
 
     private static Path libPath() {
