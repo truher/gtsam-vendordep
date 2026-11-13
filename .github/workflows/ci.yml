@@ -36,8 +36,10 @@ jobs:
       - name: Fetch all history and metadata
         run: |
           git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        run: ./gradlew build --info ${{ matrix.build-options }}
+        run: ./gradlew build --no-daemon --info ${{ matrix.build-options }}
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}
@@ -71,8 +73,10 @@ jobs:
           java-version: 25
           architecture: ${{ matrix.architecture }}
       - uses: ilammy/msvc-dev-cmd@v1.13.0
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        run: ./gradlew build --info
+        run: ./gradlew build --no-daemon --info
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}

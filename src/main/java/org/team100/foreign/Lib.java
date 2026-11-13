@@ -68,8 +68,8 @@ public class Lib {
         info(p);
         if (Files.exists(p))
             return p;
-        p = Paths.get(System.mapLibraryName(
-                "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib"));
+        p = Paths.get(
+                "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib");
         info(p);
         if (Files.exists(p))
             return p;
