@@ -26,6 +26,28 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
+        private static void otool(Path path) {
+        try {
+            if (!Files.exists(path))
+                return;
+            String[] command = { "otool", "-L", "-l", path.toAbsolutePath().toString() };
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+            int exitCode = process.waitFor();
+            System.out.println("Exited with code: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void readelf(Path path) {
         try {
             if (!Files.exists(path))
@@ -44,7 +66,7 @@ public class Lib {
             int exitCode = process.waitFor();
             System.out.println("Exited with code: " + exitCode);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -66,7 +88,7 @@ public class Lib {
             int exitCode = process.waitFor();
             System.out.println("Exited with code: " + exitCode);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -94,6 +116,8 @@ public class Lib {
         ldd(p);
         System.out.println("READELF");
         readelf(p);
+        System.out.println("OTOOL");
+        otool(p);
     }
 
     private static Path libPath() {
