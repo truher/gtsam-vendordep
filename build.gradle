@@ -5,7 +5,7 @@ plugins {
   id 'java'
   id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
   id 'org.wpilib.NativeUtils' version '2027.14.3'
-  id 'org.wpilib.GradleJni' version '2027.0.0'
+//   id 'org.wpilib.GradleJni' version '2027.0.0'
   id 'org.wpilib.GradleVsCode' version '2027.0.0'
 }
 
@@ -113,7 +113,7 @@ def systemArch = getCurrentArch()
 
 model {
   components {
-    gtsamwrapper (JniNativeLibrarySpec) {
+    gtsamwrapper (NativeLibrarySpec) {
       binaries {
         withType(StaticLibraryBinarySpec) {
           // only build the shared lib
@@ -133,10 +133,10 @@ model {
       // we never use the debug version for anything
       targetBuildTypes "release"
       enableCheckTask true
-      javaCompileTasks << compileJava
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
+    //   javaCompileTasks << compileJava
+    //   jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.systemcore)
       // Leave these for future proofing
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
+    //   jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.linuxarm64)
       sources {
         cpp {
           source {
