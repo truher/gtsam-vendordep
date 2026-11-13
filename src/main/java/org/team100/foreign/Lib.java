@@ -26,7 +26,7 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
-        private static void otool(Path path) {
+    private static void otool(Path path) {
         try {
             if (!Files.exists(path))
                 return;
@@ -121,33 +121,44 @@ public class Lib {
     }
 
     private static Path libPath() {
-
-        // Deployed on the Systemcore.
+        // For Systemcore.
         Path p = Paths.get("frc/third-party/lib/libgtsamwrapper.so");
         info(p);
         if (Files.exists(p))
             return p;
-        // For running unit tests.
+
+        // For running unit tests on Linux.
         p = Paths.get(
                 "build/libs/gtsamwrapper/shared/linuxx86-64/libgtsamwrapper.so");
         info(p);
         if (Files.exists(p))
             return p;
+
         // For Github Actions.
         p = Paths.get("build/libs/gtsamwrapper/shared/libgtsamwrapper.so");
         info(p);
         if (Files.exists(p))
             return p;
-        // For running unit tests in MacOS.
+
+        // For running unit tests on MacOS.
         p = Paths.get(System.mapLibraryName("gtsamwrapper"));
         info(p);
         if (Files.exists(p))
             return p;
+
+        // For Github Actions on MacOS.
         p = Paths.get(
                 "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib");
         info(p);
         if (Files.exists(p))
             return p;
+
+        // For Github Actions on Windows.
+        p = Paths.get("build/libs/gtsamwrapper/shared/windowsx86-64/gtsamwrapper.dll");
+        info(p);
+        if (Files.exists(p))
+            return p;
+
         System.out.println("Can't find the library.");
         return null;
     }
