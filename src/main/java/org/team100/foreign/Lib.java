@@ -1,6 +1,7 @@
 package org.team100.foreign;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -11,6 +12,7 @@ import java.lang.invoke.MethodHandle;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HexFormat;
 
 /**
  * Requires the correct java version,
@@ -21,9 +23,26 @@ public class Lib {
 
     public static final SymbolLookup lib = load();
 
+    private static void readbytes(Path path) {
+        if (!Files.exists(path))
+            return;
+        byte[] bytes = new byte[20];
+        try (InputStream is = Files.newInputStream(path)) {
+            if (is.read(bytes) < 20)
+                return;
+            String hexUpper = HexFormat.of().withUpperCase().formatHex(bytes);
+            System.out.println(path.toAbsolutePath());
+            System.out.println(hexUpper);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private static void info(Path p) {
         System.out.printf("TRYING TO LOAD %s\n", p.toAbsolutePath());
         System.out.printf("EXISTS? %b\n", Files.exists(p));
+        readbytes(p);
     }
 
     private static Path libPath() {
