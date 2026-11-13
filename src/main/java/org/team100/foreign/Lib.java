@@ -7,7 +7,6 @@ import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -56,13 +55,8 @@ public class Lib {
                     arena);
         } catch (IllegalArgumentException ee) {
         }
-        // For running unit tests in MacOS, it wants an absolute path, ignores CWD.
-        Path libpath = Path.of(
-                "/Users/runner/work/gtsam-vendordep/gtsam-vendordep/build/libs/gtsamwrapper/shared/osxuniversal/libgtsamwrapper.dylib")
-                .toAbsolutePath();
-        return SymbolLookup.libraryLookup(
-                libpath,
-                arena);
+        // For running unit tests in MacOS.
+        return SymbolLookup.libraryLookup(System.mapLibraryName("gtsamwrapper"), arena);
     }
 
     public static final Linker linker = Linker.nativeLinker();

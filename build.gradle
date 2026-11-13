@@ -60,8 +60,12 @@ dependencies {
 // Set up java tests
 test {
     useJUnitPlatform()
-    def libDir = file("${projectDir}/build/libs/gtsamwrapper/shared/osxuniversal")
-    systemProperty 'java.library.path', libDir.absolutePath
+    if (toolChain in Clang) {
+      def existingPath = System.getProperty('java.library.path') ?: ''
+      def libDir = file("${projectDir}/build/libs/gtsamwrapper/shared/osxuniversal").absolutePath
+      def combinedPath = existingPath ? "${existingPath}${File.pathSeparator}${customPath}" : customPath
+      systemProperty 'java.library.path', combinedPath
+    }
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
     testLogging {
         events "failed"
@@ -122,11 +126,11 @@ model {
             // Prints detailed MSVC linker progress and library search paths
             linker.args "/VERBOSE"
           }
-          // tasks.withType(LinkSharedLibrary) {
-          //   if (toolChain in VisualCpp) {
-          //     libs.from(files("dbghelp.lib"))
-          //   }
-          // }
+          tasks.withType(LinkSharedLibrary) {
+            if (toolChain in VisualCpp) {
+              linkerArgs.add("dbghelp.lib")
+            }
+          }
         }
       }
       // we never use the debug version for anything

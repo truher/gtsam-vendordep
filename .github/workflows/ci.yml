@@ -20,7 +20,7 @@ jobs:
             artifact-name: SystemCore
             build-options: "-Ponlylinuxsystemcore"
           - container: wpilib/aarch64-cross-debian:trixie
-            artifact-name: Arm64
+            artifact-name: Linux-Arm64
             build-options: "-Ponlylinuxarm64"
           - container: wpilib/debian-base:trixie
             artifact-name: Linux
