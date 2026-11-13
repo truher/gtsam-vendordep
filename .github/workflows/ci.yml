@@ -82,7 +82,7 @@ jobs:
           LD_DEBUG: libs,files
           DYLD_PRINT_LIBRARIES: 1
           DYLD_PRINT_RPATHS: 1
-        run: ./gradlew build --no-daemon --info
+        run: ./gradlew build --no-daemon --debug --stacktrace
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}
