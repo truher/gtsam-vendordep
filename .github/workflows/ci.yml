@@ -39,9 +39,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        env:
-          LD_DEBUG: libs,files
-        run: ./gradlew build --no-daemon --info ${{ matrix.build-options }}
+        # env:
+          # Loader debugging, to dependent library load events.
+          # LD_DEBUG: libs,files
+        run: ./gradlew build --no-daemon ${{ matrix.build-options }}
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}
@@ -79,12 +80,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
         env:
-          LD_DEBUG: libs,files
-          # LDFLAGS: "-Wl,-dead_strip_dylibs"
-          DYLD_PRINT_LIBRARIES: 1
-          DYLD_PRINT_RPATHS: 1
+          # Loader debugging, to dependent library load events.
+          # LD_DEBUG: libs,files
+          # DYLD_PRINT_LIBRARIES: 1
+          # DYLD_PRINT_RPATHS: 1
+          # Required for the Windows build to complete, otherwise the linker OOMs.
           GRADLE_OPTS: "-Xmx2g"
-        run: ./gradlew build --no-daemon --debug --stacktrace
+        # no-daemon saves RAM.
+        run: ./gradlew build --no-daemon
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact-name }}

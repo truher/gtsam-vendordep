@@ -61,6 +61,7 @@ dependencies {
 test {
     useJUnitPlatform()
     if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+      // Required for mac test runner to find the library.
       def existingPath = System.getProperty('java.library.path') ?: ''
       def customPath = file("${projectDir}/build/libs/gtsamwrapper/shared/osxuniversal").absolutePath
       def combinedPath = existingPath ? "${existingPath}${File.pathSeparator}${customPath}" : customPath
@@ -70,11 +71,11 @@ test {
     testLogging {
         events "failed"
         exceptionFormat = "full"
-        showStandardStreams = true
+        // showStandardStreams = true
     }
 }
 
-// Avoid trying to run the cross-compiled code, since it can't work.
+// Avoid trying to run the cross-compiled code, since it can't run on the host.
 if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm64') || project.hasProperty('onlylinuxsystemcore')) {
     test.enabled = false
 }
@@ -86,7 +87,7 @@ tasks.withType(JavaCompile) {
     options.release = javaVersion
 }
 
-// Setup Javadocs to link back to WPILib docs
+// Setup Javadocs to link back to WPILib docs.
 javadoc {
     options {
         addStringOption('Xdoclint:none', '-quiet')
@@ -94,7 +95,7 @@ javadoc {
     }
 }
 
-// Set up exports properly
+// Set up exports properly.
 nativeUtils {
   exportsConfigs {
   }
@@ -113,22 +114,27 @@ def systemArch = getCurrentArch()
 
 model {
   components {
+    // this was originally JniNativeLibrarySpec but we don't actually use JNI.
     gtsamwrapper (NativeLibrarySpec) {
       binaries {
         withType(StaticLibraryBinarySpec) {
-          // only build the shared lib
+          // Only build the shared lib.
           buildable = false
         }
         // withType(SharedLibraryBinarySpec) {
           tasks.withType(LinkSharedLibrary) {
             if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                linkerArgs.add("-Wl,-dead_strip_dylibs")
+              // avoid retaining the wpimath dependency
+              linkerArgs.add("-Wl,-dead_strip_dylibs")
             }
             if (toolChain in Gcc || toolChain in Clang) {
-              linkerArgs.add("-v")
+              // verbose linker logging
+              // linkerArgs.add("-v")
             }
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-              linkerArgs.add("/VERBOSE")
+              // Verbose linker logging
+              // linkerArgs.add("/VERBOSE")
+              // Required for GTSAM
               linkerArgs.add("dbghelp.lib")
             }
           }
