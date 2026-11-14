@@ -80,6 +80,7 @@ jobs:
       - name: Build with Gradle
         env:
           LD_DEBUG: libs,files
+          # LDFLAGS: "-Wl,-dead_strip_dylibs"
           DYLD_PRINT_LIBRARIES: 1
           DYLD_PRINT_RPATHS: 1
           GRADLE_OPTS: "-Xmx2g"

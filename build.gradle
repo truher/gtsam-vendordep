@@ -121,9 +121,13 @@ model {
         }
         // withType(SharedLibraryBinarySpec) {
           tasks.withType(LinkSharedLibrary) {
+            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                linkerArgs.add("-Wl,-dead_strip_dylibs")
+            }
             if (toolChain in Gcc || toolChain in Clang) {
               linkerArgs.add("-v")
-            } else if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            }
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
               linkerArgs.add("/VERBOSE")
               linkerArgs.add("dbghelp.lib")
             }
