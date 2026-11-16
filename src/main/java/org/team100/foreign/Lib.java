@@ -136,6 +136,13 @@ public class Lib {
         if (Files.exists(p))
             return p;
 
+        // For clients of the vendordep running unit tests on Linux.
+        p = Paths.get(
+                "build/jni/release/libgtsamwrapper.so");
+        info(p);
+        if (Files.exists(p))
+            return p;
+
         // For Github Actions.
         p = Paths.get("build/libs/gtsamwrapper/shared/libgtsamwrapper.so");
         info(p);
