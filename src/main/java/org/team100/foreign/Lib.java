@@ -44,7 +44,7 @@ public class Lib {
             int exitCode = process.waitFor();
             System.out.println("Exited with code: " + exitCode);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 

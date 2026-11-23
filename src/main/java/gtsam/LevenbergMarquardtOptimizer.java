@@ -13,7 +13,8 @@ public class LevenbergMarquardtOptimizer extends NonlinearOptimizer {
         LevenbergMarquardtOptimizer(ADDRESS, ADDRESS, ADDRESS),
         LevenbergMarquardtOptimizer_delete(null, ADDRESS),
         LevenbergMarquardtOptimizer3(ADDRESS, ADDRESS, ADDRESS, ADDRESS),
-        LevenbergMarquardtOptimizer_values(ADDRESS, ADDRESS);
+        LevenbergMarquardtOptimizer_values(ADDRESS, ADDRESS),
+        LevenbergMarquardtOptimizer_iterate(ADDRESS, ADDRESS);
 
         private final MethodHandle h;
 
@@ -49,6 +50,11 @@ public class LevenbergMarquardtOptimizer extends NonlinearOptimizer {
     public Values values() {
         return Values.owned(
                 (MemorySegment) FF.LevenbergMarquardtOptimizer_values.invoke(ptr));
+    }
+
+    public shared_ptr<GaussianFactorGraph> iterate() {
+        MemorySegment sharedPtrPtr = (MemorySegment) FF.LevenbergMarquardtOptimizer_iterate.invoke(ptr);
+        return new shared_ptr<>(sharedPtrPtr, GaussianFactorGraph::new);
     }
 
 }

@@ -1,6 +1,8 @@
 package gtsam;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -11,7 +13,9 @@ import org.team100.foreign.Lib;
 
 public abstract class NonlinearOptimizer extends ForeignObject {
     public enum FF {
-        NonlinearOptimizer_optimize(ADDRESS, ADDRESS);
+        NonlinearOptimizer_optimize(ADDRESS, ADDRESS),
+        NonlinearOptimizer_error(JAVA_DOUBLE, ADDRESS),
+        NonlinearOptimizer_iterations(JAVA_LONG, ADDRESS);
 
         private final MethodHandle h;
 
@@ -31,6 +35,14 @@ public abstract class NonlinearOptimizer extends ForeignObject {
 
     public Values optimize() {
         return Values.owned((MemorySegment) FF.NonlinearOptimizer_optimize.invoke(ptr));
+    }
+
+    public double error() {
+        return (double) FF.NonlinearOptimizer_error.invoke(ptr);
+    }
+
+    public long iterations() {
+        return (long) FF.NonlinearOptimizer_iterations.invoke(ptr);
     }
 
 }

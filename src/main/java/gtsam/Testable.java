@@ -26,6 +26,7 @@ public class Testable {
         Testable_assert_equal_Rot2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Rot3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Unit3(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
+        Testable_assert_equal_Values(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector1(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
         Testable_assert_equal_Vector2(JAVA_BOOLEAN, ADDRESS, ADDRESS, JAVA_DOUBLE),
@@ -144,6 +145,10 @@ public class Testable {
     }
 
     public static boolean assert_equal(Vector expected, Vector actual, double tol) {
+        return (boolean) FF.Testable_assert_equal_Vector.invoke(expected.ptr, actual.ptr, tol);
+    }
+
+    public static boolean assert_equal(Values expected, Values actual, double tol) {
         return (boolean) FF.Testable_assert_equal_Vector.invoke(expected.ptr, actual.ptr, tol);
     }
 

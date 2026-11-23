@@ -46,7 +46,7 @@ public class GeneralSFMFactor2<T> extends NonlinearFactor {
 
     public Vector2 evaluateError(Pose3 pose3, Point3 point, Cal3DS2 calib, Matrix H1, Matrix H2, Matrix H3) {
         return new Vector2((MemorySegment) FF.GeneralSFMFactor2Cal3DS2_evaluateError.invoke(
-                ptr, pose3.ptr, point.ptr, calib.ptr, H1.ptr, H2, ptr, H3.ptr));
+                ptr, pose3.ptr, point.ptr, calib.ptr, H1.ptr, H2.ptr, H3.ptr));
     }
 
 }

@@ -1,7 +1,8 @@
 #define _USE_MATH_DEFINES
-#include <cmath>
 #include <gtsam/nonlinear/LevenbergMarquardtOptimizer.h>
 #include <gtsam/nonlinear/LevenbergMarquardtParams.h>
+
+#include <cmath>
 
 extern "C" {
 gtsam::LevenbergMarquardtOptimizer* LevenbergMarquardtOptimizer(
@@ -23,5 +24,9 @@ gtsam::LevenbergMarquardtOptimizer* LevenbergMarquardtOptimizer3(
 const gtsam::Values* LevenbergMarquardtOptimizer_values(
     gtsam::LevenbergMarquardtOptimizer* p) {
     return new gtsam::Values(p->values());
+}
+std::shared_ptr<gtsam::GaussianFactorGraph>*
+LevenbergMarquardtOptimizer_iterate(gtsam::LevenbergMarquardtOptimizer* p) {
+    return new std::shared_ptr<gtsam::GaussianFactorGraph>(p->iterate());
 }
 }

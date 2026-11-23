@@ -9,6 +9,7 @@
 #include <gtsam/geometry/Pose3.h>
 #include <gtsam/geometry/Rot2.h>
 #include <gtsam/linear/NoiseModel.h>
+#include <gtsam/nonlinear/Values.h>
 
 extern "C" {
 bool Testable_assert_equal_Cal3DS2(  //
@@ -64,6 +65,10 @@ bool Testable_assert_equal_Point3(  //
 bool Testable_assert_equal_Unit3(  //
     const gtsam::Unit3* expected, const gtsam::Unit3* actual, double tol) {
     return gtsam::assert_equal<gtsam::Unit3>(*expected, *actual, tol);
+}
+bool Testable_assert_equal_Values(  //
+    const gtsam::Values* expected, const gtsam::Values* actual, double tol) {
+    return gtsam::assert_equal<gtsam::Values>(*expected, *actual, tol);
 }
 bool Testable_assert_equal_Vector(  //
     const gtsam::Vector* expected, const gtsam::Vector* actual, double tol) {
