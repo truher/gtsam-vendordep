@@ -23,9 +23,9 @@ import org.team100.foreign.Lib;
 public class GenericProjectionFactor3<T> extends NonlinearFactor {
     public enum FF {
         GenericProjectionFactor3Cal3DS2(
-                ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, JAVA_BOOLEAN),
+                ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, ADDRESS, JAVA_BOOLEAN),
         GenericProjectionFactor3Cal3DS2_evaluateError(
-                ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+                ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
         private final MethodHandle h;
 

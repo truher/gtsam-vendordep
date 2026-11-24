@@ -23,7 +23,7 @@ import org.team100.foreign.Lib;
 public class GenericProjectionFactor<T> extends NonlinearFactor {
     public enum FF {
         GenericProjectionFactorCal3DS2(
-                ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, JAVA_BOOLEAN),
+                ADDRESS, ADDRESS, ADDRESS, JAVA_LONG, JAVA_LONG, ADDRESS, JAVA_BOOLEAN, JAVA_BOOLEAN),
         GenericProjectionFactorCal3DS2_evaluateError(
                 ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
 
@@ -48,10 +48,11 @@ public class GenericProjectionFactor<T> extends NonlinearFactor {
             Key poseKey,
             Key pointKey,
             shared_ptr<Cal3DS2> K,
+            boolean throwCheirality,
             boolean verboseCheirality) {
         return new shared_ptr<>(
                 (MemorySegment) FF.GenericProjectionFactorCal3DS2.invoke(
-                        measured.ptr, model.ptr, poseKey.j, pointKey.j, K.ptr, verboseCheirality),
+                        measured.ptr, model.ptr, poseKey.j, pointKey.j, K.ptr, throwCheirality, verboseCheirality),
                 GenericProjectionFactor::new);
     }
 
