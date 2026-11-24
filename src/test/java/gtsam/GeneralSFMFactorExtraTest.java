@@ -65,8 +65,8 @@ public class GeneralSFMFactorExtraTest {
         shared_ptr<Isotropic> sfm_noise = Isotropic.Sigma(2, 1.0);
         Key calib_key = Key.K(0);
 
-        shared_ptr<GeneralSFMFactor3<Cal3DS2>> factor2 = GeneralSFMFactor3.GeneralSFMFactor3Cal3DS2(
-                landmark, measured_pt, sfm_noise, pose_key, calib_key, false);
+        shared_ptr<GenericProjectionFactor2<Cal3DS2>> factor2 = GenericProjectionFactor2.GenericProjectionFactor2Cal3DS2(
+                pose_key, calib_key, landmark, measured_pt, sfm_noise, false);
 
         // should print
         // keys = { x0 l0 k0 }

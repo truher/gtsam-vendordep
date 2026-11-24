@@ -10,9 +10,18 @@ import java.lang.invoke.MethodHandle;
 import org.team100.foreign.ForeignObject;
 import org.team100.foreign.Lib;
 
+/**
+ * Camera calibration type.
+ * 
+ * TODO: add more types (e.g. without distortion, fisheye)
+ */
 public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9> {
     public enum FF {
         Cal3DS2(ADDRESS,
+                JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
+                JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
+                JAVA_DOUBLE, JAVA_DOUBLE),
+        Cal3DS2_shared(ADDRESS,
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE,
                 JAVA_DOUBLE, JAVA_DOUBLE),
@@ -39,6 +48,17 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
         }
     }
 
+    /** Return a shared pointer to the calibration */
+    public static shared_ptr<Cal3DS2> shared(//
+            double fx, double fy, //
+            double s, double u0, double v0, //
+            double k1, double k2, //
+            double p1, double p2, //
+            double tol) {
+        return new shared_ptr<>((MemorySegment) FF.Cal3DS2_shared.invoke(
+                fx, fy, s, u0, v0, k1, k2, p1, p2, tol), Cal3DS2::new);
+    }
+
     @Override
     public Vector9 dxZero() {
         return new Vector9(0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -48,8 +68,19 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
         return 9;
     }
 
-    public Cal3DS2(MemorySegment p) {
-        super(p, FF.Cal3DS2_delete.h);
+    /** For shared (above) */
+    private Cal3DS2(MemorySegment p) {
+        this(p, null);
+    }
+
+    /** For owned (below) */
+    private Cal3DS2(MemorySegment p, MethodHandle deleter) {
+        super(p, deleter);
+    }
+
+    /** To wrap owned pointers returned from elsewhere. */
+    public static Cal3DS2 returned(MemorySegment p) {
+        return new Cal3DS2(p, FF.Cal3DS2_delete.h);
     }
 
     public Cal3DS2(double fx, double fy, //
@@ -57,14 +88,14 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
             double k1, double k2, //
             double p1, double p2, //
             double tol) {
-        this((MemorySegment) FF.Cal3DS2.invoke(fx, fy, s, u0, v0, k1, k2, p1, p2, tol));
+        this((MemorySegment) FF.Cal3DS2.invoke(fx, fy, s, u0, v0, k1, k2, p1, p2, tol), FF.Cal3DS2_delete.h);
     }
 
     public Cal3DS2(double fx, double fy, //
             double s, double u0, double v0, //
             double k1, double k2, //
             double p1, double p2) {
-        this((MemorySegment) FF.Cal3DS2.invoke(fx, fy, s, u0, v0, k1, k2, p1, p2, 1e-5));
+        this((MemorySegment) FF.Cal3DS2.invoke(fx, fy, s, u0, v0, k1, k2, p1, p2, 1e-5), FF.Cal3DS2_delete.h);
     }
 
     public Cal3DS2(double fx, double fy, //
@@ -95,7 +126,7 @@ public class Cal3DS2 extends ForeignObject implements Manifold<Cal3DS2, Vector9>
 
     @Override
     public Cal3DS2 retract(Vector9 v) {
-        return new Cal3DS2((MemorySegment) FF.Cal3DS2_retract.invoke(ptr, v.ptr));
+        return new Cal3DS2((MemorySegment) FF.Cal3DS2_retract.invoke(ptr, v.ptr), FF.Cal3DS2_delete.h);
     }
 
     @Override

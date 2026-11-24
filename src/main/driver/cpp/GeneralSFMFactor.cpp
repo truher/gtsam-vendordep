@@ -32,25 +32,4 @@ gtsam::Vector2* GeneralSFMFactor2Cal3DS2_evaluateError(
     return new gtsam::Vector2(
         p->evaluateError(*pose3, *point, *calib, H1, H2, H3));
 }
-std::shared_ptr<gtsam::GeneralSFMFactor3<gtsam::Cal3DS2>>*
-GeneralSFMFactor3Cal3DS2(                  //
-    const gtsam::Point3* landmark,         //
-    const gtsam::Point2* measured,         //
-    const gtsam::SharedNoiseModel* model,  //
-    const gtsam::Key poseKey,              //
-    const gtsam::Key calibKey,             //
-    const bool verboseCheirality) {
-    return new std::shared_ptr<gtsam::GeneralSFMFactor3<gtsam::Cal3DS2>>(  //
-        new gtsam::GeneralSFMFactor3<gtsam::Cal3DS2>(                      //
-            *landmark, *measured, *model, poseKey, calibKey,
-            verboseCheirality));
-}
-gtsam::Vector2* GeneralSFMFactor3Cal3DS2_evaluateError(
-    gtsam::GeneralSFMFactor3<gtsam::Cal3DS2>* p,  //
-    const gtsam::Pose3* pose3,                    //
-    const gtsam::Cal3DS2* calib,                  //
-    gtsam::Matrix* H1,                            //
-    gtsam::Matrix* H3) {
-    return new gtsam::Vector2(p->evaluateError(*pose3, *calib, H1, H3));
-}
 }

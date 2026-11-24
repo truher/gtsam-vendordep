@@ -16,8 +16,7 @@ import org.team100.foreign.Lib;
  * Extends ForeignObject so that the shared pointer will be "deleted"
  * (decrementing its counter) when this container object is no longer reachable.
  * 
- * The underlying pointer must not be deleted (since it is shared), and so
- * generally should not extend ForeignObject.
+ * The underlying pointer must not be deleted (since it is shared).
  */
 public class shared_ptr<T> extends ForeignObject {
     public enum FF {

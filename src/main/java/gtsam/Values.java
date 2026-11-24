@@ -261,7 +261,7 @@ public class Values extends ForeignObject {
         if (p.equals(MemorySegment.NULL)) {
             throw new AtException(j);
         }
-        return new Cal3DS2(p);
+        return Cal3DS2.returned(p);
     }
 
     public boolean exists(Key j) {
