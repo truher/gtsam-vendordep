@@ -220,3 +220,21 @@ you also need to build the not-systemcore version to run locally.
 ./gradlew build
 ./gradlew publish
 ```
+
+## Core dumps
+
+Sometimes the C++ part will crash with `SIGABRT`.  To figure out what it's doing:
+
+* ulimit -c unlimited
+
+This will write a core file somewhere.  Where?  On my machine, `apport` intercepts the
+file and puts it in /var/lib/apport/coredump.  So to look at it, do something like:
+
+```
+gdb all26/comp/build/jni/release/libgtsamwrapper.so /var/lib/apport/coredump/core._home_joel__local_share_wpilib_2027_alpha7_jdk_bin_java.1000.abbe52df-fca3-41cd-9382-3bd6b508a44c.2673920.47613614 
+```
+
+To see the stack trace of the aborted thread, type `bt`.
+
+I also tried `jvmArgs.add("-XX:+CreateCoredumpOnCrash")` in `build.gradle`, in the `wpilibJava` section,
+but that didn't seem to do anything.
